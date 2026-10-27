@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { page } from '$app/state';
 	import { dock } from '#lib/data/site.ts';
 	import Icon from '#lib/components/ui/Icon.svelte';
@@ -15,6 +16,17 @@
 	let indicator = $state({ x: 0, w: 0, ready: false });
 
 	const isHome = $derived(page.url.pathname === '/');
+
+	// Which item is lit: a page item on its page, Work on project pages, else the scroll-spy.
+	const current = $derived.by(() => {
+		const path = page.url.pathname;
+		const pageItem = dock.find((item) => item.href && path.startsWith(item.href));
+		if (pageItem) return pageItem.id;
+		if (path.startsWith('/work')) return 'work';
+		return isHome ? active : null;
+	});
+	const hrefOf = (item: (typeof dock)[number]) =>
+		item.href ?? (isHome ? `#${item.id}` : `/#${item.id}`);
 
 	// Scroll-spy: a section is "current" while it crosses the middle of the viewport.
 	$effect(() => {
@@ -34,8 +46,11 @@
 
 	// Slide the highlight under the active item.
 	$effect(() => {
-		const el = list.querySelector<HTMLElement>(`[data-id="${active}"]`);
-		if (!el) return;
+		const el = current && list.querySelector<HTMLElement>(`[data-id="${current}"]`);
+		if (!el) {
+			untrack(() => (indicator = { ...indicator, ready: false }));
+			return;
+		}
 		const measure = () => {
 			indicator = { x: el.offsetLeft, w: el.offsetWidth, ready: true };
 		};
@@ -74,10 +89,10 @@
 			{#each dock as item (item.id)}
 				<li data-id={item.id}>
 					<a
-						href={isHome ? `#${item.id}` : `/#${item.id}`}
-						class:active={isHome && active === item.id}
-						aria-current={isHome && active === item.id ? 'true' : undefined}
-						onclick={() => (active = item.id)}
+						href={hrefOf(item)}
+						class:active={current === item.id}
+						aria-current={current === item.id ? (item.href ? 'page' : 'true') : undefined}
+						onclick={() => !item.href && (active = item.id)}
 					>
 						<Icon name={item.icon} size={16} />
 						<span class="text">{item.label}</span>

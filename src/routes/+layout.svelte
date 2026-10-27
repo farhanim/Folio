@@ -8,7 +8,10 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href={favicon} type="image/svg+xml" />
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+	<meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)" />
+	<meta name="theme-color" content="#0e0c0a" media="(prefers-color-scheme: dark)" />
 </svelte:head>
 
 <AppShell>

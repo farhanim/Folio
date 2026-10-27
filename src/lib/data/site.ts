@@ -1,5 +1,5 @@
 // Sample content — replace with your own. Everything the home page renders lives here.
-import type { DockItem, NavLink, Principle, Project } from '#lib/types/index.ts';
+import type { DockItem, NavLink, Principle } from '#lib/types/index.ts';
 
 export const site = {
 	name: 'Farhan',
@@ -12,10 +12,12 @@ export const site = {
 };
 
 export const dock: DockItem[] = [
-	{ id: 'index', label: 'Index', icon: 'home' },
+	{ id: 'index', label: 'Home', icon: 'home' },
 	{ id: 'work', label: 'Work', icon: 'grid' },
+	{ id: 'code', label: 'Code', icon: 'code' },
 	{ id: 'desk', label: 'Desk', icon: 'desk' },
-	{ id: 'contact', label: 'Contact', icon: 'mail' }
+	{ id: 'contact', label: 'Contact', icon: 'mail' },
+	{ id: 'about', label: 'Profile', icon: 'user', href: '/about' }
 ];
 
 export const socials: NavLink[] = [
@@ -31,49 +33,6 @@ export const focus = [
 	'point-of-sale flows',
 	'motion & micro-interactions',
 	'web apps'
-];
-
-export const projects: Project[] = [
-	{
-		slug: 'cyclone',
-		title: 'Cyclone POS',
-		discipline: 'Product design, front-end',
-		category: 'Product',
-		year: 2026,
-		image: '/images/work/pos.svg'
-	},
-	{
-		slug: 'kala',
-		title: 'Kala Studio',
-		discipline: 'Identity, art direction',
-		category: 'Brand',
-		year: 2025,
-		image: '/images/work/brand.svg'
-	},
-	{
-		slug: 'nusa',
-		title: 'Nusa Labs',
-		discipline: 'Mobile app, prototyping',
-		category: 'Product',
-		year: 2025,
-		image: '/images/work/mobile.svg'
-	},
-	{
-		slug: 'tokens',
-		title: 'Tokens',
-		discipline: 'Design system, documentation',
-		category: 'Systems',
-		year: 2024,
-		image: '/images/work/system.svg'
-	},
-	{
-		slug: 'dunes',
-		title: 'Dunes',
-		discipline: 'Generative visuals',
-		category: 'Brand',
-		year: 2024,
-		image: '/images/work/dunes.svg'
-	}
 ];
 
 export const now = {

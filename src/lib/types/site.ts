@@ -7,22 +7,12 @@ export interface NavLink {
 }
 
 export interface DockItem {
-	/** Section id on the home page this item tracks. */
+	/** Section id on the home page this item tracks, or a page key when `href` is set. */
 	id: string;
 	label: string;
 	icon: IconName;
-}
-
-export type ProjectCategory = 'Product' | 'Brand' | 'Systems';
-
-export interface Project {
-	slug: string;
-	title: string;
-	discipline: string;
-	category: ProjectCategory;
-	year: number;
-	/** Preview image shown beside the cursor (desktop) or inline (mobile). */
-	image: string;
+	/** A separate page instead of a home section. */
+	href?: string;
 }
 
 export interface Principle {

@@ -2,22 +2,25 @@
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
 	import Icon from '#lib/components/ui/Icon.svelte';
-	import type { Project, ProjectCategory } from '#lib/types/index.ts';
+	import SectionHead from '#lib/components/ui/SectionHead.svelte';
+	import ClientBadge from '#lib/components/project/ClientBadge.svelte';
+	import Tag from '#lib/components/project/Tag.svelte';
+	import type { Project } from '#lib/types/index.ts';
 	import { reveal } from '#lib/utils/reveal.ts';
 
-	let { projects }: { projects: Project[] } = $props();
+	/** Design projects as a numbered index; a preview card trails the cursor on desktop. */
+	let { projects, title = 'Design projects' }: { projects: Project[]; title?: string } = $props();
 
-	type Filter = 'All' | ProjectCategory;
+	type Filter = 'All' | 'New' | number;
 	const filters = $derived<Filter[]>([
 		'All',
-		...new Set(projects.map((p) => p.category))
-	] as Filter[]);
+		...(projects.some((p) => p.isNew) ? (['New'] as const) : []),
+		...[...new Set(projects.map((p) => p.year))].sort((a, b) => b - a)
+	]);
 	let filter = $state<Filter>('All');
-	const visible = $derived(
-		filter === 'All' ? projects : projects.filter((p) => p.category === filter)
-	);
-	const count = (f: Filter) =>
-		f === 'All' ? projects.length : projects.filter((p) => p.category === f).length;
+	const matches = (p: Project, f: Filter) =>
+		f === 'All' || (f === 'New' ? !!p.isNew : p.year === f);
+	const visible = $derived(projects.filter((p) => matches(p, filter)));
 
 	// ── Cursor preview: eases toward the pointer and leans with horizontal speed ──
 	let hovered = $state<Project | null>(null);
@@ -43,27 +46,28 @@
 	}
 </script>
 
-<section class="work frame" id="work" use:reveal>
-	<header class="head" data-reveal>
-		<span class="label">(02) Selected work</span>
-		<div class="filters" role="group" aria-label="Filter projects">
-			{#each filters as f (f)}
-				<button type="button" aria-pressed={filter === f} onclick={() => (filter = f)}>
-					{f}<sup>{count(f)}</sup>
-				</button>
-			{/each}
-		</div>
-	</header>
+<section class="design frame" use:reveal>
+	<SectionHead eyebrow="Selected work" {title} count={projects.length}>
+		{#snippet aside()}
+			<div class="filters" role="group" aria-label="Filter design projects">
+				{#each filters as f (f)}
+					<button type="button" aria-pressed={filter === f} onclick={() => (filter = f)}>
+						{f}<sup>{projects.filter((p) => matches(p, f)).length}</sup>
+					</button>
+				{/each}
+			</div>
+		{/snippet}
+	</SectionHead>
 
 	<ol class="list" data-reveal onpointerleave={() => (hovered = null)}>
 		<li class="row legend label" aria-hidden="true">
-			<span>No.</span><span>Project</span><span>Discipline</span><span>Year</span>
+			<span>No.</span><span>Project</span><span>Role</span><span>Client</span><span>Year</span>
 		</li>
 		{#each visible as project, i (project.slug)}
 			<li animate:flip={{ duration: 450 }} transition:fade={{ duration: 200 }}>
 				<a
 					class="row"
-					href="/work#{project.slug}"
+					href="/work/{project.slug}"
 					onpointerenter={(e) => {
 						onmove(e);
 						hovered = project;
@@ -72,10 +76,15 @@
 				>
 					<span class="num">{String(i + 1).padStart(2, '0')}</span>
 					<span class="title">
-						<img class="mini" src={project.image} alt="" loading="lazy" />
-						{project.title}
+						<img class="mini" src={project.cover} alt="" loading="lazy" />
+						<span class="name">{project.title}</span>
+						{#if project.isNew}<Tag kind="new" />{/if}
+						{#if project.featured}<Tag kind="featured" />{/if}
 					</span>
-					<span class="discipline">{project.discipline}</span>
+					<span class="role">{project.role}</span>
+					<span class="client">
+						<img src={project.client.logo} alt="" />{project.client.name}
+					</span>
 					<span class="year">{project.year}</span>
 					<span class="arrow"><Icon name="arrowUpRight" size={18} /></span>
 				</a>
@@ -91,24 +100,18 @@
 	aria-hidden="true"
 >
 	{#each projects as p (p.slug)}
-		<img src={p.image} alt="" class:active={hovered?.slug === p.slug} loading="lazy" />
+		<img src={p.cover} alt="" class:active={hovered?.slug === p.slug} loading="lazy" />
 	{/each}
-	<span class="tag label">{hovered?.category ?? ''}</span>
+	{#if hovered}
+		<span class="preview-badge"><ClientBadge client={hovered.client} size="sm" /></span>
+		<span class="preview-tag label">{hovered.tagline}</span>
+	{/if}
 </div>
 
 <style>
-	.work {
-		padding-top: 72px;
+	.design {
+		padding-top: 56px;
 		padding-bottom: 96px;
-	}
-	.head {
-		grid-column: 1 / -1;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 16px;
-		flex-wrap: wrap;
-		padding-bottom: 20px;
 	}
 
 	.filters {
@@ -148,10 +151,9 @@
 
 	.list {
 		grid-column: 1 / -1;
-		margin: 0;
+		margin: -28px 0 0;
 		padding: 0;
 		list-style: none;
-		border-top: 1px solid var(--rule);
 	}
 	.row {
 		position: relative;
@@ -165,7 +167,7 @@
 		text-decoration: none;
 	}
 	.legend {
-		padding: 10px 0;
+		padding: 12px 0;
 	}
 	.legend span:nth-child(1),
 	.num {
@@ -176,10 +178,14 @@
 		grid-column: 2 / span 5;
 	}
 	.legend span:nth-child(3),
-	.discipline {
-		grid-column: 7 / span 4;
+	.role {
+		grid-column: 7 / span 2;
 	}
 	.legend span:nth-child(4),
+	.client {
+		grid-column: 9 / span 2;
+	}
+	.legend span:nth-child(5),
 	.year {
 		grid-column: 11;
 	}
@@ -213,11 +219,13 @@
 		display: flex;
 		align-items: center;
 		gap: 12px;
+		transition: transform 0.5s var(--ease-out);
+	}
+	.name {
 		font-size: clamp(22px, 2.6vw, 36px);
 		font-weight: 450;
 		letter-spacing: -0.035em;
 		line-height: 1.1;
-		transition: transform 0.5s var(--ease-out);
 	}
 	a.row:hover .title {
 		transform: translateX(14px);
@@ -225,9 +233,20 @@
 	.mini {
 		display: none;
 	}
-	.discipline {
+	.role,
+	.client {
 		font-size: 14px;
 		color: var(--text-secondary);
+	}
+	.client {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+	.client img {
+		width: 20px;
+		height: 20px;
+		border-radius: 6px;
 	}
 	.arrow {
 		display: flex;
@@ -246,10 +265,10 @@
 		left: 0;
 		top: 0;
 		z-index: 90;
-		width: 300px;
+		width: 320px;
 		aspect-ratio: 16 / 11;
-		margin: -110px 0 0 28px;
-		border-radius: 12px;
+		margin: -120px 0 0 28px;
+		border-radius: 14px;
 		overflow: hidden;
 		pointer-events: none;
 		background: var(--surface);
@@ -280,24 +299,32 @@
 		opacity: 1;
 		transform: none;
 	}
-	.tag {
+	.preview-badge {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+	}
+	.preview-tag {
 		position: absolute;
 		left: 10px;
+		right: 10px;
 		bottom: 10px;
-		padding: 3px 8px;
-		border-radius: 999px;
-		background: color-mix(in srgb, var(--bg) 80%, transparent);
+		padding: 6px 10px;
+		border-radius: 8px;
+		background: color-mix(in srgb, var(--bg) 82%, transparent);
 		backdrop-filter: blur(8px);
 		color: var(--text);
 		font-size: 10px;
+		text-transform: none;
 	}
 
 	@media (max-width: 1023px), (hover: none) {
-		.preview {
-			display: none;
-		}
+		.preview,
 		.legend {
 			display: none;
+		}
+		.list {
+			margin-top: -12px;
 		}
 		.row {
 			grid-template-columns: 32px 1fr auto;
@@ -307,16 +334,18 @@
 			grid-column: 1;
 			grid-row: 1 / span 2;
 			align-self: start;
-			padding-top: 4px;
+			padding-top: 6px;
 		}
 		.title {
 			grid-column: 2;
+			flex-wrap: wrap;
 		}
-		.discipline {
+		.role {
 			grid-column: 2;
 			grid-row: 2;
 			font-size: 13px;
 		}
+		.client,
 		.year {
 			display: none;
 		}

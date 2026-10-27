@@ -22,7 +22,7 @@
 </script>
 
 <footer class="contact frame" id="contact" use:reveal>
-	<span class="label head" data-reveal>(04) Contact</span>
+	<span class="label head" data-reveal>Contact</span>
 
 	<h2 class="big" data-reveal aria-label={headline}>
 		{#each headline.split(' ') as word, w (w)}

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { now, principles, site, toolbox } from '#lib/data/site.ts';
 	import Icon from '#lib/components/ui/Icon.svelte';
+	import SectionHead from '#lib/components/ui/SectionHead.svelte';
 	import { reveal } from '#lib/utils/reveal.ts';
 	import Clock from './Clock.svelte';
 
@@ -16,10 +17,7 @@
 </script>
 
 <section class="desk frame" id="desk" use:reveal>
-	<header class="head" data-reveal>
-		<span class="label">(03) On the desk</span>
-		<p class="label sub">A peek at what’s going on</p>
-	</header>
+	<SectionHead eyebrow="A peek at what’s going on" title="On the desk" />
 
 	<article class="card now" data-reveal onpointermove={spotlight}>
 		<span class="label"><Icon name="sparkle" size={12} /> Now</span>
@@ -92,18 +90,6 @@
 		row-gap: var(--gap);
 		grid-auto-flow: row dense;
 	}
-	.head {
-		grid-column: 1 / -1;
-		display: flex;
-		justify-content: space-between;
-		padding-bottom: 12px;
-		border-bottom: 1px solid var(--rule);
-	}
-	.sub {
-		margin: 0;
-		text-transform: none;
-	}
-
 	/* ── Card shell with a cursor spotlight on the border and surface ── */
 	.card {
 		--x: 50%;
@@ -367,9 +353,6 @@
 		}
 		.card {
 			min-height: 180px;
-		}
-		.sub {
-			display: none;
 		}
 	}
 </style>

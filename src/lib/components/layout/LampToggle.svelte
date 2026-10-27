@@ -5,7 +5,6 @@
 	const awake = $derived(settings.resolved === 'light');
 
 	let bulb: SVGPathElement;
-	let pulling = $state(false);
 	let swinging = $state(false);
 	let toggleTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -46,8 +45,110 @@
 		pull();
 	}
 
+	// ── Elastic pull cord ─────────────────────────────────────────────
+	// The cord rests short, grows when hovered, stretches while dragged and
+	// recoils on a spring. Lengths are in SVG units below the shade (y = 55).
+	const REST = 7;
+	const HOVER = 17;
+	const PULL_AT = 20; // drag past this and letting go switches the theme
+	let cord = $state({ len: REST, sway: 0 });
+	let velocity = { len: 0, sway: 0 };
+	let hovered = $state(false);
+	let drag: { y: number; x: number; scale: number; active: boolean } | null = null;
+	let dragTarget = { len: REST, sway: 0 };
+	let suppressClick = false;
+	let frame = 0;
+
+	const target = () => (drag?.active ? dragTarget : { len: hovered ? HOVER : REST, sway: 0 });
+
+	function animate() {
+		if (frame) return;
+		let last = performance.now();
+		const step = (now: number) => {
+			const dt = Math.min((now - last) / 1000, 1 / 30);
+			last = now;
+			const t = target();
+			// Stiff on length (snappy recoil), looser on sway (it wobbles a little).
+			velocity.len += (320 * (t.len - cord.len) - 14 * velocity.len) * dt;
+			velocity.sway += (180 * (t.sway - cord.sway) - 9 * velocity.sway) * dt;
+			cord = { len: cord.len + velocity.len * dt, sway: cord.sway + velocity.sway * dt };
+			const settled =
+				Math.abs(t.len - cord.len) + Math.abs(t.sway - cord.sway) < 0.02 &&
+				Math.abs(velocity.len) + Math.abs(velocity.sway) < 0.05;
+			if (settled && !drag?.active) {
+				cord = { ...t };
+				frame = 0;
+				return;
+			}
+			frame = requestAnimationFrame(step);
+		};
+		frame = requestAnimationFrame(step);
+	}
+
+	function kick(len: number, sway = 0) {
+		velocity.len += len;
+		velocity.sway += sway;
+		animate();
+	}
+
+	function onpointerdown(e: PointerEvent) {
+		if (e.button !== 0) return;
+		const r = svg.getBoundingClientRect();
+		drag = { y: e.clientY, x: e.clientX, scale: r.height / 92, active: false };
+		(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+	}
+
+	function onDragMove(e: PointerEvent) {
+		if (!drag) return;
+		const dy = (e.clientY - drag.y) / drag.scale;
+		const dx = (e.clientX - drag.x) / drag.scale;
+		if (!drag.active && Math.hypot(dx, dy) < 4) return;
+		drag.active = true;
+		// Rubber band: easy at first, then increasingly stiff.
+		const stretch = Math.max(0, dy);
+		dragTarget = {
+			len: REST + 40 * Math.log1p(stretch / 40),
+			sway: Math.max(-7, Math.min(7, dx * 0.25))
+		};
+		animate();
+	}
+
+	function onpointerup() {
+		if (!drag) return;
+		const wasDragging = drag.active;
+		drag = null;
+		if (!wasDragging) return;
+		suppressClick = true;
+		if (cord.len - REST > PULL_AT) {
+			switchTheme();
+			kick(-180); // the cord snaps back up when released
+		} else {
+			animate();
+		}
+	}
+
+	function onclick() {
+		if (suppressClick) {
+			suppressClick = false;
+			return;
+		}
+		pull();
+	}
+
+	// Theme changed elsewhere (settings, system): the cord gives a little bounce.
+	let lastAwake: boolean | undefined;
+	$effect(() => {
+		if (lastAwake !== undefined && lastAwake !== awake) kick(120, 30);
+		lastAwake = awake;
+	});
+
+	/** Click or keyboard: a quick tug down, then the theme flips as the cord bottoms out. */
 	function pull() {
-		restart((v) => (pulling = v));
+		kick(420);
+		switchTheme(160);
+	}
+
+	function switchTheme(delay = 0) {
 		restart((v) => (swinging = v));
 		if (hint) {
 			hint = false;
@@ -62,9 +163,14 @@
 		clearTimeout(toggleTimer);
 		toggleTimer = setTimeout(() => {
 			const r = bulb.getBoundingClientRect();
+			lastAwake = !awake; // our own switch: no extra bounce
 			settings.toggleTheme({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
-		}, 160);
+		}, delay);
 	}
+
+	const cordPath = $derived(
+		`M32 55 Q${32 + cord.sway * 0.4} ${55 + cord.len / 2} ${32 + cord.sway} ${55 + cord.len}`
+	);
 </script>
 
 <svelte:window {onpointermove} {onkeydown} />
@@ -75,8 +181,21 @@
 	class:awake
 	aria-label={awake ? 'Turn the lamp off (dark mode)' : 'Turn the lamp on (light mode)'}
 	aria-pressed={!awake}
-	title={awake ? 'Lights out' : 'Wake the lamp'}
-	onclick={pull}
+	title={awake ? 'Lights out — click or pull the cord' : 'Wake the lamp — click or pull the cord'}
+	class:stretched={cord.len - REST > PULL_AT}
+	{onclick}
+	{onpointerdown}
+	onpointermove={onDragMove}
+	{onpointerup}
+	onpointercancel={onpointerup}
+	onpointerenter={() => {
+		hovered = true;
+		animate();
+	}}
+	onpointerleave={() => {
+		hovered = false;
+		animate();
+	}}
 >
 	<span class="hang">
 		<span class="swing" class:swinging onanimationend={() => (swinging = false)}>
@@ -96,9 +215,9 @@
 				<circle class="halo" cx="22" cy="58" r="15" fill="url(#lamp-halo)" />
 
 				<!-- Pull cord -->
-				<g class="pull" class:pulling onanimationend={() => (pulling = false)}>
-					<line class="pull-cord" x1="32" y1="55" x2="32" y2="74" />
-					<circle class="pull-knob" cx="32" cy="76" r="2.2" />
+				<g class="pull">
+					<path class="pull-cord" d={cordPath} />
+					<circle class="pull-knob" cx={32 + cord.sway} cy={57.2 + cord.len} r="2.2" />
 				</g>
 
 				<path
@@ -154,6 +273,7 @@
 		color: var(--text);
 		transform: scale(1.3);
 		transform-origin: top center;
+		touch-action: none;
 		-webkit-tap-highlight-color: transparent;
 	}
 	.lamp:focus-visible {
@@ -191,10 +311,25 @@
 		stroke-linecap: round;
 	}
 	.pull-cord {
+		fill: none;
 		stroke-width: 0.9;
 	}
 	.pull-knob {
 		fill: var(--text-secondary);
+		transform-box: fill-box;
+		transform-origin: center;
+		transition:
+			fill 0.2s ease,
+			transform 0.25s var(--ease-out);
+	}
+	.lamp:hover .pull-knob {
+		fill: var(--text);
+		cursor: grab;
+	}
+	/* Stretched far enough: the knob glows to say "let go" */
+	.lamp.stretched .pull-knob {
+		fill: var(--amber);
+		transform: scale(1.35);
 	}
 	.shade {
 		fill: var(--text);
@@ -321,24 +456,6 @@
 	/* ── Pull interaction ── */
 	.swinging {
 		animation: swing 1.5s var(--ease-out);
-	}
-	.pulling {
-		animation: tug 0.42s cubic-bezier(0.3, 0, 0.2, 1);
-	}
-
-	@keyframes tug {
-		0% {
-			transform: translateY(0);
-		}
-		40% {
-			transform: translateY(8px);
-		}
-		70% {
-			transform: translateY(-1.5px);
-		}
-		100% {
-			transform: translateY(0);
-		}
 	}
 	@keyframes swing {
 		0% {

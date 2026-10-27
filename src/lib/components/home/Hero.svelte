@@ -6,11 +6,6 @@
 </script>
 
 <section class="hero frame" id="index">
-	<header class="meta">
-		<span class="label">(01) Index</span>
-		<span class="label edition">Folio — {site.year} edition</span>
-	</header>
-
 	<h1 class="headline">
 		<span class="line"><ProximityText text="Designing calm," /></span>
 		<span class="line">
@@ -67,15 +62,6 @@
 		row-gap: 0;
 		padding-top: 28px;
 		padding-bottom: 120px;
-	}
-
-	.meta {
-		grid-column: 1 / -1;
-		display: flex;
-		justify-content: space-between;
-		padding-bottom: 12px;
-		border-bottom: 1px solid var(--hairline);
-		animation: enter 0.8s var(--ease-out) both;
 	}
 
 	.headline {
@@ -239,9 +225,6 @@
 		}
 	}
 	@media (max-width: 600px) {
-		.edition {
-			display: none;
-		}
 		.intro,
 		.aside {
 			grid-column: 1 / -1;
