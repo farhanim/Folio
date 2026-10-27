@@ -15,9 +15,48 @@
 		requestAnimationFrame(() => requestAnimationFrame(() => set(true)));
 	}
 
+	// Eyes follow the pointer while the lamp is awake (offset in SVG units).
+	let look = $state({ x: 0, y: 0 });
+	let svg: SVGSVGElement;
+
+	function onpointermove(e: PointerEvent) {
+		if (!awake || e.pointerType !== 'mouse') return;
+		const r = svg.getBoundingClientRect();
+		const dx = e.clientX - (r.left + r.width / 2);
+		const dy = e.clientY - (r.top + r.height * 0.52);
+		const d = Math.hypot(dx, dy) || 1;
+		const reach = Math.min(d / 240, 1) * 0.75;
+		look = { x: (dx / d) * reach, y: (dy / d) * reach };
+	}
+
+	// A handwritten "pull me" note until the lamp has been pulled once.
+	let hint = $state(false);
+	$effect(() => {
+		try {
+			hint = localStorage.getItem('folio:lamp-pulled') !== '1';
+		} catch {
+			hint = true;
+		}
+	});
+
+	function onkeydown(e: KeyboardEvent) {
+		const target = e.target as HTMLElement;
+		if (e.key.toLowerCase() !== 'l' || e.metaKey || e.ctrlKey || e.altKey) return;
+		if (target.closest('input, textarea, [contenteditable]')) return;
+		pull();
+	}
+
 	function pull() {
 		restart((v) => (pulling = v));
 		restart((v) => (swinging = v));
+		if (hint) {
+			hint = false;
+			try {
+				localStorage.setItem('folio:lamp-pulled', '1');
+			} catch {
+				// ignore
+			}
+		}
 
 		// Flip the theme when the cord bottoms out, revealing it from the bulb.
 		clearTimeout(toggleTimer);
@@ -27,6 +66,8 @@
 		}, 160);
 	}
 </script>
+
+<svelte:window {onpointermove} {onkeydown} />
 
 <button
 	type="button"
@@ -41,7 +82,7 @@
 		<span class="swing" class:swinging onanimationend={() => (swinging = false)}>
 			<span class="beam" aria-hidden="true"></span>
 
-			<svg viewBox="0 0 44 92" width="44" height="92" aria-hidden="true">
+			<svg bind:this={svg} viewBox="0 0 44 92" width="44" height="92" aria-hidden="true">
 				<defs>
 					<radialGradient id="lamp-halo">
 						<stop offset="0" stop-color="var(--lamp-glow)" stop-opacity="0.9" />
@@ -68,8 +109,10 @@
 
 				<!-- Face -->
 				<g class="eyes eyes-open">
-					<ellipse cx="17.6" cy="47.6" rx="1.35" ry="1.6" />
-					<ellipse cx="26.4" cy="47.6" rx="1.35" ry="1.6" />
+					<g class="pupils" transform="translate({look.x} {look.y})">
+						<ellipse cx="17.6" cy="47.6" rx="1.35" ry="1.6" />
+						<ellipse cx="26.4" cy="47.6" rx="1.35" ry="1.6" />
+					</g>
 				</g>
 				<g class="eyes eyes-closed">
 					<path d="M15.8 47.2q1.8 1.9 3.6 0" />
@@ -83,13 +126,24 @@
 			</span>
 		</span>
 	</span>
+
+	{#if hint}
+		<span class="hint" aria-hidden="true">
+			<span class="hint-text">pull me!</span>
+			<svg viewBox="0 0 60 40" width="46" height="31">
+				<path d="M4 34C14 34 30 30 40 18c4-5 6-9 8-14" />
+				<path d="m42 8 6-5 3 7" />
+			</svg>
+		</span>
+	{/if}
 </button>
 
 <style>
 	.lamp {
 		position: fixed;
 		top: 0;
-		right: 58px;
+		/* Hangs over the last grid column's right edge */
+		right: calc(max(var(--pad), (100vw - var(--max)) / 2 + var(--pad)) - 6px);
 		z-index: 125;
 		width: 44px;
 		height: 92px;
@@ -358,15 +412,61 @@
 		mix-blend-mode: screen;
 	}
 
-	@media (max-width: 1023px) {
-		.lamp {
-			right: 56px;
-			transform: scale(1);
+	/* ── "pull me!" note ── */
+	.hint {
+		position: absolute;
+		top: 92px;
+		right: 40px;
+		display: flex;
+		align-items: flex-end;
+		gap: 2px;
+		pointer-events: none;
+		color: var(--text-secondary);
+		transform: scale(calc(1 / 1.3));
+		transform-origin: top right;
+		animation: hint-in 0.8s var(--ease-out) 1.4s both;
+	}
+	.hint-text {
+		font-family: var(--font-hand);
+		font-size: 22px;
+		font-weight: 600;
+		line-height: 1;
+		white-space: nowrap;
+		rotate: -6deg;
+		translate: 0 10px;
+	}
+	.hint svg {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.6;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		stroke-dasharray: 80;
+		animation: draw 0.9s var(--ease-out) 1.8s both;
+	}
+	@keyframes hint-in {
+		from {
+			opacity: 0;
+			translate: 6px 6px;
 		}
 	}
-	@media (max-width: 480px) {
+	@keyframes draw {
+		from {
+			stroke-dashoffset: 80;
+		}
+	}
+
+	@media (max-width: 1023px) {
 		.lamp {
-			right: max(62px, calc(env(safe-area-inset-right) + 50px));
+			transform: scale(1);
+		}
+		.hint {
+			transform: none;
+		}
+	}
+	@media (max-width: 600px) {
+		.hint {
+			display: none;
 		}
 	}
 </style>
