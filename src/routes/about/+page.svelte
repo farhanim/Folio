@@ -4,7 +4,7 @@
 	import type { IconName } from '#lib/components/ui/icons.ts';
 	import SectionHead from '#lib/components/ui/SectionHead.svelte';
 	import TableOfContents from '#lib/components/ui/TableOfContents.svelte';
-	import { clients } from '#lib/data/clients.ts';
+	import { companies } from '#lib/data/clients.ts';
 	import { profile } from '#lib/data/profile.ts';
 	import { site } from '#lib/data/site.ts';
 	import type { Achievement } from '#lib/types/index.ts';
@@ -14,17 +14,29 @@
 		{ id: 'summary', label: 'Summary' },
 		{ id: 'experience', label: 'Experience' },
 		{ id: 'education', label: 'Education' },
-		{ id: 'achievements', label: 'Achievements' },
+		{ id: 'achievements', label: 'Highlights' },
 		{ id: 'capabilities', label: 'Capabilities' },
-		{ id: 'clients', label: 'Clients' }
+		{ id: 'companies', label: 'Companies' }
 	];
 
 	const achievementIcon: Record<Achievement['kind'], IconName> = {
 		award: 'award',
 		talk: 'mic',
 		cert: 'check',
-		press: 'news'
+		press: 'news',
+		mentor: 'user',
+		milestone: 'sparkle'
 	};
+
+	// Everywhere I've worked (jobs, the studio, mentoring), in CV order.
+	const logoWall = [
+		...new Map(
+			[...profile.experience.map((e) => e.company), companies.myEduSolve].map((c) => [c.name, c])
+		).values()
+	];
+
+	// A transparent cut-out is used when available, otherwise the framed photo.
+	const portraitSrc = profile.portraitCutout ?? profile.portrait;
 
 	// First role open by default; one at a time.
 	let openRole = $state(0);
@@ -60,12 +72,18 @@
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
 				class="portrait"
+				class:cutout={!!profile.portraitCutout}
 				onpointermove={onPortraitMove}
 				onpointerleave={() => (tilt = { x: 0, y: 0 })}
 				style:transform="perspective(800px) rotateX({tilt.x}deg) rotateY({tilt.y}deg)"
 			>
-				<img src={profile.portrait} alt="Illustrated portrait of {site.name}" />
-				<span class="hello" aria-hidden="true">hi, I’m {site.name}!</span>
+				{#if profile.portraitCutout}
+					<!-- A cut-out photo stands in front of a soft arch -->
+					<span class="arch" aria-hidden="true"></span>
+				{/if}
+				<img class="bw" src={portraitSrc} alt="Portrait of {profile.fullName}" />
+				<img class="color" src={portraitSrc} alt="" aria-hidden="true" />
+				<span class="hello" aria-hidden="true">hi, I’m {profile.nickname}!</span>
 				<span class="status label"
 					><span class="dot"></span>{site.available ? 'Available' : 'Booked'}</span
 				>
@@ -123,6 +141,7 @@
 						</button>
 						{#if openRole === i}
 							<div class="details" transition:slide={{ duration: 350 }}>
+								<p class="scope">{job.scope}</p>
 								<p>{job.summary}</p>
 								<ul>
 									{#each job.highlights as h (h)}
@@ -142,7 +161,10 @@
 			<div class="edu">
 				{#each profile.education as e (e.school)}
 					<article class="tile" data-reveal>
-						<span class="label">{e.period}</span>
+						<div class="tile-head">
+							<span class="label">{e.period}</span>
+							{#if e.logo}<img src={e.logo} alt="" />{/if}
+						</div>
 						<h3>{e.school}</h3>
 						<p>{e.degree}</p>
 						{#if e.note}<p class="note">{e.note}</p>{/if}
@@ -153,7 +175,11 @@
 
 		<!-- Achievements -->
 		<section class="block" id="achievements" use:reveal>
-			<SectionHead eyebrow="Recognition" title="Achievements" count={profile.achievements.length} />
+			<SectionHead
+				eyebrow="Mentoring & milestones"
+				title="Highlights"
+				count={profile.achievements.length}
+			/>
 			<ul class="awards">
 				{#each profile.achievements as a (a.title)}
 					<li data-reveal>
@@ -178,23 +204,25 @@
 						</ul>
 					</div>
 				{/each}
-				<div class="cap" data-reveal>
-					<span class="label">Languages</span>
-					<ul>
-						{#each profile.languages as l (l.name)}
-							<li>{l.name} <span class="level">{l.level}</span></li>
-						{/each}
-					</ul>
-				</div>
+				{#if profile.languages.length}
+					<div class="cap" data-reveal>
+						<span class="label">Languages</span>
+						<ul>
+							{#each profile.languages as l (l.name)}
+								<li>{l.name} <span class="level">{l.level}</span></li>
+							{/each}
+						</ul>
+					</div>
+				{/if}
 			</div>
 		</section>
 
-		<!-- Clients -->
-		<section class="block" id="clients" use:reveal>
-			<SectionHead eyebrow="Teams I’ve worked with" title="Clients" />
+		<!-- Companies -->
+		<section class="block" id="companies" use:reveal>
+			<SectionHead eyebrow="Teams I’ve worked with" title="Companies" />
 			<ul class="logos" data-reveal>
-				{#each Object.values(clients).filter((c) => c.name !== 'Personal') as c (c.name)}
-					<li><img src={c.logo} alt="" /><span>{c.name}</span></li>
+				{#each logoWall as c (c.name)}
+					<li><img src={c.mark ?? c.logo} alt="" /><span>{c.name}</span></li>
 				{/each}
 			</ul>
 		</section>
@@ -226,25 +254,94 @@
 	/* ── Header ── */
 	.header {
 		display: grid;
-		grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
-		gap: 40px;
+		grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+		gap: 56px;
 		align-items: start;
 		animation: enter 0.9s var(--ease-out) both;
 	}
 	.portrait {
 		position: relative;
-		border-radius: 20px;
-		overflow: visible;
+		max-width: 320px;
 		transition: transform 0.4s var(--ease-out);
 		will-change: transform;
+	}
+	/*
+	 * One balanced tone for both versions — a touch brighter and punchier than the
+	 * original so neither the B&W nor the colour reads too dark or washed out.
+	 * The colour copy sits on top and fades in on hover.
+	 */
+	.portrait {
+		--tone: brightness(1.04) contrast(1.12);
+	}
+	:global([data-theme='dark']) .portrait {
+		--tone: brightness(1.08) contrast(1.1);
 	}
 	.portrait img {
 		display: block;
 		width: 100%;
 		aspect-ratio: 4 / 5;
 		object-fit: cover;
-		border-radius: 20px;
+		object-position: 50% 30%;
+		border-radius: 18px;
+	}
+	.bw {
+		position: relative;
 		background: var(--surface);
+		box-shadow: 0 0 0 1px var(--rule);
+		filter: grayscale(1) var(--tone);
+	}
+	.color {
+		position: absolute;
+		inset: 0;
+		height: 100%;
+		filter: var(--tone);
+		opacity: 0;
+		transition: opacity 1.2s var(--ease-out);
+	}
+	.portrait:hover .color {
+		opacity: 1;
+	}
+	:global([data-theme='dark']) .bw {
+		box-shadow:
+			0 0 0 1px rgba(255, 255, 255, 0.22),
+			0 24px 60px -20px color-mix(in srgb, var(--lamp-glow) 22%, transparent);
+	}
+
+	/* Cut-out variant: no frame; the figure stands in front of an arch and its
+	   head rises slightly above it. */
+	.cutout .arch {
+		position: absolute;
+		inset: 14% 0 0;
+		border-radius: 999px 999px 18px 18px;
+		background: var(--surface);
+		box-shadow: inset 0 0 0 1px var(--hairline);
+	}
+	.cutout img {
+		aspect-ratio: auto;
+		height: auto;
+		object-fit: contain;
+		object-position: 50% 100%;
+		border-radius: 0 0 18px 18px;
+	}
+	.cutout .bw {
+		background: none;
+		box-shadow: none;
+		filter: grayscale(1) var(--tone) drop-shadow(0 18px 24px rgba(0, 0, 0, 0.18));
+	}
+	:global([data-theme='dark']) .cutout .bw {
+		box-shadow: none;
+	}
+	/* Dark mode: a lighter, warm charcoal arch so the black sweater stays distinct */
+	:global([data-theme='dark']) .cutout .arch {
+		background: color-mix(in srgb, var(--text) 16%, var(--bg));
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+			0 30px 70px -30px color-mix(in srgb, var(--lamp-glow) 25%, transparent);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.portrait:hover .color {
+			opacity: 0;
+		}
 	}
 	.hello {
 		position: absolute;
@@ -384,6 +481,7 @@
 		height: 36px;
 		border-radius: 10px;
 		flex: none;
+		box-shadow: 0 0 0 1px var(--hairline);
 		transition: transform 0.5s var(--ease-out);
 	}
 	.job:hover .who img {
@@ -433,6 +531,11 @@
 	.details p {
 		color: var(--text-secondary);
 		font-size: 14px;
+	}
+	.details .scope {
+		margin-bottom: 4px;
+		color: var(--text);
+		font-weight: 500;
 	}
 	.details ul {
 		display: grid;
@@ -486,7 +589,7 @@
 	}
 	.awards li {
 		display: grid;
-		grid-template-columns: 40px 60px minmax(0, 1fr) auto;
+		grid-template-columns: 40px 96px minmax(0, 1fr) auto;
 		align-items: center;
 		gap: 16px;
 		padding: 16px 0;
@@ -561,23 +664,46 @@
 		border-bottom: 1px solid var(--hairline);
 		font-size: 12px;
 		color: var(--text-secondary);
-		filter: grayscale(1);
-		opacity: 0.7;
-		transition:
-			filter 0.4s ease,
-			opacity 0.4s ease;
+		transition: color 0.3s ease;
 	}
 	.logos li:hover {
-		filter: none;
-		opacity: 1;
+		color: var(--text);
 	}
+	/* Bare logo marks in black & white; colour returns on hover. In dark mode
+	   they're inverted so dark logos (Nikel, Twonity…) stay visible. */
 	.logos img {
-		width: 36px;
-		height: 36px;
-		transition: transform 0.5s var(--ease-out);
+		height: 40px;
+		width: auto;
+		max-width: 120px;
+		object-fit: contain;
+		filter: grayscale(1) brightness(0.78) contrast(1.3);
+		opacity: 0.9;
+		transition:
+			filter 0.5s ease,
+			opacity 0.5s ease,
+			transform 0.5s var(--ease-out);
 	}
 	.logos li:hover img {
-		transform: scale(1.15) rotate(-6deg);
+		filter: none;
+		opacity: 1;
+		transform: translateY(-3px);
+	}
+	:global([data-theme='dark']) .logos img {
+		filter: grayscale(1) brightness(0.78) contrast(1.3) invert(1);
+	}
+	:global([data-theme='dark']) .logos li:hover img {
+		filter: none;
+	}
+	.tile-head {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+	}
+	.tile-head img {
+		width: 44px;
+		height: 44px;
+		border-radius: 12px;
+		box-shadow: 0 0 0 1px var(--hairline);
 	}
 
 	@keyframes enter {
@@ -600,7 +726,7 @@
 			grid-template-columns: 1fr;
 		}
 		.portrait {
-			max-width: 320px;
+			max-width: 260px;
 		}
 		.facts {
 			grid-template-columns: 1fr 1fr;

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { settings } from '#lib/stores/settings.svelte.ts';
 	import { Rope } from '#lib/utils/rope.ts';
 
@@ -306,7 +307,8 @@
 		</span>
 	</span>
 
-	{#if hint}
+	<!-- Only on the home page, where nothing sits under it -->
+	{#if hint && page.url.pathname === '/'}
 		<span class="hint" class:away={scrolledAway} aria-hidden="true">
 			<span class="hint-text">pull me!</span>
 			<svg viewBox="0 0 60 40" width="46" height="31">

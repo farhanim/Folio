@@ -2,7 +2,10 @@ export type ProjectType = 'design' | 'code';
 
 export interface Client {
 	name: string;
+	/** Square tile, used at icon size (badges, experience rows). */
 	logo: string;
+	/** Transparent, trimmed logo for places shown without a tile (the Companies wall). */
+	mark?: string;
 }
 
 export interface ImageRef {

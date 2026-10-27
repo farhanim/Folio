@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { untrack, type Snippet } from 'svelte';
 
 	/**
 	 * Sticky "Contents" rail. Highlights the section crossing the upper third of the
@@ -26,8 +26,22 @@
 			{ rootMargin: '-30% 0px -60% 0px' }
 		);
 		els.forEach((el) => io.observe(el));
-		if (!active && items[0]) active = items[0].id;
-		return () => io.disconnect();
+		untrack(() => {
+			if (!active && items[0]) active = items[0].id;
+		});
+
+		// The last sections may be too short to ever reach the trigger band, so once
+		// the page is scrolled to the bottom the final entry becomes current.
+		const atBottom = () => {
+			if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) {
+				active = items[items.length - 1].id;
+			}
+		};
+		addEventListener('scroll', atBottom, { passive: true });
+		return () => {
+			io.disconnect();
+			removeEventListener('scroll', atBottom);
+		};
 	});
 
 	$effect(() => {
@@ -49,6 +63,7 @@
 			<li data-id={item.id}>
 				<a
 					href="#{item.id}"
+					onclick={() => (active = item.id)}
 					class:active={active === item.id}
 					aria-current={active === item.id ? 'location' : undefined}>{item.label}</a
 				>

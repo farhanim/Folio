@@ -21,8 +21,8 @@
 
 	<div class="intro">
 		<p>
-			I’m {site.name}, a {site.role.toLowerCase()} in {site.location}. I shape products end to end —
-			from the first rough sketch to the last pixel that ships.
+			I’m {site.name} (Hans), a {site.role.toLowerCase()} based in {site.location}, {site.country} — open
+			to working from anywhere. I enjoy creating interaction design in code: delightful, human experiences.
 		</p>
 		<p class="focus label">
 			<span class="focus-key">Lately</span>
@@ -33,13 +33,18 @@
 	<aside class="aside">
 		<div class="note">
 			<span class="label">Currently</span>
-			<p>Shaping the design system for <a class="hairline-link" href="#work">Cyclone POS</a>.</p>
+			<p>
+				UX Designer at <a class="hairline-link" href="/about#experience">Nikel</a>, leading LMS,
+				Borrower and Lender Portal.
+			</p>
 		</div>
 		<div class="note">
 			<span class="label">Previously</span>
 			<p>
-				<a class="hairline-link" href="#work">Kala Studio</a>,
-				<a class="hairline-link" href="#work">Nusa Labs</a>, freelance.
+				<a class="hairline-link" href="/about#experience">eFishery</a>,
+				<a class="hairline-link" href="/about#experience">Fazz</a>,
+				<a class="hairline-link" href="/about#experience">Warung Pintar</a> — and my studio,
+				<a class="hairline-link" href="/about#experience">Twonity</a>.
 			</p>
 		</div>
 	</aside>
