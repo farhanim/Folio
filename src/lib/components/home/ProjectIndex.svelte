@@ -24,10 +24,46 @@
 		(f === 'New' ? !!p.isNew : f === 'Design' ? p.type === 'design' : p.type === 'code');
 	const visible = $derived(projects.filter((p) => matches(p, filter)));
 
+	// ── List: ten rows a page ──
+	const PAGE_SIZE = 10;
+	let page = $state(0);
+	const pages = $derived(Math.max(1, Math.ceil(visible.length / PAGE_SIZE)));
+	const pageRows = $derived(visible.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE));
+	function setFilter(f: Filter) {
+		filter = f;
+		page = 0;
+	}
+
+	// ── Grid: the newest few as large cards, the rest in a slider row ──
+	const FEATURE_COUNT = 6;
+	const lead = $derived(visible.slice(0, FEATURE_COUNT));
+	const rest = $derived(visible.slice(FEATURE_COUNT));
+
+	let rail: HTMLUListElement | undefined = $state();
+	let atStart = $state(true);
+	let atEnd = $state(false);
+	function syncRail() {
+		if (!rail) return;
+		atStart = rail.scrollLeft <= 2;
+		atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 2;
+	}
+	function slide(dir: 1 | -1) {
+		rail?.scrollBy({ left: dir * rail.clientWidth * 0.8, behavior: 'smooth' });
+	}
+	// Back to the start whenever the filter changes what's in the rail.
+	$effect(() => {
+		if (!rail || !rest.length) return;
+		rail.scrollLeft = 0;
+		syncRail();
+		const ro = new ResizeObserver(syncRail);
+		ro.observe(rail);
+		return () => ro.disconnect();
+	});
+
 	// ── View (remembered per visitor) ──
 	type View = 'list' | 'grid';
 	const VIEW_KEY = 'folio:project-view';
-	let view = $state<View>('list');
+	let view = $state<View>('grid');
 	$effect(() => {
 		try {
 			const saved = localStorage.getItem(VIEW_KEY);
@@ -77,7 +113,7 @@
 		{#snippet aside()}
 			<div class="filters" role="group" aria-label="Filter projects">
 				{#each filters as f (f)}
-					<button type="button" aria-pressed={filter === f} onclick={() => (filter = f)}>
+					<button type="button" aria-pressed={filter === f} onclick={() => setFilter(f)}>
 						{f}<sup>{projects.filter((p) => matches(p, f)).length}</sup>
 					</button>
 				{/each}
@@ -114,7 +150,7 @@
 								>Year</span
 							>
 						</li>
-						{#each visible as project, i (project.slug)}
+						{#each pageRows as project, i (project.slug)}
 							<li animate:flip={{ duration: 450 }} transition:fade={{ duration: 200 }}>
 								<a
 									class="row"
@@ -125,7 +161,7 @@
 									}}
 									onpointermove={onmove}
 								>
-									<span class="num">{String(i + 1).padStart(2, '0')}</span>
+									<span class="num">{String(page * PAGE_SIZE + i + 1).padStart(2, '0')}</span>
 									<span class="title">
 										<img class="mini" src={project.cover} alt="" loading="lazy" />
 										<span class="name">{project.title}</span>
@@ -148,9 +184,34 @@
 							</li>
 						{/each}
 					</ol>
+					{#if pages > 1}
+						<nav class="pager" aria-label="Project pages">
+							<span class="label">
+								{page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, visible.length)} of {visible.length}
+							</span>
+							<span class="more-nav">
+								<button
+									type="button"
+									aria-label="Previous page"
+									disabled={page === 0}
+									onclick={() => page--}
+								>
+									<Icon name="arrowLeft" size={15} />
+								</button>
+								<button
+									type="button"
+									aria-label="Next page"
+									disabled={page >= pages - 1}
+									onclick={() => page++}
+								>
+									<Icon name="arrowRight" size={15} />
+								</button>
+							</span>
+						</nav>
+					{/if}
 				{:else}
 					<ul class="grid">
-						{#each visible as project (project.slug)}
+						{#each lead as project (project.slug)}
 							<li animate:flip={{ duration: 450 }} transition:fade={{ duration: 200 }}>
 								<a class="card" href="/work/{project.slug}">
 									<ProjectCover {project} ratio="16 / 10" />
@@ -166,6 +227,48 @@
 							</li>
 						{/each}
 					</ul>
+
+					{#if rest.length}
+						<div class="more">
+							<div class="more-head">
+								<span class="label">More projects <sup>{rest.length}</sup></span>
+								<span class="more-nav">
+									<button
+										type="button"
+										aria-label="Previous projects"
+										disabled={atStart}
+										onclick={() => slide(-1)}
+									>
+										<Icon name="arrowLeft" size={15} />
+									</button>
+									<button
+										type="button"
+										aria-label="Next projects"
+										disabled={atEnd}
+										onclick={() => slide(1)}
+									>
+										<Icon name="arrowRight" size={15} />
+									</button>
+								</span>
+							</div>
+							<ul class="rail" bind:this={rail} onscroll={syncRail}>
+								{#each rest as project (project.slug)}
+									<li>
+										<a class="card small" href="/work/{project.slug}">
+											<ProjectCover {project} ratio="16 / 10" />
+											<span class="card-body">
+												<span class="card-meta label">
+													<Icon name={project.type === 'design' ? 'layers' : 'code'} size={11} />
+													{typeLabel(project)} · {project.year ?? '—'}
+												</span>
+												<span class="card-title">{project.title}</span>
+											</span>
+										</a>
+									</li>
+								{/each}
+							</ul>
+						</div>
+					{/if}
 				{/if}
 			</div>
 		{/key}
@@ -447,6 +550,80 @@
 		color: var(--text-secondary);
 	}
 
+	.pager {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding-top: 20px;
+	}
+
+	/* ── More projects: one row of small cards that slides sideways ── */
+	.more {
+		margin-top: 64px;
+		padding-top: 20px;
+		border-top: 1px solid var(--hairline);
+	}
+	.more-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 16px;
+	}
+	.more-nav {
+		display: flex;
+		gap: 6px;
+	}
+	.more-nav button {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		border: 1px solid var(--hairline);
+		border-radius: 999px;
+		background: none;
+		color: var(--text);
+		cursor: pointer;
+		transition:
+			background-color 0.25s ease,
+			color 0.25s ease,
+			opacity 0.25s ease;
+	}
+	.more-nav button:hover:not(:disabled) {
+		background: var(--text);
+		color: var(--bg);
+	}
+	.more-nav button:disabled {
+		opacity: 0.3;
+		cursor: default;
+	}
+	.rail {
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: calc((100% - 3 * var(--gap)) / 4);
+		gap: var(--gap);
+		margin: 0;
+		padding: 0 0 12px;
+		list-style: none;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: thin;
+	}
+	.rail li {
+		scroll-snap-align: start;
+		min-width: 0;
+	}
+	.small .card-body {
+		padding-top: 10px;
+	}
+	.small .card-title {
+		font-size: 17px;
+	}
+	.small :global(.client) {
+		scale: 0.85;
+		transform-origin: top right;
+	}
+
 	/* ── Preview ── */
 	.preview {
 		position: fixed;
@@ -510,6 +687,9 @@
 		.grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
+		.rail {
+			grid-auto-columns: calc((100% - 2 * var(--gap)) / 2.5);
+		}
 	}
 	@media (max-width: 1023px), (hover: none) {
 		.preview,
@@ -566,6 +746,9 @@
 	@media (max-width: 600px) {
 		.grid {
 			grid-template-columns: 1fr;
+		}
+		.rail {
+			grid-auto-columns: 70%;
 		}
 		.views {
 			margin-left: 0;

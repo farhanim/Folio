@@ -3,6 +3,7 @@
 // of the previous/next navigation on project pages.
 import type { Project } from '#lib/types/index.ts';
 import { clients } from './clients.ts';
+import { caseStudies } from './case-studies.ts';
 import { showcase } from './showcase.ts';
 
 const samples: Project[] = [
@@ -20,7 +21,6 @@ const samples: Project[] = [
 		team: '2 designers, 6 engineers, 1 PM',
 		tools: ['Figma', 'Svelte', 'Rive'],
 		cover: '/images/work/pos.svg',
-		featured: true,
 		links: [{ label: 'Case study PDF', href: '#' }],
 		blocks: [
 			{
@@ -291,10 +291,14 @@ transition.ready.then(() => {
 	}
 ];
 
-// Real projects first, then the design samples.
-export const projects: Project[] = [...showcase, ...samples];
+// Newest year first; projects without a year go last. The sort is stable, so
+// within a year the order above holds (case studies, code builds, samples).
+export const projects: Project[] = [...caseStudies, ...showcase, ...samples].sort(
+	(a, b) => (b.year ?? 0) - (a.year ?? 0)
+);
 
-export const featuredProjects = projects.filter((p) => p.featured);
+// Worth a read: design case studies only.
+export const featuredProjects = projects.filter((p) => p.featured && p.type === 'design');
 
 export function getProject(slug: string) {
 	const index = projects.findIndex((p) => p.slug === slug);

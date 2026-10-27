@@ -15,8 +15,8 @@
 
 <Hero />
 <div id="work">
-	<Featured projects={featuredProjects} />
 	<ProjectIndex {projects} />
+	<Featured projects={featuredProjects} />
 </div>
 <Desk />
 <Contact />
