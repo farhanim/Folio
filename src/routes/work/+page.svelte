@@ -1,8 +1,7 @@
 <script lang="ts">
-	import CodeWork from '#lib/components/home/CodeWork.svelte';
-	import DesignWork from '#lib/components/home/DesignWork.svelte';
 	import Featured from '#lib/components/home/Featured.svelte';
-	import { codeProjects, designProjects, featuredProjects } from '#lib/data/projects.ts';
+	import ProjectIndex from '#lib/components/home/ProjectIndex.svelte';
+	import { featuredProjects, projects } from '#lib/data/projects.ts';
 	import { site } from '#lib/data/site.ts';
 </script>
 
@@ -17,8 +16,7 @@
 </header>
 
 <Featured projects={featuredProjects} />
-<DesignWork projects={designProjects} />
-<CodeWork projects={codeProjects} id="code-archive" />
+<ProjectIndex {projects} />
 
 <style>
 	.intro {

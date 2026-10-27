@@ -14,7 +14,6 @@ export const site = {
 export const dock: DockItem[] = [
 	{ id: 'index', label: 'Home', icon: 'home' },
 	{ id: 'work', label: 'Work', icon: 'grid' },
-	{ id: 'code', label: 'Code', icon: 'code' },
 	{ id: 'desk', label: 'Desk', icon: 'desk' },
 	{ id: 'contact', label: 'Contact', icon: 'mail' },
 	{ id: 'about', label: 'Profile', icon: 'user', href: '/about' }

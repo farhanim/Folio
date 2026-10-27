@@ -364,8 +364,6 @@ transition.ready.then(() => {
 	}
 ];
 
-export const designProjects = projects.filter((p) => p.type === 'design');
-export const codeProjects = projects.filter((p) => p.type === 'code');
 export const featuredProjects = projects.filter((p) => p.featured);
 
 export function getProject(slug: string) {

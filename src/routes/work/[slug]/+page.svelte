@@ -29,6 +29,8 @@
 		{ label: project.type === 'code' ? 'Stack' : 'Tools', value: project.tools.join(', ') }
 	]);
 
+	// Slideshows are for design case studies; code projects read as a normal page.
+	const hasSlideshow = $derived(project.type === 'design');
 	let slideshow = $state(false);
 
 	// [ and ] jump to the previous / next project.
@@ -50,9 +52,11 @@
 	<aside class="rail">
 		<TableOfContents items={toc}>
 			{#snippet footer()}
-				<button type="button" class="play" onclick={() => (slideshow = true)}>
-					Play as slideshow <Icon name="play" size={12} stroke={2} />
-				</button>
+				{#if hasSlideshow}
+					<button type="button" class="play" onclick={() => (slideshow = true)}>
+						Play as slideshow <Icon name="play" size={12} stroke={2} />
+					</button>
+				{/if}
 				<span class="label hint"><kbd>[</kbd> <kbd>]</kbd> prev / next project</span>
 			{/snippet}
 		</TableOfContents>
@@ -63,7 +67,7 @@
 			<nav class="crumbs label" aria-label="Breadcrumb">
 				<a href="/#work">Work</a>
 				<span aria-hidden="true">/</span>
-				<a href={project.type === 'design' ? '/#work' : '/#code'}>
+				<a href="/#projects">
 					{project.type === 'design' ? 'Design' : 'Code'}
 				</a>
 				<span aria-hidden="true">/</span>
@@ -81,9 +85,11 @@
 			<p class="summary">{project.summary}</p>
 
 			<div class="actions">
-				<button type="button" class="primary" onclick={() => (slideshow = true)}>
-					<Icon name="play" size={13} stroke={2} /> Play slideshow
-				</button>
+				{#if hasSlideshow}
+					<button type="button" class="primary" onclick={() => (slideshow = true)}>
+						<Icon name="play" size={13} stroke={2} /> Play slideshow
+					</button>
+				{/if}
 				{#each project.links ?? [] as link (link.href + link.label)}
 					<a
 						class="secondary"
@@ -126,7 +132,9 @@
 	</div>
 </article>
 
-<Slideshow {project} bind:open={slideshow} />
+{#if hasSlideshow}
+	<Slideshow {project} bind:open={slideshow} />
+{/if}
 
 <style>
 	.project {

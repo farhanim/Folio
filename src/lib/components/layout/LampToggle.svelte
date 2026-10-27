@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { settings } from '#lib/stores/settings.svelte.ts';
+	import { Rope } from '#lib/utils/rope.ts';
 
 	// Light theme = lamp awake and lit. Dark theme = lamp off, asleep (eyes shut, z's).
 	const awake = $derived(settings.resolved === 'light');
@@ -30,6 +31,7 @@
 
 	// A handwritten "pull me" note until the lamp has been pulled once.
 	let hint = $state(false);
+	let scrolledAway = $state(false);
 	$effect(() => {
 		try {
 			hint = localStorage.getItem('folio:lamp-pulled') !== '1';
@@ -45,71 +47,119 @@
 		pull();
 	}
 
-	// ── Elastic pull cord ─────────────────────────────────────────────
-	// The cord rests short, grows when hovered, stretches while dragged and
-	// recoils on a spring. Lengths are in SVG units below the shade (y = 55).
+	// ── Pull cord: a little rope ──────────────────────────────────────
+	// A Verlet rope hangs from the shade. It rests short; on hover it grows long
+	// and drifts on its own along an irregular, smooth path (like a string
+	// swaying in a draught). Drag it in any direction to stretch it — far enough and
+	// letting go switches the theme. Units are SVG units; the cord hangs from y = 55.
+	const ANCHOR = { x: 32, y: 55 };
 	const REST = 7;
-	const HOVER = 17;
-	const PULL_AT = 20; // drag past this and letting go switches the theme
-	let cord = $state({ len: REST, sway: 0 });
-	let velocity = { len: 0, sway: 0 };
-	let hovered = $state(false);
-	let drag: { y: number; x: number; scale: number; active: boolean } | null = null;
-	let dragTarget = { len: REST, sway: 0 };
+	const HOVER = 20;
+	const PULL_AT = 20; // stretched this far past rest, releasing switches the theme
+	const rope = new Rope(ANCHOR, REST);
+
+	let cordPath = $state(rope.path());
+	let knob = $state({ ...rope.end });
+	let len = REST;
+	let lenVelocity = 0;
+	let hoverMix = 0;
+	let stretched = $state(false);
+	let hovered = false;
+	let pointer: { x: number; y: number } | null = null;
+	let drag: { x: number; y: number; active: boolean } | null = null;
 	let suppressClick = false;
 	let frame = 0;
 
-	const target = () => (drag?.active ? dragTarget : { len: hovered ? HOVER : REST, sway: 0 });
+	/** Client coordinates → this SVG's coordinates (follows the lamp's swing and scale). */
+	function toSvg(clientX: number, clientY: number) {
+		const ctm = svg?.getScreenCTM();
+		if (!ctm) return null;
+		const p = new DOMPoint(clientX, clientY).matrixTransform(ctm.inverse());
+		return { x: p.x, y: p.y };
+	}
+
+	function targetLength() {
+		if (drag?.active && pointer) {
+			// Rubber band: easy at first, increasingly stiff.
+			const d = Math.hypot(pointer.x - ANCHOR.x, pointer.y - ANCHOR.y);
+			return REST + 40 * Math.log1p(Math.max(0, d - REST) / 40);
+		}
+		return hovered ? HOVER : REST;
+	}
 
 	function animate() {
 		if (frame) return;
 		let last = performance.now();
-		const step = (now: number) => {
+		const tick = (now: number) => {
 			const dt = Math.min((now - last) / 1000, 1 / 30);
 			last = now;
-			const t = target();
-			// Stiff on length (snappy recoil), looser on sway (it wobbles a little).
-			velocity.len += (320 * (t.len - cord.len) - 14 * velocity.len) * dt;
-			velocity.sway += (180 * (t.sway - cord.sway) - 9 * velocity.sway) * dt;
-			cord = { len: cord.len + velocity.len * dt, sway: cord.sway + velocity.sway * dt };
-			const settled =
-				Math.abs(t.len - cord.len) + Math.abs(t.sway - cord.sway) < 0.02 &&
-				Math.abs(velocity.len) + Math.abs(velocity.sway) < 0.05;
-			if (settled && !drag?.active) {
-				cord = { ...t };
-				frame = 0;
-				return;
+			const t = now / 1000;
+
+			// Length eases toward its target on a critically damped spring: a soft,
+			// overshoot-free glide when growing or shrinking; stiffer while dragged.
+			const dragging = !!drag?.active;
+			const k = dragging ? 220 : 38;
+			const c = 2 * Math.sqrt(k);
+			lenVelocity += (k * (targetLength() - len) - c * lenVelocity) * dt;
+			len = Math.max(REST * 0.6, len + lenVelocity * dt);
+			rope.length = len;
+
+			// Fade the hover sway in and out instead of switching it on/off.
+			hoverMix += ((hovered ? 1 : 0) - hoverMix) * Math.min(1, dt * 2.5);
+
+			let target: { x: number; y: number; strength: number } | undefined;
+			if (dragging && pointer) {
+				target = { ...pointer, strength: 0.35 };
+			} else if (hoverMix > 0.01) {
+				// Hang long and drift on its own: the tip wanders around its resting
+				// spot on a few out-of-phase sines, so the rope bends irregularly.
+				const wx = (Math.sin(t * 1.3) * 2.6 + Math.sin(t * 2.7 + 1.2) * 1.2) * hoverMix;
+				const wy = Math.cos(t * 1.6 + 0.4) * 1.1 * hoverMix;
+				target = {
+					x: ANCHOR.x + wx,
+					y: ANCHOR.y + len * 0.9 + wy,
+					strength: 0.03 * hoverMix
+				};
 			}
-			frame = requestAnimationFrame(step);
+
+			// Two substeps per frame keeps the rope stable at low frame rates.
+			for (let i = 0; i < 2; i++) rope.step({ gravity: 0.018, damping: 0.955, target });
+
+			cordPath = rope.path();
+			knob = { ...rope.end };
+			stretched = !!drag?.active && len - REST > PULL_AT;
+
+			const settled =
+				!hovered &&
+				!drag?.active &&
+				hoverMix < 0.01 &&
+				rope.energy < 0.004 &&
+				Math.abs(len - REST) < 0.02 &&
+				Math.abs(lenVelocity) < 0.05;
+			frame = settled ? 0 : requestAnimationFrame(tick);
 		};
-		frame = requestAnimationFrame(step);
+		frame = requestAnimationFrame(tick);
 	}
 
-	function kick(len: number, sway = 0) {
-		velocity.len += len;
-		velocity.sway += sway;
+	/** Lengthen the cord with a spring kick, and/or flick it sideways. */
+	function kick(length: number, sideways = 0) {
+		lenVelocity += length;
+		if (sideways) rope.impulse(sideways, 0);
 		animate();
 	}
 
 	function onpointerdown(e: PointerEvent) {
 		if (e.button !== 0) return;
-		const r = svg.getBoundingClientRect();
-		drag = { y: e.clientY, x: e.clientX, scale: r.height / 92, active: false };
+		drag = { x: e.clientX, y: e.clientY, active: false };
 		(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
 	}
 
-	function onDragMove(e: PointerEvent) {
-		if (!drag) return;
-		const dy = (e.clientY - drag.y) / drag.scale;
-		const dx = (e.clientX - drag.x) / drag.scale;
-		if (!drag.active && Math.hypot(dx, dy) < 4) return;
-		drag.active = true;
-		// Rubber band: easy at first, then increasingly stiff.
-		const stretch = Math.max(0, dy);
-		dragTarget = {
-			len: REST + 40 * Math.log1p(stretch / 40),
-			sway: Math.max(-7, Math.min(7, dx * 0.25))
-		};
+	function trackPointer(e: PointerEvent) {
+		if (!hovered && !drag) return;
+		pointer = toSvg(e.clientX, e.clientY);
+		if (drag && !drag.active && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 5) {
+			drag.active = true;
+		}
 		animate();
 	}
 
@@ -117,11 +167,12 @@
 		if (!drag) return;
 		const wasDragging = drag.active;
 		drag = null;
+		stretched = false;
 		if (!wasDragging) return;
 		suppressClick = true;
-		if (cord.len - REST > PULL_AT) {
+		if (len - REST > PULL_AT) {
 			switchTheme();
-			kick(-180); // the cord snaps back up when released
+			kick(-45, (Math.random() - 0.5) * 1.6); // snaps back up with a little whip
 		} else {
 			animate();
 		}
@@ -138,13 +189,19 @@
 	// Theme changed elsewhere (settings, system): the cord gives a little bounce.
 	let lastAwake: boolean | undefined;
 	$effect(() => {
-		if (lastAwake !== undefined && lastAwake !== awake) kick(120, 30);
+		if (lastAwake !== undefined && lastAwake !== awake) kick(40, 1);
 		lastAwake = awake;
+	});
+
+	// Each time the lamp wakes, the light powers up (flicker → bright → settles soft).
+	let igniting = $state(false);
+	$effect(() => {
+		if (awake) restart((v) => (igniting = v));
 	});
 
 	/** Click or keyboard: a quick tug down, then the theme flips as the cord bottoms out. */
 	function pull() {
-		kick(420);
+		kick(95, (Math.random() - 0.5) * 1.2);
 		switchTheme(160);
 	}
 
@@ -167,13 +224,16 @@
 			settings.toggleTheme({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
 		}, delay);
 	}
-
-	const cordPath = $derived(
-		`M32 55 Q${32 + cord.sway * 0.4} ${55 + cord.len / 2} ${32 + cord.sway} ${55 + cord.len}`
-	);
 </script>
 
-<svelte:window {onpointermove} {onkeydown} />
+<svelte:window
+	onpointermove={(e) => {
+		onpointermove(e);
+		trackPointer(e);
+	}}
+	onscroll={() => (scrolledAway = scrollY > 120)}
+	{onkeydown}
+/>
 
 <button
 	type="button"
@@ -181,15 +241,15 @@
 	class:awake
 	aria-label={awake ? 'Turn the lamp off (dark mode)' : 'Turn the lamp on (light mode)'}
 	aria-pressed={!awake}
-	title={awake ? 'Lights out — click or pull the cord' : 'Wake the lamp — click or pull the cord'}
-	class:stretched={cord.len - REST > PULL_AT}
+	class:stretched
+	class:igniting
 	{onclick}
 	{onpointerdown}
-	onpointermove={onDragMove}
 	{onpointerup}
 	onpointercancel={onpointerup}
-	onpointerenter={() => {
+	onpointerenter={(e) => {
 		hovered = true;
+		pointer = toSvg(e.clientX, e.clientY);
 		animate();
 	}}
 	onpointerleave={() => {
@@ -217,7 +277,7 @@
 				<!-- Pull cord -->
 				<g class="pull">
 					<path class="pull-cord" d={cordPath} />
-					<circle class="pull-knob" cx={32 + cord.sway} cy={57.2 + cord.len} r="2.2" />
+					<circle class="pull-knob" cx={knob.x} cy={knob.y} r="2.2" />
 				</g>
 
 				<path
@@ -247,7 +307,7 @@
 	</span>
 
 	{#if hint}
-		<span class="hint" aria-hidden="true">
+		<span class="hint" class:away={scrolledAway} aria-hidden="true">
 			<span class="hint-text">pull me!</span>
 			<svg viewBox="0 0 60 40" width="46" height="31">
 				<path d="M4 34C14 34 30 30 40 18c4-5 6-9 8-14" />
@@ -369,25 +429,31 @@
 		transition: opacity 0.3s ease;
 	}
 
-	/* Light cone under the bulb, swings with the lamp */
+	/*
+	 * Light under the bulb, swinging with the lamp. A soft, blurred cone that fades
+	 * out sideways and downward — a gentle wash, not a hard-edged spotlight.
+	 */
 	.beam {
 		position: absolute;
-		top: 56px;
+		top: 54px;
 		left: 50%;
-		width: 240px;
-		height: 300px;
+		width: 220px;
+		height: 260px;
 		translate: -50% 0;
 		pointer-events: none;
-		background: linear-gradient(
-			to bottom,
-			color-mix(in srgb, var(--lamp-glow) 42%, transparent),
-			color-mix(in srgb, var(--lamp-glow) 8%, transparent) 55%,
-			transparent
+		background: radial-gradient(
+			60% 85% at 50% 0%,
+			color-mix(in srgb, var(--lamp-glow) 32%, transparent),
+			color-mix(in srgb, var(--lamp-glow) 7%, transparent) 40%,
+			transparent 70%
 		);
-		clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+		clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+		filter: blur(10px);
+		mask-image: linear-gradient(to bottom, #000 20%, transparent 95%);
 		mix-blend-mode: multiply;
 		opacity: 0;
-		transition: opacity 0.45s ease;
+		transform-origin: 50% 0;
+		transition: opacity 0.6s ease;
 	}
 
 	/* ── Awake (light theme): lit bulb, eyes open, blinking ── */
@@ -397,10 +463,75 @@
 		animation: flicker 0.6s steps(1) both;
 	}
 	.awake .halo {
-		opacity: 1;
+		opacity: 0.35;
 	}
+	/* Settled: a faint glow that breathes slowly */
 	.awake .beam {
-		opacity: 0.55;
+		opacity: 0.14;
+		animation: glow 6s ease-in-out infinite;
+	}
+	/* Switching on: the light sputters, flares, then eases down to the dim glow */
+	.awake.igniting .beam {
+		animation:
+			ignite 1.8s var(--ease-out) both,
+			glow 6s ease-in-out 1.8s infinite;
+	}
+	.awake.igniting .halo {
+		animation: ignite-halo 1.8s var(--ease-out) both;
+	}
+	@keyframes ignite {
+		0% {
+			opacity: 0;
+			transform: scaleY(0.35) scaleX(0.6);
+		}
+		8% {
+			opacity: 0.22;
+		}
+		12% {
+			opacity: 0.03;
+		}
+		20% {
+			opacity: 0.3;
+			transform: scaleY(0.85) scaleX(0.9);
+		}
+		26% {
+			opacity: 0.1;
+		}
+		40% {
+			opacity: 0.34;
+			transform: none;
+		}
+		100% {
+			opacity: 0.14;
+			transform: none;
+		}
+	}
+	@keyframes ignite-halo {
+		0%,
+		12% {
+			opacity: 0;
+		}
+		20% {
+			opacity: 0.55;
+		}
+		26% {
+			opacity: 0.15;
+		}
+		40% {
+			opacity: 0.65;
+		}
+		100% {
+			opacity: 0.35;
+		}
+	}
+	@keyframes glow {
+		0%,
+		100% {
+			opacity: 0.14;
+		}
+		50% {
+			opacity: 0.18;
+		}
 	}
 	.awake .eyes-open {
 		opacity: 1;
@@ -542,6 +673,11 @@
 		transform: scale(calc(1 / 1.3));
 		transform-origin: top right;
 		animation: hint-in 0.8s var(--ease-out) 1.4s both;
+		transition: opacity 0.35s ease;
+	}
+	/* Out of the way once the page scrolls, so it never sits on content */
+	.hint.away {
+		opacity: 0;
 	}
 	.hint-text {
 		font-family: var(--font-hand);
