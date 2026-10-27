@@ -4,6 +4,8 @@
 	import TableOfContents from '#lib/components/ui/TableOfContents.svelte';
 	import BlockView from '#lib/components/project/BlockView.svelte';
 	import Feedback from '#lib/components/project/Feedback.svelte';
+	import LiveDemo from '#lib/components/project/LiveDemo.svelte';
+	import MediaStrip from '#lib/components/project/MediaStrip.svelte';
 	import ProjectCover from '#lib/components/project/ProjectCover.svelte';
 	import ProjectNav from '#lib/components/project/ProjectNav.svelte';
 	import Slideshow from '#lib/components/project/Slideshow.svelte';
@@ -15,19 +17,38 @@
 	let { data }: PageProps = $props();
 	const project = $derived(data.project);
 
+	// Projects with a build get a Live demo section and a compact Motion & screens group
+	// in place of a static cover.
+	const hasStage = $derived(!!project.preview);
+	let live = $state(false);
+	function openLive() {
+		live = true;
+		document.getElementById('live')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+	}
+
 	const toc = $derived([
+		...(hasStage
+			? [
+					{ id: 'media', label: 'Motion & screens' },
+					{ id: 'live', label: 'Live demo' }
+				]
+			: []),
 		...project.blocks.map((b) => ({ id: b.id, label: b.title })),
 		{ id: 'feedback', label: 'Feedback' }
 	]);
 
-	const meta = $derived([
-		{ label: 'Client', value: project.client.name },
-		{ label: 'Role', value: project.role },
-		{ label: 'Year', value: String(project.year) },
-		{ label: 'Duration', value: project.duration },
-		{ label: 'Team', value: project.team },
-		{ label: project.type === 'code' ? 'Stack' : 'Tools', value: project.tools.join(', ') }
-	]);
+	// Details row; anything not known for a project is simply left out.
+	const meta = $derived(
+		[
+			{ label: 'Client', value: project.client.name },
+			{ label: 'Role', value: project.role },
+			{ label: 'Year', value: project.year?.toString() },
+			{ label: 'Duration', value: project.duration },
+			{ label: 'Team', value: project.team },
+			...(project.facts ?? []),
+			{ label: project.type === 'code' ? 'Stack' : 'Tools', value: project.tools.join(', ') }
+		].filter((m): m is { label: string; value: string } => !!m.value)
+	);
 
 	// Slideshows are for design case studies; code projects read as a normal page.
 	const hasSlideshow = $derived(project.type === 'design');
@@ -90,6 +111,11 @@
 						<Icon name="play" size={13} stroke={2} /> Play slideshow
 					</button>
 				{/if}
+				{#if project.preview}
+					<button type="button" class="primary" onclick={openLive}>
+						<span class="live-dot" aria-hidden="true"></span> Try the live demo
+					</button>
+				{/if}
 				{#each project.links ?? [] as link (link.href + link.label)}
 					<a
 						class="secondary"
@@ -119,9 +145,14 @@
 			{/if}
 		</dl>
 
-		<div class="hero-cover">
-			<ProjectCover {project} ratio="16 / 9" showFeatured={false} eager />
-		</div>
+		{#if hasStage}
+			<MediaStrip {project} />
+			<LiveDemo {project} bind:loaded={live} />
+		{:else}
+			<div class="hero-cover">
+				<ProjectCover {project} ratio="16 / 9" showFeatured={false} eager />
+			</div>
+		{/if}
 
 		{#each project.blocks as block (block.id)}
 			<BlockView {block} />
@@ -143,9 +174,19 @@
 	.rail {
 		grid-column: 1 / span 2;
 	}
+	/*
+	 * Grid rules: content is cols 3–12 of the page grid and a subgrid of it, so
+	 * the details row, cover, blocks, comments and pager all land on column lines.
+	 */
 	.main {
 		grid-column: 3 / -1;
+		display: grid;
+		grid-template-columns: subgrid;
+		align-content: start;
 		min-width: 0;
+	}
+	.main > :global(*) {
+		grid-column: 1 / -1;
 	}
 
 	.play {
@@ -184,6 +225,7 @@
 	}
 
 	.intro {
+		grid-column: 1 / span 8;
 		animation: enter 0.9s var(--ease-out) both;
 	}
 	.crumbs {
@@ -252,6 +294,13 @@
 		background: var(--text);
 		color: var(--bg);
 	}
+	.live-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: #3fb27f;
+		box-shadow: 0 0 0 3px color-mix(in srgb, #3fb27f 35%, transparent);
+	}
 	.secondary {
 		border: 1px solid var(--rule);
 		color: var(--text);
@@ -264,16 +313,16 @@
 		border-color: var(--text);
 	}
 
+	/* Details: two columns per item, five per row */
 	.meta {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-		gap: 0;
+		grid-template-columns: subgrid;
 		margin: 48px 0 32px;
-		border-top: 1px solid var(--rule);
 	}
 	.meta div {
-		padding: 14px 16px 14px 0;
-		border-bottom: 1px solid var(--hairline);
+		grid-column: span 2;
+		padding: 14px 0;
+		border-top: 1px solid var(--hairline);
 	}
 	.meta dd {
 		margin: 6px 0 0;
@@ -297,6 +346,9 @@
 			display: none;
 		}
 		.main {
+			grid-column: 1 / -1;
+		}
+		.intro {
 			grid-column: 1 / -1;
 		}
 	}

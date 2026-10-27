@@ -1,0 +1,929 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Blast Hub</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@2.4.18/dist/css/AdminLTE.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.3/skins/square/blue.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-bs@1.10.24/css/dataTables.bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@2.4.18/dist/css/skins/_all-skins.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic" />
+
+  <style>
+    body { background: #ecf0f5; }
+    .login-page { min-height: 100vh; }
+    .page-panel { display: none; }
+    .page-panel.active { display: block; }
+    .status-badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+    .status-sent { background: #dff0d8; color: #3c763d; }
+    .status-pending { background: #fcf8e3; color: #8a6d3b; }
+    .status-failed { background: #f2dede; color: #a94442; }
+    .hidden-on-load { display: none; }
+    #loginWrap .login-box-body { padding: 22px; }
+    #loginWrap .login-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0; }
+    #loginWrap .login-remember { width: auto; flex: 1; float: none; padding: 0; margin: 0; }
+    #loginWrap .login-submit { width: auto; flex: none; float: none; padding: 0; }
+    #loginWrap .login-submit .btn { min-width: 104px; }
+    .navbar-nav > .balance-widget > a { display: flex; align-items: center; gap: 12px; min-height: 50px; padding: 0 10px; color: #333; border-left: 1px solid #f4f4f4; }
+    .balance-widget .balance-item { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .balance-widget .balance-item strong { color: #333; }
+    .balance-widget .balance-item small { color: #777; }
+    .navbar-custom-menu .navbar-nav > li.balance-widget > a:hover,
+    .navbar-custom-menu .navbar-nav > li.balance-widget > a:focus { background: rgba(0,0,0,.08); }
+    .content { min-height: calc(100vh - 151px); }
+    .content-header { padding-bottom: 12px; }
+    .page-panel > .box:last-child { margin-bottom: 0; }
+    .status-detail-summary { margin-bottom: 12px; }
+    .filter-row { margin-bottom: 15px; }
+    .form-horizontal .box-body .form-group:last-child { margin-bottom: 0; }
+    .login-message { margin: 0 0 15px; }
+    @media (max-width: 767px) {
+      #loginWrap .login-box { width: min(360px, calc(100% - 30px)); }
+      #loginWrap .login-row { align-items: flex-start; }
+      #loginWrap .login-remember { flex: 1; }
+      #loginWrap .login-submit .btn { min-width: 92px; }
+      .navbar-nav > .balance-widget > a { min-height: 40px; padding: 4px 7px; gap: 8px; font-size: 12px; }
+      .balance-widget .balance-item small { display: none; }
+      .navbar-nav > .balance-widget > a { color: #333; }
+      .balance-widget .balance-item:nth-child(2) { display: none; }
+      .navbar-custom-menu .navbar-nav > li.user-menu > a { padding-left: 8px; padding-right: 8px; }
+      .content { min-height: 0; }
+    }
+    @media (max-width: 480px) {
+      .navbar-nav > .balance-widget > a { padding-left: 5px; padding-right: 5px; font-size: 11px; }
+      .navbar-custom-menu .navbar-nav > li.user-menu > a { padding-left: 5px; padding-right: 5px; }
+      .content-header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+  <div id="loginWrap">
+    <div class="login-box">
+      <div class="login-logo">
+        <a href="#"><b>Blast</b>Hub</a>
+      </div>
+      <div class="login-box-body">
+        <p class="login-box-msg">Sign in to start your session</p>
+        <form id="loginForm" method="post">
+          <div class="form-group has-feedback">
+            <input type="text" class="form-control" placeholder="Username" value="admin" required name="username_" />
+            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+          </div>
+          <div class="form-group has-feedback">
+            <input type="password" class="form-control" placeholder="Password" value="admin123" required name="password_" />
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          </div>
+          <div class="row login-row">
+            <div class="col-xs-8 login-remember">
+              <div class="checkbox icheck">
+                <label>
+                  <input type="checkbox" checked /> Remember Me
+                </label>
+              </div>
+            </div>
+            <div class="col-xs-4 login-submit">
+              <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="appWrapper" class="wrapper skin-black hidden-on-load">
+    <header class="main-header">
+      <a href="#" class="logo">
+        <span class="logo-mini"><b>Blast</b>Hub</span>
+        <span class="logo-lg"><b>Blast</b>Hub</span>
+      </a>
+      <nav class="navbar navbar-static-top">
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+          <span class="sr-only">Toggle navigation</span>
+        </a>
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
+            <li class="balance-widget">
+              <a href="#" id="navSaldoLink" title="Account balance and estimated SMS quota">
+                <span class="balance-item"><i class="fa fa-money"></i><small>Saldo</small><strong id="navbarSaldo">Rp 4.200.000</strong></span>
+                <span class="balance-item"><i class="fa fa-commenting-o"></i><small>Kuota SMS</small><strong id="navbarSmsQuota">11.052</strong></span>
+              </a>
+            </li>
+            <li><a href="#" id="navBuySaldoLink" title="Request saldo"><i class="fa fa-cart-plus"></i><span class="hidden-xs"> Beli Saldo</span></a></li>
+            <li class="dropdown user user-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <img src="assets/dist/img/ava.jpg" class="user-image" alt="User Image" />
+                Admin
+              </a>
+              <ul class="dropdown-menu">
+                <li class="user-header">
+                  <img src="assets/dist/img/ava.jpg" class="img-circle" alt="User Image" />
+                  <p class="text-white">Admin</p>
+                </li>
+                <li class="user-footer">
+                  <a href="#" class="btn btn-block btn-default btn-flat" id="logoutBtn">Sign out</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <aside class="main-sidebar">
+      <section class="sidebar">
+        <div class="user-panel">
+          <div class="pull-left image">
+            <img src="assets/dist/img/ava.jpg" class="img-circle" alt="User Image" />
+          </div>
+          <div class="pull-left info">
+            <h4>Admin</h4>
+          </div>
+        </div>
+        <ul class="sidebar-menu" data-widget="tree">
+          <li class="header">MAIN NAVIGATION</li>
+          <li class="active nav-link-like" data-page="dashboardPage"><a href="#"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+          <li class="header">SMS BLAST</li>
+          <li class="nav-link-like" data-page="manualPage"><a href="#"><i class="fa fa-pencil"></i> <span>Input Manual</span></a></li>
+          <li class="nav-link-like" data-page="excelPage"><a href="#"><i class="fa fa-file-excel-o"></i> <span>File Excel</span></a></li>
+          <li class="nav-link-like" data-page="resultUploadPage"><a href="#"><i class="fa fa-upload"></i> <span>Upload Hasil SMS</span></a></li>
+          <li class="header">REPORTS & SETTINGS</li>
+          <li class="nav-link-like" data-page="statusPage"><a href="#"><i class="fa fa-table"></i> <span>Status Data</span></a></li>
+          <li class="nav-link-like" data-page="reportPage"><a href="#"><i class="fa fa-bar-chart"></i> <span>Laporan</span></a></li>
+          <li class="nav-link-like" data-page="saldoPage"><a href="#"><i class="fa fa-money"></i> <span>Permintaan Saldo</span></a></li>
+          <li class="nav-link-like" data-page="balanceManagementPage"><a href="#"><i class="fa fa-credit-card"></i> <span>Management Saldo</span></a></li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-cog"></i> <span>Pengaturan</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li class="nav-link-like" data-page="settingsPage"><a href="#"><i class="fa fa-users"></i> Management User</a></li>
+              <li class="nav-link-like" data-page="preferencesPage"><a href="#"><i class="fa fa-sliders"></i> Preferences</a></li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+    </aside>
+
+    <div class="content-wrapper">
+      <section class="content-header">
+        <h1 id="pageTitle">Dashboard <small>Control panel</small></h1>
+      </section>
+
+      <section class="content">
+        <div id="dashboardPage" class="page-panel active">
+          <div class="row">
+            <div class="col-lg-3 col-xs-6">
+              <div class="small-box bg-aqua">
+                <div class="inner">
+                  <h3>12.4k</h3>
+                  <p>Total Customer</p>
+                </div>
+                <div class="icon"><i class="ion ion-person-add"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-xs-6">
+              <div class="small-box bg-green">
+                <div class="inner">
+                  <h3>8,420</h3>
+                  <p>Sent Today</p>
+                </div>
+                <div class="icon"><i class="ion ion-email"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-xs-6">
+              <div class="small-box bg-yellow">
+                <div class="inner">
+                  <h3>1,960</h3>
+                  <p>Open Status</p>
+                </div>
+                <div class="icon"><i class="ion ion-clock"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-xs-6">
+              <div class="small-box bg-red">
+                <div class="inner">
+                  <h3>Rp 4.2M</h3>
+                  <p>Saldo</p>
+                </div>
+                <div class="icon"><i class="ion ion-cash"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8">
+              <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Recent campaign</h3>
+                </div>
+                <div class="box-body table-responsive">
+                  <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th>Campaign</th>
+                        <th>Target</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Promo Cashback</td>
+                        <td>1,245 contacts</td>
+                        <td><span class="status-badge status-sent">Sent</span></td>
+                      </tr>
+                      <tr>
+                        <td>Reminder invoice</td>
+                        <td>780 contacts</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                      </tr>
+                      <tr>
+                        <td>Product launch</td>
+                        <td>43 failed</td>
+                        <td><span class="status-badge status-failed">Failed</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Delivery trend</h3>
+                </div>
+                <div class="box-body">
+                  <div class="chart-responsive">
+                    <div style="height: 220px; display: flex; align-items: end; gap: 10px; padding: 10px 8px 0;">
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;">
+                        <div style="width:100%; background:#3c8dbc; border-radius:4px 4px 0 0; height:104px; min-height:18px;"></div>
+                        <small>Mon</small>
+                      </div>
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;">
+                        <div style="width:100%; background:#3c8dbc; border-radius:4px 4px 0 0; height:148px; min-height:18px;"></div>
+                        <small>Tue</small>
+                      </div>
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;">
+                        <div style="width:100%; background:#3c8dbc; border-radius:4px 4px 0 0; height:120px; min-height:18px;"></div>
+                        <small>Wed</small>
+                      </div>
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;">
+                        <div style="width:100%; background:#3c8dbc; border-radius:4px 4px 0 0; height:176px; min-height:18px;"></div>
+                        <small>Thu</small>
+                      </div>
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;">
+                        <div style="width:100%; background:#3c8dbc; border-radius:4px 4px 0 0; height:136px; min-height:18px;"></div>
+                        <small>Fri</small>
+                      </div>
+                      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;">
+                        <div style="width:100%; background:#3c8dbc; border-radius:4px 4px 0 0; height:190px; min-height:18px;"></div>
+                        <small>Sat</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="box box-solid box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Latest contacts</h3>
+            </div>
+            <div class="box-body table-responsive no-padding">
+              <table class="table table-hover">
+                <tbody>
+                  <tr>
+                    <td><strong>Andi Pratama</strong></td>
+                    <td>0812-3456-7890</td>
+                    <td>Promo Cashback</td>
+                    <td><span class="status-badge status-sent">Delivered</span></td>
+                    <td>2 mins ago</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sinta Wulandari</strong></td>
+                    <td>0818-2233-9010</td>
+                    <td>Invoice Reminder</td>
+                    <td><span class="status-badge status-pending">Pending</span></td>
+                    <td>13 mins ago</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Irwan Kusuma</strong></td>
+                    <td>0856-7120-1988</td>
+                    <td>Product Launch</td>
+                    <td><span class="status-badge status-failed">Failed</span></td>
+                    <td>1 hour ago</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="manualPage" class="page-panel">
+          <div class="box box-primary">
+            <div class="box-header with-border"><h3 class="box-title">Input Manual SMS</h3></div>
+            <form id="manualForm" class="form-horizontal">
+              <div class="box-body">
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Nama Pengirim</label>
+                  <div class="col-sm-10"><input class="form-control" value="Admin CRM" readonly></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="manualPhone">Penerima Pesan</label>
+                  <div class="col-sm-10">
+                    <input class="form-control" id="manualPhone" placeholder="+628..., 628..., 08..." required>
+                    <p class="help-block">Contoh: +628xxxxxx, 628xxxxxx, 08xxxxxx</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="manualMessage">Isi Pesan</label>
+                  <div class="col-sm-10">
+                    <textarea class="form-control" id="manualMessage" rows="4" required></textarea>
+                    <p class="help-block" id="manualSmsCount">Jumlah Karakter: 0 - 0 SMS</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Jadwal Pengiriman</label>
+                  <div class="col-sm-5"><select class="form-control" required><option value="">Pilih Zona</option><option>WIB</option><option>WITA</option><option>WIT</option></select></div>
+                  <div class="col-sm-3"><input type="date" class="form-control" required></div>
+                  <div class="col-sm-2"><input type="time" class="form-control" required></div>
+                </div>
+              </div>
+              <div class="box-footer text-right">
+                <button type="reset" class="btn btn-default">Reset</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div id="excelPage" class="page-panel">
+          <div class="box box-primary">
+            <div class="box-header with-border"><h3 class="box-title">File Excel - Create Data</h3></div>
+            <form id="excelForm" class="form-horizontal">
+              <div class="box-body">
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Tipe Laporan</label>
+                  <div class="col-sm-10">
+                    <label class="radio-inline"><input type="radio" name="blastType" value="SMS" checked> SMS</label>
+                    <label class="radio-inline"><input type="radio" name="blastType" value="WhatsApp"> WhatsApp</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Nama Pengirim</label>
+                  <div class="col-sm-10"><input class="form-control" value="Admin CRM" readonly></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Operator</label>
+                  <div class="col-sm-10">
+                    <label class="checkbox-inline"><input type="checkbox" checked> Telkomsel</label>
+                    <label class="checkbox-inline"><input type="checkbox" checked> Indosat</label>
+                    <label class="checkbox-inline"><input type="checkbox" checked> XL</label>
+                    <label class="checkbox-inline"><input type="checkbox" checked> Smartfren</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Masking</label>
+                  <div class="col-sm-10"><select class="form-control" required><option value="">Pilih Masking</option><option>BLASTHUB</option><option>CRM INFO</option></select></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="excelFile">Upload File</label>
+                  <div class="col-sm-7"><input type="file" class="form-control" id="excelFile" accept=".xls,.xlsx,.csv"><p class="help-block" id="excelFileName">Select an Excel or CSV file. Sample data is shown below for this demo.</p></div>
+                  <div class="col-sm-3"><a href="assets/sample.xlsx" class="btn btn-default" download>Unduh Contoh File Excel</a></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Cell Penerima Pesan</label>
+                  <div class="col-sm-10"><select class="form-control"><option>Phone</option><option>Mobile Number</option></select></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="excelMessage">Isi Pesan</label>
+                  <div class="col-sm-10">
+                    <textarea class="form-control" id="excelMessage" rows="4" placeholder="Halo {nama}, ..."></textarea>
+                    <p class="help-block" id="excelSmsCount">Jumlah Karakter: 0 - 0 SMS</p>
+                    <select class="form-control" id="messageTags"><option value="">Tambah Tag</option><option value="{nama}">Nama</option><option value="{phone}">Nomor HP</option><option value="{segment}">Segment</option></select>
+                  </div>
+                </div>
+                <div id="whatsappImageField" class="form-group" style="display:none">
+                  <label class="col-sm-2 control-label">Upload Gambar</label>
+                  <div class="col-sm-10"><input type="file" class="form-control" accept=".jpg,.png,.jpeg"></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Jadwal Pengiriman</label>
+                  <div class="col-sm-4"><select class="form-control" required><option value="">Pilih Zona</option><option>WIB</option><option>WITA</option><option>WIT</option></select></div>
+                  <div class="col-sm-3"><input type="date" class="form-control" required></div>
+                  <div class="col-sm-3"><input type="time" class="form-control" required></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Preview Data</label>
+                  <div class="col-sm-10 table-responsive">
+                    <table class="table table-bordered table-striped">
+                      <thead><tr><th>Name</th><th>Phone</th><th>Segment</th><th>Balance</th></tr></thead>
+                      <tbody><tr><td>Andi Pratama</td><td>0812-3456-7890</td><td>VIP</td><td>Rp 750.000</td></tr><tr><td>Sinta Wulandari</td><td>0818-2233-9010</td><td>New</td><td>Rp 220.000</td></tr><tr><td>Irwan Kusuma</td><td>0856-7120-1988</td><td>Active</td><td>Rp 420.000</td></tr></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="box-footer text-right">
+                <button type="reset" class="btn btn-default">Cancel</button>
+                <button type="submit" class="btn btn-primary">Lanjut</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div id="resultUploadPage" class="page-panel">
+          <div class="box box-primary">
+            <div class="box-header with-border"><h3 class="box-title">Upload Hasil SMS</h3></div>
+            <form id="resultUploadForm" class="form-horizontal">
+              <div class="box-body">
+                <div class="form-group"><label class="col-sm-2 control-label">Nama Pengupload</label><div class="col-sm-10"><input class="form-control" value="Admin CRM" readonly></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">Target Laporan SMS</label><div class="col-sm-10"><select class="form-control" required><option value="">Pilih target laporan</option><option>FILE-2026-001 - Promo Cashback</option><option>FILE-2026-002 - Invoice Reminder</option><option>FILE-2026-003 - Product Launch</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label" for="resultFile">Upload File</label><div class="col-sm-10"><input type="file" class="form-control" id="resultFile" accept=".xls,.xlsx,.csv" required><p class="help-block">Excel/CSV containing delivery results.</p></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">Cell Penerima Pesan</label><div class="col-sm-10"><select class="form-control"><option>Phone</option><option>Mobile Number</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">Isi Pesan</label><div class="col-sm-10"><textarea class="form-control" rows="3" placeholder="Optional message preview"></textarea></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">Jadwal Pengiriman</label><div class="col-sm-4"><select class="form-control"><option>WIB</option><option>WITA</option><option>WIT</option></select></div><div class="col-sm-3"><input type="date" class="form-control"></div><div class="col-sm-3"><input type="time" class="form-control"></div></div>
+              </div>
+              <div class="box-footer text-right"><button type="reset" class="btn btn-default">Cancel</button> <button type="submit" class="btn btn-primary">Upload hasil</button></div>
+            </form>
+          </div>
+          <div class="box box-success">
+            <div class="box-header with-border"><h3 class="box-title">Recent upload result</h3></div>
+            <div class="box-body table-responsive">
+              <table class="table table-bordered table-striped"><thead><tr><th>File</th><th>Campaign</th><th>Uploaded</th><th>Rows updated</th><th>Status</th></tr></thead>
+                <tbody><tr><td>delivery_2026_10_07.xlsx</td><td>Promo Cashback</td><td>Today, 09:15</td><td>1,245</td><td><span class="status-badge status-sent">Completed</span></td></tr><tr><td>invoice_status.xlsx</td><td>Invoice Reminder</td><td>Yesterday</td><td>780</td><td><span class="status-badge status-sent">Completed</span></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="statusPage" class="page-panel">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Status Data</h3>
+            </div>
+            <div class="box-body table-responsive">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Campaign</th>
+                    <th>Sent</th>
+                    <th>Status</th>
+                    <th>Detail</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>01</td>
+                    <td>Andi Pratama</td>
+                    <td>0812-3456-7890</td>
+                    <td>Promo Cashback</td>
+                    <td>10:11</td>
+                    <td><span class="status-badge status-sent">Delivered</span></td>
+                    <td><button type="button" class="btn btn-xs btn-primary view-details">Detail</button></td>
+                  </tr>
+                  <tr>
+                    <td>02</td>
+                    <td>Sinta Wulandari</td>
+                    <td>0818-2233-9010</td>
+                    <td>Invoice Reminder</td>
+                    <td>10:42</td>
+                    <td><span class="status-badge status-pending">Pending</span></td>
+                    <td><button type="button" class="btn btn-xs btn-primary view-details">Detail</button></td>
+                  </tr>
+                  <tr>
+                    <td>03</td>
+                    <td>Irwan Kusuma</td>
+                    <td>0856-7120-1988</td>
+                    <td>Product Launch</td>
+                    <td>11:00</td>
+                    <td><span class="status-badge status-failed">Failed</span></td>
+                    <td><button type="button" class="btn btn-xs btn-primary view-details">Detail</button></td>
+                  </tr>
+                  <tr>
+                    <td>04</td>
+                    <td>Rina Mardiana</td>
+                    <td>0812-9090-1717</td>
+                    <td>Welcome SMS</td>
+                    <td>11:12</td>
+                    <td><span class="status-badge status-sent">Delivered</span></td>
+                    <td><button type="button" class="btn btn-xs btn-primary view-details">Detail</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="statusDetailPage" class="page-panel">
+          <div class="box box-primary">
+            <div class="box-header with-border"><h3 class="box-title">Campaign delivery details</h3></div>
+            <div class="box-body">
+              <div class="row">
+                <div class="col-sm-4"><strong>Nama Pengirim</strong><p>Admin CRM</p></div>
+                <div class="col-sm-4"><strong>Jadwal</strong><p>08 Oct 2026 - 10:11 WIB</p></div>
+                <div class="col-sm-4"><strong>Total No HP</strong><p>4</p></div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                  <thead><tr><th>#</th><th>No HP</th><th>Operator</th><th>Isi Pesan</th><th>Jadwal Pengiriman</th><th>Biaya</th><th>Status</th><th>Notes</th></tr></thead>
+                  <tbody>
+                    <tr><td>1</td><td>0812-3456-7890</td><td>Telkomsel</td><td>Promo cashback khusus untuk Anda.</td><td>08 Oct 2026 - 10:11 WIB</td><td>Rp 380</td><td><span class="status-badge status-sent">Sukses</span></td><td>Delivered</td></tr>
+                    <tr><td>2</td><td>0818-2233-9010</td><td>Indosat</td><td>Promo cashback khusus untuk Anda.</td><td>08 Oct 2026 - 10:11 WIB</td><td>Rp 380</td><td><span class="status-badge status-pending">Pending</span></td><td>Waiting for receipt</td></tr>
+                    <tr><td>3</td><td>0000-invalid</td><td>-</td><td>Promo cashback khusus untuk Anda.</td><td>08 Oct 2026 - 10:11 WIB</td><td>-</td><td><span class="status-badge status-failed">Invalid</span></td><td>Invalid phone number</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="box-footer"><button type="button" class="btn btn-default back-to-status">Kembali</button></div>
+          </div>
+        </div>
+
+        <div id="reportPage" class="page-panel">
+          <div class="row">
+            <div class="col-md-4"><div class="small-box bg-aqua"><div class="inner"><h3>11,420</h3><p>Delivered</p></div><div class="icon"><i class="fa fa-check"></i></div></div></div>
+            <div class="col-md-4"><div class="small-box bg-yellow"><div class="inner"><h3>760</h3><p>Pending</p></div><div class="icon"><i class="fa fa-clock-o"></i></div></div></div>
+            <div class="col-md-4"><div class="small-box bg-red"><div class="inner"><h3>310</h3><p>Failed</p></div><div class="icon"><i class="fa fa-times"></i></div></div></div>
+          </div>
+          <div class="box box-primary">
+            <div class="box-header with-border"><h3 class="box-title">Laporan Pengiriman SMS</h3><div class="box-tools"><button class="btn btn-default btn-sm" id="exportReportBtn"><i class="fa fa-download"></i> Export CSV</button></div></div>
+            <div class="box-body table-responsive">
+              <table class="table table-bordered table-striped">
+                <thead><tr><th>Campaign</th><th>Jumlah Target</th><th>Delivered</th><th>Pending</th><th>Failed</th><th>Delivery rate</th></tr></thead>
+                <tbody><tr><td>Promo Cashback</td><td>1,245</td><td>1,180</td><td>42</td><td>23</td><td>94.8%</td></tr><tr><td>Invoice Reminder</td><td>780</td><td>710</td><td>54</td><td>16</td><td>91.0%</td></tr><tr><td>Product Launch</td><td>2,100</td><td>1,930</td><td>164</td><td>6</td><td>91.9%</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="saldoPage" class="page-panel">
+          <div class="box box-primary">
+            <div class="box-header with-border"><h3 class="box-title">Permintaan Saldo</h3></div>
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-6"><h4><strong>Admin CRM</strong></h4><p>BlastHub Indonesia</p></div>
+                <div class="col-md-6 bg-gray" style="padding:10px"><h3>Total <strong class="pull-right" id="saldoTotal">Rp 0</strong></h3></div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-md-3"><label>Item</label><p><strong>Pembelian Saldo</strong></p></div>
+                <div class="col-md-3"><label>Amount (minimum Rp 20.000.000)</label><input id="saldoAmount" type="number" min="20000000" class="form-control" placeholder="20000000"></div>
+                <div class="col-md-2"><label>Kuota SMS</label><h4 id="saldoSms">0</h4></div>
+                <div class="col-md-2"><label>Tax (10%)</label><h4 id="saldoTax">Rp 0</h4></div>
+                <div class="col-md-2"><label>Line total</label><h4 id="saldoLineTotal">Rp 0</h4></div>
+              </div>
+              <div class="text-right" style="margin-top:20px"><button id="buySaldoBtn" class="btn btn-primary btn-lg">Beli Sekarang</button></div>
+              <p class="help-block">Demo only: this calculates an estimate and does not submit a payment.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="balanceManagementPage" class="page-panel">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Management Saldo</h3>
+              <div class="box-tools"><button type="button" class="btn btn-success btn-sm" id="openBalanceEdit"><i class="fa fa-edit"></i> Edit Saldo Client</button></div>
+            </div>
+            <div class="box-body table-responsive">
+              <table class="table table-bordered table-striped" id="balanceTransactions">
+                <thead><tr><th>Nama Klien</th><th>Saldo Permintaan</th><th>Tanggal Transaksi</th><th>Dikelola oleh</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody>
+                  <tr><td>BlastHub Indonesia</td><td>Rp 20.000.000</td><td>08 Oct 2026</td><td>Admin CRM</td><td><span class="status-badge status-pending">Pending</span></td><td><button class="btn btn-xs btn-success settle-balance">Selesaikan</button> <button class="btn btn-xs btn-danger delete-balance">Hapus</button></td></tr>
+                  <tr><td>Acme Retail</td><td>Rp 25.000.000</td><td>07 Oct 2026</td><td>Admin CRM</td><td><span class="status-badge status-sent">Completed</span></td><td><span class="text-muted">-</span></td></tr>
+                  <tr><td>Northstar Media</td><td>Rp 10.000.000</td><td>06 Oct 2026</td><td>Admin CRM</td><td><span class="status-badge status-pending">Pending</span></td><td><button class="btn btn-xs btn-success settle-balance">Selesaikan</button> <button class="btn btn-xs btn-danger delete-balance">Hapus</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="settingsPage" class="page-panel">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Management Users</h3>
+              <div class="box-tools"><button class="btn btn-success btn-sm" id="addUserBtn"><i class="fa fa-plus"></i> Tambah User</button></div>
+            </div>
+            <div class="box-body table-responsive">
+              <table class="table table-bordered table-striped" id="usersTable">
+                <thead><tr><th>Username</th><th>Name</th><th>Company</th><th>Role</th><th>Action</th></tr></thead>
+                <tbody>
+                  <tr><td>admin</td><td>Admin CRM</td><td>BlastHub Indonesia</td><td>Admin</td><td><button class="btn btn-xs btn-primary edit-user">Edit</button> <button class="btn btn-xs btn-danger delete-user">Delete</button></td></tr>
+                  <tr><td>operator1</td><td>Dewi Anggraini</td><td>BlastHub Indonesia</td><td>User</td><td><button class="btn btn-xs btn-primary edit-user">Edit</button> <button class="btn btn-xs btn-danger delete-user">Delete</button></td></tr>
+                  <tr><td>operator2</td><td>Rizky Saputra</td><td>BlastHub Indonesia</td><td>User</td><td><button class="btn btn-xs btn-primary edit-user">Edit</button> <button class="btn btn-xs btn-danger delete-user">Delete</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Management User</h3>
+            </div>
+            <div class="box-body">
+              <form>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Username</label>
+                      <input type="text" class="form-control" value="admin" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Name</label>
+                      <input type="text" class="form-control" value="Admin CRM" />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Company</label>
+                      <input type="text" class="form-control" value="BlastHub Indonesia" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Role</label>
+                      <select class="form-control">
+                        <option selected>Admin</option>
+                        <option>User</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Password</label>
+                  <input type="password" class="form-control" value="admin123" />
+                </div>
+                <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save changes</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div id="preferencesPage" class="page-panel">
+          <div class="box box-info">
+            <div class="box-header with-border"><h3 class="box-title">SMS Preferences</h3></div>
+            <form id="preferencesForm">
+              <div class="box-body">
+                <div class="form-group"><label>Company name</label><input class="form-control" value="BlastHub Indonesia"></div>
+                <div class="form-group"><label>Default sender ID</label><input class="form-control" value="BLASTHUB"></div>
+                <div class="form-group"><label>SMS provider</label><select class="form-control"><option>Digital SMS Gateway</option><option>Telco Connect</option></select></div>
+                <div class="form-group"><label>Default timezone</label><select class="form-control"><option>WIB</option><option>WITA</option><option>WIT</option></select></div>
+                <div class="checkbox"><label><input type="checkbox" checked> Require confirmation before sending a blast</label></div>
+              </div>
+              <div class="box-footer"><button type="submit" class="btn btn-primary">Save preferences</button></div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="main-footer">
+      <div class="pull-right hidden-xs">
+        <b>Version</b> 1.0.0
+      </div>
+      <strong>Copyright &copy; 2026 <a href="#">BlastHub</a>.</strong> All rights reserved.
+    </footer>
+  </div>
+
+  <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalTitle">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="userForm">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="userModalTitle">Tambah User</h4>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="editingUserRow">
+            <div class="form-group"><label>Username</label><input id="userUsername" class="form-control" required></div>
+            <div class="form-group"><label>Name</label><input id="userName" class="form-control" required></div>
+            <div class="form-group"><label>Company</label><input id="userCompany" class="form-control" required></div>
+            <div class="form-group"><label>Role</label><select id="userRole" class="form-control"><option>Admin</option><option>User</option></select></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save user</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="balanceEditModal" tabindex="-1" role="dialog" aria-labelledby="balanceEditTitle">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="balanceEditForm">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="balanceEditTitle">Form Data Saldo</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group"><label>Pilih User</label><select class="form-control" id="balanceClient"><option>BlastHub Indonesia</option><option>Acme Retail</option><option>Northstar Media</option></select></div>
+            <div class="form-group"><label id="clientBalanceLabel">Jumlah Saldo</label><input type="number" class="form-control" min="0" id="clientBalanceAmount" placeholder="Nominal" required></div>
+          </div>
+          <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button> <button type="submit" class="btn btn-primary">Save changes</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/admin-lte@2.4.18/dist/js/adminlte.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.3/icheck.min.js"></script>
+
+  <script>
+    $(function () {
+      $('#loginForm input[type="checkbox"]').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        increaseArea: '20%'
+      });
+    });
+
+    $('#loginForm').on('submit', function (e) {
+      e.preventDefault();
+      $('#loginWrap').hide();
+      $('#appWrapper').removeClass('hidden-on-load').show();
+    });
+
+    $('#logoutBtn').on('click', function (e) {
+      e.preventDefault();
+      $('#appWrapper').hide();
+      $('#loginWrap').show();
+    });
+    function showSaldoPage() {
+      $('.page-panel').removeClass('active');
+      $('#saldoPage').addClass('active');
+      $('.nav-link-like').removeClass('active');
+      $('li.nav-link-like[data-page="saldoPage"]').addClass('active');
+      $('#pageTitle').html('Permintaan Saldo <small>Control panel</small>');
+    }
+    $('#navSaldoLink, #navBuySaldoLink').on('click', function (e) {
+      e.preventDefault();
+      showSaldoPage();
+    });
+
+    $('.nav-link-like').on('click', function () {
+      const page = $(this).data('page');
+      const label = $(this).find('span').first().text().trim() || $(this).text().trim();
+      $('.nav-link-like').removeClass('active');
+      $(this).addClass('active');
+      $('.page-panel').removeClass('active');
+      $('#' + page).addClass('active');
+      $('#pageTitle').html(label + ' <small>Control panel</small>');
+    });
+    $('.view-details').on('click', function () {
+      $('.page-panel').removeClass('active');
+      $('#statusDetailPage').addClass('active');
+      $('#pageTitle').html('Campaign details <small>Status Data</small>');
+    });
+    $('.back-to-status').on('click', function () {
+      $('.page-panel').removeClass('active');
+      $('#statusPage').addClass('active');
+      $('#pageTitle').html('Status Data <small>Control panel</small>');
+    });
+
+    function updateSmsCount(text, target) {
+      const length = text.length;
+      const sms = length === 0 ? 0 : Math.ceil(length / 160);
+      $(target).text('Jumlah Karakter: ' + length + ' - ' + sms + ' SMS');
+    }
+    $('#manualMessage').on('input', function () { updateSmsCount(this.value, '#manualSmsCount'); });
+    $('#excelMessage').on('input', function () { updateSmsCount(this.value, '#excelSmsCount'); });
+    $('#messageTags').on('change', function () {
+      if (this.value) {
+        const message = $('#excelMessage');
+        message.val(message.val() + this.value).trigger('input');
+        this.value = '';
+      }
+    });
+    $('input[name="blastType"]').on('change', function () {
+      $('#whatsappImageField').toggle(this.value === 'WhatsApp');
+    });
+    $('#excelFile').on('change', function () {
+      $('#excelFileName').text(this.files.length ? this.files[0].name + ' selected (sample preview remains dummy data).' : 'Select an Excel or CSV file. Sample data is shown below for this demo.');
+    });
+
+    $('#manualForm, #excelForm, #resultUploadForm').on('submit', function (e) {
+      e.preventDefault();
+      alert('Saved in demo only. No SMS or WhatsApp messages were sent.');
+    });
+    $('#preferencesForm').on('submit', function (e) {
+      e.preventDefault();
+      alert('Preferences saved (dummy data).');
+    });
+    $('#saveSettingsBtn').on('click', function () {
+      alert('Changes saved (dummy data)');
+    });
+    $('#saldoAmount').on('input', function () {
+      const amount = parseInt(this.value, 10) || 0;
+      const tax = Math.ceil(amount * 0.1);
+      const total = amount + tax;
+      const rupiah = value => 'Rp ' + value.toLocaleString('id-ID');
+      $('#saldoSms').text(Math.floor(total / 380).toLocaleString('id-ID'));
+      $('#saldoTax').text(rupiah(tax));
+      $('#saldoLineTotal, #saldoTotal').text(rupiah(total));
+    });
+    $('#buySaldoBtn').on('click', function () {
+      const amount = parseInt($('#saldoAmount').val(), 10) || 0;
+      if (amount < 20000000) {
+        alert('Minimum saldo purchase is Rp 20.000.000.');
+        return;
+      }
+      alert('Saldo request recorded in demo only. No payment was made.');
+    });
+
+    $('#addUserBtn').on('click', function () {
+      $('#userForm')[0].reset();
+      $('#editingUserRow').val('');
+      $('#userModalTitle').text('Tambah User');
+      $('#userModal').modal('show');
+    });
+    $('#usersTable').on('click', '.edit-user', function () {
+      const row = $(this).closest('tr');
+      $('#editingUserRow').val(row.index());
+      $('#userUsername').val(row.children().eq(0).text());
+      $('#userName').val(row.children().eq(1).text());
+      $('#userCompany').val(row.children().eq(2).text());
+      $('#userRole').val(row.children().eq(3).text());
+      $('#userModalTitle').text('Edit User');
+      $('#userModal').modal('show');
+    });
+    $('#usersTable').on('click', '.delete-user', function () {
+      if (confirm('Delete this demo user?')) $(this).closest('tr').remove();
+    });
+    $('#userForm').on('submit', function (e) {
+      e.preventDefault();
+      const values = [
+        $('#userUsername').val(),
+        $('#userName').val(),
+        $('#userCompany').val(),
+        $('#userRole').val()
+      ];
+      const rowIndex = $('#editingUserRow').val();
+      if (rowIndex === '') {
+        const row = $('<tr>');
+        values.forEach(value => row.append($('<td>').text(value)));
+        const actions = $('<td>');
+        actions.append($('<button>', { type: 'button', class: 'btn btn-xs btn-primary edit-user', text: 'Edit' }));
+        actions.append(' ');
+        actions.append($('<button>', { type: 'button', class: 'btn btn-xs btn-danger delete-user', text: 'Delete' }));
+        row.append(actions);
+        $('#usersTable tbody').append(row);
+      } else {
+        const row = $('#usersTable tbody tr').eq(parseInt(rowIndex, 10));
+        row.children().slice(0, 4).each(function (index) { $(this).text(values[index]); });
+      }
+      $('#userModal').modal('hide');
+    });
+    $('#exportReportBtn').on('click', function () {
+      const csv = 'Campaign,Targets,Delivered,Pending,Failed,Delivery rate\nPromo Cashback,1245,1180,42,23,94.8%\nInvoice Reminder,780,710,54,16,91.0%\nProduct Launch,2100,1930,164,6,91.9%';
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+      link.download = 'sms-report-demo.csv';
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+    $('#openBalanceEdit').on('click', function () {
+      $('#balanceEditForm')[0].reset();
+      $('#balanceEditModal').modal('show');
+    });
+    $('#balanceEditForm').on('submit', function (e) {
+      e.preventDefault();
+      const client = $('#balanceClient').val();
+      const amount = parseInt($('#clientBalanceAmount').val(), 10) || 0;
+      const row = $('<tr>');
+      [client, 'Rp ' + amount.toLocaleString('id-ID'), '08 Oct 2026', 'Admin CRM'].forEach(value => row.append($('<td>').text(value)));
+      row.append($('<td>').html('<span class="status-badge status-sent">Updated</span>'));
+      row.append($('<td>').text('-'));
+      $('#balanceTransactions tbody').prepend(row);
+      $('#balanceEditModal').modal('hide');
+      alert('Client balance updated (dummy data).');
+    });
+    $('#balanceTransactions').on('click', '.settle-balance', function () {
+      $(this).closest('tr').find('td').eq(4).html('<span class="status-badge status-sent">Completed</span>');
+      $(this).closest('td').text('-');
+    });
+    $('#balanceTransactions').on('click', '.delete-balance', function () {
+      if (confirm('Delete this demo balance transaction?')) $(this).closest('tr').remove();
+    });
+  </script>
+</body>
+</html>

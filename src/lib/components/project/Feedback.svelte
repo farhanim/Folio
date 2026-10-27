@@ -126,12 +126,20 @@
 </section>
 
 <style>
+	/* On the page grid: reactions in content cols 1–4, comments in 5–10 */
 	.feedback {
+		grid-column: 1 / -1;
 		display: grid;
-		grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
-		gap: 40px;
+		grid-template-columns: subgrid;
+		row-gap: 40px;
 		padding: 56px 0;
 		border-top: 1px solid var(--rule);
+	}
+	.rate {
+		grid-column: 1 / span 4;
+	}
+	.thread {
+		grid-column: 5 / -1;
 	}
 	h2 {
 		font-size: clamp(24px, 2.4vw, 32px);
@@ -309,8 +317,9 @@
 	}
 
 	@media (max-width: 1023px) {
-		.feedback {
-			grid-template-columns: 1fr;
+		.rate,
+		.thread {
+			grid-column: 1 / -1;
 		}
 	}
 </style>

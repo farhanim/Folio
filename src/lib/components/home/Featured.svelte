@@ -19,7 +19,7 @@
 			<div class="meta label">
 				<span>{project.type === 'design' ? 'Design' : 'Code'}</span>
 				<span aria-hidden="true">·</span>
-				<span>{project.year}</span>
+				<span>{project.year ?? '—'}</span>
 				<span aria-hidden="true">·</span>
 				<span><Icon name="clock" size={11} /> {readingTime(project)} min read</span>
 			</div>

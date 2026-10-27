@@ -32,7 +32,8 @@
 	.col {
 		position: relative;
 		height: 100%;
-		border-inline: 1px solid var(--grid-line);
+		/* 0.5px: a true hairline on high-density screens, 1px elsewhere */
+		border-inline: 0.5px solid var(--grid-line);
 	}
 	.col::before,
 	.col::after {
@@ -42,9 +43,9 @@
 		width: 9px;
 		height: 9px;
 		background:
-			linear-gradient(var(--rule), var(--rule)) center / 1px 100% no-repeat,
-			linear-gradient(var(--rule), var(--rule)) center / 100% 1px no-repeat;
-		opacity: 0.7;
+			linear-gradient(var(--hairline), var(--hairline)) center / 1px 100% no-repeat,
+			linear-gradient(var(--hairline), var(--hairline)) center / 100% 1px no-repeat;
+		opacity: 0.45;
 	}
 	.col::before {
 		left: -5px;

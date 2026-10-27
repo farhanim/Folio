@@ -6,39 +6,56 @@ export const companies = {
 	nikel: {
 		name: 'Nikel',
 		logo: '/images/clients/nikel.webp',
-		mark: '/images/clients/marks/nikel.webp'
+		mark: '/images/clients/marks/nikel.webp',
+		markTone: 'dark'
 	},
 	efishery: {
 		name: 'eFishery',
 		logo: '/images/clients/efishery.webp',
-		mark: '/images/clients/marks/efishery.webp'
+		mark: '/images/clients/marks/efishery.webp',
+		markTone: 'color'
 	},
 	fazz: {
 		name: 'Fazz',
 		logo: '/images/clients/fazz.webp',
-		mark: '/images/clients/marks/fazz.webp'
+		mark: '/images/clients/marks/fazz.webp',
+		markTone: 'color'
 	},
 	warungPintar: {
 		name: 'Warung Pintar',
 		logo: '/images/clients/warung-pintar.webp',
-		mark: '/images/clients/marks/warung-pintar.webp'
+		mark: '/images/clients/marks/warung-pintar.webp',
+		markTone: 'color'
 	},
 	immobi: {
 		name: 'Immobi',
 		logo: '/images/clients/immobi.webp',
-		mark: '/images/clients/marks/immobi.webp'
+		mark: '/images/clients/marks/immobi.webp',
+		markTone: 'dark'
 	},
 	twonity: {
 		name: 'Twonity',
 		logo: '/images/clients/twonity.webp',
-		mark: '/images/clients/marks/twonity.webp'
+		mark: '/images/clients/marks/twonity.webp',
+		markTone: 'dark'
 	},
 	myEduSolve: {
 		name: 'MyEduSolve',
 		logo: '/images/clients/myedusolve.webp',
-		mark: '/images/clients/marks/myedusolve.webp'
+		mark: '/images/clients/marks/myedusolve.webp',
+		markTone: 'color'
 	},
 	unas: { name: 'Universitas Nasional', logo: '/images/clients/unas.webp' }
+} satisfies Record<string, Client>;
+
+// Clients of the showcase builds in static/projects (logos taken from each build).
+export const showcaseClients = {
+	derkei: { name: 'PT. Wajracyena Derkei Sekuriti', logo: '/images/clients/derkei.webp' },
+	jardin: { name: 'Jardin Legal', logo: '/images/clients/jardin.webp' },
+	kee: { name: 'Kee Platforms', logo: '/images/clients/kee.webp' },
+	muskitnas: { name: 'Museum Kebangkitan Nasional', logo: '/images/clients/muskitnas.webp' },
+	sparq: { name: 'SparQ', logo: '/images/clients/sparq.webp' },
+	blastHub: { name: 'Blast Hub', logo: '/images/clients/blast-hub.webp' }
 } satisfies Record<string, Client>;
 
 // Sample clients used by the placeholder projects — remove once real projects are in.

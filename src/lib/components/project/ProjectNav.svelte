@@ -12,7 +12,9 @@
 		<span class="body">
 			<img src={prev.cover} alt="" loading="lazy" />
 			<span>
-				<span class="kind label">{prev.type === 'design' ? 'Design' : 'Code'} · {prev.year}</span>
+				<span class="kind label"
+					>{prev.type === 'design' ? 'Design' : 'Code'} · {prev.year ?? '—'}</span
+				>
 				<span class="title">{prev.title}</span>
 			</span>
 		</span>
@@ -21,7 +23,9 @@
 		<span class="dir label">Next <Icon name="arrowRight" size={13} /></span>
 		<span class="body">
 			<span>
-				<span class="kind label">{next.type === 'design' ? 'Design' : 'Code'} · {next.year}</span>
+				<span class="kind label"
+					>{next.type === 'design' ? 'Design' : 'Code'} · {next.year ?? '—'}</span
+				>
 				<span class="title">{next.title}</span>
 			</span>
 			<img src={next.cover} alt="" loading="lazy" />
@@ -30,11 +34,16 @@
 </nav>
 
 <style>
+	/* On the page grid: each card takes half the content columns */
 	.pager {
+		grid-column: 1 / -1;
 		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: var(--gap);
+		grid-template-columns: subgrid;
+		row-gap: var(--gap);
 		padding: 40px 0 120px;
+	}
+	.card {
+		grid-column: span 5;
 	}
 	.card {
 		display: flex;
@@ -97,9 +106,14 @@
 		line-height: 1.05;
 	}
 
+	@media (max-width: 1023px) {
+		.card {
+			grid-column: span 3;
+		}
+	}
 	@media (max-width: 600px) {
-		.pager {
-			grid-template-columns: 1fr;
+		.card {
+			grid-column: 1 / -1;
 		}
 		.body img {
 			width: 80px;

@@ -102,6 +102,7 @@
 				</div>
 			</div>
 
+			<p class="facts-label label">At a glance</p>
 			<dl class="facts">
 				{#each profile.facts as f (f.label)}
 					<div>
@@ -183,8 +184,10 @@
 			<ul class="awards">
 				{#each profile.achievements as a (a.title)}
 					<li data-reveal>
-						<span class="icon"><Icon name={achievementIcon[a.kind]} size={18} /></span>
-						<span class="year label">{a.year}</span>
+						<span class="mark">
+							<span class="icon"><Icon name={achievementIcon[a.kind]} size={18} /></span>
+							<span class="year label">{a.year}</span>
+						</span>
 						<span class="title">{a.title}</span>
 						<span class="issuer">{a.issuer}</span>
 					</li>
@@ -222,7 +225,9 @@
 			<SectionHead eyebrow="Teams I’ve worked with" title="Companies" />
 			<ul class="logos" data-reveal>
 				{#each logoWall as c (c.name)}
-					<li><img src={c.mark ?? c.logo} alt="" /><span>{c.name}</span></li>
+					<li data-tone={c.markTone ?? 'dark'}>
+						<img src={c.mark ?? c.logo} alt="" /><span>{c.name}</span>
+					</li>
 				{/each}
 			</ul>
 		</section>
@@ -236,6 +241,28 @@
 	}
 	.rail {
 		grid-column: 1 / span 2;
+	}
+	/*
+	 * Grid rules: the content area is cols 3–12 of the page grid, and every
+	 * section below is a subgrid of it — so cards, rows and columns start and end
+	 * exactly on the page's column lines (local cols 1–10 on desktop).
+	 */
+	.main,
+	.main > section,
+	.header,
+	.timeline,
+	.timeline > li,
+	.job,
+	.edu,
+	.awards,
+	.awards > li,
+	.caps,
+	.logos,
+	.facts {
+		display: grid;
+		grid-template-columns: subgrid;
+		grid-column: 1 / -1;
+		align-content: start;
 	}
 	.main {
 		grid-column: 3 / -1;
@@ -252,18 +279,20 @@
 	}
 
 	/* ── Header ── */
+	/* Portrait: local cols 1–3 · copy: 5–10 (col 4 is breathing room) */
 	.header {
-		display: grid;
-		grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
-		gap: 56px;
+		row-gap: 48px;
 		align-items: start;
 		animation: enter 0.9s var(--ease-out) both;
 	}
 	.portrait {
+		grid-column: 1 / span 3;
 		position: relative;
-		max-width: 320px;
 		transition: transform 0.4s var(--ease-out);
 		will-change: transform;
+	}
+	.copy {
+		grid-column: 5 / -1;
 	}
 	/*
 	 * One balanced tone for both versions — a touch brighter and punchier than the
@@ -428,16 +457,23 @@
 	.secondary:hover {
 		transform: translateY(-2px);
 	}
-	.facts {
-		grid-column: 1 / -1;
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+	/* Facts: a label in cols 1–2, then four facts of two columns each (3–10) */
+	.facts-label {
+		grid-column: 1 / span 2;
+		grid-row: 2;
 		margin: 0;
-		border-top: 1px solid var(--rule);
+		padding-top: 16px;
+		border-top: 1px solid var(--hairline);
+	}
+	.facts {
+		grid-column: 3 / -1;
+		grid-row: 2;
+		margin: 0;
 	}
 	.facts div {
-		padding: 16px 16px 16px 0;
-		border-bottom: 1px solid var(--hairline);
+		grid-column: span 2;
+		padding: 16px 0;
+		border-top: 1px solid var(--hairline);
 	}
 	.facts dd {
 		margin: 6px 0 0;
@@ -457,11 +493,9 @@
 	.timeline > li {
 		border-bottom: 1px solid var(--hairline);
 	}
+	/* Row: period 1–2 · role 3–7 · type 8–9 · toggle 10; details under the role (3–10) */
 	.job {
-		display: grid;
-		grid-template-columns: 130px minmax(0, 1fr) auto 24px;
 		align-items: center;
-		gap: 20px;
 		width: 100%;
 		padding: 20px 0;
 		border: 0;
@@ -471,7 +505,11 @@
 		text-align: left;
 		cursor: pointer;
 	}
+	.period {
+		grid-column: 1 / span 2;
+	}
 	.who {
+		grid-column: 3 / span 5;
 		display: flex;
 		align-items: center;
 		gap: 14px;
@@ -498,12 +536,16 @@
 		color: var(--text-secondary);
 	}
 	.type {
+		grid-column: 8 / span 2;
+		justify-self: start;
 		padding: 3px 8px;
 		border: 1px solid var(--hairline);
 		border-radius: 999px;
 	}
 	/* Plus that turns into a minus */
 	.toggle {
+		grid-column: 10;
+		justify-self: end;
 		position: relative;
 		width: 14px;
 		height: 14px;
@@ -526,7 +568,8 @@
 		transform: rotate(0);
 	}
 	.details {
-		padding: 0 0 22px 150px;
+		grid-column: 3 / span 6;
+		padding: 0 0 22px;
 	}
 	.details p {
 		color: var(--text-secondary);
@@ -555,12 +598,12 @@
 	}
 
 	/* ── Education ── */
+	/* Education cards: half the content width each (5 columns) */
 	.edu {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: var(--gap);
+		row-gap: var(--gap);
 	}
 	.tile {
+		grid-column: span 5;
 		padding: 22px;
 		border-radius: 18px;
 		border: 1px solid var(--hairline);
@@ -587,17 +630,29 @@
 		padding: 0;
 		list-style: none;
 	}
+	/* Row: icon + year 1–2 · title 3–8 · issuer 9–10 (same columns as Experience) */
 	.awards li {
-		display: grid;
-		grid-template-columns: 40px 96px minmax(0, 1fr) auto;
 		align-items: center;
-		gap: 16px;
 		padding: 16px 0;
 		border-bottom: 1px solid var(--hairline);
-		transition: padding 0.4s var(--ease-out);
 	}
-	.awards li:hover {
-		padding-left: 8px;
+	.mark {
+		grid-column: 1 / span 2;
+		display: flex;
+		align-items: center;
+		gap: 14px;
+	}
+	.awards .title {
+		grid-column: 3 / span 6;
+		transition: transform 0.4s var(--ease-out);
+	}
+	.awards li:hover .title {
+		transform: translateX(8px);
+	}
+	.issuer {
+		grid-column: 9 / span 2;
+		justify-self: end;
+		text-align: right;
 	}
 	.icon {
 		display: grid;
@@ -618,10 +673,18 @@
 	}
 
 	/* ── Capabilities ── */
+	/* Capability groups: 3 + 3 + 4 columns (tools has the most items) */
 	.caps {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-		gap: 28px var(--gap);
+		row-gap: 28px;
+	}
+	.cap {
+		grid-column: span 3;
+	}
+	.cap:nth-child(3) {
+		grid-column: span 4;
+	}
+	.cap:nth-child(n + 4) {
+		grid-column: 1 / -1;
 	}
 	.cap ul {
 		display: flex;
@@ -645,23 +708,20 @@
 	}
 
 	/* ── Clients ── */
+	/* Logos: two columns each (five per row); the page grid lines are the dividers */
 	.logos {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-		margin: -28px 0 0;
+		margin: 0;
 		padding: 0;
 		list-style: none;
-		border-left: 1px solid var(--hairline);
 	}
 	.logos li {
+		grid-column: span 2;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		gap: 10px;
-		aspect-ratio: 3 / 2;
-		border-right: 1px solid var(--hairline);
-		border-bottom: 1px solid var(--hairline);
+		padding: 28px 0;
 		font-size: 12px;
 		color: var(--text-secondary);
 		transition: color 0.3s ease;
@@ -688,8 +748,15 @@
 		opacity: 1;
 		transform: translateY(-3px);
 	}
-	:global([data-theme='dark']) .logos img {
+	/* Dark mode: black marks are inverted to light… */
+	:global([data-theme='dark']) .logos [data-tone='dark'] img {
 		filter: grayscale(1) brightness(0.78) contrast(1.3) invert(1);
+	}
+	/* …colourful marks are lifted to light grey instead, keeping their inner
+	   white or dark details in contrast. */
+	:global([data-theme='dark']) .logos [data-tone='color'] img {
+		filter: grayscale(1) brightness(1.75) contrast(1.15);
+		opacity: 1;
 	}
 	:global([data-theme='dark']) .logos li:hover img {
 		filter: none;
@@ -713,6 +780,7 @@
 		}
 	}
 
+	/* Tablet: 6 columns, no rail */
 	@media (max-width: 1023px) {
 		.rail {
 			display: none;
@@ -720,38 +788,87 @@
 		.main {
 			grid-column: 1 / -1;
 		}
-	}
-	@media (max-width: 700px) {
-		.header {
-			grid-template-columns: 1fr;
-		}
 		.portrait {
-			max-width: 260px;
+			grid-column: 1 / span 3;
+		}
+		.copy {
+			grid-column: 4 / -1;
+		}
+		.facts-label {
+			display: none;
 		}
 		.facts {
-			grid-template-columns: 1fr 1fr;
-		}
-		.job {
-			grid-template-columns: minmax(0, 1fr) 20px;
-			gap: 8px 12px;
-		}
-		.period {
 			grid-column: 1 / -1;
+		}
+		.facts div {
+			grid-column: span 3;
+		}
+		.who {
+			grid-column: 3 / span 3;
 		}
 		.type {
 			display: none;
 		}
+		.toggle {
+			grid-column: 6;
+		}
 		.details {
-			padding-left: 50px;
+			grid-column: 3 / -1;
 		}
-		.awards li {
-			grid-template-columns: 40px minmax(0, 1fr);
+		.tile {
+			grid-column: span 3;
 		}
-		.awards .year {
-			display: none;
+		.awards .title {
+			grid-column: 3 / -1;
 		}
 		.issuer {
-			grid-column: 2;
+			grid-column: 3 / -1;
+			justify-self: start;
+			text-align: left;
+		}
+		.cap,
+		.cap:nth-child(3) {
+			grid-column: span 3;
+		}
+		.cap:nth-child(3) {
+			grid-column: 1 / -1;
+		}
+	}
+	/* Phone: 4 columns, everything stacks on full-width or half-width spans */
+	@media (max-width: 600px) {
+		.portrait {
+			grid-column: 1 / span 3;
+		}
+		.copy {
+			grid-column: 1 / -1;
+		}
+		.facts div {
+			grid-column: span 2;
+		}
+		.period {
+			grid-column: 1 / -1;
+			padding-bottom: 6px;
+		}
+		.who {
+			grid-column: 1 / span 3;
+		}
+		.toggle {
+			grid-column: 4;
+		}
+		.details {
+			grid-column: 1 / -1;
+		}
+		.tile,
+		.cap,
+		.cap:nth-child(3) {
+			grid-column: 1 / -1;
+		}
+		.mark {
+			grid-column: 1 / -1;
+		}
+		.awards .title,
+		.issuer {
+			grid-column: 1 / -1;
 		}
 	}
 </style>

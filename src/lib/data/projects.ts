@@ -1,9 +1,11 @@
-// Sample projects — replace with your own. Order here is the order of the
-// previous/next navigation on project pages.
+// Projects. Real builds live in showcase.ts; the design entries below are still
+// samples — replace them with your own. Order here is the order of the list and
+// of the previous/next navigation on project pages.
 import type { Project } from '#lib/types/index.ts';
 import { clients } from './clients.ts';
+import { showcase } from './showcase.ts';
 
-export const projects: Project[] = [
+const samples: Project[] = [
 	{
 		slug: 'cyclone-pos',
 		type: 'design',
@@ -226,7 +228,6 @@ export const projects: Project[] = [
 		team: 'Solo',
 		tools: ['SvelteKit', 'Bun', 'TypeScript'],
 		cover: '/images/work/code-folio.svg',
-		featured: true,
 		isNew: true,
 		links: [
 			{ label: 'Live site', href: '/' },
@@ -287,82 +288,11 @@ transition.ready.then(() => {
 			dislikes: 0,
 			comments: [{ id: 'c1', name: 'Sinta', body: 'The lamp! 💡', date: '2026-10-20' }]
 		}
-	},
-	{
-		slug: 'tokens-cli',
-		type: 'code',
-		title: 'Tokens CLI',
-		tagline: 'Design tokens from Figma to every platform.',
-		summary: 'A small CLI that turns a Figma variables export into CSS, Tailwind and Swift files.',
-		client: clients.pasar,
-		role: 'Engineering',
-		year: 2024,
-		duration: '2 months',
-		team: '2 engineers',
-		tools: ['Bun', 'TypeScript', 'Zod'],
-		cover: '/images/work/code-tokens.svg',
-		repo: { language: 'TypeScript', stars: 312, license: 'MIT' },
-		links: [{ label: 'Source', href: 'https://github.com' }],
-		blocks: [
-			{
-				kind: 'text',
-				id: 'overview',
-				title: 'Overview',
-				body: [
-					'Pasar’s designers changed a colour and engineers re-typed it in three codebases. Now it’s one command in CI.'
-				]
-			},
-			{
-				kind: 'code',
-				id: 'usage',
-				title: 'Usage',
-				language: 'sh',
-				code: `bunx tokens build ./figma-export.json \\
-  --out ./dist \\
-  --format css,tailwind,swift`
-			}
-		],
-		seed: { likes: 39, dislikes: 1, comments: [] }
-	},
-	{
-		slug: 'cyclone-pos-web',
-		type: 'code',
-		title: 'Cyclone POS — Web',
-		tagline: 'Offline-first checkout in the browser.',
-		summary:
-			'The front-end for Cyclone POS: SvelteKit, IndexedDB sync and a component library shared with design.',
-		client: clients.cyclone,
-		role: 'Front-end lead',
-		year: 2026,
-		duration: '6 months',
-		team: '6 engineers',
-		tools: ['SvelteKit', 'Bun', 'IndexedDB'],
-		cover: '/images/work/code-cli.svg',
-		isNew: true,
-		repo: { language: 'TypeScript', stars: 0, license: 'Private' },
-		blocks: [
-			{
-				kind: 'text',
-				id: 'overview',
-				title: 'Overview',
-				body: [
-					'Stores lose connection several times a day. The checkout keeps working and syncs sales when the network returns.'
-				]
-			},
-			{
-				kind: 'code',
-				id: 'sync',
-				title: 'Sync queue',
-				language: 'ts',
-				code: `export async function enqueue(sale: Sale) {
-  await db.put('outbox', sale);
-  if (navigator.onLine) await flush();
-}`
-			}
-		],
-		seed: { likes: 18, dislikes: 0, comments: [] }
 	}
 ];
+
+// Real projects first, then the design samples.
+export const projects: Project[] = [...showcase, ...samples];
 
 export const featuredProjects = projects.filter((p) => p.featured);
 

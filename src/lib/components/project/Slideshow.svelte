@@ -120,7 +120,7 @@
 					{#if slide.kind === 'cover'}
 						<div class="cover-copy">
 							<span class="label"
-								>{project.type === 'design' ? 'Design' : 'Code'} · {project.year}</span
+								>{project.type === 'design' ? 'Design' : 'Code'} · {project.year ?? '—'}</span
 							>
 							<h2>{project.title}</h2>
 							<p>{project.tagline}</p>
@@ -156,6 +156,12 @@
 					{:else if slide.kind === 'code'}
 						<pre><code>{slide.code}</code></pre>
 						{#if slide.caption}<p class="rest">{slide.caption}</p>{/if}
+					{:else if slide.kind === 'features'}
+						<p class="big">{slide.items.map((f) => f.title).join(' · ')}</p>
+					{:else if slide.kind === 'impact'}
+						<p class="big">{slide.items[0]}</p>
+					{:else if slide.kind === 'stack'}
+						<p class="big">{slide.groups.flatMap((g) => g.items.map((i) => i.name)).join(' · ')}</p>
 					{/if}
 				</div>
 			{/key}

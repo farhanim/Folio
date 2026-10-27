@@ -1,0 +1,1243 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#37517e">
+  <meta name="description" content="PT. Wajracyena Derkei Sekuriti, Badan Usaha Jasa Pengamanan. Kami Hadir Memberi Rasa Aman.">
+  <title>PT. Wajracyena Derkei Sekuriti</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Jost:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap');
+    :root{--blue:#00437f;--blue-2:#075995;--blue-3:#e9f2fa;--ink:#172b43;--muted:#78889b;--line:#e6ebf1;--bg:#f5f7fa;--white:#fff;--green:#16845b;--orange:#b8730a;--red:#bd4747;--shadow:0 8px 28px rgba(23,43,67,.055);--radius:14px}
+    *{box-sizing:border-box}html{min-width:320px;scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,"Segoe UI",Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+    .app{min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:250px;padding:24px 14px 18px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:20;transition:transform .2s}
+    .brand{display:flex;align-items:center;gap:12px;padding:2px 11px 25px}.brand-mark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--blue);color:white;font-size:15px;font-weight:800;letter-spacing:-1px;box-shadow:0 5px 12px #00437f2b}.brand-name{font-size:13px;font-weight:800;line-height:1.25;color:var(--blue)}.brand-sub{font-size:9px;color:#8090a2;letter-spacing:.075em;text-transform:uppercase;margin-top:4px}
+    .nav-label{padding:10px 12px 7px;color:#9aa8b7;font-size:10px;letter-spacing:.11em;font-weight:800;text-transform:uppercase}.nav-list{display:grid;gap:3px}.nav-link{border:0;background:transparent;color:#607286;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;text-align:left;width:100%;font-size:13px;font-weight:600;transition:.15s}.nav-link:hover{background:#f4f7fb;color:var(--blue)}.nav-link.active{background:var(--blue-3);color:var(--blue);font-weight:750}.nav-link svg{width:17px;height:17px;flex:none;stroke:currentColor}.nav-link .nav-count{margin-left:auto;border-radius:10px;background:#eef2f6;color:#75869a;padding:1px 7px;font-size:10px}.nav-link.active .nav-count{background:#d6e8f8;color:var(--blue)}
+    .sidebar-bottom{margin-top:auto}.sidebar-help{padding:15px;border-radius:11px;background:#f4f8fc;margin:12px 4px 17px}.sidebar-help strong{font-size:12px}.sidebar-help p{color:var(--muted);font-size:11px;margin:5px 0 10px}.support-link{font-size:11px;font-weight:700;color:var(--blue);border:0;background:none;padding:0}.user-mini{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding:16px 9px 0}.avatar{height:35px;width:35px;display:grid;place-items:center;border-radius:50%;background:#dceafa;color:var(--blue);font-weight:800;font-size:12px;flex:none}.user-mini strong{display:block;font-size:12px}.user-mini small{color:var(--muted);font-size:10px}
+    .main{margin-left:250px;min-height:100vh}.topbar{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 34px;position:sticky;top:0;z-index:10}.top-left,.top-right{display:flex;align-items:center;gap:15px}.crumb{font-size:12px;color:#8b99a8}.crumb b{color:#344960;font-weight:700}.searchbox{height:37px;width:236px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;gap:8px;padding:0 10px;color:#94a3b3;background:#fbfcfd}.searchbox input{border:0;outline:0;background:transparent;width:100%;font-size:12px;color:var(--ink)}.icon-button{position:relative;border:1px solid var(--line);background:#fff;height:36px;width:36px;border-radius:9px;display:grid;place-items:center;color:#67798c}.icon-button svg{width:17px;height:17px;stroke:currentColor}.notification-dot{position:absolute;width:6px;height:6px;right:7px;top:7px;border-radius:50%;background:#e36656;border:1px solid #fff}.top-user{display:flex;align-items:center;gap:9px;border:0;background:transparent;text-align:left;color:var(--ink);padding:2px}.top-user .avatar{height:34px;width:34px}.top-user strong{font-size:11px;display:block}.top-user small{font-size:10px;color:var(--muted)}.menu-toggle{display:none}
+    .content{max-width:1500px;margin:0 auto;padding:30px 34px 46px}.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:23px}.eyebrow{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#91a0b1;font-weight:800;margin-bottom:5px}.page-head h1{font-size:23px;letter-spacing:-.035em;margin:0;color:#172b43}.page-head p{color:var(--muted);font-size:12px;margin:6px 0 0}.actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+    .btn{border:1px solid var(--line);background:#fff;color:#42576d;border-radius:8px;padding:9px 13px;font-size:11px;font-weight:750;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.15s;white-space:nowrap}.btn:hover{border-color:#adc6dc;background:#f8fbfe}.btn svg{width:14px;height:14px;stroke:currentColor}.btn-primary{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 4px 10px #00437f20}.btn-primary:hover{background:#075995;border-color:#075995;color:#fff}.btn-soft{background:var(--blue-3);border-color:var(--blue-3);color:var(--blue)}.btn-danger{color:var(--red);background:#fff;border-color:#f0dede}.btn-small{padding:6px 9px;font-size:10px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}.stat{padding:17px 18px}.stat-top{display:flex;align-items:center;justify-content:space-between}.stat-name{font-size:11px;color:#718196;font-weight:650}.stat-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--blue-3);color:var(--blue)}.stat-icon svg{width:17px;height:17px;stroke:currentColor}.stat-value{font-size:24px;font-weight:780;letter-spacing:-.04em;margin:12px 0 4px}.stat-note{font-size:10px;color:#8a99aa}.positive{color:var(--green);font-weight:700}
+    .dash-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(250px,.9fr);gap:15px;margin-bottom:16px}.panel{padding:19px}.panel-title{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:15px}.panel-title h2{font-size:13px;margin:0}.panel-title p{font-size:10px;color:var(--muted);margin:4px 0 0}.period-select{border:1px solid var(--line);border-radius:7px;padding:6px 8px;background:#fff;color:#62758a;font-size:10px}.chart-wrap{height:205px;position:relative;border-bottom:1px solid var(--line);background:repeating-linear-gradient(to bottom,transparent 0,transparent 50px,#edf1f5 51px)}.chart-bars{height:100%;display:flex;align-items:flex-end;justify-content:space-around;padding:0 8px}.chart-group{height:100%;display:flex;gap:5px;align-items:flex-end;position:relative;padding-bottom:1px;flex:1;justify-content:center}.bar{width:13px;min-height:3px;border-radius:5px 5px 0 0;background:#b8d5ee;transition:height .3s}.bar.income{background:var(--blue)}.chart-labels{display:flex;justify-content:space-around;color:#91a0af;font-size:9px;padding:8px 3px 0}.legend{display:flex;gap:14px;margin-top:13px;font-size:10px;color:#78889b}.legend i{width:7px;height:7px;border-radius:50%;background:var(--blue);display:inline-block;margin-right:5px}.legend span:nth-child(2) i{background:#b8d5ee}.balance-card{background:var(--blue);border:0;color:#fff;position:relative;overflow:hidden}.balance-card:after{content:"";position:absolute;width:190px;height:190px;border:1px solid #ffffff20;border-radius:50%;right:-83px;top:-85px;box-shadow:0 0 0 22px #ffffff0b,0 0 0 46px #ffffff08}.balance-card .panel-title h2{color:#fff}.balance-card .panel-title p{color:#c4d9ec}.balance-big{font-size:27px;font-weight:780;letter-spacing:-.045em;margin:19px 0 5px}.balance-sub{font-size:10px;color:#c1d7eb}.balance-row{border-top:1px solid #ffffff27;margin-top:22px;padding-top:15px;display:flex;justify-content:space-between;font-size:10px;color:#d5e5f2}.balance-row b{display:block;color:#fff;font-size:13px;margin-top:4px}.table-card{overflow:hidden}.table-head{padding:17px 19px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}.table-head h2{font-size:13px;margin:0}.table-head p{margin:4px 0 0;font-size:10px;color:var(--muted)}.table-tools{display:flex;align-items:center;gap:8px}.table-search{width:185px;border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-size:11px;outline:0}.table-search:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:#8ab3d6;box-shadow:0 0 0 3px #e5f1fb}.table-scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;white-space:nowrap}th{text-align:left;color:#8291a2;background:#fafbfd;padding:11px 16px;font-size:9px;letter-spacing:.06em;text-transform:uppercase;font-weight:800;border-bottom:1px solid var(--line)}td{padding:12px 16px;font-size:11px;border-bottom:1px solid #edf0f4;color:#4d6075}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#fbfdff}.person{display:flex;align-items:center;gap:9px}.person .avatar{height:29px;width:29px;font-size:10px}.person strong{color:#233a52;display:block;font-size:11px}.person small{display:block;color:#92a0ae;font-size:9px;margin-top:1px}.pill{border-radius:20px;display:inline-flex;align-items:center;padding:4px 8px;font-size:9px;font-weight:750;background:#edf7f2;color:var(--green)}.pill.orange{background:#fff5e5;color:var(--orange)}.pill.blue{background:#eaf2fa;color:var(--blue)}.pill.gray{background:#f0f2f5;color:#78889b}.row-actions{display:flex;gap:5px}.mini-action{height:27px;width:28px;border:1px solid var(--line);background:#fff;color:#738398;border-radius:6px;display:grid;place-items:center}.mini-action:hover{color:var(--blue);border-color:#c1d5e6}.mini-action svg{width:13px;height:13px;stroke:currentColor}.table-foot{padding:11px 16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#8998a8}.page-tabs{display:flex;gap:3px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:17px}.tab{border:0;border-bottom:2px solid transparent;padding:11px 13px 10px;background:transparent;color:#798a9b;font-size:11px;font-weight:700;white-space:nowrap}.tab.active{color:var(--blue);border-bottom-color:var(--blue)}.filter-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.filter-select{padding:8px 10px;border:1px solid var(--line);border-radius:7px;color:#64778b;background:#fff;font-size:11px}
+    .module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.module-card{padding:19px;transition:.15s;cursor:pointer}.module-card:hover{transform:translateY(-2px);border-color:#c5d8e9;box-shadow:0 10px 25px #00437f10}.module-icon{height:39px;width:39px;background:var(--blue-3);color:var(--blue);display:grid;place-items:center;border-radius:11px;margin-bottom:14px}.module-icon svg{width:19px;height:19px;stroke:currentColor}.module-card h3{font-size:13px;margin:0}.module-card p{color:var(--muted);font-size:10px;margin:6px 0 14px;min-height:30px}.module-bottom{padding-top:11px;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:#8090a2;font-size:10px}.module-bottom b{color:var(--blue)}
+    .empty-state{text-align:center;color:#8797a8;padding:35px 12px;font-size:11px}.empty-state strong{display:block;color:#53677c;font-size:12px;margin-bottom:5px}
+    .modal-backdrop{position:fixed;inset:0;background:#10243c77;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal-backdrop.open{display:flex}.modal{background:#fff;width:min(600px,100%);max-height:90vh;overflow:auto;border-radius:15px;box-shadow:0 20px 70px #10243c40;animation:appear .18s ease}.modal.wide{width:min(800px,100%)}@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}.modal-head{padding:19px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start}.modal-head h2{font-size:16px;margin:0}.modal-head p{font-size:11px;color:var(--muted);margin:4px 0 0}.modal-close{height:29px;width:29px;border:0;background:#f3f6f9;border-radius:7px;color:#718196;font-size:18px}.modal-body{padding:20px 22px}.modal-footer{padding:13px 22px 19px;display:flex;justify-content:flex-end;gap:8px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;color:#52677d;font-weight:750}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 10px;background:#fbfcfd;color:var(--ink);outline:0;font-size:11px}.field textarea{min-height:78px;resize:vertical}.detail-list{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.detail-item{padding:11px 0;border-bottom:1px solid #edf0f4}.detail-item span{display:block;color:#8b99a8;font-size:9px;margin-bottom:4px}.detail-item strong{font-size:11px;color:#344b62}.toast{position:fixed;right:24px;bottom:24px;background:#193956;color:#fff;padding:12px 16px;border-radius:9px;box-shadow:var(--shadow);font-size:11px;z-index:70;opacity:0;transform:translateY(10px);transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:none}.toast.error{background:#9c3636}
+    .notice{padding:12px 15px;border:1px solid #d9e7f2;background:#f1f7fc;border-radius:9px;color:#476780;font-size:11px;margin-bottom:16px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:15px}.profile-card{padding:22px}.profile-banner{height:95px;background:linear-gradient(115deg,#00437f,#3478ae);border-radius:10px;margin-bottom:-35px}.profile-user{position:relative;display:flex;align-items:end;gap:12px;padding:0 12px 18px}.profile-user .avatar{width:58px;height:58px;border:4px solid #fff;font-size:16px}.profile-user h2{font-size:14px;margin:0 0 3px}.profile-user p{font-size:10px;color:var(--muted);margin:0}.profile-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.footer{text-align:center;color:#9ba8b6;padding:20px;font-size:10px}
+    @media(max-width:1100px){.sidebar{width:225px}.main{margin-left:225px}.content{padding:25px 22px}.topbar{padding:0 22px}.stat-grid{grid-template-columns:repeat(2,1fr)}.module-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:760px){.sidebar{transform:translateX(-100%);width:250px;box-shadow:var(--shadow)}.sidebar.open{transform:none}.main{margin-left:0}.topbar{height:62px;padding:0 15px}.menu-toggle{display:grid}.top-user .user-name{display:none}.top-left{gap:9px}.crumb{font-size:11px}.content{padding:22px 15px 35px}.page-head{display:block}.page-head .actions{margin-top:15px}.dash-grid,.two-col{grid-template-columns:1fr}.table-head{align-items:flex-start;flex-direction:column}.table-tools{width:100%}.table-search{flex:1}.searchbox{width:155px}.module-grid{grid-template-columns:1fr 1fr}.stat-grid{gap:9px}.stat{padding:14px}.stat-value{font-size:21px}}
+    @media(max-width:460px){.module-grid{grid-template-columns:1fr}.top-right{gap:7px}.searchbox{width:125px}.stat-grid{grid-template-columns:1fr 1fr}.form-grid,.detail-list,.profile-fields{grid-template-columns:1fr}.field.full{grid-column:auto}.page-head h1{font-size:21px}.actions .btn{flex:1}.top-user{display:none}}
+    /* Match the source application's Bootstrap-style navigation and components. */
+    :root{--blue:#00437f;--blue-2:#005495;--blue-3:#e8ecf5;--ink:#0c2a48;--muted:#78889b;--line:#d9e1ea;--bg:#f7f9fc;--radius:4px;--shadow:0 2px 8px rgba(15,47,79,.08)}
+    body{background:#fbfbfe;color:#00437f}
+    .sidebar{position:sticky;inset:auto;width:100%;height:auto;min-height:68px;padding:8px max(20px,calc((100vw - 1180px)/2));border-right:0;border-bottom:1px solid #e3e8ef;flex-direction:row;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(15,47,79,.045)}
+    .brand{padding:0 12px 0 0;gap:10px;flex:none}.brand-mark{width:38px;height:38px;border-radius:4px;box-shadow:none}.brand-name{font-size:12px}.brand-sub{font-size:8px}
+    .sidebar>.nav-label,.sidebar-help,.user-mini{display:none!important}.sidebar #mainNav{display:flex;align-items:center;gap:2px;min-width:0;flex:1;overflow:visible}.sidebar #mainNav>.nav-label{display:none}
+    .nav-link{padding:9px 9px;border-radius:4px;color:#385773;font-size:11px;font-weight:600;white-space:nowrap}.nav-link:hover,.nav-link.active{background:#e8ecf5;color:#00437f}.nav-link svg{width:14px;height:14px}.nav-count{padding:1px 5px!important}
+    .sidebar-bottom{display:flex;margin:0;align-items:center;flex:none}.sidebar-bottom>.nav-label{display:none}.sidebar-bottom #accountNav{display:flex;gap:1px}.sidebar-bottom #accountNav .nav-link{padding:9px 7px}
+    .nav-dropdown{position:relative}.nav-dropdown-toggle{border:0;background:transparent;color:#385773;padding:9px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap}.nav-dropdown-toggle:hover,.nav-dropdown-toggle.active{background:#e8ecf5;color:#00437f}.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;min-width:218px;background:#fff;border:1px solid #dce3eb;border-radius:4px;padding:5px;box-shadow:0 8px 22px #17314b1c;z-index:30}.nav-dropdown.open .nav-dropdown-menu{display:grid}.nav-dropdown-menu .nav-link{width:100%;padding:9px 10px}
+    .main{margin-left:0;min-height:calc(100vh - 68px)}.topbar{position:static;height:45px;background:transparent;border:0;padding:0 max(20px,calc((100vw - 1140px)/2));max-width:none}.crumb{font-size:11px}.top-user{display:none}.top-right{gap:8px}.icon-button{height:31px;width:31px;border-radius:4px}.searchbox{height:31px;border-radius:4px;background:#fff;width:205px}.content{max-width:1180px;padding:13px 20px 38px}
+    .page-head{align-items:center;margin-bottom:16px}.page-head h1{font-size:20px;letter-spacing:0;color:#00437f}.eyebrow{font-size:9px;margin-bottom:3px}.page-head p{font-size:11px;margin-top:3px}
+    .btn{border-radius:4px;padding:8px 11px;font-size:10px}.btn-primary{box-shadow:none}.btn-soft{background:#e8ecf5}
+    .card{border-radius:4px;box-shadow:0 2px 8px rgba(15,47,79,.055)}.stat{padding:13px 15px}.stat-icon{border-radius:4px}.stat-value{font-size:21px;margin:8px 0 3px}.stat-name{font-size:10px}.stat-note{font-size:9px}
+    .panel{padding:15px}.panel-title h2,.table-head h2{font-size:12px}.panel-title p,.table-head p{font-size:9px}.dash-grid{gap:12px;margin-bottom:13px}.chart-wrap{height:175px}.balance-big{font-size:23px}
+    .table-head{padding:13px 15px}.table-search,.filter-select,.period-select{border-radius:4px}.table-search{padding:7px 9px;font-size:10px}.table-scroll th{background:#f1f3f6}th{padding:9px 12px;font-size:9px}td{padding:10px 12px;font-size:10px}.table-foot{padding:9px 12px;font-size:9px}.pill{border-radius:3px;padding:3px 7px;font-size:9px}.avatar{border-radius:50%}
+    .module-grid{gap:12px}.module-card{padding:15px;border-radius:4px}.module-card:hover{transform:translateY(-1px)}.module-icon{height:34px;width:34px;border-radius:4px;margin-bottom:10px}.module-card h3{font-size:12px}.module-card p{font-size:10px;margin:5px 0 10px;min-height:26px}.module-bottom{padding-top:9px;font-size:9px}
+    .page-tabs{margin-bottom:13px}.tab{padding:9px 11px 8px;font-size:10px}.notice{border-radius:4px;font-size:10px}
+    .modal{border-radius:5px}.modal-close{border-radius:4px}.field input,.field select,.field textarea{border-radius:4px}.footer{font-size:9px}
+    @media(max-width:1000px){.sidebar{flex-wrap:wrap;padding:10px 16px;gap:7px}.brand{width:100%;padding-bottom:5px}.sidebar #mainNav{overflow-x:auto;flex:1 1 100%;padding-bottom:2px}.sidebar-bottom{position:absolute;right:16px;top:11px}.sidebar-bottom #accountNav .nav-link{font-size:0}.sidebar-bottom #accountNav .nav-link svg{width:17px;height:17px}.topbar{padding:0 16px}.content{padding-right:16px;padding-left:16px}}
+    @media(max-width:520px){.sidebar{padding:9px 12px}.brand{width:auto;padding:0;flex:1}.sidebar-bottom{top:11px;right:12px}.sidebar #mainNav{order:3}.sidebar-bottom #accountNav{display:none}.brand-sub{max-width:200px}.topbar{padding:0 12px}.content{padding:12px 12px 30px}.searchbox{width:145px}.page-head{display:block}.page-head .actions{margin-top:11px}.page-head .actions .btn{flex:none}.two-col{grid-template-columns:1fr}}
+    /* The legacy app uses Bootstrap 4's horizontal navbar, alert, and content panel. */
+    body{font:14px/1.5 Inter,"Segoe UI",Arial,sans-serif;background:#fefeff;color:#00437f}
+    .sidebar{position:sticky;top:0;height:82px;min-height:82px;flex-wrap:nowrap;padding:8px 20px;background:#fff;box-shadow:0 2px 8px #10243c13;z-index:25}
+    .brand{padding:0 12px 0 0;gap:12px}.brand-mark{display:none}.brand img{width:96px;height:52px;object-fit:contain}.brand-name{font-size:15px;font-weight:800}.brand-sub{font-size:10px;letter-spacing:.02em}
+    .sidebar #mainNav{display:flex;justify-content:center;gap:2px;overflow:visible}.sidebar-bottom{position:relative;inset:auto;margin:0}.sidebar-bottom #accountNav{display:none}.sidebar #mainNav>.nav-link{font-size:13px;padding:9px 10px;color:#00437f}
+    .nav-dropdown-toggle{font-size:13px;padding:9px 10px;color:#00437f}.nav-dropdown-menu{min-width:235px;border-radius:3px}.nav-dropdown-menu .nav-link{font-size:12px}.nav-link.active{background:#eaeff5;color:#00437f}
+    .sidebar-bottom:before{content:"";height:35px;border-left:1px solid #ccd8e9;margin:0 14px 0 10px}
+    .user-greeting{white-space:nowrap;color:#00437f;font-weight:700;font-size:12px;margin-right:8px}
+    .user-menu-button{height:42px;width:42px;border:2px solid #ccd8e9;border-radius:50%;background:#eaeff5;display:grid;place-items:center;color:#00437f;font-weight:800}
+    .user-dropdown{position:relative}.user-dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);min-width:180px;padding:5px;background:#fff;border:1px solid #d9e1ea;border-radius:4px;box-shadow:0 6px 18px #10243c20;z-index:32}.user-dropdown.open .user-dropdown-menu{display:grid}.user-dropdown-menu button{border:0;background:white;color:#00437f;padding:9px;text-align:left;font-size:12px}.user-dropdown-menu button:hover{background:#eaeff5}
+    .main{margin:0;min-height:calc(100vh - 82px)}.topbar{display:none}.content{width:100%;max-width:1200px;margin:auto;padding:22px 20px 35px}.footer{padding:10px 20px}
+    .page-head{display:block;margin:0 0 12px}.page-head .eyebrow{display:none}.page-head h1{font-size:20px;font-weight:700;letter-spacing:0;color:#00437f}.page-head p{display:none}.page-head .actions{margin-top:12px}
+    .page-head-line{display:flex;align-items:center;justify-content:space-between;gap:12px}.page-search-row{display:grid;grid-template-columns:minmax(150px,2fr) auto;gap:10px;align-items:center;margin:13px 0}
+    .breadcrumb-row{display:flex;align-items:center;gap:14px;font-size:11px;color:#6c757d;margin:5px 0 13px}.breadcrumb-row button{border:0;background:transparent;padding:0;color:#6c757d}.breadcrumb-row button:hover{color:#00437f}.breadcrumb-row .current{font-weight:700;color:#00437f}
+    .app-alert{background:#eaf4fd;border:1px solid #d8eaf8;border-radius:4px;padding:10px 13px;margin-bottom:15px;color:#00437f;font-size:11px;display:flex;align-items:center;gap:8px}.app-alert button{font-size:10px}.app-alert .alert-close{margin-left:auto;border:0;background:transparent;color:#64809a;font-size:17px}
+    .legacy-panel{background:#fbfbfe;border-radius:8px;padding:16px 18px 20px}.legacy-section-title{font-size:17px;font-weight:700;color:#00437f;margin:0 0 12px}.legacy-panel hr{border:0;border-top:1px solid #ccd8e9;margin:12px 0}
+    .card,.module-card,.table-card{border-radius:5px;box-shadow:0 2px 7px #17314b12;border-color:#e2e8ef}.table-head{border-bottom-color:#e6e6e6}.table-scroll th{background:#f1f3f5}th,td{font-size:11px}td{color:#34495e}.btn{border-radius:4px;letter-spacing:.3px;font-weight:600}.btn-primary{background:#00437f;border-color:#00437f;box-shadow:none}.btn-primary:hover{background:#005495;border-color:#005495}.btn-soft{background:#e8ecf5;color:#00437f;border-color:#00437f}.table-search,.field input,.field select,.field textarea{border-radius:4px;background:#f7f9fc;color:#0c2a48}
+    .module-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}.module-card{padding:0;overflow:hidden;border:0;cursor:pointer;border-radius:9px}.module-icon{height:150px;width:100%;margin:0;border-radius:0;background:linear-gradient(145deg,#cbd7e9,#8ea8c4);color:#fff}.module-icon svg{width:76px;height:76px;stroke-width:1.4}.module-card h3{font-size:14px}.module-card p{font-size:11px;min-height:0}.module-card>h3,.module-card>p,.module-bottom{margin-left:15px;margin-right:15px}.module-card>h3{margin-top:13px}.module-bottom{margin-bottom:12px}.module-card:hover{transform:scale(1.025)}
+    .stat-grid{display:none}.dash-grid{display:none}.home-head{font-size:20px;font-weight:700;border-bottom:1px solid #ccd8e9;padding:12px 0;margin-bottom:17px}
+    .login-screen{display:none;min-height:100vh;background:#fff}.login-screen.active{display:grid;grid-template-columns:minmax(380px,5fr) minmax(0,7fr)}.login-pane{display:flex;flex-direction:column;justify-content:center;max-width:560px;width:100%;padding:45px clamp(26px,6vw,90px);margin:auto;color:#00437f}.login-logo{width:180px;height:90px;object-fit:contain;margin:0 auto 15px}.login-heading{text-align:center}.login-heading h1{font-size:24px;letter-spacing:.28em;margin:2px 0 5px;color:#00437f;font-weight:800}.login-heading p{font-size:13px;margin:0;color:#647b90}.auth-form{padding:25px 12px 16px}.auth-field{margin:0 0 15px;position:relative}.auth-field label{display:block;color:#173d5e;font-size:12px;font-weight:650;margin-bottom:6px}.auth-field input{width:100%;background:#f7f9fc;border:1px solid #d5dce5;border-radius:4px;padding:12px 13px;color:#0c2a48;outline:0}.auth-field input:focus{border-color:#6c9cc5;box-shadow:0 0 0 3px #00437f16}.auth-options{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#6c757d;margin:4px 0 23px}.auth-options a,.auth-link{color:#00437f;font-weight:650}.auth-options label{display:flex;align-items:center;gap:6px}.auth-submit{width:100%;padding:12px}.auth-footer{text-align:center;color:#7f8c98;font-size:10px;margin-top:30px}.auth-error,.auth-success{display:none;margin:0 12px 8px;padding:10px 12px;border-radius:4px;font-size:11px}.auth-error{background:#f8e8e8;color:#963535}.auth-success{background:#e6f3ea;color:#246c3c}.auth-error.show,.auth-success.show{display:block}.login-slider{position:relative;min-height:100vh;background:#00437f;overflow:hidden}.slider-image{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .6s}.slider-image.active{opacity:1}.slider-image:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#002341b8 0%,transparent 72%),linear-gradient(90deg,#00234130,transparent)}.slider-caption{position:absolute;z-index:2;left:8%;right:8%;bottom:10%;color:#fff}.slider-caption strong{font-size:26px;display:block;margin-bottom:7px}.slider-caption span{font-size:13px;color:#edf3fa}.slider-dots{position:absolute;z-index:3;right:8%;bottom:6%;display:flex;gap:8px}.slider-dots button{width:8px;height:8px;border:0;border-radius:50%;background:#ffffff80;padding:0}.slider-dots button.active{background:#fff;width:22px;border-radius:6px}.auth-switch{border:0;background:transparent;padding:0;color:#00437f;font-size:11px;font-weight:700}
+    .content{min-height:calc(100vh - 145px)}.page-head{margin-bottom:8px}.page-tabs{background:#f3f5f8;padding:3px 8px 0;margin:7px 0 15px;border-bottom:1px solid #ccd8e9}.tab{border-radius:3px 3px 0 0}.page-tabs .tab.active{background:#fff}
+    .movement-section{grid-column:1/-1;min-width:0}.movement-section .legacy-form-head{margin:10px 0}.movement-section table input{min-width:105px;width:100%;border:1px solid #ced4da;border-radius:4px;background:#f7f9fc;padding:7px;color:#0c2a48;font-size:11px}.movement-section table td{padding:6px}.movement-section table th{padding:8px}.about-label{display:inline-block;background:#00437f;color:#fff;padding:7px 9px;font-size:12px;font-weight:700}.guide-content{border:1px solid #e1e7ef;background:#fff;padding:16px;border-radius:4px}.guide-content h3{margin:0 0 8px;font-size:14px}.guide-content p{font-size:12px;color:#3f5368;line-height:1.7}.module-menu-label{padding:8px 10px 4px;color:#8594a3;font-size:9px;text-transform:uppercase;font-weight:700;letter-spacing:.08em;border-top:1px solid #edf0f4;margin-top:4px}.user-dropdown-name{padding:8px 10px;color:#263d54;font-size:11px;font-weight:700;border-bottom:1px solid #edf0f4}.user-dropdown-name small{display:block;color:#8493a1;font-size:9px;text-transform:capitalize}
+    .legacy-form{background:#fbfbfe}.legacy-form-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.legacy-form-title{font-size:17px;font-weight:700}.legacy-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 18px;padding:10px 12px}.legacy-form .field label{font-size:12px;color:#34495e;font-weight:500}.legacy-form .field input,.legacy-form .field select,.legacy-form .field textarea{font-size:13px;padding:11px 12px}.form-section{grid-column:1/-1;font-weight:700;border-bottom:1px solid #ccd8e9;padding:8px 0 5px}.person-lookup{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:12px;background:#f1f4f8;padding:13px;border-radius:4px}.person-lookup .field{display:flex;justify-content:space-between;align-items:center}.form-note{grid-column:1/-1;color:#718398;font-size:11px}.detail-panel{padding:18px}.detail-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+    /* Keep the horizontal navigation compact and aligned like the source Bootstrap navbar. */
+    .sidebar{gap:12px;padding-right:clamp(14px,2.5vw,34px);padding-left:clamp(14px,2.5vw,34px)}
+    .brand{min-width:0;flex:0 1 360px}.brand img{flex:none}.brand>div:last-child{min-width:0}
+    .brand-name{line-height:1.3}.brand-sub{line-height:1.3}
+    .sidebar #mainNav{justify-content:flex-start;gap:4px;flex:1 1 auto}
+    .sidebar #mainNav>.nav-link{width:auto;min-width:0;flex:0 0 auto;justify-content:flex-start;gap:7px;padding:9px 8px}
+    .sidebar #mainNav>.nav-link>svg{width:15px;height:15px;flex:none}
+    .sidebar #mainNav>.nav-link>span:not(.nav-count){white-space:nowrap}
+    .sidebar #mainNav>.nav-link>.nav-count{margin-left:1px}
+    .nav-dropdown{flex:none}
+    .nav-dropdown-toggle{display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+    .nav-dropdown-toggle svg{width:13px;height:13px;flex:none;transition:transform .15s}
+    .nav-dropdown.open .nav-dropdown-toggle svg{transform:rotate(180deg)}
+    .nav-dropdown-menu{top:calc(100% + 4px);max-height:min(70vh,520px);overflow-y:auto}
+    .nav-dropdown-menu .nav-link{width:100%;display:flex;align-items:center;gap:9px;padding:9px 10px}
+    .nav-dropdown-menu .nav-link svg{width:16px;height:16px;flex:none}
+    .module-menu-label{padding-left:35px}
+    .user-dropdown{display:flex;align-items:center;gap:8px}
+    .user-greeting{margin-right:0}
+    .user-menu-button{flex:none}
+    .login-pane{padding:38px clamp(28px,5vw,72px)}
+    .login-logo{margin-bottom:11px}
+    .auth-form{padding:21px 12px 12px}
+    .auth-field input{min-height:44px;padding:10px 13px}
+    .auth-options{margin:5px 0 19px}
+    .auth-submit{min-height:43px}
+    .auth-footer{margin-top:23px}
+    @media(max-width:1100px){
+      .sidebar{gap:8px;padding-right:14px;padding-left:14px}
+      .brand{flex:0 1 300px}
+      .brand img{width:78px;height:46px}
+      .brand-name{font-size:12px}
+      .brand-sub{font-size:8px}
+      .sidebar #mainNav{gap:1px}
+      .sidebar #mainNav>.nav-link{font-size:11px;padding:8px 6px;gap:5px}
+      .sidebar #mainNav>.nav-link>svg{width:13px;height:13px}
+      .nav-dropdown-toggle{font-size:11px;padding:8px 7px}
+      .user-greeting{font-size:11px}
+    }
+    @media(max-width:1000px){.sidebar{height:auto;min-height:68px;flex-wrap:wrap;padding:8px 12px}.brand{width:auto;padding:0;flex:0 0 auto}.brand img{width:80px}.sidebar #mainNav{flex:1 1 auto;overflow-x:auto;justify-content:flex-start}.sidebar #mainNav>.nav-link,.nav-dropdown-toggle{font-size:11px;padding:8px}.sidebar-bottom:before{display:none}.sidebar-bottom{margin-left:auto}.module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content{padding:17px 14px}.login-screen.active{grid-template-columns:minmax(340px,5fr) minmax(0,7fr)}.login-pane{padding:30px}.legacy-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:650px){.login-screen.active{display:block}.login-pane{max-width:480px;min-height:100vh;padding:25px 22px}.login-slider{display:none}.sidebar{gap:6px}.brand{flex:1}.sidebar #mainNav{order:3;flex:1 1 100%}.sidebar-bottom{position:absolute;right:12px;top:10px}.user-greeting{display:none}.nav-dropdown-menu{position:fixed;top:120px;left:12px}.module-grid{grid-template-columns:1fr 1fr;gap:11px}.module-icon{height:110px}.module-icon svg{width:56px;height:56px}.legacy-form-grid{grid-template-columns:1fr}.form-section,.person-lookup,.form-note{grid-column:auto}.page-search-row{grid-template-columns:1fr}.app-alert{align-items:flex-start;flex-wrap:wrap}.legacy-form-head{align-items:flex-start;flex-direction:column}.content{padding:14px 10px}.legacy-panel{padding:12px}.page-tabs{overflow-x:auto}.two-col{grid-template-columns:1fr}}
+    @media(max-width:850px){
+      .sidebar{transform:none;height:auto;min-height:82px;flex-wrap:wrap;justify-content:space-between;gap:3px 8px;padding:7px 14px}
+      .brand{width:auto;max-width:none;flex:1 1 calc(100% - 180px);padding:0}
+      .brand img{width:78px;height:46px}
+      .sidebar-bottom{position:relative;inset:auto;margin-left:auto}
+      .sidebar #mainNav{order:3;flex:1 1 100%;flex-wrap:wrap;overflow:visible;padding:0 0 2px}
+      .sidebar #mainNav>.nav-link{width:auto;flex:0 0 auto;font-size:12px;padding:7px 9px}
+      .nav-dropdown-menu{position:absolute;top:calc(100% + 4px);left:0}
+      .sidebar-bottom:before{display:block;height:30px;margin:0 9px 0 4px}
+    }
+    @media(max-width:650px){
+      .sidebar{padding:8px 12px;gap:3px 6px}
+      .brand{max-width:calc(100% - 60px);flex:1 1 auto}
+      .brand img{width:66px;height:42px}
+      .brand-name{font-size:11px}
+      .brand-sub{font-size:7px;max-width:none}
+      .sidebar-bottom{position:static;margin-left:auto}
+      .sidebar-bottom:before{display:none}
+      .sidebar #mainNav{order:3;flex:1 1 100%;margin:0 -2px}
+      .sidebar #mainNav>.nav-link{font-size:11px;padding:7px 8px}
+      .nav-dropdown-menu{position:absolute;top:calc(100% + 4px);left:0;max-height:65vh;min-width:min(235px,calc(100vw - 24px))}
+      .login-pane{max-width:480px;min-height:100vh;padding:28px 22px}
+      .login-logo{width:160px;height:80px}
+      .auth-form{padding:20px 4px 10px}
+    }
+    @media(max-width:380px){
+      .brand img{width:54px}
+      .brand-name{font-size:10px}
+      .brand-sub{font-size:6px}
+      .sidebar #mainNav{gap:0}
+      .sidebar #mainNav>.nav-link{font-size:10px;padding:7px 5px;gap:4px}
+      .nav-dropdown-toggle{font-size:10px;padding:7px 5px;gap:4px}
+    }
+    /* Match the original Bootstrap-based Derkei screens and transitions. */
+    @keyframes derkei-fade-in{from{opacity:0}to{opacity:1}}
+    @keyframes derkei-fade-up{from{opacity:0;transform:translate3d(0,18px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+    #content.page-enter{animation:derkei-fade-up 1s both}
+    .login-pane{animation:derkei-fade-in 1s both}
+    .login-slider{animation:derkei-fade-in 1s both}
+    .page-head{margin-bottom:14px}
+    .page-head-line{align-items:center}
+    .page-head-line h1{flex:0 0 auto}
+    .page-head-line .page-search-row{flex:1 1 auto;min-width:180px;margin:0 8px}
+    .page-search-row{display:block}
+    .page-search-row .table-search{width:100%;min-height:40px;padding:9px 12px;font-size:14px}
+    .page-head .actions{flex:0 0 auto;gap:8px}
+    .page-head .actions .btn{min-height:40px;padding:8px 13px;font-size:12px;letter-spacing:.6px}
+    .page-head .actions [data-action="export"]{display:none}
+    .page-head .actions .btn svg{width:15px;height:15px}
+    .app-alert{background:#e9f4fe;border-color:#b8daff;border-radius:4px;padding:12px 14px;margin-bottom:18px;font-size:14px;box-shadow:0 2px 5px #17314b12}
+    .app-alert>span:first-child{display:inline-flex;align-items:center;color:#00437f}
+    .app-alert>span:first-child svg{width:17px;height:17px}
+    .app-alert .btn-pulse{border:1px solid #00437f;border-radius:999px;background:#fff;color:#00437f;padding:5px 11px;font-weight:700;animation:derkei-pulse 2s infinite}
+    .app-alert .btn-pulse:hover{animation:none;background:#00437f;color:#fff}
+    @keyframes derkei-pulse{0%{box-shadow:0 0 0 0 #00448070}70%{box-shadow:0 0 0 7px #00448000}100%{box-shadow:0 0 0 0 #00448000}}
+    .breadcrumb-row{font-size:14px;gap:14px;margin:8px 0 14px}
+    .legacy-panel{background:#fbfbfe;border-radius:8px;padding:16px 18px 22px}
+    .legacy-panel>.page-head{margin:0 0 10px}
+    .legacy-panel .legacy-section-title{font-size:18px;margin:4px 0 12px}
+    .legacy-form{background:#fbfbfe;padding:4px 8px 12px}
+    .legacy-form-head{margin:4px 0 8px}
+    .legacy-form-title{font-size:20px;line-height:1.35}
+    .legacy-form-head .actions{gap:8px}
+    .legacy-form-head .btn{min-height:40px;padding:8px 15px;font-size:12px;letter-spacing:1px}
+    .legacy-form-head .btn-danger{border:1px solid #dc3545;background:transparent;color:#dc3545}
+    .legacy-form-head .btn-danger:hover{background:#dc3545;color:#fff}
+    .legacy-form-grid{gap:18px 20px;padding:14px 12px}
+    .legacy-form-grid .field{gap:6px}
+    .legacy-form-grid .field label{font-size:14px;color:#34495e;font-weight:500}
+    .legacy-form-grid .field input,.legacy-form-grid .field select,.legacy-form-grid .field textarea{min-height:46px;padding:10px 12px;border:1px solid #ced4da;border-radius:4px;background:#f7f9fc;color:#0c2a48;font-size:14px;line-height:1.5;transition:border-color .15s ease-in-out,box-shadow .15s ease-in-out}
+    .legacy-form-grid .field select{padding-right:34px}
+    .legacy-form-grid .field input:focus,.legacy-form-grid .field select:focus,.legacy-form-grid .field textarea:focus{border-color:#80bdff;outline:0;box-shadow:0 0 0 3px #00437f20}
+    .legacy-form-grid .field textarea{min-height:100px}
+    .legacy-form-grid .form-section{font-size:15px;color:#00437f;padding:12px 0 7px}
+    .legacy-form-grid .form-note{font-size:12px}
+    .table-head{padding:15px 18px}
+    .table-head h2{font-size:15px}
+    .table-head p{font-size:12px}
+    .table-search{min-height:38px;padding:8px 11px;font-size:13px}
+    th{padding:10px 12px;font-size:11px}
+    td{padding:11px 12px;font-size:12px}
+    .table-foot{padding:10px 13px;font-size:11px}
+    .module-grid{gap:18px}
+    .module-card{border-radius:10px;animation:derkei-fade-up 2s both;transition:transform .2s ease,box-shadow .2s ease}
+    .module-card:nth-child(2){animation-delay:.12s}.module-card:nth-child(3){animation-delay:.24s}.module-card:nth-child(4){animation-delay:.36s}
+    .module-icon{height:164px;background:linear-gradient(to top,#cbd7e9,#eaeff5);color:#fff}
+    .module-icon svg{width:76px;height:76px;stroke-width:1.8}
+    .module-card:hover{z-index:2;transform:scale(1.1);box-shadow:0 7px 18px #17314b20}
+    .sidebar #mainNav>.nav-link{border-bottom:2px solid transparent;border-radius:0}
+    .sidebar #mainNav>.nav-link:hover,.sidebar #mainNav>.nav-link.active{background:transparent;color:#00437f;border-bottom-color:#005495}
+    .nav-dropdown-toggle.active{background:transparent;border-bottom:2px solid #005495;border-radius:0;color:#00437f}
+    .nav-dropdown-toggle:hover{background:transparent;border-bottom:2px solid #00437f;border-radius:0}
+    .user-dropdown{gap:8px;padding:4px 5px 4px 12px;background:#eaeff5;border-radius:999px}
+    .user-menu-button{width:34px;height:34px;border:1px solid #ccd8e9;background:#fff}
+    .sidebar-bottom:before{display:none}
+    .slider-caption{display:none}
+    .slider-image:after{display:none}
+    .slider-dots{right:auto;left:50%;bottom:22px;transform:translateX(-50%);gap:6px}
+    .slider-dots button{width:28px;height:3px;border-radius:0;background:#ffffff90;transition:background .2s}
+    .slider-dots button.active{width:28px;height:3px;border-radius:0;background:#fff}
+    .carousel-control{position:absolute;z-index:3;top:0;bottom:0;width:15%;display:flex;align-items:center;justify-content:center;border:0;background:transparent;color:#fff;opacity:.65;transition:opacity .2s}
+    .carousel-control:hover{opacity:1}
+    .carousel-control svg{width:28px;height:28px;stroke:currentColor}
+    .carousel-control.previous{left:0}.carousel-control.next{right:0}
+    .user-menu-button{padding:0;overflow:hidden}
+    .user-avatar{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover}
+    .user-menu-button .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:900px){
+      .page-head-line{display:grid;grid-template-columns:minmax(130px,.8fr) minmax(180px,1.6fr) auto;gap:10px}
+      .page-head-line h1{font-size:18px}
+      .page-head-line .page-search-row{margin:0}
+      .page-head .actions .btn{min-height:38px;padding:7px 9px}
+      .module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:650px){
+      .page-head-line{display:flex;align-items:stretch;flex-direction:column;gap:10px}
+      .page-head-line h1{font-size:20px}
+      .page-head-line .page-search-row{width:100%;min-width:0}
+      .page-head .actions{display:grid;grid-template-columns:1fr}
+      .page-head .actions .btn{width:100%;min-height:42px}
+      .legacy-form-head{align-items:stretch;flex-direction:column}
+      .legacy-form-head .actions{display:grid;grid-template-columns:1fr 1fr}
+      .legacy-form-head .btn{width:100%;min-height:42px}
+      .legacy-form-grid{grid-template-columns:1fr;gap:14px;padding:12px 4px}
+      .legacy-form-grid .field.full,.legacy-form-grid .form-section,.legacy-form-grid .person-lookup,.legacy-form-grid .form-note,.movement-section{grid-column:1}
+      .legacy-panel{padding:12px 10px 16px}
+      .module-grid{gap:12px}
+      .module-icon{height:112px}
+      .module-icon svg{width:56px;height:56px}
+      .app-alert{font-size:12px;gap:7px;flex-wrap:wrap}
+      .app-alert .alert-close{margin-left:auto}
+    }
+    @media(max-width:420px){
+      .module-grid{grid-template-columns:1fr}
+      .module-icon{height:130px}
+      .legacy-form-head .actions{grid-template-columns:1fr}
+      .table-head{padding:12px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    }
+    .public-landing{--landing-navy:#37517e;--landing-cyan:#47b2e4;display:none;background:#fff;color:#444;font:15px/1.65 "Open Sans",Arial,sans-serif;min-height:100vh}
+    .public-landing.active{display:block}
+    .public-landing *{box-sizing:border-box}
+    .public-landing h1,.public-landing h2,.public-landing h3,.public-landing h4{font-family:Jost,Arial,sans-serif}
+    .public-landing a{color:var(--landing-cyan);text-decoration:none}
+    .landing-container{width:min(1140px,calc(100% - 40px));margin:0 auto}
+    .landing-header{position:fixed;inset:0 0 auto;z-index:80;padding:14px 0;transition:background .35s,padding .35s,box-shadow .35s}
+    .landing-header.scrolled{padding:9px 0;background:rgba(40,58,90,.96);box-shadow:0 3px 18px #152b4930}
+    .landing-nav{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .landing-brand{display:flex;align-items:center;gap:9px;color:#fff!important;font-family:Jost,Arial,sans-serif;font-size:17px;font-weight:700;letter-spacing:1px;white-space:nowrap}
+    .landing-brand img{display:block;width:65px;height:44px;object-fit:contain}
+    .landing-links{display:flex;align-items:center;gap:30px;list-style:none;padding:0;margin:0 auto}
+    .landing-links a{color:#fff;font-size:14px;font-weight:600;transition:color .2s}
+    .landing-links a:hover,.landing-links a.active{color:#fff}
+    .landing-entry{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border:2px solid var(--landing-cyan);border-radius:50px;background:var(--landing-cyan);color:#fff!important;font-size:13px;font-weight:700;letter-spacing:.2px;white-space:nowrap;box-shadow:0 5px 16px #12274438;transition:background .25s,color .25s,transform .25s,box-shadow .25s}
+    .landing-entry:hover{background:#31a9e1;border-color:#31a9e1;color:#fff!important;transform:translateY(-1px);box-shadow:0 7px 20px #1227444a}
+    .landing-entry svg{height:16px;width:16px}
+    .landing-menu-toggle{display:none;width:40px;height:40px;border:0;border-radius:5px;background:#ffffff1c;color:#fff;font-size:24px;line-height:1}
+    .landing-hero{position:relative;min-height:min(760px,100vh);height:100vh;overflow:hidden;background:#253c5c;color:#fff}
+    .landing-carousel{position:absolute;inset:0}
+    .landing-slide{position:absolute;inset:0;display:flex;align-items:center;opacity:0;visibility:hidden;background:#253c5c var(--slide-image) center 44%/cover no-repeat;transition:opacity .65s ease,visibility .65s}
+    .landing-slide:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#172c4de8 0%,#203958c7 47%,#20395838 100%),linear-gradient(0deg,#1c355955,transparent 45%)}
+    .landing-slide.active{opacity:1;visibility:visible}
+    .landing-hero-inner{position:relative;z-index:1;max-width:760px}
+    .landing-kicker{display:inline-flex;align-items:center;gap:9px;margin-bottom:17px;color:#cceeff;font-size:12px;font-weight:700;letter-spacing:1.9px;text-transform:uppercase}
+    .landing-kicker:before{content:"";width:32px;height:2px;background:var(--landing-cyan)}
+    .landing-hero h1{max-width:760px;margin:0 0 16px;color:#fff;font-size:clamp(42px,5.6vw,70px);font-weight:700;line-height:1.08;letter-spacing:.2px}
+    .landing-hero h1 span{color:#78cef4}
+    .landing-hero p{max-width:650px;margin:0;color:#eff5fb;font-size:17px;line-height:1.75}
+    .landing-hero-actions{display:flex;align-items:center;justify-content:flex-start;gap:13px;flex-wrap:wrap;margin-top:26px}
+    .landing-management-cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 21px;border:2px solid var(--landing-cyan);border-radius:50px;background:var(--landing-cyan);color:#fff;font:700 13px "Open Sans",Arial,sans-serif;box-shadow:0 5px 16px #10243c40;cursor:pointer;transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+    .landing-management-cta:hover{transform:translateY(-2px);background:#31a9e1;border-color:#31a9e1;box-shadow:0 10px 27px #10243c66}
+    .landing-management-cta svg{width:18px;height:18px}
+    .landing-primary{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:0 17px;border:1px solid #ffffff99;border-radius:50px;background:#172c4d30;color:#fff!important;font-size:13px;font-weight:700;transition:background .2s,border-color .2s,transform .2s}
+    .landing-primary:hover{transform:translateY(-2px);background:#ffffff1c;border-color:#fff}
+    .landing-video{display:inline-flex;align-items:center;gap:9px;padding:10px 0;border:0;background:transparent;color:#fff!important;font-size:14px;font-weight:600;cursor:pointer;appearance:none}
+    .landing-video>span{display:grid;place-items:center;width:34px;height:34px;border:2px solid #fff;border-radius:50%;font-size:12px;transition:color .2s,border-color .2s}
+    .landing-video:hover{color:#78cef4!important}
+    .landing-video:hover>span{border-color:#78cef4;color:#78cef4}
+    .landing-primary svg{width:18px;height:18px}
+    .landing-carousel-control{position:absolute;top:50%;z-index:4;display:grid;place-items:center;width:44px;height:44px;border:1px solid #ffffff8c;border-radius:50%;background:#172c4d40;color:#fff;font-size:31px;line-height:1;transform:translateY(-50%);transition:background .2s}
+    .landing-carousel-control[hidden]{display:none}
+    .landing-carousel-control:hover{background:var(--landing-cyan)}
+    .landing-carousel-control.previous{left:24px}
+    .landing-carousel-control.next{right:24px}
+    .landing-carousel-indicators{position:absolute;right:0;bottom:28px;left:0;z-index:4;display:flex;justify-content:center;gap:5px}
+    .landing-carousel-indicators button{display:grid;place-items:center;width:38px;height:20px;padding:0;border:0;background:transparent;cursor:pointer}
+    .landing-carousel-indicators button:before{content:"";display:block;width:26px;height:4px;border-radius:4px;background:#ffffff88;transition:background .2s,width .2s}
+    .landing-carousel-indicators button.active:before{width:38px;background:var(--landing-cyan)}
+    .landing-scroll{position:absolute;left:50%;bottom:23px;z-index:1;display:grid;justify-items:center;gap:7px;color:#ffffffb5;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;transform:translateX(-50%)}
+    .landing-scroll span{width:20px;height:32px;border:1px solid #ffffff91;border-radius:12px;position:relative}
+    .landing-scroll span:after{content:"";position:absolute;left:8px;top:6px;width:2px;height:6px;border-radius:2px;background:#fff;animation:landing-scroll 1.5s infinite}
+    @keyframes landing-scroll{0%{opacity:0;transform:translateY(0)}40%{opacity:1}100%{opacity:0;transform:translateY(9px)}}
+    .landing-section{padding:76px 0}
+    .landing-section.tinted{background:#f3f5fa}
+    .landing-section-heading{text-align:center;margin:0 auto 34px;max-width:800px}
+    .landing-section-heading h2{position:relative;margin:0 0 17px;padding-bottom:17px;color:var(--landing-navy);font-size:32px;font-weight:700;line-height:1.2;text-transform:uppercase}
+    .landing-section-heading h2:before,.landing-section-heading h2:after{content:"";position:absolute;left:50%;bottom:0;height:1px;transform:translateX(-50%)}
+    .landing-section-heading h2:before{width:120px;background:#ddd}
+    .landing-section-heading h2:after{width:40px;height:3px;background:var(--landing-cyan)}
+    .landing-section-heading p{margin:0;color:#536275;font-size:14px}
+    .landing-about-copy{max-width:1000px;margin:0 auto;color:#4a5563;font-size:15px;line-height:1.9}
+    .landing-about-copy p{margin:0 0 14px}
+    .landing-about-copy strong{color:var(--landing-navy)}
+    .landing-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+    .landing-value{position:relative;padding:20px 18px 18px 49px;background:#fff;border-radius:4px}
+    .landing-value-toggle{display:flex;align-items:center;width:100%;gap:10px;padding:0;border:0;background:transparent;color:var(--landing-navy);font:500 20px "Open Sans",Arial,sans-serif;text-align:left;cursor:pointer}
+    .landing-value-toggle svg{width:22px;height:22px;color:var(--landing-cyan)}
+    .landing-value-toggle span{margin-left:auto;font-size:22px;transition:transform .2s}
+    .landing-value[aria-expanded="false"] .landing-value-toggle span{transform:rotate(-90deg)}
+    .landing-value ol{padding-left:23px;margin:14px 0 0;color:#536275;font-size:14px}
+    .landing-value[aria-expanded="false"] ol{display:none}
+    .landing-value li{padding:0 0 14px 4px}
+    .landing-why{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center}
+    .landing-why-copy h2{margin:0 0 14px;color:var(--landing-navy);font-size:29px;line-height:1.2}
+    .landing-why-copy>p{margin:0 0 20px;color:#536275;font-size:14px}
+    .landing-why-image{min-height:360px;border-radius:7px;background:#e8eef5 url("assets/img/why-us.png") center/cover no-repeat;box-shadow:0 12px 36px #1b385726}
+    .landing-reasons{list-style:none;padding:0;margin:0}
+    .landing-reasons li{padding:15px 0;border-bottom:1px solid #e5e9ef}
+    .landing-reasons button{width:100%;display:flex;align-items:center;gap:12px;padding:0;border:0;background:none;text-align:left;color:#37517e;font:600 17px Jost,Arial,sans-serif;cursor:pointer}
+    .landing-reasons button span{color:var(--landing-cyan);font-weight:700}
+    .landing-reasons button svg{width:18px;height:18px;margin-left:auto;transition:transform .2s}
+    .landing-reasons li.open button svg{transform:rotate(180deg)}
+    .landing-reasons p{display:none;margin:12px 0 0 35px;color:#536275;font-size:13px;line-height:1.75}
+    .landing-reasons li.open p{display:block;animation:derkei-fade-in .25s both}
+    .landing-services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+    .landing-service{min-height:180px;padding:32px 30px;background:#fff;border:1px solid #e7ebf1;border-radius:4px;box-shadow:0 4px 20px #00000012;transition:transform .25s,box-shadow .25s}
+    .landing-service:hover{transform:translateY(-5px);box-shadow:0 12px 28px #37517e18}
+    .landing-service-icon{display:grid;place-items:center;width:48px;height:48px;margin-bottom:17px;border-radius:50%;background:#eaf7fd;color:var(--landing-cyan)}
+    .landing-service-icon svg{width:24px;height:24px}
+    .landing-service h3{margin:0 0 9px;color:var(--landing-navy);font-size:19px}
+    .landing-service p{margin:0;color:#667486;font-size:13px;line-height:1.7}
+    .landing-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .landing-gallery-item{position:relative;display:block;width:100%;min-height:220px;overflow:hidden;padding:0;border:0;border-radius:4px;background:#dbe4ee;cursor:zoom-in}
+    .landing-gallery-item img{display:block;width:100%;height:100%;min-height:220px;object-fit:cover;transition:transform .5s}
+    .landing-gallery-item:hover img{transform:scale(1.06)}
+    .landing-gallery-caption{position:absolute;inset:auto 0 0;padding:32px 16px 14px;background:linear-gradient(transparent,#122b4dd9);color:#fff;font-family:Jost,Arial,sans-serif;font-size:17px;font-weight:600;text-align:left;opacity:0;transition:opacity .25s}
+    .landing-gallery-item:hover .landing-gallery-caption,.landing-gallery-item:focus-visible .landing-gallery-caption{opacity:1}
+    .landing-lightbox{position:fixed;inset:0;z-index:1000;display:none;place-items:center;padding:30px;background:#101c2be8}
+    .landing-lightbox.open{display:grid}
+    .landing-lightbox img{max-width:min(1100px,92vw);max-height:86vh;object-fit:contain}
+    .landing-lightbox-close{position:absolute;top:18px;right:22px;width:42px;height:42px;border:1px solid #ffffff80;border-radius:50%;background:#ffffff18;color:#fff;font-size:27px;cursor:pointer}
+    .landing-lightbox-nav{position:absolute;top:50%;display:grid;place-items:center;width:44px;height:44px;border:1px solid #ffffff80;border-radius:50%;background:#ffffff18;color:#fff;font-size:28px;transform:translateY(-50%);cursor:pointer}
+    .landing-lightbox-nav.previous{left:18px}
+    .landing-lightbox-nav.next{right:18px}
+    .landing-lightbox-caption{position:absolute;bottom:16px;color:#fff;font-size:13px}
+    .landing-back-to-top{position:fixed;right:16px;bottom:16px;z-index:70;display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:50%;background:var(--landing-cyan);color:#fff;font-size:23px;box-shadow:0 3px 12px #10243c35;cursor:pointer}
+    .landing-back-to-top[hidden]{display:none}
+    .landing-contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:34px}
+    .landing-contact-info,.landing-contact-form{padding:26px;background:#fff;border:1px solid #e5e9ef;border-radius:6px;box-shadow:0 4px 20px #37517e0d}
+    .landing-contact-info h3,.landing-contact-form h3{margin:0 0 20px;color:var(--landing-navy);font-size:21px}
+    .landing-contact-row{display:grid;grid-template-columns:40px 1fr;gap:12px;margin:0 0 20px}
+    .landing-contact-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#eaf7fd;color:var(--landing-cyan)}
+    .landing-contact-icon svg{width:18px;height:18px}
+    .landing-contact-row strong{display:block;color:var(--landing-navy);font-family:Jost,Arial,sans-serif;font-size:17px}
+    .landing-contact-row p{margin:3px 0 0;color:#536275;font-size:13px;line-height:1.65}
+    .landing-contact-map{display:block;width:100%;height:245px;margin-top:8px;border:0}
+    .landing-contact-form{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+    .landing-contact-form .landing-form-title{grid-column:1/-1;margin:0 0 7px;color:var(--landing-navy);font-size:21px}
+    .landing-section[id]{scroll-margin-top:76px}
+    .landing-contact-form label{display:grid;gap:6px;color:#45566b;font-size:12px;font-weight:600}
+    .landing-contact-form label.full{grid-column:1/-1}
+    .landing-contact-form input,.landing-contact-form textarea{width:100%;padding:11px 12px;border:1px solid #ced4da;border-radius:4px;background:#fff;color:#34495e;font:13px "Open Sans",Arial,sans-serif;outline:0;transition:border-color .15s,box-shadow .15s}
+    .landing-contact-form input:focus,.landing-contact-form textarea:focus{border-color:var(--landing-cyan);box-shadow:0 0 0 3px #71c7ec30}
+    .landing-contact-form textarea{min-height:105px;resize:vertical}
+    .landing-contact-form button{justify-self:start;padding:10px 22px;border:0;border-radius:50px;background:var(--landing-cyan);color:#fff;font-weight:700;cursor:pointer;transition:background .2s}
+    .landing-contact-form button:hover{background:#31a9e1}
+    .landing-contact-note{grid-column:1/-1;min-height:18px;margin:0;color:#21734e;font-size:12px}
+    .landing-footer{padding:39px 0 18px;background:var(--landing-navy);color:#fff}
+    .landing-footer-grid{display:grid;grid-template-columns:1.2fr .8fr 1fr;gap:35px;padding-bottom:25px}
+    .landing-footer-brand{display:flex;align-items:center;gap:12px;margin-bottom:12px;font-family:Jost,Arial,sans-serif;font-weight:700;font-size:18px}
+    .landing-footer-brand img{width:70px;height:48px;object-fit:contain}
+    .landing-footer p,.landing-footer a{color:#e4ebf4;font-size:13px}
+    .landing-footer h3{margin:0 0 13px;color:#fff;font-size:17px}
+    .landing-footer ul{list-style:none;padding:0;margin:0}
+    .landing-footer li{margin:5px 0}
+    .landing-footer-bottom{padding-top:15px;border-top:1px solid #ffffff28;text-align:center;color:#d6e0ed;font-size:11px}
+    .landing-footer-bottom button{border:0;background:none;color:#fff;font:inherit;text-decoration:underline;cursor:pointer}
+    .landing-reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+    .landing-reveal.visible{opacity:1;transform:none}
+    .landing-login-back{position:fixed;left:22px;top:20px;z-index:5;display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid #d5dce5;border-radius:4px;background:#fff;color:#00437f;font-size:11px;font-weight:700}
+    .landing-login-back:hover{background:#f2f7fb}
+    @media(max-width:900px){
+      .landing-links{gap:17px}
+      .landing-why{grid-template-columns:1fr 1fr;gap:28px}
+      .landing-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .landing-contact{gap:18px}
+      .landing-footer-grid{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:991px){
+      .landing-header,.landing-header.scrolled{padding:8px 0}
+      .landing-nav{gap:9px}
+      .landing-brand{font-size:14px}
+      .landing-brand img{width:54px;height:40px}
+      .landing-entry{gap:5px;padding:8px 11px;font-size:11px}
+      .landing-carousel-control{top:118px;width:34px;height:34px;font-size:25px;transform:none}
+      .landing-carousel-control.previous{left:10px}
+      .landing-carousel-control.next{right:10px}
+      .landing-menu-toggle{display:inline-grid;place-items:center;flex:none}
+      .landing-links{display:none;position:absolute;top:calc(100% + 3px);left:20px;right:20px;align-items:stretch;gap:0;padding:8px 0;border-radius:7px;background:#fff;box-shadow:0 10px 35px #10243c35}
+      .landing-links.open{display:flex;flex-direction:column}
+      .landing-links li{padding:0}
+      .landing-links a{padding:11px 18px;color:var(--landing-navy);font-size:14px}
+      .landing-links a:hover,.landing-links a.active{color:var(--landing-cyan)}
+      .landing-hero{min-height:650px;height:88vh;max-height:800px}
+      .landing-slide{background-position:57% center}
+      .landing-hero:before{background:linear-gradient(90deg,#172c4df0 0%,#203958d9 62%,#2039587d 100%)}
+      .landing-hero h1{font-size:clamp(39px,10vw,58px)}
+      .landing-hero p{font-size:15px}
+      .landing-hero-actions{margin-top:22px;gap:10px}
+      .landing-management-cta{min-height:46px;padding:0 17px;font-size:12px}
+      .landing-carousel-control{width:34px;height:34px;font-size:25px}
+      .landing-section{padding:57px 0}
+      .landing-section-heading{margin-bottom:27px}
+      .landing-section-heading h2{font-size:27px}
+      .landing-values,.landing-why,.landing-contact{grid-template-columns:1fr}
+      .landing-why-image{min-height:290px}
+      .landing-services{grid-template-columns:1fr}
+      .landing-service{min-height:0}
+      .landing-gallery{gap:10px}
+      .landing-gallery-item,.landing-gallery-item img{min-height:155px}
+      .landing-gallery-caption{font-size:14px;padding:28px 10px 10px}
+      .landing-contact-info,.landing-contact-form{padding:20px}
+      .landing-footer-grid{grid-template-columns:1fr;gap:19px}
+      .landing-login-back{top:12px;left:12px}
+      .landing-lightbox-nav.previous{left:8px}
+      .landing-lightbox-nav.next{right:8px}
+    }
+    @media(max-width:430px){
+      .landing-container{width:min(100% - 28px,1140px)}
+      .landing-brand{gap:5px;font-size:12px;letter-spacing:.4px}
+      .landing-brand img{width:43px;height:36px}
+      .landing-entry{gap:4px;padding:7px 9px;font-size:10px}
+      .landing-menu-toggle{width:34px;height:36px}
+      .landing-hero{min-height:620px;height:86vh}
+      .landing-hero-actions{align-items:flex-start;flex-direction:column;gap:5px;margin-top:20px}
+      .landing-management-cta{min-height:46px;padding:0 16px;font-size:12px}
+      .landing-primary{min-height:45px;padding:0 19px}
+      .landing-gallery{grid-template-columns:1fr 1fr}
+      .landing-gallery-item,.landing-gallery-item img{min-height:130px}
+      .landing-contact-form{grid-template-columns:1fr}
+      .landing-contact-form label.full,.landing-contact-note{grid-column:1}
+      .landing-value{padding:21px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .landing-reveal{opacity:1;transform:none;transition:none}
+      .landing-scroll span:after{animation:none}
+      .landing-slide{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <section class="public-landing active" id="publicLanding">
+    <header class="landing-header" id="landingHeader">
+      <div class="landing-container landing-nav">
+        <a class="landing-brand" href="#landing-home" aria-label="Derkei beranda">
+          <img src="assets/img/logo-company.png" alt="Logo PT. Wajracyena Derkei Sekuriti">
+          <span>DERKEI</span>
+        </a>
+        <button class="landing-menu-toggle" id="landingMenuToggle" data-action="toggle-landing-menu" aria-label="Buka navigasi" aria-expanded="false">☰</button>
+        <ul class="landing-links" id="landingLinks">
+          <li><a class="active" href="#landing-home">Beranda</a></li>
+          <li><a href="#landing-about">Tentang</a></li>
+          <li><a href="#landing-services">Layanan</a></li>
+          <li><a href="#landing-gallery">Galeri</a></li>
+          <li><a href="#landing-contact">Kontak</a></li>
+        </ul>
+        <button class="landing-entry" data-action="enter-management">
+          Masuk Sistem
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+        </button>
+      </div>
+    </header>
+    <main>
+      <section class="landing-hero" id="landing-home">
+        <div class="landing-carousel" id="landingCarousel" aria-roledescription="carousel" aria-label="Profil PT. Wajracyena Derkei Sekuriti">
+          <article class="landing-slide active" aria-hidden="false" style="--slide-image:url('assets/img/derkei/landscape_hero.jpeg')">
+            <div class="landing-container landing-hero-inner">
+              <div class="landing-kicker">PT. Wajracyena Derkei Sekuriti</div>
+              <h1>Kami Hadir<br><span>Memberi Rasa Aman.</span></h1>
+              <p>Wajracyena Derkei Sekuriti merupakan Badan Usaha Jasa Pengamanan yang hadir untuk memberikan rasa aman bagi setiap mitra kerja.</p>
+              <div class="landing-hero-actions">
+                <button class="landing-management-cta" data-action="enter-management">Masuk Sistem Manajemen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></button>
+                <a class="landing-primary" href="#landing-about">Mulai Kenali Kami <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
+                <a class="landing-video" href="https://www.youtube.com/watch?v=DT1RDKnQr38&ab_channel=PelatihSatpam" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">▶</span> Tonton Video</a>
+              </div>
+            </div>
+          </article>
+          <article class="landing-slide" aria-hidden="true" style="--slide-image:url('assets/img/derkei/img_5.jpeg')">
+            <div class="landing-container landing-hero-inner">
+              <div class="landing-kicker">Wajracyena Derkei Sekuriti</div>
+              <h1>Profesional,<br><span>Terpercaya.</span></h1>
+              <p>Berpedoman pada Undang-Undang yang berlaku, menghormati nilai budaya, dan menjunjung tinggi profesionalitas.</p>
+              <div class="landing-hero-actions">
+                <button class="landing-management-cta" data-action="enter-management">Masuk Sistem Manajemen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></button>
+                <a class="landing-primary" href="#landing-about">Mulai Kenali Kami <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
+                <a class="landing-video" href="https://www.youtube.com/watch?v=DT1RDKnQr38&ab_channel=PelatihSatpam" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">▶</span> Tonton Video</a>
+              </div>
+            </div>
+          </article>
+          <article class="landing-slide" aria-hidden="true" style="--slide-image:url('assets/img/derkei/img_6.jpeg')">
+            <div class="landing-container landing-hero-inner">
+              <div class="landing-kicker">Layanan Paripurna</div>
+              <h1>Solusi untuk<br><span>Tantangan Keamanan.</span></h1>
+              <p>Pelatihan pengamanan mengacu pada Peraturan Kepala Kepolisian Negara Republik Indonesia No. 24 Tahun 2007.</p>
+              <div class="landing-hero-actions">
+                <button class="landing-management-cta" data-action="enter-management">Masuk Sistem Manajemen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></button>
+                <a class="landing-primary" href="#landing-about">Mulai Kenali Kami <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
+                <a class="landing-video" href="https://www.youtube.com/watch?v=DT1RDKnQr38&ab_channel=PelatihSatpam" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">▶</span> Tonton Video</a>
+              </div>
+            </div>
+          </article>
+          <button class="landing-carousel-control previous" type="button" data-action="landing-slide-prev" aria-label="Slide sebelumnya"><span aria-hidden="true">‹</span></button>
+          <button class="landing-carousel-control next" type="button" data-action="landing-slide-next" aria-label="Slide berikutnya"><span aria-hidden="true">›</span></button>
+          <div class="landing-carousel-indicators" role="group" aria-label="Pilih slide">
+            <button type="button" class="active" data-action="landing-slide" data-slide="0" aria-label="Slide 1" aria-current="true"></button>
+            <button type="button" data-action="landing-slide" data-slide="1" aria-label="Slide 2" aria-current="false"></button>
+            <button type="button" data-action="landing-slide" data-slide="2" aria-label="Slide 3" aria-current="false"></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-section tinted" id="landing-about">
+        <div class="landing-container landing-reveal">
+          <div class="landing-section-heading"><h2>Tentang Kami</h2></div>
+          <div class="landing-about-copy">
+            <p>Wajracyena Derkei Sekuriti (WDS) merupakan Badan Usaha Jasa Pengamanan yang hadir sesuai tuntutan situasi dan kondisi saat ini, memberikan rasa aman bagi setiap mitra kerja kami dengan pengalaman handal, profesional, terpercaya, berpedoman pada Undang-Undang yang berlaku serta menghormati nilai-nilai budaya dan menjunjung tinggi profesionalitas. Sehingga dapat memberikan layanan paripurna kepada setiap mitra kami.</p>
+            <p>Dengan melakukan pelatihan pengamanan yang memenuhi standar Peraturan Kepala Kepolisian Negara Republik Indonesia No. 24 Tahun 2007, WDS merupakan solusi di setiap tantangan keamanan yang ada, bekerja sama dengan Resimen 3 Pelopor Brimob Polri dan di bawah naungan Yayasan Cahaya Teratai Wajracyena. <strong>Kami Hadir Memberi Rasa Aman.</strong></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-section" id="landing-vision-mission">
+        <div class="landing-container landing-reveal">
+          <div class="landing-section-heading"><h2>Visi &amp; Misi</h2></div>
+          <div class="landing-values">
+            <article class="landing-value" aria-expanded="true">
+              <button class="landing-value-toggle" type="button" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="m8 14-1 8 5-3 5 3-1-8"/></svg>Visi <span aria-hidden="true">⌄</span></button>
+              <ol>
+                <li>Menjadi perusahaan penyedia tenaga kerja yang dapat menumbuhkan optimisme dan rasa aman di lingkungan perusahaan dan masyarakat.</li>
+                <li>Mengembangkan dan mengoptimalkan sumber daya manusia yang memiliki kompetensi sesuai perkembangan teknologi dalam pembangunan sosial masyarakat melalui pendekatan kultural.</li>
+                <li>Menjadi perusahaan jasa pengamanan dan penyedia karyawan outsourcing yang terpercaya.</li>
+                <li>Memberikan pelayanan profesional dan memuaskan mitra kerja untuk hasil yang maksimal.</li>
+              </ol>
+            </article>
+            <article class="landing-value" aria-expanded="true">
+              <button class="landing-value-toggle" type="button" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg>Misi <span aria-hidden="true">⌄</span></button>
+              <ol>
+                <li>Memenuhi kebutuhan pengguna jasa melalui pelayanan paripurna dengan berpedoman pada Undang-Undang yang berlaku serta menghormati nilai-nilai budaya.</li>
+                <li>Berkomitmen menyediakan tenaga kerja profesional dengan standar keselamatan berkualitas dan menempatkan kebutuhan pengguna jasa sebagai prioritas.</li>
+                <li>Selalu berusaha menciptakan kepuasan mitra kerja melalui kualitas pelayanan.</li>
+                <li>Menjalin hubungan berkesinambungan dengan memperhatikan dan memahami kebutuhan mitra kerja.</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-section tinted" id="landing-why">
+        <div class="landing-container landing-why landing-reveal">
+          <div class="landing-why-copy">
+            <h2>Kenapa memilih <strong>WDS</strong>?</h2>
+            <p>WDS hadir untuk memastikan kelayakan dan kecakapan setiap anggota keamanan sehingga sistem pengamanan yang kami miliki dapat menjadi solusi untuk semua risiko yang hadir kepada tiap-tiap mitra kerja berdasarkan PERKAP No. 17 Tahun 2006 dan PERKAP No. 24 Tahun 2007.</p>
+            <ul class="landing-reasons">
+              <li class="open">
+                <button type="button"><span>01</span>Dukungan Sumber Daya Manusia<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+                <p>WDS mengoptimalkan profesionalisme pelayanan setiap anggota keamanan dalam menjalankan tugas pokok dan fungsinya sehingga mampu menghindari adanya korban jiwa dan meminimalisasi kerugian.</p>
+              </li>
+              <li>
+                <button type="button"><span>02</span>Dukungan Pelayanan<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+                <p>WDS berfokus pada peningkatan pelayanan keamanan dan kenyamanan di wilayah kerja terhadap segala bentuk ancaman serta bahaya secara konsisten.</p>
+              </li>
+              <li>
+                <button type="button"><span>03</span>Dukungan Sertifikasi<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+                <p>WDS memiliki sertifikasi profesional bagi setiap anggota keamanan berdasarkan standar nasional, didukung instruktur berpengalaman dari POLRI maupun TNI serta tenaga ahli lainnya.</p>
+              </li>
+            </ul>
+          </div>
+          <div class="landing-why-image" role="img" aria-label="Pelatihan personel keamanan Derkei"></div>
+        </div>
+      </section>
+
+      <section class="landing-section" id="landing-services">
+        <div class="landing-container landing-reveal">
+          <div class="landing-section-heading">
+            <h2>Layanan</h2>
+            <p>WDS bertanggung jawab atas sikap, kecakapan, dan kedisiplinan setiap anggota keamanan serta terus meningkatkan kualitas layanan.</p>
+          </div>
+          <div class="landing-services">
+            <article class="landing-service">
+              <span class="landing-service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg></span>
+              <h3>Jasa Pengamanan Bersertifikat</h3>
+              <p>Penyediaan jasa pengamanan sesuai kebutuhan mitra kerja.</p>
+            </article>
+            <article class="landing-service">
+              <span class="landing-service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19h18M5 19V9l7-5 7 5v10M9 19v-6h6v6"/><path d="M9 9h.01M15 9h.01"/></svg></span>
+              <h3>Jasa Pengamanan Body Guard</h3>
+              <p>Dukungan pengamanan personal sebagai bagian dari cakupan layanan WDS.</p>
+            </article>
+            <article class="landing-service">
+              <span class="landing-service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="5"/></svg></span>
+              <h3>Pelatihan Pengamanan</h3>
+              <p>Pelatihan dan fasilitas Gada Pratama, Gada Madya, serta Gada Utama.</p>
+            </article>
+            <article class="landing-service"><span class="landing-service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/><circle cx="9" cy="11" r="1"/><circle cx="15" cy="11" r="1"/><path d="M9 15c1.8 1.6 4.2 1.6 6 0"/></svg></span><h3>Penyediaan K9</h3><p>Penyediaan K9 termasuk dalam cakupan layanan yang dicantumkan pada website WDS.</p></article>
+            <article class="landing-service"><span class="landing-service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/><path d="M12 8v8m-3-3 3 3 3-3"/></svg></span><h3>Penebalan Pengawalan</h3><p>Penebalan pengawalan dengan BKO Brimob.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-section tinted" id="landing-gallery">
+        <div class="landing-container landing-reveal">
+          <div class="landing-section-heading"><h2>Galeri</h2><p>Dokumentasi kegiatan dan pembinaan personel Wajracyena Derkei Sekuriti.</p></div>
+          <div class="landing-gallery">
+            <button class="landing-gallery-item" type="button" data-gallery-image="assets/img/derkei/img_5.jpeg" aria-label="Perbesar foto galeri 1"><img src="assets/img/derkei/img_5.jpeg" alt="Dokumentasi kegiatan WDS" loading="lazy"><span class="landing-gallery-caption">Dokumentasi Kegiatan WDS</span></button>
+            <button class="landing-gallery-item" type="button" data-gallery-image="assets/img/derkei/img_6.jpeg" aria-label="Perbesar foto galeri 2"><img src="assets/img/derkei/img_6.jpeg" alt="Dokumentasi kegiatan WDS" loading="lazy"><span class="landing-gallery-caption">Dokumentasi Kegiatan WDS</span></button>
+            <button class="landing-gallery-item" type="button" data-gallery-image="assets/img/derkei/img_7.jpeg" aria-label="Perbesar foto galeri 3"><img src="assets/img/derkei/img_7.jpeg" alt="Dokumentasi kegiatan WDS" loading="lazy"><span class="landing-gallery-caption">Dokumentasi Kegiatan WDS</span></button>
+            <button class="landing-gallery-item" type="button" data-gallery-image="assets/img/derkei/img_8.jpeg" aria-label="Perbesar foto galeri 4"><img src="assets/img/derkei/img_8.jpeg" alt="Dokumentasi kegiatan WDS" loading="lazy"><span class="landing-gallery-caption">Dokumentasi Kegiatan WDS</span></button>
+            <button class="landing-gallery-item" type="button" data-gallery-image="assets/img/derkei/img_9.jpeg" aria-label="Perbesar foto galeri 5"><img src="assets/img/derkei/img_9.jpeg" alt="Dokumentasi kegiatan WDS" loading="lazy"><span class="landing-gallery-caption">Dokumentasi Kegiatan WDS</span></button>
+            <button class="landing-gallery-item" type="button" data-gallery-image="assets/img/derkei/landscape_hero.jpeg" aria-label="Perbesar foto galeri 6"><img src="assets/img/derkei/landscape_hero.jpeg" alt="Dokumentasi kegiatan WDS" loading="lazy"><span class="landing-gallery-caption">Dokumentasi Kegiatan WDS</span></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-section" id="landing-contact">
+        <div class="landing-container landing-reveal">
+          <div class="landing-section-heading"><h2>Kontak Kami</h2><p>Hubungi kami untuk pertanyaan dan kebutuhan layanan pengamanan.</p></div>
+          <div class="landing-contact">
+            <div class="landing-contact-info">
+              <h3>Informasi Kontak</h3>
+              <div class="landing-contact-row"><span class="landing-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><strong>Kantor Pusat</strong><p>JL. Raya Sirkuit Sentul, Pergudangan DERKEI, Kel. Sentul, Kec. Babakan Madang, Kabupaten Bogor 16810</p></div></div>
+              <div class="landing-contact-row"><span class="landing-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><strong>Kantor Cabang</strong><p>Jl. Grand Wisata Mustika Jaya, Kota Bekasi, Jawa Barat 17158</p></div></div>
+              <div class="landing-contact-row"><span class="landing-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><div><strong>Email Kami</strong><p><a href="mailto:kami.wds@gmail.com">kami.wds@gmail.com</a></p></div></div>
+              <div class="landing-contact-row"><span class="landing-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.2-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.8 2.1Z"/></svg></span><div><strong>Hubungi Kami</strong><p><a href="tel:+622187951412">+62 21 8795 1412</a><br><a href="tel:+622182631365">+62 21 8263 1365</a></p></div></div>
+              <iframe class="landing-contact-map" title="Lokasi kantor PT. Derkei di Google Maps" loading="lazy" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.946448574677!2d106.8521090147707!3d-6.528448095277889!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69c124a09589b9%3A0xa94c433a854a22b0!2sPT.%20Derkei!5e0!3m2!1sid!2sid!4v1617591316083!5m2!1sid!2sid" allowfullscreen></iframe>
+            </div>
+            <form class="landing-contact-form" id="landingContactForm">
+              <h3 class="landing-form-title">Kirim Pertanyaan</h3>
+              <label>Nama Kamu<input name="name" autocomplete="name" required></label>
+              <label>Email Kamu<input type="email" name="email" autocomplete="email" required></label>
+              <label class="full">Nomor Telepon<input type="tel" name="phone" autocomplete="tel" minlength="10" required></label>
+              <label class="full">Judul Pertanyaan<input name="subject" required></label>
+              <label class="full">Pesan<textarea name="message" required></textarea></label>
+              <button type="submit">Kirim Pesan</button>
+              <p class="landing-contact-note" id="landingContactNote" role="status"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div class="landing-lightbox" id="landingLightbox" role="dialog" aria-modal="true" aria-label="Pratinjau foto galeri" aria-hidden="true">
+      <button class="landing-lightbox-close" type="button" data-action="close-lightbox" aria-label="Tutup pratinjau">&times;</button>
+      <button class="landing-lightbox-nav previous" type="button" data-action="gallery-previous" aria-label="Foto sebelumnya">&lsaquo;</button>
+      <button class="landing-lightbox-nav next" type="button" data-action="gallery-next" aria-label="Foto berikutnya">&rsaquo;</button>
+      <img id="landingLightboxImage" alt="Dokumentasi kegiatan WDS">
+      <p class="landing-lightbox-caption">Dokumentasi Kegiatan WDS</p>
+    </div>
+    <button class="landing-back-to-top" id="landingBackToTop" type="button" data-action="landing-back-to-top" aria-label="Kembali ke atas" hidden>&uarr;</button>
+    <footer class="landing-footer">
+      <div class="landing-container">
+        <div class="landing-footer-grid">
+          <div><div class="landing-footer-brand"><img src="assets/img/logo-company.png" alt="">PT. Wajracyena Derkei Sekuriti</div><p>Badan Usaha Jasa Pengamanan. Kami Hadir Memberi Rasa Aman.</p></div>
+          <div><h3>Menu Lainnya</h3><ul><li><a href="#landing-home">Beranda</a></li><li><a href="#landing-about">Tentang Kami</a></li><li><a href="#landing-services">Layanan</a></li><li><a href="#landing-gallery">Galeri</a></li><li><a href="#landing-contact">Kontak Kami</a></li></ul></div>
+          <div><h3>Kantor Pusat</h3><p>JL. Raya Sirkuit Sentul<br>Pergudangan DERKEI, Kelurahan Sentul<br>Kec. Babakan Madang<br>Kabupaten Bogor 16810</p><p><a href="tel:+622187951412">+62 21 8795 1412</a><br><a href="mailto:kami.wds@gmail.com">kami.wds@gmail.com</a></p><h3>Kantor Cabang</h3><p>JL. Grand Wisata Mustika Jaya<br>Kota Bekasi, Jawa Barat 17158<br><a href="tel:+622182631365">+62 21 8263 1365</a></p></div>
+        </div>
+        <div class="landing-footer-bottom">© Copyright <strong>PT. Wajracyena Derkei Sekuriti</strong>. All Rights Reserved. &nbsp;|&nbsp; Designed by <a href="https://dhimasph.github.io/soladev.github.io/" target="_blank" rel="noopener noreferrer">Soladev</a> &nbsp;|&nbsp; <button data-action="enter-management">Masuk ke Sistem Manajemen</button></div>
+      </div>
+    </footer>
+  </section>
+  <section class="login-screen" id="loginScreen">
+    <button class="landing-login-back" data-action="back-landing">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7 7-7-7 7-7"/></svg>
+      Kembali ke Beranda
+    </button>
+    <div class="login-pane">
+      <div class="login-heading"><img class="login-logo" src="public/img/logo-company.jpeg" alt="PT. Wajracyena Derkei Sekuriti"><h1 id="authTitle">L O G I N</h1><p>Aplikasi Sistem Internal Derkei</p></div>
+      <div class="auth-error" id="authError" role="alert"></div><div class="auth-success" id="authSuccess" role="status"></div>
+      <form class="auth-form" id="loginForm">
+        <div class="auth-field"><label for="username">Username</label><input id="username" name="username" autocomplete="username" placeholder="Username" value="admin" required autofocus></div>
+        <div class="auth-field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="At least 8 characters" value="admin123" required><button type="button" class="auth-switch" data-action="toggle-password" aria-label="Tampilkan password" style="position:absolute;right:12px;bottom:12px">Lihat</button></div>
+        <div class="auth-options"><a href="#" data-action="forgot">Lupa Password?</a><label><input id="remember" type="checkbox"> Remember me</label></div>
+        <button class="btn btn-primary auth-submit" type="submit">LOGIN</button>
+      </form>
+      <div id="forgotForm" class="auth-form" hidden><form id="forgotEmailForm"><div class="auth-field"><label for="resetEmail">Masukan E-mail</label><input type="email" id="resetEmail" placeholder="user@domain.com" required></div><button class="btn btn-primary auth-submit" type="submit">KIRIM</button><div style="text-align:center;margin-top:20px;font-size:11px;color:#6c757d">Sudah ingat password? <button class="auth-switch" type="button" data-action="back-login">Login Sekarang!</button></div></form></div>
+      <div id="resetForm" class="auth-form" hidden><form id="newPasswordForm"><div class="auth-field"><label for="newPassword">Password Baru</label><input id="newPassword" type="password" minlength="8" required></div><div class="auth-field"><label for="confirmPassword">Konfirmasi Password</label><input id="confirmPassword" type="password" minlength="8" required></div><button class="btn btn-primary auth-submit" type="submit">SUBMIT</button></form></div>
+      <footer class="auth-footer">Powered by<br><b>PT. Wajracyena Derkei Sekuriti</b></footer>
+    </div>
+    <div class="login-slider" aria-label="Company introduction">
+      <div class="slider-image active" style="background-image:url('public/img/bg-login-1.jpeg')"></div><div class="slider-image" style="background-image:url('public/img/bg-login-2.jpeg')"></div><div class="slider-image" style="background-image:url('public/img/bg-login-3.jpeg')"></div>
+      <button class="carousel-control previous" data-slide-step="-1" aria-label="Slide sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18 9 12l6-6"/></svg></button><button class="carousel-control next" data-slide-step="1" aria-label="Slide berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button><div class="slider-dots"><button class="active" data-slide="0" aria-label="Slide 1"></button><button data-slide="1" aria-label="Slide 2"></button><button data-slide="2" aria-label="Slide 3"></button></div>
+    </div>
+  </section>
+  <div class="app" id="application" hidden>
+    <aside class="sidebar" id="sidebar">
+      <a href="#home" class="brand" aria-label="Derkei home">
+        <img src="public/img/logo-company.jpeg" alt="PT. Wajracyena Derkei Sekuriti">
+        <div class="brand-mark">WD</div>
+        <div><div class="brand-name">Aplikasi Sistem Internal Derkei</div><div class="brand-sub">PT. Wajracyena Derkei Sekuriti</div></div>
+      </a>
+      <div class="nav-label">Workspace</div>
+      <nav class="nav-list" id="mainNav"></nav>
+      <div class="sidebar-bottom">
+        <div class="nav-label">Account</div>
+        <nav class="nav-list" id="accountNav"></nav>
+        <div class="user-dropdown" id="userDropdown"><span class="user-greeting" id="userGreeting">Hi, Arif</span><button class="user-menu-button" data-action="toggle-user" aria-label="User menu"><img class="user-avatar" src="public/img/avatar.png" alt=""><span class="sr-only">AS</span></button><div class="user-dropdown-menu"><button data-action="profile">Profil</button><button data-action="about">Tentang Aplikasi</button><button data-action="logout" style="color:#b33d3d">Keluar</button></div></div>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="top-left"><button class="icon-button menu-toggle" data-action="toggle-menu" aria-label="Open menu" id="menuToggle"></button><span class="crumb" id="breadcrumb">Workspace <span style="padding:0 6px;color:#c3ccd5">/</span> <b>Overview</b></span></div>
+        <div class="top-right">
+          <label class="searchbox"><span id="searchIcon"></span><input id="globalSearch" placeholder="Search anything..." aria-label="Search current data"></label>
+          <button class="icon-button" data-action="notifications" aria-label="Notifications" id="bellButton"></button>
+          <button class="top-user" data-action="profile"><span class="avatar">AS</span><span class="user-name"><strong>Arif Setiawan</strong><small>Super Admin</small></span></button>
+        </div>
+      </header>
+      <div class="content" id="content"></div>
+      <footer class="footer">Powered by PT. Wajracyena Derkei Sekuriti</footer>
+    </main>
+  </div>
+  <div class="modal-backdrop" id="modalBackdrop" role="presentation"><section class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"></section></div>
+  <div class="toast" id="toast" role="status"></div>
+  <script>
+  (() => {
+    "use strict";
+    const $ = (s, root=document) => root.querySelector(s);
+    const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+    const iconPaths = {
+      home:'<path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9M9 20v-6h6v6"/>',
+      chevronDown:'<path d="m6 9 6 6 6-6"/>',
+      compass:'<circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-2.6 5.8-5.8 2.6 2.6-5.8 5.8-2.6Z"/>',
+      playCircle:'<circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4V8Z"/>',
+      users:'<path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+      money:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/><circle cx="16" cy="14" r="2"/>',
+      report:'<path d="M4 19V5M4 19h17"/><path d="m7 15 4-4 3 2 6-7"/><path d="M17 6h3v3"/>',
+      bank:'<path d="m3 9 9-6 9 6"/><path d="M4 10h16M5 10v8m4-8v8m6-8v8m4-8v8M3 21h18M2 18h20"/>',
+      wallet:'<rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18m-5 6h2"/><path d="M7 5V3h10v2"/>',
+      file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8m-8 4h8"/>',
+      web:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 6.5h.01M11 6.5h.01"/>',
+      image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>',
+      message:'<path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/>',
+      settings:'<circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.6a8 8 0 0 1-1.5.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.5-.9l-1.7.6-1.4-2.4 1.4-1.1a8 8 0 0 1 0-1.8L6.3 12l1.4-2.4 1.7.6a8 8 0 0 1 1.5-.9l.3-1.8H14l.3 1.8a8 8 0 0 1 1.5.9l1.7-.6 1.4 2.4-1.4 1.1a8 8 0 0 1-.1 1.9z"/>',
+      search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+      bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 13h4"/>',
+      plus:'<path d="M12 5v14M5 12h14"/>',
+      download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5m-5 5V3"/>',
+      eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+      edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L9 17l-4 1 1-4Z"/>',
+      trash:'<path d="M3 6h18m-2 0-.9 14H5.9L5 6m4 0V4h6v2m-5 4v6m4-6v6"/>',
+      close:'<path d="m18 6-12 12M6 6l12 12"/>',
+      arrow:'<path d="M5 12h14m-7-7 7 7-7 7"/>',
+      clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+      menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+      logout:'<path d="M10 17l5-5-5-5m5 5H3"/><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"/>'
+    };
+    const ico = (name, size=18) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[name]||iconPaths.file}</svg>`;
+    const nav = [
+      {id:"home",label:"Beranda",icon:"home",group:"Workspace"},
+      {id:"hrd",label:"HRD Sistem",icon:"users",group:"Management",count:"24"},
+      {id:"reports",label:"All Reports",icon:"report",group:"Accounting"},
+      {id:"payroll",label:"Slip Gaji",icon:"file",group:"Accounting"},
+      {id:"transactions",label:"Penerimaan & Pengeluaran",icon:"money",group:"Accounting"},
+      {id:"petty",label:"Petty Cash",icon:"wallet",group:"Accounting"},
+      {id:"banking",label:"Perbankan",icon:"bank",group:"Accounting"},
+      {id:"cms",label:"Company Profile",icon:"web",group:"Management"},
+      {id:"users",label:"Kelola Pengguna",icon:"users",group:"Management"},
+      {id:"logs",label:"Log Aplikasi",icon:"clock",group:"Management"},
+      {id:"about",label:"Tentang Aplikasi",icon:"file",group:"Account"}
+    ];
+    const demoUsers=[
+      {username:"admin",password:"admin123",name:"Arif Setiawan",role:"super admin",email:"arif.setiawan@derkei.co.id"},
+      {username:"dewi",password:"demo1234",name:"Dewi Anggraini",role:"admin",email:"dewi.anggraini@derkei.co.id"},
+      {username:"bima",password:"demo1234",name:"Bima Pratama",role:"user",email:"bima.pratama@derkei.co.id"}
+    ];
+    let currentUser=null,authMode="login",resetEmail="",resetUser=null,formState=null,detailState=null;
+    const modules=["hrd","reports","payroll","transactions","petty","banking","cms","users","logs","profile","about"];
+    const nowYear=new Date().getFullYear();
+    const initialData={
+      employees:[
+        {id:1,nik:"DK-2020-001",name:"Fajar Ramadhan",division:"Operasional Pengamanan",position:"Supervisor Security",location:"Site Demo - Menara Sentra, Jakarta",status:"Tetap",email:"fajar.ramadhan@example.test",phone:"+62 812-3456-7810",joined:"2020-02-10"},
+        {id:2,nik:"DK-2021-014",name:"Andika Pratama",division:"Operasional Pengamanan",position:"Komandan Regu (Danru)",location:"Site Demo - Menara Sentra, Jakarta",status:"Tetap",email:"andika.pratama@example.test",phone:"+62 813-2200-4433",joined:"2021-06-14"},
+        {id:3,nik:"DK-2022-028",name:"Dimas Saputra",division:"Operasional Pengamanan",position:"Anggota Security",location:"Site Demo - Menara Sentra, Jakarta",status:"Kontrak",email:"dimas.saputra@example.test",phone:"+62 812-5678-1234",joined:"2022-08-01"},
+        {id:4,nik:"DK-2019-006",name:"Rudi Hartono",division:"Operasional Pengamanan",position:"Anggota Security",location:"Site Demo - Gudang Cakung, Jakarta",status:"Tetap",email:"rudi.hartono@example.test",phone:"+62 811-9876-4321",joined:"2019-03-18"},
+        {id:5,nik:"DK-2023-031",name:"Siti Nurhaliza",division:"Operasional Pengamanan",position:"Anggota Security",location:"Site Demo - Kawasan Niaga, Bandung",status:"Probation",email:"siti.nurhaliza@example.test",phone:"+62 857-1234-9900",joined:"2023-11-06"},
+        {id:6,nik:"DK-2024-040",name:"Bayu Setiawan",division:"Operasional Pengamanan",position:"Patroli Mobile",location:"Pool Operasional, Jakarta",status:"Kontrak",email:"bayu.setiawan@example.test",phone:"+62 878-2222-0123",joined:"2024-01-15"}
+      ],
+      transactions:[
+        {id:1,type:"Penerimaan",category:"Jasa Pengamanan",description:"Tagihan pengamanan Site Demo - Menara Sentra, Oktober",amount:185000000,date:"2026-10-02"},
+        {id:2,type:"Pengeluaran",category:"Perlengkapan Operasional",description:"Pengadaan seragam dan atribut personel",amount:32000000,date:"2026-10-01"},
+        {id:3,type:"Pengeluaran",category:"Gaji Personel",description:"Pembayaran gaji regu pengamanan September",amount:96500000,date:"2026-09-28"},
+        {id:4,type:"Penerimaan",category:"Jasa Pengamanan",description:"Tagihan pengamanan Site Demo - Gudang Cakung",amount:79000000,date:"2026-09-24"},
+        {id:5,type:"Pengeluaran",category:"Pelatihan & Sertifikasi",description:"Perpanjangan sertifikasi Gada Pratama personel",amount:12800000,date:"2026-09-20"},
+        {id:6,type:"Penerimaan",category:"Jasa Pengamanan",description:"Tagihan patroli mobile area operasional",amount:43500000,date:"2026-09-15"}
+      ],
+      payroll:[
+        {id:1,nik:"DK-2020-001",name:"Fajar Ramadhan",month:"September",period:"01–30 Sep 2026",amount:8500000,createdBy:"Arif Setiawan",status:"Terbit"},
+        {id:2,nik:"DK-2021-014",name:"Andika Pratama",month:"September",period:"01–30 Sep 2026",amount:6800000,createdBy:"Arif Setiawan",status:"Terbit"},
+        {id:3,nik:"DK-2022-028",name:"Dimas Saputra",month:"September",period:"01–30 Sep 2026",amount:5900000,createdBy:"Dewi Anggraini",status:"Terbit"},
+        {id:4,nik:"DK-2019-006",name:"Rudi Hartono",month:"Oktober",period:"01–31 Okt 2026",amount:6200000,createdBy:"Dewi Anggraini",status:"Draft"}
+      ],
+      petty:[
+        {id:1,title:"Petty Cash Operasional Oktober 2026",period:"Oktober 2026",debit:15000000,credit:4860000,balance:10140000,status:"Aktif",openingBalance:0,movements:[{date:"2026-10-03",description:"Pengisian kas operasional regu",debit:15000000,credit:0,receipt:"PC-001"},{date:"2026-10-05",description:"Transportasi personel dan perlengkapan pos",debit:0,credit:4860000,receipt:"PC-002"}]},
+        {id:2,title:"Petty Cash Operasional September 2026",period:"September 2026",debit:15000000,credit:12725000,balance:2275000,status:"Selesai",openingBalance:0,movements:[{date:"2026-09-01",description:"Pengisian kas operasional",debit:15000000,credit:0,receipt:"PC-0901"},{date:"2026-09-15",description:"Transportasi patroli area penugasan",debit:0,credit:12725000,receipt:"PC-0915"}]},
+        {id:3,title:"Petty Cash Operasional Agustus 2026",period:"Agustus 2026",debit:12000000,credit:10500000,balance:1500000,status:"Selesai",openingBalance:0,movements:[{date:"2026-08-01",description:"Pengisian kas operasional",debit:12000000,credit:0,receipt:"PC-0801"},{date:"2026-08-21",description:"Kebutuhan perlengkapan pos jaga",debit:0,credit:10500000,receipt:"PC-0821"}]}
+      ],
+      banking:[
+        {id:1,title:"Mutasi Bank BCA - Operasional",period:"Oktober 2026",debit:185000000,credit:128800000,balance:56200000,status:"Terverifikasi",openingBalance:0,movements:[{date:"2026-10-02",giroDate:"2026-10-02",description:"Tagihan jasa pengamanan Site Demo - Menara Sentra",debit:185000000,credit:0,receipt:"BNK-001"},{date:"2026-10-04",giroDate:"2026-10-04",description:"Gaji dan tunjangan personel operasional",debit:0,credit:128800000,receipt:"BNK-002"}]},
+        {id:2,title:"Mutasi Bank Mandiri - Operasional",period:"Oktober 2026",debit:74000000,credit:51000000,balance:23000000,status:"Terverifikasi",openingBalance:0,movements:[{date:"2026-10-03",giroDate:"2026-10-03",description:"Tagihan jasa pengamanan Site Demo - Gudang Cakung",debit:74000000,credit:0,receipt:"MDR-001"},{date:"2026-10-06",giroDate:"2026-10-06",description:"Pengadaan seragam dan perlengkapan jaga",debit:0,credit:51000000,receipt:"MDR-002"}]},
+        {id:3,title:"Mutasi Bank BNI - Operasional",period:"September 2026",debit:132500000,credit:121000000,balance:11500000,status:"Menunggu",openingBalance:0,movements:[{date:"2026-09-05",giroDate:"2026-09-05",description:"Tagihan layanan pengamanan bulanan",debit:132500000,credit:0,receipt:"BNI-001"},{date:"2026-09-12",giroDate:"2026-09-12",description:"Transfer biaya operasional dan pelatihan",debit:0,credit:121000000,receipt:"BNI-002"}]}
+      ],
+      users:[
+        {id:1,name:"Arif Setiawan",email:"arif.setiawan@derkei.co.id",role:"Super Admin",status:"Aktif",lastLogin:"Hari ini, 09:12"},
+        {id:2,name:"Dewi Anggraini",email:"dewi.anggraini@derkei.co.id",role:"Admin",status:"Aktif",lastLogin:"Hari ini, 08:45"},
+        {id:3,name:"Bima Pratama",email:"bima.pratama@derkei.co.id",role:"User",status:"Aktif",lastLogin:"Kemarin"},
+        {id:4,name:"Nadia Putri",email:"nadia.putri@derkei.co.id",role:"User",status:"Aktif",lastLogin:"06 Okt 2026"},
+        {id:5,name:"Rizky Mahendra",email:"rizky.m@derkei.co.id",role:"Admin",status:"Nonaktif",lastLogin:"01 Okt 2026"}
+      ],
+      cms:[
+        {id:1,type:"Hero Banner",title:"Layanan Pengamanan Terpadu",description:"Banner utama layanan keamanan dan pengelolaan personel",status:"Published",updated:"08 Okt 2026"},
+        {id:2,type:"Layanan",title:"Pengamanan Gedung dan Kawasan",description:"Layanan personel keamanan untuk area perkantoran dan industri",status:"Published",updated:"05 Okt 2026"},
+        {id:3,type:"Partner",title:"Mitra Operasional Demo",description:"Contoh mitra layanan pengamanan",status:"Published",updated:"01 Okt 2026"},
+        {id:4,type:"Galeri",title:"Apel Kesiapan Regu 2026",description:"Dokumentasi kegiatan kesiapan personel",status:"Draft",updated:"28 Sep 2026"},
+        {id:5,type:"Enquiry",title:"Permintaan layanan pengamanan",description:"Pertanyaan calon mitra mengenai kebutuhan personel",status:"Baru",updated:"07 Okt 2026"}
+      ],
+      logs:[
+        {id:1,module:"Accounting",action:"Membuat transaksi",activity:"Tagihan jasa pengamanan Site Demo - Menara Sentra",user:"Dewi Anggraini",role:"Admin",date:"08 Okt 2026 · 09:12"},
+        {id:2,module:"HRD Sistem",action:"Memperbarui data",activity:"Memperbarui penempatan personel Dimas Saputra",user:"Arif Setiawan",role:"Super Admin",date:"08 Okt 2026 · 08:46"},
+        {id:3,module:"Company Profile",action:"Menerbitkan konten",activity:"Layanan Pengamanan Terpadu",user:"Dewi Anggraini",role:"Admin",date:"07 Okt 2026 · 16:30"},
+        {id:4,module:"Kelola Pengguna",action:"Login",activity:"Berhasil masuk ke aplikasi",user:"Bima Pratama",role:"User",date:"07 Okt 2026 · 09:05"}
+      ]
+    };
+    let store;
+    let currentPage="home", modalCallback=null, toastTimer, guideTab="login";
+    const storeKey="derkei-html-demo-v2";
+    try{const saved=localStorage.getItem(storeKey);store=saved?{...initialData,...JSON.parse(saved)}:structuredClone(initialData)}catch(error){store=structuredClone(initialData);setTimeout(()=>notify("Browser storage unavailable. Changes will not persist after this tab is closed.",true),250)}
+    function save(){try{localStorage.setItem(storeKey,JSON.stringify(store))}catch(error){notify("Could not save changes to browser storage.",true)}}
+    const money=value=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(value)||0);
+    const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const initials=name=>String(name||"").split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase();
+    const statusPill=status=>{let c="";if(/draft|baru|menunggu|probation/i.test(status))c="orange";else if(/nonaktif|ditolak/i.test(status))c="gray";else if(/published|terbit|terverifikasi/i.test(status))c="blue";return `<span class="pill ${c}">${escapeHtml(status)}</span>`};
+    function notify(text,error=false){const el=$("#toast");el.textContent=text;el.className="toast show"+(error?" error":"");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.className="toast",3100)}
+    function setupNav(){
+      const main=$("#mainNav");
+      const button=(n,withIcon=true)=>`<button class="nav-link" data-page="${n.id}">${withIcon?ico(n.icon):""}<span>${n.label}</span>${n.count?`<span class="nav-count">${store.employees.length}</span>`:""}</button>`;
+      const allowed=nav.filter(n=>n.id!=="home"&&(currentUser?.role==="super admin"||!["logs","users"].includes(n.id))&&(currentUser?.role!=="user"||n.id!=="cms"));
+      const accounting=allowed.filter(n=>["reports","payroll","transactions","petty","banking"].includes(n.id));
+      const topLevel=allowed.filter(n=>!["reports","payroll","transactions","petty","banking","about"].includes(n.id));
+      main.innerHTML=`${button(nav.find(n=>n.id==="home"),false)}<div class="nav-dropdown" id="modulesDropdown"><button class="nav-dropdown-toggle" data-action="toggle-modules">Modul${ico("chevronDown",13)}</button><div class="nav-dropdown-menu">${topLevel.filter(n=>n.id!=="logs").map(n=>button(n)).join("")}${accounting.length?`<div class="module-menu-label">Accounting</div>${accounting.map(n=>button(n)).join("")}`:""}</div></div>${currentUser?.role==="super admin"?button(nav.find(n=>n.id==="logs"),false):""}${button(nav.find(n=>n.id==="about"),false)}`;
+      $("#accountNav").innerHTML="";
+      const accountLabel=$(".user-dropdown-menu");
+      if(accountLabel)accountLabel.innerHTML=`<div class="user-dropdown-name">${escapeHtml(currentUser?.name||"User")}<small>${escapeHtml(currentUser?.role||"")}</small></div><button data-action="profile">Profil</button><button data-action="about">Tentang Aplikasi</button><button data-action="logout" style="color:#b33d3d">Keluar</button>`;
+      $("#userGreeting").textContent=`Hi, ${currentUser?.name?.split(" ")[0]||"User"}`;
+      $(".user-menu-button").setAttribute("aria-label",`Menu pengguna ${currentUser?.name||"User"}`);
+      $("#searchIcon").innerHTML=ico("search",16);$("#bellButton").innerHTML=ico("bell",17);$("#menuToggle").innerHTML=ico("menu",18);
+    }
+    const pageInfo={
+      home:["Workspace","Beranda","Ringkasan aktivitas dan kondisi operasional perusahaan."],
+      hrd:["Management","HRD Sistem","Kelola data personel pengamanan dan penempatan kerja."],
+      reports:["Accounting","All Reports","Ringkasan penerimaan dan pengeluaran perusahaan."],
+      payroll:["Accounting","Slip Gaji","Kelola data payroll dan slip gaji karyawan."],
+      transactions:["Accounting","Penerimaan & Pengeluaran","Catat dan pantau transaksi keuangan perusahaan."],
+      petty:["Accounting","Petty Cash","Pantau pengisian, pemakaian, dan saldo petty cash."],
+      banking:["Accounting","Perbankan","Kelola ringkasan mutasi dan saldo rekening bank."],
+      cms:["Management","Company Profile Manager","Kelola konten yang ditampilkan pada profil perusahaan."],
+      users:["Management","Kelola Pengguna","Atur akun dan akses pengguna aplikasi."],
+      logs:["Management","Log Aplikasi","Tinjau aktivitas terbaru di seluruh modul."],
+      profile:["Account","Profil Saya","Informasi profil akun yang sedang digunakan."],
+      about:["Account","Tentang Aplikasi","Informasi aplikasi internal Derkei."]
+    };
+    function go(page){if(!pageInfo[page])page="home";if((currentUser?.role==="user"&&["cms","users"].includes(page))||(currentUser?.role!=="super admin"&&["logs","users"].includes(page))){notify("Akun demo ini tidak memiliki akses ke modul tersebut.",true);return}formState=null;detailState=null;currentPage=page;if(location.hash!==`#${page}`)location.hash=page;$("#sidebar").classList.remove("open");$$(".nav-dropdown").forEach(x=>x.classList.remove("open"));render()}
+    function syncRouteFromLocation(){
+      const [page,view,id]=location.hash.slice(1).split("/");
+      if(!pageInfo[page])return;
+      currentPage=page;formState=null;detailState=null;
+      const cfg=configs[page];
+      if(cfg&&view==="create")formState={key:cfg.key,id:null};
+      else if(cfg&&view==="edit")formState={key:cfg.key,id:Number(id)};
+      else if(cfg&&view==="detail")detailState={key:cfg.key,id:Number(id)};
+    }
+    function setSubviewRoute(view,id=""){const suffix=view?`/${view}${id?`/${id}`:""}`:"";if(location.hash!==`#${currentPage}${suffix}`)location.hash=`${currentPage}${suffix}`}
+    function pageHeader(page,buttonLabel,buttonAction){const [,title]=pageInfo[page];const cfg=configs[page];return `${page!=="home"?`<div class="app-alert"><span>${ico("compass",17)}</span><span>Panduan Aplikasi Modul ${escapeHtml(title)}</span><button class="btn btn-small btn-soft btn-pulse" data-action="guide">${ico("playCircle",15)} Putar Video</button><button class="alert-close" data-action="dismiss-alert" aria-label="Tutup">×</button></div><div class="breadcrumb-row"><button data-page="home" aria-label="Kembali ke beranda">${ico("arrow",16)}</button><button data-page="home">Beranda</button><span>/</span><span class="current">${escapeHtml(title)}</span></div>`:""}<div class="page-head"><div class="page-head-line"><h1>${page==="home"?"Beranda Aplikasi":escapeHtml(title)}</h1>${cfg?`<div class="page-search-row"><input class="table-search page-search" data-target="${cfg.key}" placeholder="${cfg.search}" aria-label="${cfg.search}"></div>`:""}${buttonLabel?`<div class="actions">${page!=="hrd"?`<button class="btn btn-soft" data-action="export">${ico("download")} Export Data</button>`:""}<button class="btn btn-primary" data-action="${buttonAction||"add"}">${ico("plus")} ${buttonLabel}</button></div>`:""}</div></div>`}
+    function stats(items){return `<div class="stat-grid">${items.map(x=>`<section class="card stat"><div class="stat-top"><span class="stat-name">${x.label}</span><span class="stat-icon">${ico(x.icon,17)}</span></div><div class="stat-value">${x.value}</div><div class="stat-note">${x.note}</div></section>`).join("")}</div>`}
+    function chartMarkup(){const vals=[[5,3],[7,4],[6,4],[8,5],[6,3],[9,5],[7,4],[10,6],[8,5],[11,6],[9,5],[12,7]],labels=["Nov","Des","Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt"];return `<div class="chart-wrap"><div class="chart-bars">${vals.map(([a,b])=>`<div class="chart-group"><i class="bar income" style="height:${a*7}%"></i><i class="bar" style="height:${b*7}%"></i></div>`).join("")}</div></div><div class="chart-labels">${labels.map(x=>`<span>${x}</span>`).join("")}</div><div class="legend"><span><i></i>Penerimaan</span><span><i></i>Pengeluaran</span></div>`}
+    function dashboard(){
+      return `${pageHeader("home")}<div class="home-head">Modul Aplikasi</div>${moduleCards()}`;
+    }
+    function moduleCards(){
+      const cards=[["hrd","users","HRD Sistem","Data personel pengamanan dan lokasi penugasan"],["reports","report","Accounting","Laporan keuangan dan biaya operasional"],...(currentUser?.role!=="user"?[["cms","web","Company Profile Manager","Pengaturan konten profil perusahaan"]]:[]),...(currentUser?.role==="super admin"?[["users","users","Kelola Pengguna","Pengaturan akun dan hak akses"]]:[])];
+      return `<div class="module-grid">${cards.map(([id,icon,title,sub])=>`<article class="card module-card" data-page="${id}" tabindex="0" role="button"><div class="module-icon">${ico(icon)}</div><h3>${title}</h3><p>${sub}</p></article>`).join("")}</div>`;
+    }
+    const configs={
+      hrd:{key:"employees",label:"Karyawan",add:"Tambah Data",search:"Cari nama, NIK, divisi, lokasi tugas...",columns:[["employee","Karyawan"],["division","Divisi"],["position","Jabatan"],["location","Lokasi"],["status","Status"]],fields:[["nik","NIK"],["name","Nama Lengkap"],["gender","Gender","select",["Laki-Laki","Perempuan"]],["birthDate","Tanggal Lahir","date"],["maritalStatus","Status Pernikahan","select",["Belum Menikah","Menikah","Cerai"]],["division","Divisi"],["position","Jabatan"],["location","Lokasi Kerja / Pos Penugasan"],["status","Status Pekerjaan","select",["Tetap","Kontrak","Probation"]],["email","Email","email"],["phone","Nomor Telepon"],["address","Alamat"],["joined","Tanggal Bergabung","date"]]},
+      payroll:{key:"payroll",label:"Slip Gaji",add:"Tambah Data",search:"Cari karyawan, NIK...",columns:[["employee","Karyawan"],["month","Bulan"],["period","Periode"],["amount","Jumlah"],["createdBy","Dibuat oleh"],["status","Status"]],fields:[["nik","Nomor Induk Karyawan"],["name","Nama Karyawan"],["month","Bulan","select",["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]],["period","Periode"],["amount","Jumlah Gaji","number"],["createdBy","Create by"],["status","Status","select",["Draft","Terbit"]]]},
+      transactions:{key:"transactions",label:"Transaksi",add:"Tambah Data",search:"Cari kategori, keterangan...",columns:[["type","Tipe"],["category","Kategori"],["description","Keterangan"],["amount","Jumlah"],["date","Tanggal"]],fields:[["date","Tanggal","date"],["type","Type","select",["Penerimaan","Pengeluaran"]],["category","Kategori"],["description","Keterangan"],["amount","Jumlah","number"],["attachment","Upload File","file"]]},
+      petty:{key:"petty",label:"Petty Cash",add:"Tambah Data",search:"Cari laporan...",columns:[["title","Keterangan"],["period","Periode"],["debit","Debit"],["credit","Kredit"],["balance","Saldo"],["status","Status"]],fields:[["title","Keterangan"],["period","Periode"],["openingBalance","Saldo Awal","number"],["status","Status","select",["Aktif","Selesai"]]]},
+      banking:{key:"banking",label:"Perbankan",add:"Tambah Data",search:"Cari bank, periode...",columns:[["title","Judul"],["period","Periode"],["debit","Debit"],["credit","Kredit"],["balance","Saldo"],["status","Status"]],fields:[["title","Judul"],["period","Periode"],["openingBalance","Saldo Awal","number"],["status","Status","select",["Menunggu","Terverifikasi"]]]},
+      users:{key:"users",label:"Pengguna",add:"Tambah Pengguna",search:"Cari nama atau email...",columns:[["user","Nama Pengguna"],["role","Peran"],["status","Status"],["lastLogin","Login Terakhir"]],fields:[["name","Nama Lengkap"],["email","Email","email"],["role","Peran","select",["Super Admin","Admin","User"]],["status","Status","select",["Aktif","Nonaktif"]],["lastLogin","Login Terakhir"]]},
+      cms:{key:"cms",label:"Konten",add:"Tambah Data",search:"Cari judul atau tipe...",columns:[["type","Jenis Konten"],["title","Judul"],["description","Deskripsi"],["status","Status"],["updated","Diperbarui"]],fields:[["type","Jenis Konten","select",["Hero Banner","Partner","Layanan","Galeri","Enquiry"]],["title","Judul"],["description","Deskripsi","textarea"],["assetName","Upload File","file"],["status","Status","select",["Draft","Published","Baru"]],["updated","Tanggal Diperbarui"]]}
+    };
+    function pageTabs(page){if(!["reports","payroll","transactions","petty","banking"].includes(page))return "";return `<div class="page-tabs">${[["reports","All Report"],["payroll","Slip Gaji"],["transactions","Penerimaan & Pengeluaran"],["petty","Petty Cash"],["banking","Perbankan"]].map(([id,label])=>`<button class="tab ${page===id?"active":""}" data-page="${id}">${label}</button>`).join("")}</div>`}
+    function cellValue(row,col){
+      const value=row[col]??"—";
+      if(col==="employee"||col==="user")return `<div class="person"><span class="avatar">${initials(col==="employee"?row.name:row.name)}</span><span><strong>${escapeHtml(row.name)}</strong><small>${escapeHtml(row.nik||row.email||"")}</small></span></div>`;
+      if(["amount","debit","credit","balance"].includes(col))return money(value);
+      if(col==="status"||col==="type")return statusPill(value);
+      return escapeHtml(value);
+    }
+    function renderTable(key,rows,options={}){
+      const cfg=configs[key]||Object.values(configs).find(x=>x.key===key);if(!cfg)return "";
+      const ths=cfg.columns.map(c=>`<th>${c[1]}</th>`).join("");
+      const body=rows.length?rows.map(row=>`<tr>${cfg.columns.map(c=>`<td>${cellValue(row,c[0])}</td>`).join("")}<td><div class="row-actions"><button class="mini-action" title="Lihat detail" data-action="view" data-key="${key}" data-id="${row.id}">${ico("eye",14)}</button><button class="mini-action" title="Edit" data-action="edit" data-key="${key}" data-id="${row.id}">${ico("edit",14)}</button><button class="mini-action" title="Hapus" data-action="delete" data-key="${key}" data-id="${row.id}">${ico("trash",14)}</button></div></td></tr>`).join(""):`<tr><td colspan="${cfg.columns.length+1}"><div class="empty-state"><strong>Tidak ada data ditemukan</strong>Coba ubah kata pencarian atau tambahkan data baru.</div></td></tr>`;
+      return `<div class="table-scroll"><table><thead><tr>${ths}<th>Aksi</th></tr></thead><tbody>${body}</tbody></table></div>${options.noFoot?"":`<div class="table-foot"><span>Menampilkan ${rows.length} dari ${store[key].length} data</span><span>Data demo · tersimpan di browser</span></div>`}`;
+    }
+    function simpleTable(title,subtitle,key,rows,withSearch=true){return `<section class="card table-card"><div class="table-head"><div><h2>${title}</h2><p>${subtitle}</p></div><div class="table-tools">${withSearch?`<input class="table-search local-search" data-target="${key}" placeholder="${configs[key]?.search||"Cari..."}">`:""}${withSearch?`<button class="btn btn-small" data-action="export">${ico("download")} Export</button>`:""}</div></div><div id="table-${key}">${renderTable(key,rows)}</div></section>`}
+    function dataPage(page){
+      const cfg=configs[page],items=store[cfg.key];let extras="";
+      if(page==="cms")extras=`<div class="notice">Kelola Hero, Partner, Layanan, Galeri, dan Enquiry seperti pada modul Company Profile Manager.</div><div class="page-tabs">${["Semua","Hero Banner","Partner","Layanan","Galeri","Enquiry"].map((x,i)=>`<button class="tab ${i===0?"active":""}" data-cms-filter="${i===0?"":x}">${x}</button>`).join("")}</div>`;
+      const title=page==="hrd"?"Data Karyawan":cfg.label;
+      return `<section class="legacy-panel">${pageHeader(page,cfg.add)}${pageTabs(page)}${extras}<div class="legacy-section-title">${title}</div>${simpleTable(cfg.label,`${items.length} data tersedia`,cfg.key,items,false)}</section>`;
+    }
+    function reportPage(){
+      const rows=Array.from({length:5},(_,i)=>{const year=nowYear-i;const inc=1930000000-i*212000000,exp=1415000000-i*148000000;return{id:year,title:`Laporan Keuangan Tahun ${year}`,year,income:inc,expense:exp}});
+      return `${pageHeader("reports",null)}${pageTabs("reports")}<div class="notice">Pilih laporan tahunan untuk melihat ringkasan periode. Gunakan tombol ekspor untuk mengunduh ringkasan CSV.</div><section class="card table-card"><div class="table-head"><div><h2>Data All Report</h2><p>Ringkasan tahunan penerimaan dan pengeluaran</p></div><div class="table-tools"><input class="table-search report-search" placeholder="Cari tahun..."><button class="btn btn-small" data-action="export">${ico("download")} Export</button></div></div><div class="table-scroll"><table><thead><tr><th>No</th><th>Judul</th><th>Tahun</th><th>Saldo Penerimaan</th><th>Saldo Pengeluaran</th><th>Aksi</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td><strong style="color:#344b62">${r.title}</strong></td><td>${r.year}</td><td>${money(r.income)}</td><td>${money(r.expense)}</td><td><button class="btn btn-small btn-soft" data-action="report-detail" data-id="${r.year}">${ico("eye",13)} Detail</button></td></tr>`).join("")}</tbody></table></div><div class="table-foot"><span>5 tahun terakhir</span><span>Data contoh</span></div></section>`;
+    }
+    function cmsPage(){return dataPage("cms")}
+    function logsPage(){
+      const rows=store.logs.map((r,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(r.module)}</td><td>${statusPill(r.action)}</td><td>${escapeHtml(r.activity)}</td><td><div class="person"><span class="avatar">${initials(r.user)}</span><span><strong>${escapeHtml(r.user)}</strong></span></div></td><td>${escapeHtml(r.role)}</td><td>${escapeHtml(r.date)}</td><td><button class="mini-action" data-action="log-detail" data-id="${r.id}" title="Lihat detail">${ico("eye",14)}</button></td></tr>`).join("");
+      return `${pageHeader("logs")}<section class="card table-card"><div class="table-head"><div><h2>Log Aktivitas Aplikasi</h2><p>Riwayat penggunaan pada modul internal</p></div><div class="table-tools"><input class="table-search log-search" placeholder="Cari aktivitas..."><button class="btn btn-small" data-action="export">${ico("download")} Export</button></div></div><div class="table-scroll"><table><thead><tr><th>No</th><th>Modul</th><th>Aksi</th><th>Aktivitas</th><th>Dilakukan oleh</th><th>Sebagai</th><th>Tanggal</th><th>Detail</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+    }
+    function profilePage(){const user=currentUser||demoUsers[0];return `${pageHeader("profile")}<div class="two-col"><section class="card profile-card"><div class="profile-banner"></div><div class="profile-user"><span class="avatar">${initials(user.name)}</span><div><h2>${escapeHtml(user.name)}</h2><p>${escapeHtml(user.role)} · PT. Wajracyena Derkei Sekuriti</p></div></div><div class="profile-fields">${[["Nama Lengkap",user.name],["Email",user.email],["Peran",user.role],["Status","Aktif"],["Nomor Telepon","+62 812-0000-1234"],["Lokasi","Jakarta"]].map(([x,y])=>`<div class="detail-item"><span>${x}</span><strong>${escapeHtml(y)}</strong></div>`).join("")}</div><div style="margin-top:18px"><button class="btn btn-primary" data-action="edit-profile">${ico("edit")} Edit Profil</button></div></section><section class="card panel"><div class="panel-title"><div><h2>Keamanan Akun</h2><p>Pengaturan akses akun Anda</p></div></div><div class="detail-item"><span>Terakhir login</span><strong>Hari ini, 09:12 WIB</strong></div><div class="detail-item"><span>Otentikasi dua faktor</span><strong>${statusPill("Aktif")}</strong></div><div class="detail-item"><span>Peran akses</span><strong>${escapeHtml(user.role)}</strong></div><div style="margin-top:18px"><button class="btn" data-action="password">Ubah Kata Sandi</button></div></section></div>`}
+    function aboutPage(){
+      const guides=[["login","Login & Forgot Password"],["hrd","HRD Sistem"],["accounting","Accounting Sistem"],["cms","Konten Web Profil Perusahaan"],["logs","Log Sistem"],["users","Akun Sistem"]];
+      const copy={
+        login:"Masuk menggunakan username dan password demo, atau pilih Lupa Password untuk mencoba alur permintaan reset melalui email.",
+        hrd:"Buka Modul → HRD Sistem untuk mengelola data personel pengamanan. Lokasi kerja menunjukkan pos atau area penugasan contoh. Cari berdasarkan nama, NIK, divisi, atau lokasi; gunakan detail, edit, dan hapus pada tabel.",
+        accounting:"Accounting berisi All Report, Slip Gaji, Penerimaan & Pengeluaran, Petty Cash, dan Perbankan. Gunakan tab di dalam halaman untuk berpindah submodul.",
+        cms:"Company Profile Manager mengelola Hero Banner, Partner, Layanan, Galeri, dan Enquiry. Filter tab untuk melihat tipe konten, lalu tambah atau edit konten.",
+        logs:"Log Aplikasi menampilkan aktivitas terbaru pengguna dan modul. Log baru juga dicatat saat data demo dibuat atau diperbarui.",
+        users:"Kelola Pengguna berisi peran Super Admin, Admin, dan User. Menu dan akses modul berubah sesuai peran yang digunakan saat login."
+      };
+      return `${pageHeader("about")}<section class="legacy-panel"><h2 class="legacy-section-title">Informasi Tentang Aplikasi</h2><div class="two-col"><div><label class="about-label">PT. Wajracyena Derkei Sekuriti</label><p>Wajracyena Derkei Sekuriti merupakan Badan Usaha Jasa Pengamanan yang memberikan rasa aman bagi mitra kerja dengan pengalaman handal, profesional, dan terpercaya.</p></div><div><label class="about-label">Aplikasi Internal Derkei</label><p>Aplikasi ini membantu management SDM dan operasional layanan pengamanan melalui modul HRD Sistem, Accounting, dan pengaturan konten profil perusahaan.</p></div></div><hr><label class="about-label">ⓘ Tata Cara Penggunaan Aplikasi</label><div class="page-tabs guide-tabs">${guides.map(([id,label])=>`<button class="tab ${guideTab===id?"active":""}" data-guide-tab="${id}">${label}</button>`).join("")}</div><section class="guide-content"><h3>${guides.find(x=>x[0]===guideTab)?.[1]||"Panduan"}</h3><p>${copy[guideTab]||copy.login}</p><div class="actions"><button class="btn btn-primary" data-page="${guideTab==="hrd"?"hrd":guideTab==="accounting"?"reports":guideTab==="cms"?"cms":guideTab==="logs"?"logs":guideTab==="users"?"users":"home"}">Buka Modul</button></div></section><div class="notice" style="margin:18px 0 0">Mode demo satu file: perubahan disimpan secara lokal pada browser dan tidak dikirim ke backend Laravel.</div></section>`;
+    }
+    function render(){
+      $$(".nav-link").forEach(x=>x.classList.toggle("active",x.dataset.page===currentPage));
+      $$(".module-card").forEach(x=>x.setAttribute("aria-current",x.dataset.page===currentPage?"page":"false"));
+      const modules=$("#modulesDropdown");if(modules)modules.classList.toggle("current",modules.querySelector(`[data-page="${currentPage}"]`)!==null);
+      $(".nav-dropdown-toggle")?.classList.toggle("active",!!modules?.classList.contains("current"));
+      let html=currentPage==="home"?dashboard():currentPage==="reports"?reportPage():configs[currentPage]?dataPage(currentPage):currentPage==="logs"?logsPage():currentPage==="profile"?profilePage():aboutPage();
+      if(formState)html=recordFormPage(formState.key,formState.id);
+      if(detailState)html=recordDetailPage(detailState.key,detailState.id);
+      const content=$("#content");content.classList.remove("page-enter");void content.offsetWidth;content.innerHTML=html;content.classList.add("page-enter");
+      const alertDismissed=sessionStorage.getItem(`derkei-alert-${currentPage}`)==="1";
+      const alert=$("#content .app-alert");if(alert&&alertDismissed)alert.remove();
+      if(formState)bindRecordForm();
+      if(currentPage==="reports")$("#globalSearch").addEventListener("input",e=>filterReport(e.target.value));
+      if(currentPage==="logs")$("#globalSearch").addEventListener("input",e=>filterLogs(e.target.value));
+      if(formState?.key==="payroll")bindPayrollEmployee();
+    }
+    function filterTable(key,value){const q=value.trim().toLowerCase();const rows=store[key].filter(r=>Object.values(r).some(v=>String(v).toLowerCase().includes(q)));const target=$(`#table-${key}`);if(target)target.innerHTML=renderTable(key,rows);const config=Object.values(configs).find(x=>x.key===key);const count=$(".table-head p",$("#content"));if(count&&config)count.textContent=`${rows.length} ${config.label.toLowerCase()} ditemukan`}
+    function filterReport(q){const query=q.toLowerCase();$$("tbody tr",$("#content")).forEach(row=>row.hidden=!row.textContent.toLowerCase().includes(query))}
+    function filterLogs(q){const query=q.toLowerCase();$$("tbody tr",$("#content")).forEach(row=>row.hidden=!row.textContent.toLowerCase().includes(query))}
+    function closeModal(){const b=$("#modalBackdrop");b.classList.remove("open");modalCallback=null}
+    function openModal(title,subtitle,body,footer="",wide=false){const m=$("#modal");m.classList.toggle("wide",wide);m.innerHTML=`<div class="modal-head"><div><h2 id="modalTitle">${title}</h2><p>${subtitle||""}</p></div><button class="modal-close" data-action="close" aria-label="Close">×</button></div><div class="modal-body">${body}</div>${footer?`<div class="modal-footer">${footer}</div>`:""}`;$("#modalBackdrop").classList.add("open")}
+    function routeBanner(page,label){return `<div class="app-alert"><span>ⓘ</span><span>Panduan Aplikasi Modul ${escapeHtml(pageInfo[page][1])}</span><button class="btn btn-small btn-soft" data-action="guide">▶ Putar Video</button><button class="alert-close" data-action="dismiss-alert" aria-label="Tutup">×</button></div><div class="breadcrumb-row"><button data-page="home">←</button><button data-page="home">Beranda</button><span>/</span><button data-page="${page}">${escapeHtml(pageInfo[page][1])}</button><span>/</span><span class="current">${label}</span></div>`}
+    function movementRow(key,item={}){
+      const bank=key==="banking";
+      return `<tr class="movement-row"><td><input class="movement-date" type="date" value="${escapeHtml(item.date||"")}"></td>${bank?`<td><input class="movement-giro" type="date" value="${escapeHtml(item.giroDate||"")}"></td>`:""}<td><input class="movement-description" value="${escapeHtml(item.description||"")}" placeholder="Uraian transaksi"></td><td><input class="movement-debit" type="number" min="0" value="${Number(item.debit)||""}" placeholder="0"></td><td><input class="movement-credit" type="number" min="0" value="${Number(item.credit)||""}" placeholder="0"></td><td><input class="movement-receipt" value="${escapeHtml(item.receipt||"")}" placeholder="Nomor bukti"></td><td><button class="mini-action" type="button" title="Hapus baris" data-action="remove-movement">${ico("trash",13)}</button></td></tr>`;
+    }
+    function movementEditor(key,existing){
+      if(!["petty","banking"].includes(key))return "";
+      const items=existing?.movements?.length?existing.movements:[{}],bank=key==="banking";
+      return `<div class="movement-section"><div class="legacy-form-head"><strong>${bank?"Daftar Mutasi Transaksi":"Daftar Petty Cash"}</strong><button class="btn btn-primary btn-small" type="button" data-action="add-movement">+ Tambah Data</button></div><div class="table-scroll"><table><thead><tr><th>Tanggal</th>${bank?"<th>Tanggal Giro</th>":""}<th>Keterangan</th><th>Debit</th><th>Kredit</th><th>Bukti Mutasi</th><th></th></tr></thead><tbody>${items.map(item=>movementRow(key,item)).join("")}</tbody></table></div><p class="form-note">Isi tanggal dan uraian untuk setiap mutasi. Saldo dihitung dari saldo awal + debit - kredit.</p></div>`;
+    }
+    function addOrEdit(key,id=null){
+      const cfg=configs[key]||Object.values(configs).find(x=>x.key===key);
+      if(!cfg){notify("This module cannot be edited.",true);return}
+      formState={key:cfg.key,id:id?Number(id):null};detailState=null;setSubviewRoute(id?"edit":"create",id||"");render();window.scrollTo(0,0);
+    }
+    function recordFormPage(key,id){
+      const cfg=Object.values(configs).find(x=>x.key===key),existing=id?store[key].find(x=>x.id===Number(id)):null;
+      if(!cfg|| (id&&!existing))return `<section class="legacy-panel">${pageHeader(currentPage)}<div class="empty-state">Data tidak ditemukan.</div></section>`;
+      const title=existing?`Edit Data ${cfg.label}`:key==="employees"?"Tambah Data Karyawan Baru":cfg.add;
+      const fields=cfg.fields.filter(([name])=>key!=="payroll"||!["amount","createdBy"].includes(name)).map(([name,label,type,options])=>{
+        let value=existing?.[name]??(name==="date"||name==="joined"?new Date().toISOString().slice(0,10):name==="updated"?new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"}):name==="status"&&key==="payroll"?"Draft":name==="openingBalance"?(existing?Number(existing.balance||0)-Number(existing.debit||0)+Number(existing.credit||0):0):"");
+        let control;
+        if(key==="payroll"&&name==="nik"){
+          control=`<select name="nik" id="payrollEmployee" required><option value="">-- Nomor Induk Karyawan --</option>${store.employees.map(e=>`<option value="${escapeHtml(e.nik)}" ${e.nik===value?"selected":""}>${escapeHtml(e.nik)} - ${escapeHtml(e.name)}</option>`).join("")}</select>`;
+        }else if(key==="payroll"&&name==="name"){
+          control=`<input name="name" id="payrollName" value="${escapeHtml(value)}" readonly required>`;
+        }else if(type==="select"){
+          control=`<select name="${name}" required><option value="">-- Pilih ${label} --</option>${options.map(x=>`<option value="${escapeHtml(x)}" ${x===value?"selected":""}>${escapeHtml(x)}</option>`).join("")}</select>`;
+        }else if(type==="file"){
+          control=`<input name="upload" type="file" accept="${key==="cms"?"image/*":"application/pdf,image/jpeg,image/png"}"><small>${existing?.[name]?`File tersimpan: ${escapeHtml(existing[name])}`:"Pilih berkas (opsional)"}</small>`;
+        }else if(type==="textarea"){
+          control=`<textarea name="${name}" ${name==="description"?"required":""}>${escapeHtml(value)}</textarea>`;
+        }else{
+          const required=["nik","name","title","amount","date","category","description","period","debit","credit","balance"].includes(name)||(name==="email"&&key==="users");
+          control=`<input name="${name}" type="${type||"text"}" value="${escapeHtml(value)}" ${required?"required":""} ${type==="number"?'min="0" step="1"':''}>`;
+        }
+        const section=key==="employees"?(name==="nik"?"Data Personal":name==="division"?"Data Kepegawaian & Penempatan":""):"";
+        return `${section?`<div class="form-section">${section}</div>`:""}<div class="field ${name==="description"?"full":""}"><label>${label}</label>${control}</div>`;
+      }).join("");
+      const profile=key==="payroll"?`<div class="person-lookup" id="payrollProfile"><div class="field"><label>Divisi</label><strong id="payrollDivision">-</strong></div><div class="field"><label>Jabatan</label><strong id="payrollPosition">-</strong></div><div class="field"><label>Lokasi Kerja</label><strong id="payrollLocation">-</strong></div><div class="field"><label>Status</label><strong id="payrollStatus">-</strong></div></div>`:"";
+      const helper=key==="transactions"?`<div class="form-note">Jumlah dalam Rupiah. File pendukung hanya dicatat sebagai nama berkas di browser.</div>`:"";
+      return `<section class="legacy-panel">${routeBanner(currentPage,existing?"Edit Data":"Tambah Data")}<div class="legacy-form"><div class="legacy-form-head"><div class="legacy-form-title">${title}</div><div class="actions"><button class="btn btn-danger" type="button" data-action="cancel-form">CANCEL</button><button class="btn btn-primary" type="submit" form="recordForm">SUBMIT DATA</button></div></div><hr><form id="recordForm" class="legacy-form-grid" data-key="${key}" enctype="multipart/form-data">${key==="payroll"?'<div class="form-section">Data Karyawan</div>':""}${fields}${profile}${key==="payroll"?'<div class="form-section">Data Penerimaan</div><div class="field"><label>Upah Dasar</label><input name="basePay" type="number" min="0" value="0"></div><div class="field"><label>Tunjangan</label><input name="allowance" type="number" min="0" value="0"></div><div class="field"><label>Potongan</label><input name="deduction" type="number" min="0" value="0"></div><div class="form-note">Jumlah gaji dihitung dari upah dasar + tunjangan - potongan.</div>':""}${movementEditor(key,existing)}${helper}</form></div></section>`;
+    }
+    function bindRecordForm(){
+      const form=$("#recordForm");if(!form)return;
+      form.addEventListener("submit",event=>{
+        event.preventDefault();if(!form.reportValidity())return;
+        const key=form.dataset.key,cfg=Object.values(configs).find(x=>x.key===key),existing=formState.id?store[key].find(x=>x.id===formState.id):null,data=Object.fromEntries(new FormData(form));
+        const upload=form.querySelector('input[type="file"]')?.files[0];delete data.upload;
+        if(upload)data[key==="cms"?"assetName":"attachment"]=upload.name;
+        for(const [name,,type] of cfg.fields)if(type==="number")data[name]=Number(data[name]||0);
+        if(key==="payroll"){data.amount=Math.max(0,Number(data.basePay||0)+Number(data.allowance||0)-Number(data.deduction||0));data.period=data.period||data.month;data.status=data.status||"Draft";data.createdBy=currentUser?.name||"Arif Setiawan";delete data.basePay;delete data.allowance;delete data.deduction}
+        if(["petty","banking"].includes(key)){
+          const movementRows=$$(".movement-row",form).map(row=>({date:row.querySelector(".movement-date").value,giroDate:row.querySelector(".movement-giro")?.value||"",description:row.querySelector(".movement-description").value.trim(),debit:Number(row.querySelector(".movement-debit").value||0),credit:Number(row.querySelector(".movement-credit").value||0),receipt:row.querySelector(".movement-receipt").value.trim()}));
+          const movements=movementRows.filter(row=>row.date||row.description||row.debit||row.credit||row.receipt);
+          if(movements.some(row=>!row.date||!row.description)){notify("Lengkapi tanggal dan uraian setiap mutasi.",true);return}
+          data.movements=movements;data.openingBalance=Number(data.openingBalance||0);data.debit=movements.reduce((sum,row)=>sum+row.debit,0);data.credit=movements.reduce((sum,row)=>sum+row.credit,0);data.balance=data.openingBalance+data.debit-data.credit;
+        }
+        if(existing)Object.assign(existing,data);else{data.id=Date.now();if(key==="payroll"&&!data.status)data.status="Draft";store[key].unshift(data)}
+        store.logs.unshift({id:Date.now()+1,module:pageInfo[currentPage][1],action:existing?"Memperbarui data":"Membuat data",activity:existing?(existing.name||existing.title||existing.description||cfg.label):(data.name||data.title||data.description||cfg.label),user:currentUser?.name||"User",role:currentUser?.role||"user",date:new Date().toLocaleString("id-ID")});
+        save();formState=null;setSubviewRoute("");render();notify(existing?"Perubahan berhasil disimpan.":"Data berhasil ditambahkan.");
+      });
+    }
+    function bindPayrollEmployee(){
+      const select=$("#payrollEmployee");if(!select)return;
+      const update=()=>{const emp=store.employees.find(x=>x.nik===select.value);if(!emp)return;$("#payrollName").value=emp.name;$("#payrollDivision").textContent=emp.division;$("#payrollPosition").textContent=emp.position;$("#payrollLocation").textContent=emp.location;$("#payrollStatus").textContent=emp.status};
+      select.addEventListener("change",update);if(select.value)update();
+    }
+    function showDetail(key,id){
+      const cfg=configs[key]||Object.values(configs).find(x=>x.key===key),dataKey=cfg?.key,r=dataKey?store[dataKey].find(x=>x.id===Number(id)):null;if(!r)return;
+      detailState={key:dataKey,id:r.id};formState=null;setSubviewRoute("detail",r.id);render();window.scrollTo(0,0);
+    }
+    function recordDetailPage(key,id){
+      const cfg=Object.values(configs).find(x=>x.key===key),r=store[key]?.find(x=>x.id===Number(id));if(!cfg||!r)return `<section class="legacy-panel">${pageHeader(currentPage)}<div class="empty-state">Data tidak ditemukan.</div></section>`;
+      const items=cfg.fields.map(([name,label])=>`<div class="detail-item"><span>${label}</span><strong>${["amount","debit","credit","balance","openingBalance"].includes(name)?money(r[name]):escapeHtml(r[name]||"—")}</strong></div>`).join("");
+      const movements=["petty","banking"].includes(key)?`<div class="legacy-section-title" style="margin-top:20px">Daftar ${key==="banking"?"Mutasi Transaksi":"Petty Cash"}</div>${renderMovementTable(key,r.movements||[],r.openingBalance||0)}`:"";
+      return `<section class="legacy-panel">${routeBanner(currentPage,"Detail Data")}<div class="legacy-form-head"><div class="legacy-form-title">Detail ${cfg.label}</div><div class="actions"><button class="btn" data-page="${currentPage}">Kembali</button><button class="btn" data-action="export-detail" data-key="${key}" data-id="${r.id}">${ico("download")} Export</button><button class="btn btn-danger" data-action="delete" data-key="${key}" data-id="${r.id}">DELETE</button><button class="btn btn-primary" data-action="edit" data-key="${key}" data-id="${r.id}">${ico("edit")} EDIT</button></div></div><hr><div class="card detail-panel"><div class="detail-list">${items}</div></div>${movements}</section>`;
+    }
+    function renderMovementTable(key,movements,openingBalance=0){
+      const bank=key==="banking";let running=Number(openingBalance)||0;
+      if(!movements.length)return `<div class="card table-card"><div class="empty-state">Belum ada rincian mutasi.</div></div>`;
+      return `<div class="card table-card"><div class="table-scroll"><table><thead><tr><th>No</th><th>Tanggal</th>${bank?"<th>Tanggal Giro</th>":""}<th>Keterangan</th><th>Debit</th><th>Kredit</th>${bank?"<th>Saldo</th>":""}<th>Bukti Mutasi</th></tr></thead><tbody>${movements.map((x,i)=>{running+=Number(x.debit||0)-Number(x.credit||0);return `<tr><td>${i+1}</td><td>${escapeHtml(x.date||"—")}</td>${bank?`<td>${escapeHtml(x.giroDate||"—")}</td>`:""}<td>${escapeHtml(x.description)}</td><td>${money(x.debit)}</td><td>${money(x.credit)}</td>${bank?`<td>${money(x.balance??running)}</td>`:""}<td>${escapeHtml(x.receipt||"—")}</td></tr>`}).join("")}</tbody></table></div><div class="table-foot"><span>Saldo awal: ${money(openingBalance)}</span><span>Saldo akhir: ${money(running)}</span></div></div>`;
+    }
+    function removeRecord(key,id){const cfg=configs[key]||Object.values(configs).find(x=>x.key===key),dataKey=cfg?.key,item=dataKey?store[dataKey].find(x=>x.id===Number(id)):null;if(!item)return;openModal("Hapus data?","Data yang dihapus akan dihilangkan dari demo ini.",`<div class="notice" style="margin:0">Anda akan menghapus <strong>${escapeHtml(item.name||item.title||item.description||cfg.label)}</strong>. Tindakan ini tidak dapat dibatalkan.</div>`,`<button class="btn" data-action="close">Batal</button><button class="btn btn-danger" data-action="confirm-delete" data-key="${dataKey}" data-id="${id}">${ico("trash")} Hapus</button>`)}
+    function downloadCsv(rows,filename){
+      if(!rows.length){notify("Tidak ada data untuk diekspor.",true);return}
+      const cols=Object.keys(rows[0]),csv=[cols.join(","),...rows.map(r=>cols.map(c=>`"${String(r[c]??"").replace(/"/g,'""')}"`).join(","))].join("\r\n");
+      const url=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"})),link=document.createElement("a");link.href=url;link.download=filename;document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);notify("File CSV berhasil diunduh.");
+    }
+    function csvExport(){
+      let key=configs[currentPage]?.key,rows=key?store[key]:currentPage==="logs"?store.logs:[];
+      if(currentPage==="reports")rows=Array.from({length:5},(_,i)=>{const year=nowYear-i;return{tahun:year,penerimaan:1930000000-i*212000000,pengeluaran:1415000000-i*148000000}});
+      downloadCsv(rows,`derkei-${currentPage}-${new Date().toISOString().slice(0,10)}.csv`);
+    }
+    function reportDetail(year){
+      const months=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+      const monthly=months.map((name,index)=>{const tx=store.transactions.filter(r=>r.date.startsWith(String(year))&&Number(r.date.slice(5,7))===index+1),income=tx.filter(r=>r.type==="Penerimaan").reduce((s,r)=>s+r.amount,0),expense=tx.filter(r=>r.type==="Pengeluaran").reduce((s,r)=>s+r.amount,0);return{name,index:index+1,income:income||1930000000/12,expense:expense||1415000000/12,count:tx.length}});
+      openModal(`Laporan Keuangan ${year}`,"Ringkasan tahunan dan rincian per bulan.",`<div class="detail-list"><div class="detail-item"><span>Total Penerimaan</span><strong>${money(1930000000)}</strong></div><div class="detail-item"><span>Total Pengeluaran</span><strong>${money(1415000000)}</strong></div><div class="detail-item"><span>Saldo Bersih</span><strong>${money(515000000)}</strong></div><div class="detail-item"><span>Periode</span><strong>${year}</strong></div></div><div class="legacy-section-title" style="margin-top:17px">Ringkasan Bulanan</div><div class="table-scroll"><table><thead><tr><th>Bulan</th><th>Penerimaan</th><th>Pengeluaran</th><th>Transaksi</th><th>Aksi</th></tr></thead><tbody>${monthly.map(m=>`<tr><td>${m.name}</td><td>${money(m.income)}</td><td>${money(m.expense)}</td><td>${m.count}</td><td><button class="btn btn-small btn-soft" data-action="report-month" data-year="${year}" data-month="${m.index}">${ico("eye",13)} Detail</button></td></tr>`).join("")}</tbody></table></div>`,`<button class="btn" data-action="close">Tutup</button><button class="btn btn-primary" data-action="export">${ico("download")} Ekspor</button>`,true);
+    }
+    function reportMonthDetail(year,month){
+      const labels=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],name=labels[Number(month)-1],rows=store.transactions.filter(r=>r.date.startsWith(String(year))&&Number(r.date.slice(5,7))===Number(month));
+      const body=rows.length?`<div class="table-scroll"><table><thead><tr><th>Tanggal</th><th>Tipe</th><th>Kategori</th><th>Keterangan</th><th>Jumlah</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${escapeHtml(r.date)}</td><td>${statusPill(r.type)}</td><td>${escapeHtml(r.category)}</td><td>${escapeHtml(r.description)}</td><td>${money(r.amount)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty-state"><strong>Data contoh bulanan</strong>Tidak ada transaksi individual untuk ${name} ${year}; nilai ringkasan laporan menggunakan dummy data.</div>`;
+      openModal(`${name} ${year}`,"Rincian laporan bulanan.",body,`<button class="btn" data-action="close">Tutup</button>`,true);
+    }
+    function quickGuide(){
+      const source=currentPage==="hrd"?"public/video/hrd/1.mp4":currentPage==="profile"?"public/video/profile_users/1.mp4":null;
+      if(source){openModal(`Panduan ${pageInfo[currentPage][1]}`,"Video panduan dari aset aplikasi.",`<video style="width:100%;max-height:65vh;background:#111" controls preload="metadata"><source src="${source}" type="video/mp4">Browser tidak mendukung pemutar video.</video>`,`<button class="btn btn-primary" data-action="close">Selesai</button>`,true);return}
+      openModal("Panduan singkat","Alur penggunaan sistem internal Derkei.",`<div class="detail-list">${[["Navigasi","Gunakan menu horizontal Modul untuk membuka HRD, Accounting, Company Profile, dan Pengguna sesuai peran."],["Pencarian","Ketik di kotak pencarian pada daftar untuk menyaring data yang tampil."],["Kelola data","Pilih Tambah Data, isi formulir, lalu SUBMIT DATA. Ikon baris membuka detail, edit, atau hapus."],["Accounting","Pindah antar All Report, Slip Gaji, Penerimaan & Pengeluaran, Petty Cash, dan Perbankan melalui tab."],["Ekspor","Ekspor Data mengunduh data demo yang sedang aktif sebagai CSV."],["Penyimpanan","Perubahan tersimpan lokal di browser. Demo ini tidak terhubung ke backend atau database."]].map(([a,b])=>`<div class="detail-item"><span>${a}</span><strong>${b}</strong></div>`).join("")}</div>`,`<button class="btn btn-primary" data-action="close">Mengerti</button>`);
+    }
+    function showAuthMessage(type,message){const target=type==="success"?$("#authSuccess"):$("#authError");target.innerHTML=message;target.classList.add("show");const other=type==="success"?$("#authError"):$("#authSuccess");other.classList.remove("show")}
+    function setAuthMode(mode){
+      authMode=mode;$("#authTitle").textContent=mode==="login"?"L O G I N":mode==="forgot"?"LUPA PASSWORD":"BUAT PASSWORD BARU";
+      $("#loginForm").hidden=mode!=="login";$("#forgotForm").hidden=mode!=="forgot";$("#resetForm").hidden=mode!=="reset";
+      $("#authError").classList.remove("show");$("#authSuccess").classList.remove("show");
+    }
+    function showLanding(){
+      $("#application").hidden=true;
+      $("#loginScreen").classList.remove("active");
+      $("#publicLanding").classList.add("active");
+      $("#landingLightbox").classList.remove("open");
+      $("#landingMenuToggle").setAttribute("aria-expanded","false");
+      $("#landingLinks").classList.remove("open");
+      history.replaceState(null,"",location.pathname+location.search);
+      window.scrollTo(0,0);
+    }
+    function showLogin(){
+      $("#application").hidden=true;
+      $("#publicLanding").classList.remove("active");
+      $("#loginScreen").classList.add("active");
+      $("#landingLinks").classList.remove("open");
+      $("#landingMenuToggle").setAttribute("aria-expanded","false");
+      history.replaceState(null,"",location.pathname+location.search);
+      setAuthMode("login");
+      window.scrollTo(0,0);
+    }
+    function setLandingSlide(index){
+      const slides=$$("#landingCarousel .landing-slide"),indicators=$$(".landing-carousel-indicators button");
+      landingSlideIndex=Math.max(0,Math.min(index,slides.length-1));
+      slides.forEach((slide,i)=>{const active=i===landingSlideIndex;slide.classList.toggle("active",active);slide.setAttribute("aria-hidden",String(!active))});
+      indicators.forEach((indicator,i)=>{const active=i===landingSlideIndex;indicator.classList.toggle("active",active);indicator.setAttribute("aria-current",String(active))});
+      $(".landing-carousel-control.previous").hidden=landingSlideIndex===0;
+      $(".landing-carousel-control.next").hidden=landingSlideIndex===slides.length-1;
+    }
+    function closeLandingLightbox(){
+      const wasOpen=$("#landingLightbox").classList.contains("open");
+      $("#landingLightbox").classList.remove("open");
+      $("#landingLightbox").setAttribute("aria-hidden","true");
+      $("#landingLightboxImage").removeAttribute("src");
+      if(wasOpen)$$(".landing-gallery-item")[galleryImageIndex]?.focus();
+    }
+    function showGalleryImage(index){
+      const items=$$(".landing-gallery-item");
+      if(!items.length)return;
+      galleryImageIndex=(index+items.length)%items.length;
+      $("#landingLightboxImage").src=items[galleryImageIndex].dataset.galleryImage;
+    }
+    function enterApplication(user,remember,preserveRoute=false){
+      currentUser={...user};
+      if(preserveRoute)syncRouteFromLocation();else{currentPage="home";formState=null;detailState=null}
+      try{if(remember){localStorage.setItem("derkei-demo-user",JSON.stringify(currentUser));sessionStorage.removeItem("derkei-demo-user")}else{sessionStorage.setItem("derkei-demo-user",JSON.stringify(currentUser));localStorage.removeItem("derkei-demo-user")}}catch(error){notify("Browser session storage is unavailable.",true)}
+      $("#loginScreen").classList.remove("active");$("#application").hidden=false;setupNav();if(!preserveRoute)location.hash="home";render();
+    }
+    function leaveApplication(){
+      try{localStorage.removeItem("derkei-demo-user");sessionStorage.removeItem("derkei-demo-user")}catch(error){showAuthMessage("error","Could not clear the demo session from this browser.")}
+      currentUser=null;currentPage="home";$("#application").hidden=true;$("#loginScreen").classList.add("active");setAuthMode("login");$("#username").value="admin";$("#password").value="admin123";$("#remember").checked=false;history.replaceState(null,"",location.pathname+location.search);
+    }
+    function submitLogin(event){
+      event.preventDefault();const form=event.currentTarget;if(!form.reportValidity())return;
+      const username=$("#username").value.trim().toLowerCase(),password=$("#password").value,user=demoUsers.find(x=>x.username===username&&x.password===password);
+      if(!user){showAuthMessage("error","Username atau password tidak sesuai. Periksa kembali akun demo.");return}
+      enterApplication(user,$("#remember").checked);
+    }
+    function submitForgot(event){
+      event.preventDefault();if(!event.currentTarget.reportValidity())return;
+      resetEmail=$("#resetEmail").value.trim().toLowerCase();resetUser=demoUsers.find(x=>x.email.toLowerCase()===resetEmail);
+      if(!resetUser){showAuthMessage("error","Email tidak ditemukan pada akun demo. Gunakan email akun demo yang tersedia.");return}
+      setAuthMode("forgot");showAuthMessage("success",`Permintaan demo diterima untuk <b>${escapeHtml(resetEmail)}</b>. <button class="auth-switch" data-action="start-reset">Buat Password Baru</button>`);
+    }
+    function submitReset(event){
+      event.preventDefault();const form=event.currentTarget;if(!form.reportValidity())return;
+      if($("#newPassword").value!==$("#confirmPassword").value){showAuthMessage("error","Konfirmasi password tidak sama.");return}
+      if(!resetUser){setAuthMode("forgot");showAuthMessage("error","Silakan ajukan permintaan reset password terlebih dahulu.");return}
+      resetUser.password=$("#newPassword").value;resetUser=null;setAuthMode("login");$("#password").value="";showAuthMessage("success","Password demo berhasil diperbarui. Silakan login dengan password baru.");
+    }
+    document.addEventListener("click",event=>{
+      if(event.target.closest('a[href="#"]'))event.preventDefault();
+      const landingReason=event.target.closest(".landing-reasons button");if(landingReason){landingReason.closest("li").classList.toggle("open");return}
+      const valueToggle=event.target.closest(".landing-value-toggle");if(valueToggle){const value=valueToggle.closest(".landing-value"),expanded=value.getAttribute("aria-expanded")==="true";value.setAttribute("aria-expanded",String(!expanded));valueToggle.setAttribute("aria-expanded",String(!expanded));return}
+      const galleryItem=event.target.closest("[data-gallery-image]");if(galleryItem){showGalleryImage($$(".landing-gallery-item").indexOf(galleryItem));$("#landingLightbox").classList.add("open");$("#landingLightbox").setAttribute("aria-hidden","false");$(".landing-lightbox-close").focus();return}
+      if(event.target.id==="landingLightbox"){closeLandingLightbox();return}
+      const landingAnchor=event.target.closest('.landing-links a[href^="#landing-"]');if(landingAnchor){$$(".landing-links a").forEach(link=>link.classList.toggle("active",link===landingAnchor));$("#landingLinks").classList.remove("open");$("#landingMenuToggle").setAttribute("aria-expanded","false")}
+      const page=event.target.closest("[data-page]");if(page){go(page.dataset.page);return}
+      const guideTabButton=event.target.closest("[data-guide-tab]");if(guideTabButton){guideTab=guideTabButton.dataset.guideTab;render();return}
+      const tab=event.target.closest("[data-cms-filter]");if(tab){$$("[data-cms-filter]").forEach(x=>x.classList.toggle("active",x===tab));const filter=tab.dataset.cmsFilter;const rows=store.cms.filter(r=>!filter||r.type===filter);$("#table-cms").innerHTML=renderTable("cms",rows);return}
+      const landingCarouselButton=event.target.closest("[data-action=\"landing-slide\"],[data-action=\"landing-slide-prev\"],[data-action=\"landing-slide-next\"]");if(landingCarouselButton){const action=landingCarouselButton.dataset.action;setLandingSlide(action==="landing-slide"?Number(landingCarouselButton.dataset.slide):landingSlideIndex+(action==="landing-slide-next"?1:-1));return}
+      const slideButton=event.target.closest(".login-slider [data-slide],.login-slider [data-slide-step]");if(slideButton){slideIndex=slideButton.dataset.slide!==undefined?Number(slideButton.dataset.slide):(slideIndex+Number(slideButton.dataset.slideStep)+3)%3;$$(".slider-image").forEach((image,i)=>image.classList.toggle("active",i===slideIndex));$$(".slider-dots button").forEach((dot,i)=>dot.classList.toggle("active",i===slideIndex));return}
+      const button=event.target.closest("[data-action]");if(!button)return;
+      const {action,key,id}=button.dataset;
+      if(action==="enter-management"){showLogin();return}
+      if(action==="back-landing"){showLanding();return}
+      if(action==="toggle-landing-menu"){const open=$("#landingLinks").classList.toggle("open");button.setAttribute("aria-expanded",String(open));return}
+      if(action==="close-lightbox"){closeLandingLightbox();return}
+      if(action==="gallery-previous"){showGalleryImage(galleryImageIndex-1);return}
+      if(action==="gallery-next"){showGalleryImage(galleryImageIndex+1);return}
+      if(action==="landing-back-to-top"){window.scrollTo({top:0,behavior:"smooth"});return}
+      if(action==="toggle-accounting"||action==="toggle-modules"){$("#modulesDropdown").classList.toggle("open");return}
+      if(action==="toggle-user"){$("#userDropdown").classList.toggle("open");return}
+      if(action==="logout"){leaveApplication();return}
+      if(action==="about"){go("about");return}
+      if(action==="forgot"){setAuthMode("forgot");return}
+      if(action==="back-login"){setAuthMode("login");return}
+      if(action==="start-reset"){setAuthMode("reset");return}
+      if(action==="toggle-password"){const input=$("#password");input.type=input.type==="password"?"text":"password";button.textContent=input.type==="password"?"Lihat":"Sembunyikan";return}
+      if(action==="dismiss-alert"){sessionStorage.setItem(`derkei-alert-${currentPage}`,"1");button.closest(".app-alert")?.remove();return}
+      if(action==="guide"){quickGuide();return}
+      if(action==="toggle-menu")$("#sidebar").classList.toggle("open");
+      if(action==="close")closeModal();
+      if(action==="add")addOrEdit(currentPage);
+      if(action==="edit")addOrEdit(key,id);
+      if(action==="view")showDetail(key,id);
+      if(action==="cancel-form"){formState=null;setSubviewRoute("");render()}
+      if(action==="add-movement"){const form=$("#recordForm"),body=form?.querySelector(".movement-section tbody");if(body)body.insertAdjacentHTML("beforeend",movementRow(form.dataset.key,{}))}
+      if(action==="remove-movement"){const row=button.closest(".movement-row"),body=row?.parentElement;if(row)row.remove();if(body&&!body.children.length){const form=$("#recordForm");body.insertAdjacentHTML("beforeend",movementRow(form?.dataset.key||"petty",{}))}}
+      if(action==="delete")removeRecord(key,id);
+      if(action==="confirm-delete"){store[key]=store[key].filter(r=>r.id!==Number(id));if(detailState?.id===Number(id)){detailState=null;setSubviewRoute("")}save();closeModal();render();notify("Data berhasil dihapus.")}
+      if(action==="export")csvExport();
+      if(action==="report-detail")reportDetail(id);
+      if(action==="report-month")reportMonthDetail(button.dataset.year,button.dataset.month);
+      if(action==="export-detail"){const record=store[key]?.find(x=>x.id===Number(id));if(record)downloadCsv(record.movements?.length?record.movements:[record],`derkei-${key}-${id}.csv`)}
+      if(action==="log-detail"){const r=store.logs.find(x=>x.id===Number(id));if(r)openModal("Detail Aktivitas","Informasi aktivitas aplikasi.",`<div class="detail-list">${Object.entries(r).filter(([k])=>k!=="id").map(([k,v])=>`<div class="detail-item"><span>${k}</span><strong>${escapeHtml(v)}</strong></div>`).join("")}</div>`,`<button class="btn btn-primary" data-action="close">Tutup</button>`)}
+      if(action==="help")quickGuide();
+      if(action==="notifications")openModal("Notifikasi","Informasi terbaru untuk akun Anda.",`<div class="notice">Tidak ada notifikasi baru. Semua modul berjalan normal.</div><div class="detail-item"><span>Pembaruan</span><strong>Versi demo satu file siap digunakan.</strong></div>`,`<button class="btn btn-primary" data-action="close">Selesai</button>`);
+      if(action==="profile")go("profile");
+      if(action==="edit-profile"){const user=currentUser||demoUsers[0];openModal("Edit Profil","Perbarui informasi profil demo.",`<form id="profileForm" class="form-grid"><div class="field"><label>Nama Lengkap</label><input name="name" value="${escapeHtml(user.name)}" required></div><div class="field"><label>Email</label><input name="email" type="email" value="${escapeHtml(user.email)}" required></div><div class="field"><label>Nomor Telepon</label><input name="phone" value="+62 812-0000-1234"></div><div class="field"><label>Lokasi</label><input name="location" value="Jakarta"></div></form>`,`<button class="btn" data-action="close">Batal</button><button class="btn btn-primary" data-action="profile-saved">Simpan</button>`)}
+      if(action==="profile-saved"){const f=$("#profileForm");if(f&&f.reportValidity()){const values=Object.fromEntries(new FormData(f));Object.assign(currentUser,values);const demo=demoUsers.find(x=>x.username===currentUser.username);if(demo)Object.assign(demo,values);setupNav();closeModal();render();notify("Profil demo berhasil diperbarui.")}}
+      if(action==="password")openModal("Ubah Kata Sandi","Gunakan password akun demo saat ini.",`<form id="passwordForm" class="form-grid"><div class="field full"><label>Kata Sandi Saat Ini</label><input name="current" type="password" required></div><div class="field"><label>Kata Sandi Baru</label><input name="next" type="password" required minlength="8"></div><div class="field"><label>Konfirmasi Kata Sandi</label><input name="confirm" type="password" required minlength="8"></div></form>`,`<button class="btn" data-action="close">Batal</button><button class="btn btn-primary" data-action="password-saved">Simpan</button>`);
+      if(action==="password-saved"){const f=$("#passwordForm");if(f&&f.reportValidity()){const data=Object.fromEntries(new FormData(f));if(data.current!==currentUser.password){notify("Kata sandi saat ini tidak sesuai.",true);return}if(data.next!==data.confirm){notify("Konfirmasi kata sandi tidak sama.",true);return}currentUser.password=data.next;const demo=demoUsers.find(x=>x.username===currentUser.username);if(demo)demo.password=data.next;closeModal();notify("Kata sandi berhasil diperbarui.")}}
+    });
+    document.addEventListener("input",event=>{const el=event.target;if(el.classList.contains("local-search")||el.classList.contains("page-search"))filterTable(el.dataset.target,el.value);if(el.classList.contains("report-search"))filterReport(el.value);if(el.classList.contains("log-search"))filterLogs(el.value)});
+    $("#loginForm").addEventListener("submit",submitLogin);
+    $("#landingContactForm").addEventListener("submit",event=>{event.preventDefault();if(!event.currentTarget.reportValidity())return;$("#landingContactNote").textContent="Terima kasih. Form ini hanya demonstrasi dan pesan tidak dikirim.";event.currentTarget.reset()});
+    $("#forgotEmailForm").addEventListener("submit",submitForgot);
+    $("#newPasswordForm").addEventListener("submit",submitReset);
+    $("#modalBackdrop").addEventListener("click",event=>{if(event.target===$("#modalBackdrop"))closeModal()});
+    document.addEventListener("keydown",event=>{if($("#landingLightbox").classList.contains("open")){if(event.key==="ArrowLeft")showGalleryImage(galleryImageIndex-1);if(event.key==="ArrowRight")showGalleryImage(galleryImageIndex+1)}if(event.key==="Escape"){closeModal();closeLandingLightbox();$("#sidebar").classList.remove("open")}if(event.key==="Enter"&&event.target.matches(".module-card"))go(event.target.dataset.page)});
+    window.addEventListener("hashchange",()=>{if(!$("#application").hidden){syncRouteFromLocation();render()}});
+    window.addEventListener("scroll",()=>{
+      $("#landingHeader").classList.toggle("scrolled",window.scrollY>30);
+      $("#landingBackToTop").hidden=window.scrollY<300;
+      if($("#publicLanding").classList.contains("active")){let activeId="landing-home";["landing-about","landing-services","landing-gallery","landing-contact"].forEach(id=>{const section=$("#"+id);if(section&&section.getBoundingClientRect().top<220)activeId=id});$$(".landing-links a").forEach(link=>link.classList.toggle("active",link.hash==="#"+activeId))}
+    },{passive:true});
+    if("IntersectionObserver" in window){const landingObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("visible");landingObserver.unobserve(entry.target)}}),{threshold:.12});$$(".landing-reveal:not(.visible)").forEach(element=>landingObserver.observe(element))}
+    else $$(".landing-reveal").forEach(element=>element.classList.add("visible"));
+    let savedUser=null;try{savedUser=JSON.parse(sessionStorage.getItem("derkei-demo-user")||localStorage.getItem("derkei-demo-user")||"null")}catch(error){savedUser=null}
+    if(savedUser&&demoUsers.some(user=>user.username===savedUser.username)){enterApplication(demoUsers.find(user=>user.username===savedUser.username),false,true)}
+    else{$("#publicLanding").classList.add("active");$("#loginScreen").classList.remove("active");$("#application").hidden=true;history.replaceState(null,"",location.pathname+location.search)}
+    let slideIndex=0,landingSlideIndex=0,landingCarouselTimer,galleryImageIndex=0;setLandingSlide(0);
+    function startLandingCarousel(){clearInterval(landingCarouselTimer);landingCarouselTimer=setInterval(()=>{if($("#publicLanding").classList.contains("active")&&landingSlideIndex<$$(".landing-slide").length-1)setLandingSlide(landingSlideIndex+1)},5000)}
+    $("#landingCarousel").addEventListener("mouseenter",()=>clearInterval(landingCarouselTimer));
+    $("#landingCarousel").addEventListener("mouseleave",startLandingCarousel);
+    $("#landingCarousel").addEventListener("focusin",()=>clearInterval(landingCarouselTimer));
+    $("#landingCarousel").addEventListener("focusout",event=>{if(!$("#landingCarousel").contains(event.relatedTarget))startLandingCarousel()});
+    startLandingCarousel();
+    setInterval(()=>{if(!$("#loginScreen").classList.contains("active"))return;slideIndex=(slideIndex+1)%3;$$(".slider-image").forEach((image,i)=>image.classList.toggle("active",i===slideIndex));$$(".slider-dots button").forEach((dot,i)=>dot.classList.toggle("active",i===slideIndex))},5000);
+  })();
+  </script>
+</body>
+</html>

@@ -142,7 +142,7 @@
 									<span class="client">
 										<img src={project.client.logo} alt="" />{project.client.name}
 									</span>
-									<span class="year">{project.year}</span>
+									<span class="year">{project.year ?? '—'}</span>
 									<span class="arrow"><Icon name="arrowUpRight" size={18} /></span>
 								</a>
 							</li>
@@ -157,7 +157,7 @@
 									<span class="card-body">
 										<span class="card-meta label">
 											<Icon name={project.type === 'design' ? 'layers' : 'code'} size={11} />
-											{typeLabel(project)} · {project.year}
+											{typeLabel(project)} · {project.year ?? '—'}
 										</span>
 										<span class="card-title">{project.title}</span>
 										<span class="card-sub">{project.tagline}</span>
@@ -519,8 +519,10 @@
 		.list {
 			margin-top: -12px;
 		}
+		/* Still on the page columns: number in the first, arrow in the last,
+		   project in between (works for 12, 6 or 4 columns) */
 		.row {
-			grid-template-columns: 32px 1fr auto;
+			grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
 			row-gap: 4px;
 		}
 		.num {
@@ -530,11 +532,11 @@
 			padding-top: 6px;
 		}
 		.title {
-			grid-column: 2;
+			grid-column: 2 / -2;
 			flex-wrap: wrap;
 		}
 		.type {
-			grid-column: 2;
+			grid-column: 2 / -2;
 			grid-row: 2;
 			flex-direction: row;
 			align-items: center;
@@ -548,7 +550,7 @@
 			display: none;
 		}
 		.arrow {
-			grid-column: 3;
+			grid-column: -2 / -1;
 			grid-row: 1 / span 2;
 		}
 		.mini {
