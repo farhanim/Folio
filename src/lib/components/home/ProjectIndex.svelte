@@ -5,15 +5,22 @@
 	import SectionHead from '#lib/components/ui/SectionHead.svelte';
 	import ClientBadge from '#lib/components/project/ClientBadge.svelte';
 	import ProjectCover from '#lib/components/project/ProjectCover.svelte';
+	import ProjectMeta from '#lib/components/project/ProjectMeta.svelte';
 	import Tag from '#lib/components/project/Tag.svelte';
+	import Featured from './Featured.svelte';
 	import type { Project } from '#lib/types/index.ts';
+	import { readingTime } from '#lib/data/projects.ts';
 	import { reveal } from '#lib/utils/reveal.ts';
 
 	/**
 	 * Every project — design and code — in one index, shown as a numbered list
 	 * (with a cursor-trailing preview on desktop) or as a card grid.
 	 */
-	let { projects, id = 'projects' }: { projects: Project[]; id?: string } = $props();
+	let {
+		projects,
+		picks = [],
+		id = 'projects'
+	}: { projects: Project[]; picks?: Project[]; id?: string } = $props();
 
 	// ── Filters ──
 	type Filter = 'All' | 'Design' | 'Code' | 'New';
@@ -22,7 +29,9 @@
 	const matches = (p: Project, f: Filter) =>
 		f === 'All' ||
 		(f === 'New' ? !!p.isNew : f === 'Design' ? p.type === 'design' : p.type === 'code');
-	const visible = $derived(projects.filter((p) => matches(p, filter)));
+	// Projects already shown in "Worth a read" aren't repeated in the list or grid.
+	const pool = $derived(projects.filter((p) => !picks.some((k) => k.slug === p.slug)));
+	const visible = $derived(pool.filter((p) => matches(p, filter)));
 
 	// ── List: ten rows a page ──
 	const PAGE_SIZE = 10;
@@ -34,8 +43,24 @@
 		page = 0;
 	}
 
+	// Paging swaps the rows in place, then brings the top of the list back into
+	// view (below the sticky bar) instead of leaving the reader at the pager.
+	let listEl: HTMLOListElement | undefined = $state();
+	function goPage(to: number) {
+		page = Math.max(0, Math.min(pages - 1, to));
+		hovered = null;
+		if (!listEl) return;
+		const bar =
+			parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar')) || 64;
+		const top = listEl.getBoundingClientRect().top + scrollY - bar - 16;
+		if (top < scrollY) {
+			const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+			scrollTo({ top, behavior: smooth ? 'smooth' : 'auto' });
+		}
+	}
+
 	// ── Grid: the newest few as large cards, the rest in a slider row ──
-	const FEATURE_COUNT = 6;
+	const FEATURE_COUNT = 8;
 	const lead = $derived(visible.slice(0, FEATURE_COUNT));
 	const rest = $derived(visible.slice(FEATURE_COUNT));
 
@@ -114,7 +139,7 @@
 			<div class="filters" role="group" aria-label="Filter projects">
 				{#each filters as f (f)}
 					<button type="button" aria-pressed={filter === f} onclick={() => setFilter(f)}>
-						{f}<sup>{projects.filter((p) => matches(p, f)).length}</sup>
+						{f}<sup>{pool.filter((p) => matches(p, f)).length}</sup>
 					</button>
 				{/each}
 			</div>
@@ -140,18 +165,20 @@
 		{/snippet}
 	</SectionHead>
 
+	<Featured projects={picks} />
+
 	<div class="views-body" data-reveal>
 		{#key view}
 			<div class="view" in:fade={{ duration: 280, delay: 120 }} out:fade={{ duration: 120 }}>
 				{#if view === 'list'}
-					<ol class="list" onpointerleave={() => (hovered = null)}>
+					<ol class="list" bind:this={listEl} onpointerleave={() => (hovered = null)}>
 						<li class="row legend label" aria-hidden="true">
 							<span>No.</span><span>Project</span><span>Type</span><span>Client</span><span
 								>Year</span
 							>
 						</li>
 						{#each pageRows as project, i (project.slug)}
-							<li animate:flip={{ duration: 450 }} transition:fade={{ duration: 200 }}>
+							<li in:fade={{ duration: 200 }}>
 								<a
 									class="row"
 									href="/work/{project.slug}"
@@ -174,6 +201,9 @@
 											{typeLabel(project)}
 										</span>
 										<span class="role">{project.role}</span>
+										<span class="read label"
+											><Icon name="clock" size={11} /> {readingTime(project)} min read</span
+										>
 									</span>
 									<span class="client">
 										<img src={project.client.logo} alt="" />{project.client.name}
@@ -194,7 +224,7 @@
 									type="button"
 									aria-label="Previous page"
 									disabled={page === 0}
-									onclick={() => page--}
+									onclick={() => goPage(page - 1)}
 								>
 									<Icon name="arrowLeft" size={15} />
 								</button>
@@ -202,7 +232,7 @@
 									type="button"
 									aria-label="Next page"
 									disabled={page >= pages - 1}
-									onclick={() => page++}
+									onclick={() => goPage(page + 1)}
 								>
 									<Icon name="arrowRight" size={15} />
 								</button>
@@ -210,16 +240,14 @@
 						</nav>
 					{/if}
 				{:else}
+					<p class="grid-head label">More projects <sup>{visible.length}</sup></p>
 					<ul class="grid">
 						{#each lead as project (project.slug)}
 							<li animate:flip={{ duration: 450 }} transition:fade={{ duration: 200 }}>
 								<a class="card" href="/work/{project.slug}">
-									<ProjectCover {project} ratio="16 / 10" />
+									<ProjectCover {project} ratio="16 / 9" />
 									<span class="card-body">
-										<span class="card-meta label">
-											<Icon name={project.type === 'design' ? 'layers' : 'code'} size={11} />
-											{typeLabel(project)} · {project.year ?? '—'}
-										</span>
+										<ProjectMeta {project} />
 										<span class="card-title">{project.title}</span>
 										<span class="card-sub">{project.tagline}</span>
 									</span>
@@ -231,7 +259,6 @@
 					{#if rest.length}
 						<div class="more">
 							<div class="more-head">
-								<span class="label">More projects <sup>{rest.length}</sup></span>
 								<span class="more-nav">
 									<button
 										type="button"
@@ -255,12 +282,9 @@
 								{#each rest as project (project.slug)}
 									<li>
 										<a class="card small" href="/work/{project.slug}">
-											<ProjectCover {project} ratio="16 / 10" />
+											<ProjectCover {project} ratio="16 / 9" />
 											<span class="card-body">
-												<span class="card-meta label">
-													<Icon name={project.type === 'design' ? 'layers' : 'code'} size={11} />
-													{typeLabel(project)} · {project.year ?? '—'}
-												</span>
+												<ProjectMeta {project} />
 												<span class="card-title">{project.title}</span>
 											</span>
 										</a>
@@ -294,8 +318,8 @@
 
 <style>
 	.index {
-		padding-top: 56px;
-		padding-bottom: 96px;
+		padding-top: 40px;
+		padding-bottom: 64px;
 	}
 
 	/* ── Controls ── */
@@ -393,7 +417,7 @@
 		grid-template-columns: repeat(12, minmax(0, 1fr));
 		column-gap: var(--gap);
 		align-items: center;
-		padding: 22px 0;
+		padding: 12px 0;
 		border-bottom: 1px solid var(--hairline);
 		color: var(--text);
 		text-decoration: none;
@@ -453,7 +477,7 @@
 		transition: transform 0.5s var(--ease-out);
 	}
 	.name {
-		font-size: clamp(22px, 2.6vw, 36px);
+		font-size: clamp(17px, 1.5vw, 21px);
 		font-weight: 450;
 		letter-spacing: -0.035em;
 		line-height: 1.1;
@@ -482,6 +506,11 @@
 	}
 	.kind.code :global(svg) {
 		color: var(--amber);
+	}
+	.read {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
 	}
 	.role,
 	.client {
@@ -513,8 +542,8 @@
 	/* ── Grid ── */
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 36px var(--gap);
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 20px var(--gap);
 		margin: 0;
 		padding: 0;
 		list-style: none;
@@ -529,15 +558,10 @@
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
-		padding-top: 14px;
-	}
-	.card-meta {
-		display: inline-flex;
-		align-items: center;
-		gap: 5px;
+		padding-top: 10px;
 	}
 	.card-title {
-		font-size: 22px;
+		font-size: 15px;
 		font-weight: 450;
 		letter-spacing: -0.03em;
 		transition: transform 0.5s var(--ease-out);
@@ -546,7 +570,7 @@
 		transform: translateX(6px);
 	}
 	.card-sub {
-		font-size: 14px;
+		font-size: 13px;
 		color: var(--text-secondary);
 	}
 
@@ -558,16 +582,17 @@
 	}
 
 	/* ── More projects: one row of small cards that slides sideways ── */
+	/* Label for the whole collection: the grid, then the slider that continues it. */
+	.grid-head {
+		margin: 0 0 12px;
+	}
 	.more {
-		margin-top: 64px;
-		padding-top: 20px;
-		border-top: 1px solid var(--hairline);
+		margin-top: 16px;
 	}
 	.more-head {
 		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 16px;
+		justify-content: flex-end;
+		margin-bottom: 10px;
 	}
 	.more-nav {
 		display: flex;
@@ -599,7 +624,7 @@
 	.rail {
 		display: grid;
 		grid-auto-flow: column;
-		grid-auto-columns: calc((100% - 3 * var(--gap)) / 4);
+		grid-auto-columns: calc((100% - 5 * var(--gap)) / 6);
 		gap: var(--gap);
 		margin: 0;
 		padding: 0 0 12px;
@@ -614,10 +639,10 @@
 		min-width: 0;
 	}
 	.small .card-body {
-		padding-top: 10px;
+		padding-top: 8px;
 	}
 	.small .card-title {
-		font-size: 17px;
+		font-size: 14px;
 	}
 	.small :global(.client) {
 		scale: 0.85;

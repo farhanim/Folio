@@ -116,7 +116,7 @@
 	}
 	.block {
 		grid-column: 1 / -1;
-		padding: 48px 0;
+		padding: 32px 0;
 		border-top: 1px solid var(--hairline);
 	}
 	h2 {
@@ -159,7 +159,7 @@
 		border-top: 1px solid var(--hairline);
 	}
 	dt {
-		font-size: clamp(30px, 3.4vw, 48px);
+		font-size: clamp(26px, 2.6vw, 38px);
 		font-weight: 450;
 		letter-spacing: -0.04em;
 		line-height: 1;
@@ -209,7 +209,7 @@
 	blockquote p {
 		max-width: 30ch;
 		color: var(--text);
-		font-size: clamp(24px, 2.6vw, 38px);
+		font-size: clamp(22px, 2.2vw, 30px);
 		line-height: 1.2;
 		letter-spacing: -0.03em;
 	}

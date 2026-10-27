@@ -2,12 +2,15 @@
 	import { fly } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import Icon from '#lib/components/ui/Icon.svelte';
-	import type { Project } from '#lib/types/index.ts';
+	import type { Block, Project } from '#lib/types/index.ts';
 	import { portal } from '#lib/utils/portal.ts';
 	import ClientBadge from './ClientBadge.svelte';
 
 	/**
-	 * Fullscreen slideshow of a project: a cover slide, then one slide per block.
+	 * Fullscreen slideshow of a project, laid out like a deck: a cover slide, then
+	 * one slide per block — a short text block shares a slide with the block after
+	 * it, so no slide is a lone sentence. Every block is shown in full (the stage
+	 * scrolls rather than clipping). Follows the site theme.
 	 * Autoplays with a segmented progress bar; ←/→ to move, Space to pause, Esc to close.
 	 */
 	let {
@@ -16,11 +19,27 @@
 		start = 0
 	}: { project: Project; open?: boolean; start?: number } = $props();
 
-	const DURATION = 7000;
-	const slides = $derived([
-		{ kind: 'cover' as const, id: 'cover', title: 'Cover' },
-		...project.blocks
-	]);
+	const DURATION = 9000;
+	type Slide = { id: string; title: string; blocks: Block[] };
+
+	const isShort = (b: Block) => b.kind === 'text' && b.body.join(' ').length < 420;
+	const slides = $derived.by(() => {
+		const out: Slide[] = [{ id: 'cover', title: 'Cover', blocks: [] }];
+		const list = project.blocks;
+		for (let i = 0; i < list.length; i++) {
+			const b = list[i];
+			const next = list[i + 1];
+			const pairs =
+				next &&
+				next.kind !== 'text' &&
+				(isShort(b) || (b.kind === 'text' && next.kind === 'stats'));
+			if (pairs) {
+				out.push({ id: b.id, title: b.title, blocks: [b, next] });
+				i++;
+			} else out.push({ id: b.id, title: b.title, blocks: [b] });
+		}
+		return out;
+	});
 
 	let index = $state(0);
 	let direction = $state(1);
@@ -78,7 +97,70 @@
 		fly(node, { x: 60 * direction, duration: 500, easing: cubicOut });
 	const slideOut = (node: Element) =>
 		fly(node, { x: -60 * direction, duration: 300, easing: cubicOut });
+
+	const pad = (n: number) => String(n).padStart(2, '0');
+	const coverFacts = $derived(
+		[
+			{ label: 'Role', value: project.role },
+			{ label: 'Year', value: project.year ? String(project.year) : '' },
+			{ label: 'Duration', value: project.duration ?? '' },
+			{ label: 'Team', value: project.team ?? '' }
+		].filter((f) => f.value)
+	);
 </script>
+
+{#snippet body(b: Block, side = false)}
+	{#if b.kind === 'text'}
+		<div class="text" class:cols={!side && b.body.join(' ').length > 520}>
+			{#each b.body as p, i (i)}<p class:lead={i === 0 && b.body.length === 1}>{p}</p>{/each}
+		</div>
+	{:else if b.kind === 'stats'}
+		<dl class="stats" class:side>
+			{#each b.items as item (item.label)}
+				<div>
+					<dt>{item.value}</dt>
+					<dd>{item.label}</dd>
+				</div>
+			{/each}
+		</dl>
+	{:else if b.kind === 'features'}
+		<ol class="features">
+			{#each b.items as f, i (f.title)}
+				<li><span class="no">{pad(i + 1)}</span><b>{f.title}</b><span>{f.body}</span></li>
+			{/each}
+		</ol>
+	{:else if b.kind === 'impact'}
+		{#if b.intro}<p class="intro">{b.intro}</p>{/if}
+		<ol class="points" class:side>
+			{#each b.items as item, i (item)}
+				<li><span class="no">{pad(i + 1)}</span>{item}</li>
+			{/each}
+		</ol>
+	{:else if b.kind === 'quote'}
+		<blockquote>
+			<p>“{b.quote}”</p>
+			<footer>{b.author} — {b.role}</footer>
+		</blockquote>
+	{:else if b.kind === 'code'}
+		<pre><code>{b.code}</code></pre>
+		{#if b.caption}<p class="caption">{b.caption}</p>{/if}
+	{:else if b.kind === 'stack'}
+		<div class="stack">
+			{#each b.groups as g (g.label)}
+				<div>
+					<span class="label">{g.label}</span>
+					{#each g.items as item (item.name)}
+						<p>
+							<b>{item.name}</b>{#if item.why}<span> — {item.why}</span>{/if}
+						</p>
+					{/each}
+				</div>
+			{/each}
+		</div>
+	{:else if b.kind === 'gallery' && b.caption}
+		<p class="caption">{b.caption}</p>
+	{/if}
+{/snippet}
 
 <svelte:window {onkeydown} />
 
@@ -101,7 +183,7 @@
 		</div>
 
 		<header class="top">
-			<p><strong>{slides[index].title}</strong><span>{project.title}</span></p>
+			<p><strong>{project.title}</strong><span>{project.client.name}</span></p>
 			<button
 				type="button"
 				class="round"
@@ -116,54 +198,62 @@
 		<div class="stage">
 			{#key index}
 				{@const slide = slides[index]}
-				<div class="slide kind-{slide.kind}" in:slideIn out:slideOut>
-					{#if slide.kind === 'cover'}
-						<div class="cover-copy">
-							<span class="label"
-								>{project.type === 'design' ? 'Design' : 'Code'} · {project.year ?? '—'}</span
-							>
-							<h2>{project.title}</h2>
-							<p>{project.tagline}</p>
+				{@const gallery = slide.blocks.find((b) => b.kind === 'gallery')}
+				<article class="slide" in:slideIn out:slideOut>
+					{#if slide.id === 'cover'}
+						<div class="cover">
+							<div class="cover-copy">
+								<span class="label">
+									{project.type === 'design' ? 'Design case study' : 'Code project'}
+								</span>
+								<h2>{project.title}</h2>
+								<p class="tagline">{project.tagline}</p>
+								<p class="summary">{project.summary}</p>
+								<dl class="facts">
+									<div>
+										<dt class="label">Client</dt>
+										<dd><ClientBadge client={project.client} size="sm" /> {project.client.name}</dd>
+									</div>
+									{#each coverFacts as f (f.label)}
+										<div>
+											<dt class="label">{f.label}</dt>
+											<dd>{f.value}</dd>
+										</div>
+									{/each}
+								</dl>
+							</div>
+							<figure class="art"><img src={project.cover} alt="" /></figure>
 						</div>
-						<div class="cover-art">
-							<img src={project.cover} alt="" />
-							<span class="badge"><ClientBadge client={project.client} /></span>
-						</div>
-					{:else if slide.kind === 'text'}
-						<p class="big">{slide.body[0]}</p>
-						{#if slide.body.length > 1}<p class="rest">{slide.body.slice(1).join(' ')}</p>{/if}
-					{:else if slide.kind === 'stats'}
-						<dl class="stats">
-							{#each slide.items as item (item.label)}
-								<div>
-									<dt>{item.value}</dt>
-									<dd>{item.label}</dd>
+					{:else}
+						<header class="slide-head">
+							<span class="label">{pad(index)} — {project.title}</span>
+							<h2>{slide.title}</h2>
+						</header>
+						{#if gallery && gallery.kind === 'gallery'}
+							<div class="split" class:multi={gallery.images.length > 1}>
+								<div class="shots">
+									{#each gallery.images as image (image.src)}
+										<img src={image.src} alt={image.alt} />
+									{/each}
 								</div>
-							{/each}
-						</dl>
-					{:else if slide.kind === 'gallery'}
-						<div class="gallery" style:--n={slide.images.length}>
-							{#each slide.images as image (image.src)}
-								<img src={image.src} alt={image.alt} />
-							{/each}
-						</div>
-						{#if slide.caption}<p class="rest">{slide.caption}</p>{/if}
-					{:else if slide.kind === 'quote'}
-						<blockquote>
-							<p>“{slide.quote}”</p>
-							<footer>{slide.author} — {slide.role}</footer>
-						</blockquote>
-					{:else if slide.kind === 'code'}
-						<pre><code>{slide.code}</code></pre>
-						{#if slide.caption}<p class="rest">{slide.caption}</p>{/if}
-					{:else if slide.kind === 'features'}
-						<p class="big">{slide.items.map((f) => f.title).join(' · ')}</p>
-					{:else if slide.kind === 'impact'}
-						<p class="big">{slide.items[0]}</p>
-					{:else if slide.kind === 'stack'}
-						<p class="big">{slide.groups.flatMap((g) => g.items.map((i) => i.name)).join(' · ')}</p>
+								<div class="aside">
+									{#each slide.blocks as b (b.id)}{@render body(b, true)}{/each}
+								</div>
+							</div>
+						{:else}
+							<div class="flow">
+								{#each slide.blocks as b (b.id)}
+									<section>
+										{#if slide.blocks.length > 1 && b.title !== slide.title}
+											<span class="label sub">{b.title}</span>
+										{/if}
+										{@render body(b)}
+									</section>
+								{/each}
+							</div>
+						{/if}
 					{/if}
-				</div>
+				</article>
 			{/key}
 		</div>
 
@@ -200,42 +290,34 @@
 {/if}
 
 <style>
-	/* Always dark, like a projector room */
+	/* Uses the site tokens, so the deck follows the light / dark theme. */
 	.slideshow {
-		--bg: #0e0c0a;
-		--text: #e8e4df;
-		--text-secondary: #9a9490;
-		--hairline: rgba(255, 255, 255, 0.09);
-		--rule: rgba(255, 255, 255, 0.16);
+		--edge: clamp(20px, 4vw, 72px);
+		--soft: color-mix(in srgb, var(--text) 6%, transparent);
 		position: fixed;
 		inset: 0;
 		z-index: 300;
 		display: grid;
-		grid-template-rows: auto auto 1fr auto;
-		padding: 0 clamp(20px, 5vw, 90px) 28px;
+		grid-template-rows: auto auto minmax(0, 1fr) auto;
+		padding: 0 var(--edge) 20px;
 		background: var(--bg);
 		color: var(--text);
-		background-image: repeating-linear-gradient(
-			to right,
-			transparent 0 calc(100% / 12 - 1px),
-			rgba(255, 255, 255, 0.03) calc(100% / 12 - 1px) calc(100% / 12)
-		);
 	}
 
 	.progress {
 		display: flex;
 		gap: 4px;
-		margin: 0 calc(-1 * clamp(20px, 5vw, 90px));
+		margin: 0 calc(-1 * var(--edge));
 		padding: 0 4px;
 	}
 	.progress button {
+		position: relative;
 		flex: 1;
 		height: 14px;
 		padding: 0;
 		border: 0;
 		background: none;
 		cursor: pointer;
-		position: relative;
 	}
 	.progress button::before,
 	.progress span {
@@ -246,7 +328,7 @@
 		top: 4px;
 		height: 2px;
 		border-radius: 2px;
-		background: rgba(255, 255, 255, 0.14);
+		background: var(--rule);
 	}
 	.progress span {
 		background: var(--text);
@@ -257,7 +339,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 18px 0;
+		padding: 12px 0;
 	}
 	.top p {
 		display: flex;
@@ -274,11 +356,11 @@
 	.round {
 		display: grid;
 		place-items: center;
-		width: 42px;
-		height: 42px;
+		width: 40px;
+		height: 40px;
 		border-radius: 50%;
 		border: 1px solid var(--rule);
-		background: rgba(255, 255, 255, 0.04);
+		background: var(--soft);
 		color: var(--text);
 		cursor: pointer;
 		transition:
@@ -286,7 +368,7 @@
 			transform 0.3s var(--ease-out);
 	}
 	.round:hover:not(:disabled) {
-		background: rgba(255, 255, 255, 0.1);
+		background: color-mix(in srgb, var(--text) 12%, transparent);
 		transform: scale(1.06);
 	}
 	.round:disabled {
@@ -294,8 +376,8 @@
 		cursor: default;
 	}
 
+	/* ── Stage: one slide at a time; scrolls instead of clipping on small screens ── */
 	.stage {
-		position: relative;
 		display: grid;
 		min-height: 0;
 		overflow: hidden;
@@ -304,51 +386,171 @@
 		grid-area: 1 / 1;
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
-		gap: 24px;
+		gap: clamp(14px, 2.4vh, 28px);
 		min-height: 0;
+		padding: clamp(16px, 3vh, 32px) clamp(16px, 2.4vw, 40px);
+		overflow-y: auto;
+		border: 1px solid var(--hairline);
+		border-radius: 18px;
+		background: var(--surface);
 	}
 
-	.kind-cover {
+	.slide-head {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		padding-bottom: clamp(10px, 2vh, 18px);
+		border-bottom: 1px solid var(--rule);
+	}
+	.slide-head h2 {
+		margin: 0;
+		font-size: clamp(26px, min(3.2vw, 5.4vh), 46px);
+		font-weight: 450;
+		letter-spacing: -0.04em;
+		line-height: 1.05;
+	}
+	.sub {
+		display: block;
+		margin-bottom: 10px;
+	}
+
+	/* ── Cover ── */
+	.cover {
+		flex: 1;
 		display: grid;
 		grid-template-columns: 5fr 7fr;
 		align-items: center;
-		gap: 48px;
+		gap: clamp(24px, 3vw, 48px);
+		min-height: 0;
 	}
-	.kind-cover h2 {
-		margin: 12px 0;
-		font-size: clamp(44px, 6vw, 96px);
-		font-weight: 420;
+	.cover-copy {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+	.cover h2 {
+		margin: 0;
+		font-size: clamp(36px, min(4.6vw, 8vh), 76px);
+		font-weight: 450;
 		letter-spacing: -0.05em;
-		line-height: 0.95;
+		line-height: 0.98;
 	}
-	.kind-cover p {
-		color: var(--text-secondary);
-		font-size: 18px;
+	.tagline {
+		font-size: clamp(17px, 1.6vw, 22px);
 	}
-	.cover-art {
-		position: relative;
-	}
-	.cover-art img {
-		width: 100%;
-		border-radius: 16px;
-	}
-	.badge {
-		position: absolute;
-		top: 14px;
-		right: 14px;
-	}
-
-	.big {
-		max-width: 26ch;
-		font-size: clamp(30px, 3.8vw, 58px);
-		line-height: 1.12;
-		letter-spacing: -0.035em;
-	}
-	.rest {
-		max-width: 62ch;
+	.summary {
 		color: var(--text-secondary);
 		font-size: 15px;
+		line-height: 1.55;
+	}
+	.facts {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px 20px;
+		margin: 6px 0 0;
+		padding-top: 14px;
+		border-top: 1px solid var(--rule);
+	}
+	.facts dd {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		margin: 4px 0 0;
+		font-size: 14px;
+	}
+	.art {
+		margin: 0;
+		min-height: 0;
+	}
+	.art img {
+		display: block;
+		width: 100%;
+		max-height: calc(100vh - 220px);
+		object-fit: contain;
+		border-radius: 14px;
+	}
+
+	/* ── Image slides: picture on 8 columns, words on 4 ── */
+	.split {
+		margin-block: auto;
+		flex: 1;
+		display: grid;
+		grid-template-columns: 8fr 4fr;
+		gap: clamp(20px, 2.4vw, 40px);
+		align-items: start;
+		min-height: 0;
+	}
+	.shots {
+		display: grid;
+		gap: 12px;
+		min-height: 0;
+	}
+	.split.multi .shots {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.shots img {
+		display: block;
+		width: 100%;
+		max-height: calc(100vh - 300px);
+		object-fit: contain;
+		object-position: top left;
+		border-radius: 12px;
+		background: var(--bg);
+		border: 1px solid var(--hairline);
+	}
+	.aside {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	/* ── Text-led slides ── */
+	.flow {
+		margin-block: auto;
+		display: flex;
+		flex-direction: column;
+		gap: clamp(18px, 3vh, 32px);
+	}
+	.text {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		max-width: 78ch;
+	}
+	.text.cols {
+		display: block;
+		max-width: none;
+		columns: 2;
+		column-gap: 40px;
+	}
+	.text.cols p + p {
+		margin-top: 12px;
+	}
+	.text p {
+		font-size: clamp(15px, 1.25vw, 18px);
+		line-height: 1.6;
+		color: var(--text-secondary);
+	}
+	.text p:first-child {
+		color: var(--text);
+	}
+	.text p.lead {
+		font-size: clamp(19px, min(1.8vw, 3vh), 26px);
+		line-height: 1.4;
+		letter-spacing: -0.015em;
+	}
+	.aside .text p {
+		font-size: 15px;
+	}
+	.caption,
+	.intro {
+		color: var(--text-secondary);
+		font-size: 15px;
+		line-height: 1.55;
+	}
+	.aside .caption {
+		color: var(--text);
+		font-size: clamp(15px, 1.2vw, 18px);
 	}
 
 	.stats {
@@ -357,73 +559,142 @@
 		margin: 0;
 	}
 	.stats div {
-		padding: 24px 24px 24px 0;
-		border-bottom: 1px solid var(--hairline);
+		padding: 14px 18px 14px 0;
 	}
 	.stats div + div {
-		padding-left: 24px;
-		border-left: 1px solid var(--hairline);
+		padding-left: 18px;
+		border-left: 1px solid var(--rule);
 	}
-	dt {
-		font-size: clamp(34px, 4vw, 64px);
+	.stats.side {
+		grid-template-columns: 1fr 1fr;
+		row-gap: 8px;
+	}
+	.stats.side div:nth-child(odd) {
+		padding-left: 0;
+		border-left: 0;
+	}
+	.stats dt {
+		font-size: clamp(28px, min(3.4vw, 6vh), 54px);
 		letter-spacing: -0.04em;
 		line-height: 1;
 	}
-	dd {
-		margin: 12px 0 0;
+	.stats.side dt {
+		font-size: clamp(22px, 2vw, 30px);
+	}
+	.stats dd {
+		margin: 8px 0 0;
 		font-size: 13px;
 		color: var(--text-secondary);
 	}
 
-	.gallery {
+	.features {
 		display: grid;
-		grid-template-columns: repeat(var(--n), minmax(0, 1fr));
-		gap: 16px;
-		max-height: 62vh;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 12px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
 	}
-	.gallery img {
-		width: 100%;
-		height: 100%;
-		max-height: 62vh;
-		object-fit: contain;
-		border-radius: 14px;
+	.features li {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		padding: 16px;
+		border-radius: 12px;
+		background: var(--bg);
+		border: 1px solid var(--hairline);
+	}
+	.features b {
+		font-size: 16px;
+		font-weight: 600;
+	}
+	.features li > span:last-child {
+		font-size: 14px;
+		line-height: 1.5;
+		color: var(--text-secondary);
+	}
+	.no {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--amber);
+	}
+
+	/* Each point is its own card, so a list fills the slide like a deck page. */
+	.points {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.points.side {
+		grid-template-columns: 1fr;
+		gap: 8px;
+	}
+	.points li {
+		display: flex;
+		gap: 14px;
+		padding: clamp(14px, 2.4vh, 22px) 18px;
+		border: 1px solid var(--hairline);
+		border-radius: 12px;
+		background: var(--bg);
+		font-size: clamp(15px, 1.3vw, 19px);
+		line-height: 1.45;
+	}
+	.points.side li {
+		padding: 10px 14px;
+		font-size: 14px;
+	}
+	.points .no {
+		padding-top: 3px;
 	}
 
 	blockquote {
 		margin: 0;
-		padding-left: 28px;
-		border-left: 2px solid #f2b84b;
+		padding-left: 24px;
+		border-left: 2px solid var(--amber);
 	}
 	blockquote p {
-		max-width: 24ch;
-		font-size: clamp(30px, 3.6vw, 54px);
-		line-height: 1.15;
-		letter-spacing: -0.035em;
+		max-width: 30ch;
+		font-size: clamp(24px, 3vw, 44px);
+		line-height: 1.2;
+		letter-spacing: -0.03em;
 	}
 	blockquote footer {
-		margin-top: 20px;
+		margin-top: 16px;
 		color: var(--text-secondary);
 	}
-
 	pre {
-		max-width: 900px;
 		margin: 0;
-		padding: 28px;
+		padding: 20px;
 		overflow: auto;
-		border-radius: 16px;
-		background: #1a1712;
+		border-radius: 12px;
+		background: var(--bg);
 		border: 1px solid var(--hairline);
 		font-family: var(--font-mono);
-		font-size: clamp(13px, 1.2vw, 17px);
+		font-size: clamp(12px, 1.1vw, 15px);
 		line-height: 1.7;
+	}
+	.stack {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 20px;
+	}
+	.stack p {
+		margin-top: 8px;
+		font-size: 15px;
+	}
+	.stack span {
+		color: var(--text-secondary);
 	}
 
 	.controls {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: 14px;
-		padding-top: 20px;
+		gap: 12px;
+		padding-top: 14px;
 	}
 	.count {
 		min-width: 56px;
@@ -431,21 +702,27 @@
 		color: var(--text-secondary);
 	}
 
-	@media (max-width: 800px) {
-		.kind-cover {
+	@media (max-width: 900px) {
+		.cover,
+		.split {
 			grid-template-columns: 1fr;
-			gap: 24px;
 		}
-		.stats {
+		.stats,
+		.features,
+		.stack {
 			grid-template-columns: 1fr 1fr;
 		}
 		.stats div:nth-child(odd) {
 			padding-left: 0;
 			border-left: 0;
 		}
-		.gallery {
+		.points,
+		.text.cols {
 			grid-template-columns: 1fr;
-			overflow-y: auto;
+			columns: 1;
+		}
+		.shots img {
+			max-height: none;
 		}
 	}
 </style>

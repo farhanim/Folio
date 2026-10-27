@@ -132,7 +132,7 @@
 		display: grid;
 		grid-template-columns: subgrid;
 		row-gap: 40px;
-		padding: 56px 0;
+		padding: 40px 0;
 		border-top: 1px solid var(--rule);
 	}
 	.rate {

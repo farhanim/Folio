@@ -1,253 +1,309 @@
 <script lang="ts">
 	import Icon from '#lib/components/ui/Icon.svelte';
-	import SectionHead from '#lib/components/ui/SectionHead.svelte';
 	import ClientBadge from '#lib/components/project/ClientBadge.svelte';
 	import ProjectCover from '#lib/components/project/ProjectCover.svelte';
-	import { readingTime } from '#lib/data/projects.ts';
+	import ProjectMeta from '#lib/components/project/ProjectMeta.svelte';
 	import type { Project } from '#lib/types/index.ts';
-	import { reveal } from '#lib/utils/reveal.ts';
 
 	/**
-	 * "Worth a read": an editorial reading list. The first pick is the lead story
-	 * (wide cover, summary and facts side by side); the rest follow as numbered
-	 * entries, three to a row, so the section holds any number of picks.
+	 * "Worth a read": recommended case studies inside the project index, under its
+	 * heading. Laid on the page's 12-column grid (a subgrid of the section): the lead
+	 * cover spans 4 columns, its story 4 more, and the other two picks the last 4 —
+	 * so it lines up with the 3-column grid cards and 2-column slider cards below.
 	 */
 	let { projects }: { projects: Project[] } = $props();
 
-	const lead = $derived(projects[0]);
-	const others = $derived(projects.slice(1));
-	const num = (i: number) => String(i + 1).padStart(2, '0');
+	// Three picks at most: a lead and two beside it.
+	const picks = $derived(projects.slice(0, 3));
+	const lead = $derived(picks[0]);
+	const others = $derived(picks.slice(1));
+	const pad = (n: number) => String(n).padStart(2, '0');
 </script>
 
 {#if lead}
-	<section class="featured frame" use:reveal>
-		<SectionHead eyebrow="Recommended reading" title="Worth a read" count={projects.length} />
+	<aside class="picks" aria-labelledby="picks-title" data-reveal>
+		<p class="head">
+			<span class="label" id="picks-title"><Icon name="star" size={11} /> Worth a read</span>
+			<span class="label">{pad(picks.length)} recommended</span>
+		</p>
 
-		<a class="lead" href="/work/{lead.slug}" data-reveal>
-			<span class="lead-cover">
-				<ProjectCover project={lead} ratio="16 / 10" showFeatured={false} />
-			</span>
-			<span class="lead-text">
-				<span class="kicker label">
-					<span class="no">{num(0)}</span> Lead story
+		<a class="lead" class:solo={!others.length} href="/work/{lead.slug}">
+			<ProjectCover project={lead} ratio="16 / 10" showFeatured={false} />
+			<span class="story">
+				<ProjectMeta project={lead} />
+				<span class="title">{lead.title}</span>
+				<span class="tagline">{lead.tagline}</span>
+				<span class="summary">{lead.summary}</span>
+				<span class="facts">
+					<span><span class="label">Role</span><span class="v">{lead.role}</span></span>
+					<span>
+						<span class="label">Timeline</span><span class="v"
+							>{lead.duration ?? lead.year ?? '—'}</span
+						>
+					</span>
+					{#if lead.facts?.[0]}
+						<span
+							><span class="label">{lead.facts[0].label}</span><span
+								class="v"
+								title={lead.facts[0].value}>{lead.facts[0].value}</span
+							></span
+						>
+					{/if}
 				</span>
-				<span class="lead-title">{lead.title}</span>
-				<span class="lead-tagline">{lead.tagline}</span>
-				<span class="lead-summary">{lead.summary}</span>
-				<dl class="facts">
-					<div>
-						<dt class="label">Client</dt>
-						<dd><ClientBadge client={lead.client} size="sm" /> {lead.client.name}</dd>
-					</div>
-					<div>
-						<dt class="label">Role</dt>
-						<dd>{lead.role}</dd>
-					</div>
-					<div>
-						<dt class="label">Year</dt>
-						<dd>{lead.year ?? '—'}</dd>
-					</div>
-					<div>
-						<dt class="label">Read</dt>
-						<dd><Icon name="clock" size={12} /> {readingTime(lead)} min</dd>
-					</div>
-				</dl>
-				<span class="cta">Read case study <Icon name="arrowRight" size={14} /></span>
+				<span class="cta">
+					Read case study <Icon name="arrowRight" size={14} />
+				</span>
 			</span>
 		</a>
 
 		{#if others.length}
-			<ol class="others" class:pair={others.length === 2}>
-				{#each others as project, i (project.slug)}
-					<li data-reveal>
-						<a class="entry" href="/work/{project.slug}">
-							<span class="entry-head">
-								<span class="no label">{num(i + 1)}</span>
-								<span class="label">
-									{project.client.name} · {project.year ?? '—'} · {readingTime(project)} min
-								</span>
+			<ol class="more">
+				{#each others as project (project.slug)}
+					<li>
+						<a href="/work/{project.slug}">
+							<span class="thumb">
+								<img src={project.cover} alt="" loading="lazy" />
+								<span class="badge"><ClientBadge client={project.client} size="sm" /></span>
 							</span>
-							<span class="entry-cover">
-								<ProjectCover {project} ratio="16 / 10" showFeatured={false} />
+							<span class="text">
+								<ProjectMeta {project} />
+								<span class="name">{project.title}</span>
+								<span class="sub">{project.tagline}</span>
 							</span>
-							<span class="entry-title">{project.title}</span>
-							<span class="entry-tagline">{project.tagline}</span>
-							<span class="entry-arrow"><Icon name="arrowUpRight" size={18} /></span>
+							<span class="arrow"><Icon name="arrowUpRight" size={16} /></span>
 						</a>
 					</li>
 				{/each}
 			</ol>
 		{/if}
-	</section>
+	</aside>
 {/if}
 
 <style>
-	.featured {
-		padding-top: 24px;
-		padding-bottom: 96px;
-		row-gap: 0;
-	}
-
-	/* ── Lead story: cover on cols 1–7, text on cols 8–12 ── */
-	.lead {
+	.picks {
 		grid-column: 1 / -1;
 		display: grid;
 		grid-template-columns: subgrid;
+		row-gap: 16px;
 		align-items: start;
-		padding: 8px 0 48px;
+		margin-bottom: 96px;
+		padding-top: 4px;
+	}
+	.head {
+		grid-column: 1 / -1;
+		display: flex;
+		justify-content: space-between;
+	}
+	.head .label:first-child {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		color: var(--text);
+	}
+	.head :global(svg) {
+		color: var(--amber);
+		fill: var(--amber);
+	}
+
+	/* ── Lead: the standard cover beside its story ── */
+	.lead {
+		grid-column: span 8;
+		display: grid;
+		grid-template-columns: subgrid;
 		color: var(--text);
 		text-decoration: none;
 	}
-	.lead-cover {
-		grid-column: 1 / span 7;
+	.lead.solo {
+		grid-column: 1 / -1;
 	}
-	.lead-text {
-		grid-column: 8 / -1;
+	.lead > :global(.cover) {
+		grid-column: span 4;
+	}
+	.story {
+		grid-column: span 4;
+		align-self: stretch;
 		display: flex;
 		flex-direction: column;
-		gap: 12px;
-		height: 100%;
+		gap: 6px;
+		min-width: 0;
 	}
-	.kicker {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-	}
-	.no {
-		font-family: var(--font-mono);
-		color: var(--amber);
-	}
-	.lead-title {
-		font-size: clamp(32px, 3.6vw, 52px);
+	.title {
+		font-size: clamp(22px, 2vw, 30px);
 		font-weight: 450;
-		letter-spacing: -0.045em;
-		line-height: 1;
+		letter-spacing: -0.035em;
+		line-height: 1.08;
 		transition: transform 0.5s var(--ease-out);
 	}
-	.lead:hover .lead-title {
-		transform: translateX(8px);
+	.lead:hover .title {
+		transform: translateX(6px);
 	}
-	.lead-tagline {
-		font-size: calc(17px * var(--text-scale));
-		color: var(--text);
+	.tagline {
+		overflow: hidden;
+		font-size: 15px;
+		line-height: 1.5;
+		color: var(--text-secondary);
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
-	.lead-summary {
-		font-size: calc(14px * var(--text-scale));
-		line-height: 1.6;
+	.summary {
+		display: -webkit-box;
+		overflow: hidden;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		font-size: 14px;
+		line-height: 1.55;
 		color: var(--text-secondary);
 	}
 	.facts {
 		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 14px var(--gap);
-		margin: 8px 0 0;
-		padding: 16px 0;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 12px;
+		margin-top: 4px;
+		padding: 10px 0;
 		border-top: 1px solid var(--hairline);
 		border-bottom: 1px solid var(--hairline);
+		font-size: 13px;
+		line-height: 1.4;
 	}
-	.facts dd {
+	/* One line per value, so the facts row never grows past the cover. */
+	.facts .v {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	.facts > span {
 		display: flex;
-		align-items: center;
-		gap: 6px;
-		margin: 4px 0 0;
-		font-size: 14px;
+		flex-direction: column;
+		gap: 4px;
+		min-width: 0;
 	}
 	.cta {
 		display: inline-flex;
 		align-items: center;
 		gap: 6px;
+		width: fit-content;
 		margin-top: auto;
 		padding-bottom: 2px;
-		width: fit-content;
 		border-bottom: 1px solid var(--rule);
 		font-size: 13px;
-		transition: gap 0.4s var(--ease-out);
+		transition:
+			gap 0.4s var(--ease-out),
+			border-color 0.3s ease;
 	}
 	.lead:hover .cta {
 		gap: 12px;
 		border-color: var(--text);
 	}
 
-	/* ── The rest: numbered entries, three per row ── */
-	.others {
-		grid-column: 1 / -1;
-		display: grid;
-		grid-template-columns: subgrid;
-		row-gap: 40px;
+	/* ── The other two: stacked rows that share the lead's height ── */
+	/* Starts exactly on the column-9 grid line. */
+	.more {
+		grid-column: span 4;
+		align-self: stretch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--gap);
 		margin: 0;
 		padding: 0;
 		list-style: none;
 	}
-	.others li {
-		grid-column: span 4;
-		min-width: 0;
-	}
-	/* Two picks after the lead share the row instead of leaving a gap. */
-	.others.pair li {
-		grid-column: span 6;
-	}
-	.entry {
-		position: relative;
+	.more li {
+		flex: 1;
 		display: flex;
-		flex-direction: column;
-		gap: 10px;
-		padding-top: 14px;
-		border-top: 1px solid var(--text);
+	}
+	.more a {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		gap: 16px;
 		color: var(--text);
 		text-decoration: none;
 	}
-	.entry-head {
+	.thumb {
+		position: relative;
+		flex: 0 0 42%;
 		display: flex;
-		gap: 12px;
-		align-items: baseline;
-		padding-right: 28px;
 	}
-	.entry-cover {
-		margin-top: 4px;
+	.thumb img {
+		width: 100%;
 	}
-	.entry-title {
-		font-size: 22px;
-		font-weight: 450;
-		letter-spacing: -0.03em;
-		transition: transform 0.5s var(--ease-out);
-	}
-	.entry:hover .entry-title {
-		transform: translateX(6px);
-	}
-	.entry-tagline {
-		font-size: 14px;
-		color: var(--text-secondary);
-	}
-	.entry-arrow {
+	.badge {
 		position: absolute;
-		top: 12px;
-		right: 0;
+		top: 6px;
+		right: 6px;
+	}
+	.more img {
+		flex: none;
+		width: 100%;
+		aspect-ratio: 16 / 10;
+		border-radius: 8px;
+		object-fit: cover;
+		background: var(--surface);
+	}
+	.text {
 		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 3px;
+		min-width: 0;
+	}
+	.name {
+		font-size: 18px;
+		letter-spacing: -0.02em;
+		transition: transform 0.4s var(--ease-out);
+	}
+	.more a:hover .name {
+		transform: translateX(4px);
+	}
+	.sub {
+		overflow: hidden;
+		font-size: 13px;
+		color: var(--text-secondary);
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	.arrow {
+		display: flex;
+		margin-left: auto;
 		color: var(--text-secondary);
 		transition:
-			transform 0.5s var(--ease-out),
-			color 0.3s ease;
+			transform 0.4s var(--ease-out),
+			color 0.25s ease;
 	}
-	.entry:hover .entry-arrow {
+	.more a:hover .arrow {
 		color: var(--text);
 		transform: rotate(45deg);
 	}
 
+	/* Tablet (6 columns): cover and story share the row; the picks pair up below. */
 	@media (max-width: 1023px) {
-		.lead-cover,
-		.lead-text {
+		.lead,
+		.more {
 			grid-column: 1 / -1;
 		}
-		.lead-text {
-			margin-top: 20px;
+		.lead > :global(.cover),
+		.story {
+			grid-column: span 3;
 		}
-		.others li {
+		.more {
+			display: grid;
+			grid-template-columns: subgrid;
+			margin-top: 8px;
+		}
+		.more li {
 			grid-column: span 3;
 		}
 	}
+	/* Mobile (4 columns): everything stacks across the full width. */
 	@media (max-width: 600px) {
-		.others li {
+		.lead > :global(.cover),
+		.story,
+		.more li {
 			grid-column: 1 / -1;
+		}
+		.story {
+			margin-top: 12px;
 		}
 	}
 </style>

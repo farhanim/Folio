@@ -249,14 +249,14 @@
 	}
 	h1 {
 		margin: 16px 0 0;
-		font-size: clamp(48px, 7vw, 112px);
+		font-size: clamp(36px, 4.4vw, 64px);
 		font-weight: 400;
 		letter-spacing: -0.055em;
 		line-height: 0.95;
 	}
 	.tagline {
 		margin-top: 14px;
-		font-size: clamp(20px, 2vw, 28px);
+		font-size: clamp(18px, 1.6vw, 22px);
 		letter-spacing: -0.025em;
 		color: var(--text-secondary);
 	}
@@ -317,7 +317,7 @@
 	.meta {
 		display: grid;
 		grid-template-columns: subgrid;
-		margin: 48px 0 32px;
+		margin: 32px 0 24px;
 	}
 	.meta div {
 		grid-column: span 2;

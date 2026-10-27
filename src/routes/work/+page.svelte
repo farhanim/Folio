@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Featured from '#lib/components/home/Featured.svelte';
 	import ProjectIndex from '#lib/components/home/ProjectIndex.svelte';
 	import { featuredProjects, projects } from '#lib/data/projects.ts';
 	import { site } from '#lib/data/site.ts';
@@ -15,8 +14,7 @@
 	<p>Case studies in design and code. Recommended reads first.</p>
 </header>
 
-<Featured projects={featuredProjects} />
-<ProjectIndex {projects} />
+<ProjectIndex {projects} picks={featuredProjects} />
 
 <style>
 	.intro {

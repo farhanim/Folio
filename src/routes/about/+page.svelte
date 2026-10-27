@@ -237,7 +237,7 @@
 <style>
 	.profile {
 		padding-top: 48px;
-		padding-bottom: 140px;
+		padding-bottom: 80px;
 	}
 	.rail {
 		grid-column: 1 / span 2;
@@ -281,7 +281,7 @@
 	/* ── Header ── */
 	/* Portrait: local cols 1–3 · copy: 5–10 (col 4 is breathing room) */
 	.header {
-		row-gap: 48px;
+		row-gap: 32px;
 		align-items: start;
 		animation: enter 0.9s var(--ease-out) both;
 	}
@@ -413,7 +413,7 @@
 	}
 	h1 {
 		margin: 10px 0 20px;
-		font-size: clamp(32px, 3.6vw, 56px);
+		font-size: clamp(28px, 3vw, 44px);
 		font-weight: 420;
 		letter-spacing: -0.045em;
 		line-height: 1.02;
@@ -481,7 +481,7 @@
 	}
 
 	.block {
-		padding-top: 72px;
+		padding-top: 48px;
 	}
 
 	/* ── Experience ── */
