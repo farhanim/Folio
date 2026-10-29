@@ -26,11 +26,146 @@ const saldo = art('saldo-panen');
 const martech = art('martech-crm');
 const payment = art('enterprise-payment');
 const arap = art('crm-arap');
+const nikelPortal = (name: string, alt: string): ImageRef => ({
+	src: `/images/work/nikel-lender-portal/${name}`,
+	alt
+});
 const home = art('home-revamp');
 const reskin = art('tokosmart-reskin');
 const noFeedback = { likes: 0, dislikes: 0, comments: [] };
 
 export const caseStudies: Project[] = [
+	{
+		slug: 'nikel-lender-portal',
+		type: 'design',
+		title: 'Lender Portal Enhancement',
+		tagline: 'A clearer view of every lender decision.',
+		summary:
+			'Reworking Nikel’s Klik A2C lender portal around the questions investors need to answer: what is available, how their funds are performing, where money is allocated, and what changed in their wallet.',
+		client: companies.nikel,
+		role: 'UX Designer',
+		year: 2026,
+		facts: [
+			{ label: 'Product', value: 'Klik A2C · Lender Portal' },
+			{ label: 'Scope', value: 'Home, Portfolio, Mutation, loan & borrower detail' }
+		],
+		tools: [],
+		cover: '/images/work/nikel-lender-portal/thumbnail.png',
+		isNew: true,
+		blocks: [
+			{
+				kind: 'text',
+				id: 'overview',
+				title: 'Overview',
+				body: [
+					'The lender portal put performance data, wallet balance and loan information in front of people funding loans through Klik A2C. The source deck describes a dashboard crowded with metrics and charts that could appear empty when a data source did not have the required information.',
+					'The enhancement reframes the portal around four connected tasks: check available balance, assess returns, understand loan allocation, and reconcile wallet movement. The project deck is dated 29 May 2026.'
+				]
+			},
+			{
+				kind: 'stats',
+				id: 'scope',
+				title: 'A connected product scope',
+				items: [
+					{ value: '3', label: 'Core pages: Home, Portfolio, Mutation' },
+					{ value: '4', label: 'Loan states: active, closed, written off, overdue' },
+					{ value: '4', label: 'Monthly wallet checkpoints: opening, credit, debit, ending' },
+					{ value: '2', label: 'Detail views: loan and borrower' }
+				]
+			},
+			{
+				kind: 'text',
+				id: 'challenge',
+				title: 'The challenge',
+				body: [
+					'The existing dashboard drew from operational and database sources. When a value was unavailable, the interface could leave an empty chart; alongside a dense set of metrics, this made it harder to tell which numbers mattered and what they meant.',
+					'Balance, performance and transaction history also use different time windows. The design needed to make those distinctions legible instead of presenting them as interchangeable figures.'
+				]
+			},
+			{
+				kind: 'gallery',
+				id: 'before-after',
+				title: 'Before → after',
+				caption:
+					'Left: the previous overview combined broad analytics with loan browsing. Right: the updated home screen brings available balance and core funding performance to the foreground.',
+				layout: 'row',
+				images: [
+					nikelPortal('before-dashboard.png', 'Earlier lender portal overview with funding analytics and available loan cards'),
+					nikelPortal('home-dashboard.png', 'Updated lender home with available balance, active funding and returns above available loans')
+				]
+			},
+			{
+				kind: 'gallery',
+				id: 'screens',
+				title: 'The portal in use',
+				caption:
+					'Five real screens from the product deck show the full path: review balance, browse available loans, track funded loans by status and follow wallet activity.',
+				layout: 'wide',
+				images: [
+					nikelPortal('home-dashboard.png', 'Lender home dashboard with available balance, funding summary and loan list'),
+					nikelPortal('available-loans.png', 'Available loan cards with funding progress, interest rate and term'),
+					nikelPortal('portfolio-screen.png', 'Portfolio view with funded loans grouped by status'),
+					nikelPortal('portfolio-detail.png', 'Alternate funded-loan portfolio view with repayment progress'),
+					nikelPortal('mutation-screen.png', 'Mutation screen with balance summary and transaction history')
+				]
+			},
+			{
+				kind: 'features',
+				id: 'method',
+				title: 'Design method',
+				items: [
+					{
+						title: 'Audit the current experience',
+						body: 'Use the deck’s pain-point review to identify metric noise, missing data and places where a chart did not help a lender act.'
+					},
+					{
+						title: 'Prioritize decisions',
+						body: 'Organize the home view around available balance, active funding and returns; keep allocation and reconciliation details in their natural next step.'
+					},
+					{
+						title: 'Define the measures',
+						body: 'Specify how the portal calculates available balance, remaining principal, all-time interest and month-to-date wallet movement.'
+					},
+					{
+						title: 'Carry feedback into the next iteration',
+						body: 'The deck closes by identifying loan and borrower detail as the next area to streamline.'
+					}
+				]
+			},
+			{
+				kind: 'impact',
+				id: 'principles',
+				title: 'Design principles',
+				intro: 'The portal is shaped around four practical rules:',
+				items: [
+					'Lead with the decision: balance and performance before secondary detail.',
+					'Make every number explainable with its period, source and calculation.',
+					'Keep loan states distinct from wallet credits and debits.',
+					'Connect summary signals to the loan or borrower details behind them.'
+				]
+			},
+			{
+				kind: 'gallery',
+				id: 'metric-model',
+				title: 'A shared language for money',
+				caption:
+					'Metric definitions from the appendix: available balance is real-time; returns are all-time; wallet credits and debits are month-to-date.',
+				layout: 'wide',
+				images: [
+					nikelPortal('metric-model.svg', 'Metric model distinguishing real-time balance, all-time returns, loan status and month-to-date movements')
+				]
+			},
+			{
+				kind: 'text',
+				id: 'next-iteration',
+				title: 'Next iteration',
+				body: [
+					'The product deck identifies loan and borrower detail as the next opportunity: streamline the data so lenders can find the information they need without adding more noise.'
+				]
+			}
+		],
+		seed: noFeedback
+	},
 	// ───────────────────────────────────────────── Mitra User Persona
 	{
 		slug: 'mitra-persona',

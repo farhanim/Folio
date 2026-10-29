@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 760" fill="none">
+	<rect width="1600" height="760" rx="30" fill="#f4f5f8"/>
+	<text x="80" y="86" fill="#244989" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="700" letter-spacing="3">LENDER EXPERIENCE MAP</text>
+	<text x="80" y="132" fill="#202a3b" font-family="Arial,Helvetica,sans-serif" font-size="30">From checking a balance to staying in control</text>
+	<path d="M160 367H1438" stroke="#cbd4e3" stroke-width="4" stroke-dasharray="8 10"/>
+	<g font-family="Arial,Helvetica,sans-serif">
+		<g>
+			<circle cx="190" cy="367" r="54" fill="#244989"/><text x="176" y="376" fill="#fff" font-size="24" font-weight="700">01</text>
+			<rect x="80" y="198" width="330" height="118" rx="16" fill="#fff" stroke="#dce2ec"/>
+			<text x="106" y="240" fill="#244989" font-size="14" font-weight="700" letter-spacing="1">CHECK THE WALLET</text>
+			<text x="106" y="274" fill="#263249" font-size="20" font-weight="700">“What can I use now?”</text>
+			<text x="106" y="298" fill="#68758a" font-size="15">Available balance, clearly surfaced</text>
+			<text x="80" y="463" fill="#69758a" font-size="15">See a real-time balance</text>
+			<text x="80" y="490" fill="#244989" font-size="14" font-weight="700">NEEDS</text>
+			<text x="80" y="518" fill="#263249" font-size="16">Trust · readiness</text>
+		</g>
+		<g>
+			<circle cx="596" cy="367" r="54" fill="#315da7"/><text x="582" y="376" fill="#fff" font-size="24" font-weight="700">02</text>
+			<rect x="430" y="418" width="330" height="118" rx="16" fill="#fff" stroke="#dce2ec"/>
+			<text x="456" y="460" fill="#244989" font-size="14" font-weight="700" letter-spacing="1">ASSESS PERFORMANCE</text>
+			<text x="456" y="494" fill="#263249" font-size="20" font-weight="700">“How are my funds doing?”</text>
+			<text x="456" y="518" fill="#68758a" font-size="15">Funding, returns and return rate</text>
+			<text x="430" y="584" fill="#69758a" font-size="15">Compare all-time results</text>
+			<text x="430" y="611" fill="#244989" font-size="14" font-weight="700">NEEDS</text>
+			<text x="430" y="639" fill="#263249" font-size="16">Context · confidence</text>
+		</g>
+		<g>
+			<circle cx="1002" cy="367" r="54" fill="#31a984"/><text x="988" y="376" fill="#fff" font-size="24" font-weight="700">03</text>
+			<rect x="790" y="198" width="385" height="118" rx="16" fill="#fff" stroke="#dce2ec"/>
+			<text x="816" y="240" fill="#178565" font-size="14" font-weight="700" letter-spacing="1">ALLOCATE &amp; MONITOR</text>
+			<text x="816" y="274" fill="#263249" font-size="20" font-weight="700">“Where is my money working?”</text>
+			<text x="816" y="298" fill="#68758a" font-size="15">Loan distribution and status</text>
+			<text x="790" y="463" fill="#69758a" font-size="15">Review active, closed, overdue</text>
+			<text x="790" y="490" fill="#244989" font-size="14" font-weight="700">NEEDS</text>
+			<text x="790" y="518" fill="#263249" font-size="16">Control · transparency</text>
+		</g>
+		<g>
+			<circle cx="1410" cy="367" r="54" fill="#e5ad34"/><text x="1396" y="376" fill="#fff" font-size="24" font-weight="700">04</text>
+			<rect x="1195" y="418" width="325" height="118" rx="16" fill="#fff" stroke="#dce2ec"/>
+			<text x="1221" y="460" fill="#a87914" font-size="14" font-weight="700" letter-spacing="1">RECONCILE MOVEMENT</text>
+			<text x="1221" y="494" fill="#263249" font-size="20" font-weight="700">“What changed this month?”</text>
+			<text x="1221" y="518" fill="#68758a" font-size="15">Credits, debits and balance</text>
+			<text x="1195" y="584" fill="#69758a" font-size="15">Trace each wallet movement</text>
+			<text x="1195" y="611" fill="#244989" font-size="14" font-weight="700">NEEDS</text>
+			<text x="1195" y="639" fill="#263249" font-size="16">Clarity · reassurance</text>
+		</g>
+	</g>
+</svg>

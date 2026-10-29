@@ -21,7 +21,11 @@
 	}
 </script>
 
-<section class="block kind-{block.kind}" id={block.id} use:reveal>
+<section
+	class="block kind-{block.kind}"
+	id={block.id}
+	use:reveal
+>
 	<h2 class="label">{block.title}</h2>
 
 	<div class="content">
@@ -43,6 +47,9 @@
 				{#each block.images as image, i (image.src)}
 					<figure class:wide={wide(i, block.images.length)}>
 						<img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+						{#if block.id === 'before-after'}
+							<figcaption>{i === 0 ? 'Previous version' : 'Updated design'}</figcaption>
+						{/if}
 					</figure>
 				{/each}
 			</div>
@@ -175,25 +182,42 @@
 		row-gap: var(--gap);
 	}
 	figure {
+		position: relative;
 		grid-column: span 4;
 		margin: 0;
 		overflow: hidden;
 		border-radius: 14px;
 		background: var(--surface);
 	}
+	figcaption {
+		position: absolute;
+		left: 12px;
+		top: 12px;
+		padding: 6px 10px;
+		border: 1px solid var(--hairline);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--surface) 92%, transparent);
+		color: var(--text);
+		font-size: 11px;
+		line-height: 1;
+	}
 	figure img {
 		display: block;
 		width: 100%;
-		height: 100%;
+		height: auto;
+		aspect-ratio: auto;
+		object-fit: contain;
+	}
+	#before-after figure {
 		aspect-ratio: 16 / 10;
-		object-fit: cover;
-		transition: transform 0.9s var(--ease-out);
+		background: #eef1f7;
+	}
+	#before-after figure img {
+		height: 100%;
+		object-fit: contain;
 	}
 	figure.wide {
 		grid-column: 1 / -1;
-	}
-	figure:hover img {
-		transform: scale(1.03);
 	}
 	.caption {
 		margin-top: 12px;

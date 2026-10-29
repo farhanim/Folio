@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 680" fill="none">
+	<rect width="1600" height="680" rx="30" fill="#f4f5f8"/>
+	<text x="82" y="88" fill="#244989" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="700" letter-spacing="3">METRIC LANGUAGE</text>
+	<text x="82" y="136" fill="#202a3b" font-family="Arial,Helvetica,sans-serif" font-size="30">Make each number answer one question</text>
+	<g font-family="Arial,Helvetica,sans-serif">
+		<rect x="82" y="194" width="690" height="180" rx="18" fill="#fff" stroke="#dce2ec"/>
+		<rect x="82" y="194" width="10" height="180" rx="5" fill="#315da7"/>
+		<text x="122" y="242" fill="#315da7" font-size="15" font-weight="700" letter-spacing="1">WALLET · REAL TIME</text>
+		<text x="122" y="296" fill="#263249" font-size="27" font-weight="700">Available balance</text>
+		<text x="122" y="337" fill="#69758a" font-size="18">RDL balance − pending balance</text>
+		<text x="122" y="359" fill="#8a94a5" font-size="14">Funding or withdrawal still in transit stays pending.</text>
+
+		<rect x="828" y="194" width="690" height="180" rx="18" fill="#fff" stroke="#dce2ec"/>
+		<rect x="828" y="194" width="10" height="180" rx="5" fill="#31a984"/>
+		<text x="868" y="242" fill="#178565" font-size="15" font-weight="700" letter-spacing="1">PERFORMANCE · ALL TIME</text>
+		<text x="868" y="296" fill="#263249" font-size="27" font-weight="700">Return value &amp; rate</text>
+		<text x="868" y="337" fill="#69758a" font-size="18">Interest received · interest ÷ total funded</text>
+		<text x="868" y="359" fill="#8a94a5" font-size="14">Define the period and denominator beside the metric.</text>
+
+		<rect x="82" y="408" width="1436" height="190" rx="18" fill="#fff" stroke="#dce2ec"/>
+		<rect x="82" y="408" width="10" height="190" rx="5" fill="#e5ad34"/>
+		<text x="122" y="456" fill="#a87914" font-size="15" font-weight="700" letter-spacing="1">PORTFOLIO &amp; RECONCILIATION · MONTH TO DATE</text>
+		<text x="122" y="512" fill="#263249" font-size="24" font-weight="700">Keep loan state separate from wallet movement.</text>
+		<g font-size="16" font-weight="700">
+			<rect x="122" y="538" width="182" height="38" rx="19" fill="#e8eef8"/><text x="147" y="563" fill="#315da7">Active</text>
+			<rect x="320" y="538" width="182" height="38" rx="19" fill="#e6f5f0"/><text x="345" y="563" fill="#178565">Closed</text>
+			<rect x="518" y="538" width="216" height="38" rx="19" fill="#fcf3df"/><text x="543" y="563" fill="#a87914">Written off</text>
+			<rect x="750" y="538" width="182" height="38" rx="19" fill="#fae9e6"/><text x="775" y="563" fill="#b65343">Overdue</text>
+		</g>
+		<text x="1000" y="563" fill="#69758a" font-size="16">Beginning balance + credits − debits = ending balance</text>
+	</g>
+</svg>
