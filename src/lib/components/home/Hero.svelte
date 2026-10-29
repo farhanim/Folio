@@ -90,7 +90,7 @@
 		<p>
 			I’m <strong>{site.name} (Hans)</strong>, a product designer in {site.location}, {site.country}, with
 			<strong>9+ years</strong> across lending, aquaculture, and retail. I take products from research and
-			design systems through to <strong>interactive prototypes in code</strong><span class="cycoffee-inline">, and I’m <span class="cycoffee-selected">newly exploring Cycoffee</span>, a small coffee business.</span>
+			design systems through to <strong>interactive prototypes in code</strong><span class="cycoffee-inline">, and now <span class="cycoffee-selected">newly exploring Cycoffee</span>, a small coffee business.</span>
 		</p>
 		<p class="focus label">
 			<span class="focus-key">Lately</span>
@@ -140,12 +140,12 @@
 <style>
 	.hero {
 		position: relative;
-		min-height: calc(100svh - var(--bar));
-		grid-template-rows: auto auto 1fr;
+		min-height: auto;
+		grid-template-rows: auto auto auto;
 		align-content: start;
 		row-gap: 0;
 		padding-top: 28px;
-		padding-bottom: 120px;
+		padding-bottom: 40px;
 	}
 
 	.headline {
@@ -387,9 +387,9 @@
 	}
 
 	.scroll-cue {
-		position: absolute;
-		left: var(--pad);
-		bottom: 40px;
+		position: relative;
+		grid-column: 1 / -1;
+		margin-top: 56px;
 		display: flex;
 		align-items: center;
 		gap: 10px;
@@ -461,6 +461,14 @@
 		}
 	}
 	@media (max-width: 600px) {
+		.hero {
+			min-height: auto;
+			padding-top: 12px;
+			padding-bottom: 28px;
+		}
+		.headline {
+			margin-top: 24px;
+		}
 		.tip {
 			padding: 4px 10px 4px 4px;
 			font-size: 12px;
@@ -480,7 +488,7 @@
 			flex-direction: column;
 			align-items: stretch;
 			gap: 12px;
-			margin-top: 40px;
+			margin-top: 24px;
 		}
 		.clients-track {
 			gap: 32px;

@@ -347,7 +347,6 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Google Slides', 'Nielsen’s 10 heuristics'],
 		cover: '/images/work/awp-heuristic/cover.svg',
-		featured: true,
 		isNew: true,
 		links: [{ label: 'The redesign it led to', href: '/work/awp-order-flow' }],
 		blocks: [
@@ -466,7 +465,7 @@ export const caseStudies: Project[] = [
 			'Redesigning the Warung Pintar app home for mitra who signed up online without a sales agent: competitor analysis and crazy 8s, three lo-fi layouts, two hi-fi revamps and every state the home can be in.',
 		client: companies.warungPintar,
 		role: 'Product designer',
-		year: 2020,
+		year: 2021,
 		duration: 'Q1 - Q2 2020',
 		team: 'Growth team, Commerce · Merchants',
 		facts: [
@@ -672,7 +671,7 @@ export const caseStudies: Project[] = [
 			'Research and service design for Grosir Pintar (codename Venom) in Surabaya: closing the price gap with wholesalers, a logistics partnership that delivers for them, and the app roadmap that let wholesalers sell to and restock their own retailers.',
 		client: companies.warungPintar,
 		role: 'Product designer · UX research',
-		year: 2020,
+		year: 2021,
 		duration: 'Feb - Aug 2020',
 		team: 'Venom squad, Growth squad, team leaders',
 		facts: [
@@ -681,7 +680,6 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Figma', 'Miro', 'Google Sheets', 'WhatsApp'],
 		cover: '/images/work/grosir-pintar/cover.svg',
-		featured: true,
 		isNew: true,
 		blocks: [
 			{
@@ -1039,6 +1037,7 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['WhatsApp', 'Figma', 'Sheets'],
 		cover: '/images/work/loyal-users/cover.svg',
+		featured: true,
 		isNew: true,
 		blocks: [
 			{
@@ -1347,6 +1346,7 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Figma', 'Maze', 'Miro'],
 		cover: '/images/work/saldo-panen/cover.svg',
+		featured: true,
 		isNew: true,
 		blocks: [
 			{

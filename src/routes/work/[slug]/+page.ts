@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { getProject, projects } from '#lib/data/projects.ts';
+import { allProjects, getProject } from '#lib/data/projects.ts';
 import type { EntryGenerator, PageLoad } from './$types';
 
 export const load: PageLoad = ({ params }) => {
@@ -9,4 +9,4 @@ export const load: PageLoad = ({ params }) => {
 };
 
 /** Every project page can be prerendered from the data file. */
-export const entries: EntryGenerator = () => projects.map((p) => ({ slug: p.slug }));
+export const entries: EntryGenerator = () => allProjects.map((p) => ({ slug: p.slug }));

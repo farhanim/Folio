@@ -166,6 +166,7 @@ export const showcase: Project[] = [
 			'A virtual exhibition for Museum Kebangkitan Nasional on the history of psychiatry in the Dutch East Indies and the STOVIA-trained doctors who pioneered mental-health care in Indonesia, with films, profiles, a recreation room and a bibliography.',
 		client: c.muskitnas,
 		role: 'Design & development',
+		year: 2022,
 		facts: [
 			{ label: 'Industry', value: 'Culture · Museum' },
 			{ label: 'Platform', value: 'Web, responsive' }
@@ -427,6 +428,7 @@ export const showcase: Project[] = [
 			'A company website for PT. Wajracyena Derkei Sekuriti, a licensed security-services provider, joined to its internal management system for employees, accounting, company-profile content and users.',
 		client: c.derkei,
 		role: 'Design & development',
+		year: 2021,
 		facts: [
 			{ label: 'Industry', value: 'Security services' },
 			{ label: 'Platform', value: 'Website + web app' }
@@ -543,6 +545,7 @@ export const showcase: Project[] = [
 			'A clickable product prototype of a data platform (catalog, SQL and notebooks, workflow orchestration, dashboards, connectors, and ML experiments with a model registry) in one workspace that runs entirely in the browser.',
 		client: c.sparq,
 		role: 'Product design & prototype',
+		year: 2025,
 		facts: [
 			{ label: 'Industry', value: 'Data & AI' },
 			{ label: 'Platform', value: 'Web app prototype' }
@@ -656,7 +659,7 @@ export const showcase: Project[] = [
 			'An admin panel for SMS campaigns: send manually or from Excel across Indonesia’s four major operators, reconcile operator result files, follow delivery per recipient, and manage client balances and users.',
 		client: c.blastHub,
 		role: 'Front-end development',
-		year: 2026,
+		year: 2023,
 		facts: [
 			{ label: 'Industry', value: 'Messaging · CRM' },
 			{ label: 'Platform', value: 'Web admin' }
@@ -772,7 +775,7 @@ export const showcase: Project[] = [
 			'A location-intelligence workspace for ICON+, the telecom arm of PLN: plan new Points of Presence on a map, size fixed-wireless coverage, and track subscribers, revenue, availability and churn by region, with the stories and datasets behind every number.',
 		client: c.iconplus,
 		role: 'Front-end development',
-		year: 2026,
+		year: 2018,
 		facts: [
 			{ label: 'Industry', value: 'Telecom · Network planning' },
 			{ label: 'Platform', value: 'Web app (internal)' }
@@ -895,7 +898,7 @@ export const showcase: Project[] = [
 			'An IELTS preparation platform for Devfartha: learners sit full Cambridge-style tests with official timing, get instant Listening and Reading bands, study examiner guides and track their band toward a target, while admins manage tests, questions and learners.',
 		client: c.devfartha,
 		role: 'Design & development',
-		year: 2026,
+		year: 2019,
 		facts: [
 			{ label: 'Industry', value: 'Education · Test prep' },
 			{ label: 'Platform', value: 'Web app, learner + admin' }
@@ -1024,7 +1027,7 @@ export const showcase: Project[] = [
 			'The Pipeline Information Monitoring System for Pertamina Hulu Kalimantan Timur: platforms and pipelines on a satellite map, integrity metrics (ILI results, corrosion rate, pigging), leak incidents and repairs, and role-based access for every module.',
 		client: c.pertamina,
 		role: 'Front-end development',
-		year: 2026,
+		year: 2018,
 		facts: [
 			{ label: 'Industry', value: 'Oil & gas · Asset integrity' },
 			{ label: 'Platform', value: 'Web app (internal)' }
@@ -1153,6 +1156,7 @@ export const showcase: Project[] = [
 			'A virtual data room for monitoring the development of Indonesia’s new capital, IKN Nusantara: documents organised into thematic rooms, previewed right in the browser, shared by role and traced in a full activity log.',
 		client: c.dataroom,
 		role: 'Front-end development',
+		year: 2023,
 		facts: [
 			{ label: 'Industry', value: 'Government · Infrastructure' },
 			{ label: 'Platform', value: 'Web app (internal)' }

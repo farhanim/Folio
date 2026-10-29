@@ -806,6 +806,18 @@
 		}
 	}
 	@media (max-width: 600px) {
+		.index {
+			padding-right: 0;
+		}
+		.filters {
+			flex-wrap: nowrap;
+			gap: 3px;
+		}
+		.filters button {
+			padding: 5px 7px;
+			font-size: 12px;
+			white-space: nowrap;
+		}
 		.grid {
 			grid-template-columns: 1fr;
 		}
@@ -813,7 +825,16 @@
 			grid-auto-columns: 70%;
 		}
 		.views {
-			margin-left: 0;
+			margin-left: auto;
+			flex-shrink: 0;
+		}
+		.views-thumb,
+		.views button {
+			width: 26px;
+			height: 26px;
+		}
+		.views-thumb.right {
+			transform: translateX(26px);
 		}
 	}
 </style>

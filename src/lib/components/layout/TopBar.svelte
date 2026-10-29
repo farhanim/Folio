@@ -21,11 +21,16 @@
 				<path d="M12 22c-1.9-3.4-1.9-6.6 0-10 1.9 3.4 1.9 6.6 0 10Z" />
 				<path d="M2 12c3.4-1.9 6.6-1.9 10 0-3.4 1.9-6.6 1.9-10 0Z" />
 			</svg>
-			<span class="name">{site.name}</span>
-			<span class="sub"
-				>/ {site.role},
-				<span class="also"><ScrambleText phrases={site.roles} interval={3600} /></span></span
-			>
+			<span class="brand-copy">
+				<span class="name">{site.name}</span>
+				<span class="sub"
+					>/ {site.role},
+					<span class="also"><ScrambleText phrases={site.roles} interval={3600} /></span></span
+				>
+				<span class="mobile-role">
+					{site.role} <span class="mobile-availability">· Open to work</span>
+				</span>
+			</span>
 		</a>
 
 		<p class="clock label" aria-label="Local time in {site.location}, {site.country}">
@@ -38,7 +43,7 @@
 					fill="#fff"
 				/></svg
 			>
-			{site.location}, {site.country}
+			<span class="location">{site.location}, {site.country}</span>
 			<span class="time">
 				{clock.label.slice(0, 2)}<span class="colon">:</span>{clock.label.slice(3)}
 			</span>
@@ -84,6 +89,14 @@
 		font-size: 14px;
 		font-weight: 600;
 		letter-spacing: -0.01em;
+	}
+	.brand-copy {
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+	}
+	.mobile-role {
+		display: none;
 	}
 	.mark {
 		fill: currentColor;
@@ -192,8 +205,32 @@
 		}
 	}
 	@media (max-width: 600px) {
+		.brand {
+			grid-column: 1 / span 2;
+			gap: 8px;
+			font-size: 14px;
+		}
+		.brand-copy {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 2px;
+		}
 		.sub,
 		.status {
+			display: none;
+		}
+		.mobile-role {
+			display: block;
+			font-size: 9px;
+			font-weight: 450;
+			line-height: 1.2;
+			color: var(--text-secondary);
+			white-space: nowrap;
+		}
+		.mobile-availability {
+			color: #3fb27f;
+		}
+		.clock {
 			display: none;
 		}
 	}

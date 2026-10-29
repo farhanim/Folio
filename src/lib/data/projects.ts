@@ -291,20 +291,67 @@ transition.ready.then(() => {
 	}
 ];
 
-// Newest year first; projects without a year go last. The sort is stable, so
-// within a year the order above holds (case studies, code builds, samples).
-export const projects: Project[] = [...caseStudies, ...showcase, ...samples].sort(
-	(a, b) => (b.year ?? 0) - (a.year ?? 0)
+// Newest year first; the supplied order breaks ties within a year.
+const requestedProjectOrder = [
+	'mitra-persona',
+	'awp-heuristic-evaluation',
+	'grosir-pintar',
+	'iconplus',
+	'ielts-course',
+	'pims-pertamina',
+	'kee-platforms',
+	'jardin-timesheet',
+	'efishery-faq',
+	'saldo-panen',
+	'enterprise-payment',
+	'crm-arap-survey',
+	'martech-crm',
+	'loyal-users',
+	'data-pulsa-improvements',
+	'silma',
+	'dataroom',
+	'blast-hub',
+	'muskitnas',
+	'derkei',
+	'sparq',
+];
+const requestedOrderIndex = new Map(requestedProjectOrder.map((slug, index) => [slug, index]));
+
+export const allProjects: Project[] = [...caseStudies, ...showcase, ...samples].sort(
+	(a, b) => {
+		const yearOrder = (b.year ?? 0) - (a.year ?? 0);
+		if (yearOrder !== 0) return yearOrder;
+		const aOrder = requestedOrderIndex.get(a.slug);
+		const bOrder = requestedOrderIndex.get(b.slug);
+		if (aOrder !== undefined || bOrder !== undefined) {
+			if (aOrder === undefined) return 1;
+			if (bOrder === undefined) return -1;
+			return aOrder - bOrder;
+		}
+		return 0;
+	}
 );
+
+// Keep these records available for their direct pages while leaving them out
+// of the project index and other list-based features.
+const hiddenProjectSlugs = new Set([
+	'cyclone-pos',
+	'folio-site',
+	'nusa-app',
+	'kala-identity',
+	'dunes'
+]);
+
+export const projects: Project[] = allProjects.filter((p) => !hiddenProjectSlugs.has(p.slug));
 
 // Worth a read: design case studies only.
 export const featuredProjects = projects.filter((p) => p.featured && p.type === 'design');
 
 export function getProject(slug: string) {
-	const index = projects.findIndex((p) => p.slug === slug);
+	const index = allProjects.findIndex((p) => p.slug === slug);
 	if (index === -1) return null;
-	const at = (i: number) => projects[(i + projects.length) % projects.length];
-	return { project: projects[index], prev: at(index - 1), next: at(index + 1) };
+	const at = (i: number) => allProjects[(i + allProjects.length) % allProjects.length];
+	return { project: allProjects[index], prev: at(index - 1), next: at(index + 1) };
 }
 
 /** Rough reading time from the text in a project's blocks. */

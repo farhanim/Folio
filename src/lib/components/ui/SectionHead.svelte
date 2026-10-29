@@ -53,4 +53,10 @@
 		align-items: center;
 		gap: 8px;
 	}
+	@media (max-width: 600px) {
+		.aside {
+			width: 100%;
+			justify-content: space-between;
+		}
+	}
 </style>
