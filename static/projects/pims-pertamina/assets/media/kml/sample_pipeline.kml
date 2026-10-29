@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <Placemark>
+      <name>Sample pipeline Sepinggan Q - Yakin S</name>
+      <LineString>
+        <coordinates>
+          117.1080,-1.4020,0 117.1500,-1.4500,0 117.2200,-1.5300,0 117.2660,-1.5730,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

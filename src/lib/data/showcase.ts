@@ -22,6 +22,10 @@ const jardin = media('jardin-timesheet');
 const derkei = media('derkei');
 const sparq = media('sparq');
 const blast = media('blast-hub');
+const iconplus = media('iconplus');
+const ielts = media('ielts-course');
+const pims = media('pims-pertamina');
+const dataroom = media('dataroom');
 
 const noFeedback = { likes: 0, dislikes: 0, comments: [] };
 
@@ -749,6 +753,519 @@ export const showcase: Project[] = [
 						items: [
 							{ name: 'jQuery', why: 'Forms, modals, tables' },
 							{ name: 'DataTables', why: 'Sortable report tables' }
+						]
+					}
+				]
+			}
+		],
+		seed: noFeedback
+	},
+
+	// ───────────────────────────────────────────── ICON+ Analytics
+	{
+		slug: 'iconplus',
+		type: 'code',
+		title: 'ICON+ Analytics',
+		tagline: 'Plan network growth from one map — POP sites, coverage, churn.',
+		summary:
+			'A location-intelligence workspace for ICON+, the telecom arm of PLN: plan new Points of Presence on a map, size fixed-wireless coverage, and track subscribers, revenue, availability and churn by region — with the stories and datasets behind every number.',
+		client: c.iconplus,
+		role: 'Front-end development',
+		year: 2026,
+		facts: [
+			{ label: 'Industry', value: 'Telecom · Network planning' },
+			{ label: 'Platform', value: 'Web app (internal)' }
+		],
+		tools: ['Laravel', 'Bootstrap', 'jQuery', 'Mapbox GL'],
+		cover: iconplus.poster,
+		gallery: iconplus.shots(
+			[2, 'Dashboard — network KPIs by region'],
+			[3, 'POP Planner — site scoring on the map'],
+			[4, 'Customer Insight — churn and ARPU'],
+			[5, 'Stories — published analyses']
+		),
+		preview: {
+			url: '/projects/iconplus/index.html',
+			video: iconplus.video,
+			poster: iconplus.poster,
+			note: 'The demo account is filled in — press Sign in. Runs on sample data.'
+		},
+		blocks: [
+			{
+				kind: 'text',
+				id: 'overview',
+				title: 'Overview',
+				body: [
+					'Where should the next fiber Point of Presence go, and where is fixed wireless the faster answer? ICON+ Analytics puts the inputs for that decision on one map — building density, points of interest, competitor footprint and ICON+ pole availability — next to the business numbers that justify it.',
+					'Around the planners sit a KPI dashboard, a customer-insight app for churn and ARPU, a layer catalog for every geospatial source, and a knowledge repository of the datasets, notebooks and queries behind each figure.'
+				]
+			},
+			{
+				kind: 'text',
+				id: 'purpose',
+				title: 'Why it matters',
+				body: [
+					'Network expansion is capital-heavy: a POP in the wrong place sits underused for years. Bringing location data, network health and customer behaviour into one workspace lets planning, sales and data teams argue from the same facts — and turns a site decision from a hunch into a ranked, explainable shortlist.'
+				]
+			},
+			{
+				kind: 'features',
+				id: 'features',
+				title: 'Key features',
+				items: [
+					{
+						title: 'Network dashboard',
+						body: 'Active subscribers, recurring revenue, POP health and availability, filterable by region and period.'
+					},
+					{
+						title: 'POP Planner',
+						body: 'Ranks candidate sites from buildings, POIs, competitor footprint and pole inventory, with radius analysis and site scoring.'
+					},
+					{
+						title: 'Airnet Planner',
+						body: 'Plans fixed-wireless towers, coverage radius and backhaul capacity where fiber can’t reach yet.'
+					},
+					{
+						title: 'Customer Insight',
+						body: 'Churn risk, ARPU and NPS by segment; at-risk accounts become retention tasks.'
+					},
+					{
+						title: 'Layer Catalog',
+						body: 'Every geospatial layer with its source, geometry and refresh schedule.'
+					},
+					{
+						title: 'Stories & knowledge repos',
+						body: 'Analyses published as stories, linked to the datasets, notebooks and queries behind them.'
+					}
+				]
+			},
+			{
+				kind: 'stats',
+				id: 'numbers',
+				title: 'By the numbers',
+				items: [
+					{ value: '4', label: 'Planning & insight apps' },
+					{ value: '6', label: 'Service regions to filter by' },
+					{ value: '10', label: 'Knowledge-repo entries in the demo' },
+					{ value: '1,146', label: 'POP sites in the demo dataset' }
+				]
+			},
+			{
+				kind: 'impact',
+				id: 'impact',
+				title: 'Impact & value',
+				items: [
+					'Site decisions backed by ranked, explainable location data',
+					'Fiber and fixed-wireless planned side by side',
+					'At-risk customers turned into concrete retention tasks',
+					'Every published number traceable to its dataset or query'
+				]
+			},
+			{
+				kind: 'stack',
+				id: 'stack',
+				title: 'Tech stack',
+				groups: [
+					{ label: 'Backend', items: [{ name: 'Laravel', why: 'Auth, apps and data APIs' }] },
+					{
+						label: 'Front-end',
+						items: [
+							{ name: 'Bootstrap', why: 'Dashboard layout and components' },
+							{ name: 'jQuery', why: 'Views, filters and tables' }
+						]
+					},
+					{
+						label: 'Maps',
+						items: [{ name: 'Mapbox GL', why: 'Vector maps, markers and radius analysis' }]
+					}
+				]
+			}
+		],
+		seed: noFeedback
+	},
+
+	// ───────────────────────────────────────────── Devfartha IELTS
+	{
+		slug: 'ielts-course',
+		type: 'code',
+		title: 'Devfartha IELTS',
+		tagline: 'Real Cambridge IELTS practice with instant band estimates.',
+		summary:
+			'An IELTS preparation platform for Devfartha: learners sit full Cambridge-style tests with official timing, get instant Listening and Reading bands, study examiner guides and track their band toward a target — while admins manage tests, questions and learners.',
+		client: c.devfartha,
+		role: 'Design & development',
+		year: 2026,
+		facts: [
+			{ label: 'Industry', value: 'Education · Test prep' },
+			{ label: 'Platform', value: 'Web app, learner + admin' }
+		],
+		tools: ['Laravel', 'Bootstrap', 'jQuery', 'Chart.js'],
+		cover: ielts.poster,
+		gallery: ielts.shots(
+			[2, 'Learner dashboard — band estimate'],
+			[3, 'Test catalogue'],
+			[4, 'Exam mode — Reading'],
+			[5, 'Band history']
+		),
+		preview: {
+			url: '/projects/ielts-course/index.html',
+			video: ielts.video,
+			poster: ielts.poster,
+			note: 'A learner demo account is filled in — press Sign in. Switch to Admin on the login screen.'
+		},
+		blocks: [
+			{
+				kind: 'text',
+				id: 'overview',
+				title: 'Overview',
+				body: [
+					'Devfartha has spent almost ten years teaching and researching in higher education. This platform takes its IELTS coaching online: real Cambridge-style tests across all four skills, short strategy guides written by examiners, and a dashboard that tells each learner where their band stands and what to practise next.',
+					'Behind it, an admin side manages tests, sections, questions and answer keys, learners and their results.'
+				]
+			},
+			{
+				kind: 'text',
+				id: 'purpose',
+				title: 'Why it matters',
+				body: [
+					'For many Indonesian learners the IELTS gates a scholarship or a study visa, and a test is expensive to retake. Practising under real timing, seeing an honest band estimate and knowing the single skill that will lift the overall score turns anxious, unfocused study into a plan — with a countdown to exam day.'
+				]
+			},
+			{
+				kind: 'features',
+				id: 'features',
+				title: 'Key features',
+				items: [
+					{
+						title: 'Full test simulations',
+						body: 'Listening, Reading, Writing and Speaking with official timing and a question navigator.'
+					},
+					{
+						title: 'Instant band estimates',
+						body: 'Listening and Reading marked on submit; Writing and Speaking reviewed by examiners.'
+					},
+					{
+						title: 'Progress dashboard',
+						body: 'Overall band, skill breakdown, accuracy trend and exam countdown toward a target.'
+					},
+					{
+						title: 'Study guides',
+						body: 'Short strategy guides per question type, each ending in a practice link.'
+					},
+					{
+						title: 'Test catalogue',
+						body: 'Simulation, practice and scholarship tests, free and premium.'
+					},
+					{
+						title: 'Admin console',
+						body: 'Tests, questions, answer keys, learners and results in one place.'
+					}
+				]
+			},
+			{
+				kind: 'stats',
+				id: 'numbers',
+				title: 'By the numbers',
+				items: [
+					{ value: '4', label: 'Skills in every test' },
+					{ value: '6', label: 'Complete tests in the catalogue' },
+					{ value: '8', label: 'Examiner study guides' },
+					{ value: '2', label: 'Roles: learner and admin' }
+				]
+			},
+			{
+				kind: 'impact',
+				id: 'impact',
+				title: 'Impact & value',
+				items: [
+					'Learners rehearse under real exam conditions before paying for the test',
+					'A clear next step: the skill that raises the overall band most',
+					'Coaching reaches learners anywhere, not only in class',
+					'Admins publish new tests without a developer'
+				]
+			},
+			{
+				kind: 'stack',
+				id: 'stack',
+				title: 'Tech stack',
+				groups: [
+					{
+						label: 'Backend',
+						items: [{ name: 'Laravel', why: 'Accounts, tests, scoring and results' }]
+					},
+					{
+						label: 'Front-end',
+						items: [
+							{ name: 'Bootstrap', why: 'Learner and admin layouts' },
+							{ name: 'jQuery', why: 'Exam timer, navigator and forms' }
+						]
+					},
+					{
+						label: 'Data viz',
+						items: [
+							{ name: 'Chart.js', why: 'Band history and skill charts' },
+							{ name: 'ProgressBar.js', why: 'Progress toward the target band' }
+						]
+					}
+				]
+			}
+		],
+		seed: noFeedback
+	},
+
+	// ───────────────────────────────────────────── Pertamina PIMS
+	{
+		slug: 'pims-pertamina',
+		type: 'code',
+		title: 'Pertamina PIMS',
+		tagline: 'Pipeline integrity across East Kalimantan, on one map.',
+		summary:
+			'The Pipeline Information Monitoring System for Pertamina Hulu Kalimantan Timur: platforms and pipelines on a satellite map, integrity metrics (ILI results, corrosion rate, pigging), leak incidents and repairs, and role-based access for every module.',
+		client: c.pertamina,
+		role: 'Front-end development',
+		year: 2026,
+		facts: [
+			{ label: 'Industry', value: 'Oil & gas · Asset integrity' },
+			{ label: 'Platform', value: 'Web app (internal)' }
+		],
+		tools: ['Laravel', 'Bootstrap', 'Leaflet', 'Turf.js'],
+		cover: pims.poster,
+		gallery: pims.shots(
+			[2, 'Operations dashboard with asset map'],
+			[3, 'Pipeline detail — integrity and route'],
+			[4, 'Pipeline metric report'],
+			[5, 'User privileges']
+		),
+		preview: {
+			url: '/projects/pims-pertamina/index.html',
+			video: pims.video,
+			poster: pims.poster,
+			note: 'Credentials are prefilled (admin / admin123) — press Login. Runs on sample data.'
+		},
+		blocks: [
+			{
+				kind: 'text',
+				id: 'overview',
+				title: 'Overview',
+				body: [
+					'PIMS gives Pertamina Hulu Kalimantan Timur one view of its offshore assets: every platform and the pipelines between them, drawn on a satellite map and coloured by health — healthy, warning or critical.',
+					'Each pipeline opens to its specification, route and integrity history — in-line inspection results, corrosion rate and routine pigging — while incidents, repairs and highlight tasks keep operations and integrity teams working from the same record.'
+				]
+			},
+			{
+				kind: 'text',
+				id: 'purpose',
+				title: 'Why it matters',
+				body: [
+					'A leaking subsea pipeline is a safety, environmental and production risk at once. When inspection results live in reports and spreadsheets, a worsening trend is easy to miss. Putting integrity metrics on the map, with a watch list of what needs action, lets engineers act before a defect becomes an incident.'
+				]
+			},
+			{
+				kind: 'features',
+				id: 'features',
+				title: 'Key features',
+				items: [
+					{
+						title: 'Asset map',
+						body: 'Platforms, pipelines, leak incidents and repairs on a satellite map, coloured by health.'
+					},
+					{
+						title: 'Operations dashboard',
+						body: 'Platform and pipeline counts, health split, open incidents and a watch list.'
+					},
+					{
+						title: 'Integrity metrics',
+						body: 'ILI wall-loss results, corrosion rate and routine pigging per pipeline, with reports.'
+					},
+					{
+						title: 'Incidents & repairs',
+						body: 'Report a leak, track its repair and attach inspection documents.'
+					},
+					{
+						title: 'Highlight tasks',
+						body: 'Assign and follow up actions on the pipelines that need them.'
+					},
+					{
+						title: 'User privileges',
+						body: 'Role-based access matrix for every module, plus KML route import.'
+					}
+				]
+			},
+			{
+				kind: 'stats',
+				id: 'numbers',
+				title: 'By the numbers',
+				items: [
+					{ value: '13', label: 'Platforms in the demo dataset' },
+					{ value: '15', label: 'Pipelines mapped' },
+					{ value: '445 km', label: 'Total pipeline length' },
+					{ value: '3', label: 'Health levels on every asset' }
+				]
+			},
+			{
+				kind: 'impact',
+				id: 'impact',
+				title: 'Impact & value',
+				items: [
+					'Worsening pipelines surface on a watch list before they fail',
+					'Inspection history in one place instead of scattered reports',
+					'Every leak tracked from incident to completed repair',
+					'Access controlled per role across operations and integrity teams'
+				]
+			},
+			{
+				kind: 'stack',
+				id: 'stack',
+				title: 'Tech stack',
+				groups: [
+					{
+						label: 'Backend',
+						items: [{ name: 'Laravel', why: 'Assets, metrics, incidents and users' }]
+					},
+					{
+						label: 'Front-end',
+						items: [
+							{ name: 'Bootstrap', why: 'Dashboard layout and forms' },
+							{ name: 'DataTables', why: 'Searchable metric tables' }
+						]
+					},
+					{
+						label: 'GIS',
+						items: [
+							{ name: 'Leaflet + Esri imagery', why: 'Satellite asset map' },
+							{ name: 'Turf.js', why: 'Route lengths and geometry' }
+						]
+					}
+				]
+			}
+		],
+		seed: noFeedback
+	},
+
+	// ───────────────────────────────────────────── Data Room
+	{
+		slug: 'dataroom',
+		type: 'code',
+		title: 'Data Room',
+		tagline: 'One secure home for every project document of Ibu Kota Nusantara.',
+		summary:
+			'A virtual data room for monitoring the development of Indonesia’s new capital, IKN Nusantara: documents organised into thematic rooms, previewed right in the browser, shared by role and traced in a full activity log.',
+		client: c.dataroom,
+		role: 'Front-end development',
+		facts: [
+			{ label: 'Industry', value: 'Government · Infrastructure' },
+			{ label: 'Platform', value: 'Web app (internal)' }
+		],
+		tools: ['React', 'Vite', 'Tailwind CSS', 'Zustand'],
+		cover: dataroom.poster,
+		gallery: dataroom.shots(
+			[2, 'All data rooms — recent and favourites'],
+			[3, 'Room — folders and files'],
+			[4, 'Document preview in the browser'],
+			[6, 'Activity log']
+		),
+		preview: {
+			url: '/projects/dataroom/index.html',
+			video: dataroom.video,
+			poster: dataroom.poster,
+			note: 'The admin account is filled in — press Login. Runs on sample data.'
+		},
+		blocks: [
+			{
+				kind: 'text',
+				id: 'overview',
+				title: 'Overview',
+				body: [
+					'Building a capital city produces an enormous paper trail: masterplans, land parcel data, detailed engineering designs, progress photos, studies, contracts and regulations. Data Room gives that material one structured, access-controlled home.',
+					'Documents live in eight thematic rooms — planning, land, infrastructure, investment, environment, finance, legal and general documents — with folders, favourites and recent files. PDFs, Word files, spreadsheets and slide decks open in an in-app viewer, so nobody has to download a file just to read it.'
+				]
+			},
+			{
+				kind: 'text',
+				id: 'purpose',
+				title: 'Why it matters',
+				body: [
+					'Megaprojects involve many agencies, contractors and investors, and the cost of a wrong or leaked document is high. A single data room with clear permissions and a complete audit trail means everyone works from the latest version — and every upload, move or download can be accounted for.'
+				]
+			},
+			{
+				kind: 'features',
+				id: 'features',
+				title: 'Key features',
+				items: [
+					{
+						title: 'Thematic rooms',
+						body: 'Eight rooms from planning to legal, each with its own folders and access.'
+					},
+					{
+						title: 'Recent & favourites',
+						body: 'The files you used last and the ones you starred, on the home screen.'
+					},
+					{
+						title: 'In-browser preview',
+						body: 'PDF, Word, Excel and PowerPoint open in a viewer with page navigation and zoom.'
+					},
+					{
+						title: 'Upload & organise',
+						body: 'Create rooms and folders, upload, rename, move and search across the data room.'
+					},
+					{
+						title: 'Users & roles',
+						body: 'Admin, Editor and View Only roles, with room-level access and online status.'
+					},
+					{
+						title: 'Activity log',
+						body: 'A dated trail of logins, uploads, new folders and room changes, per user.'
+					}
+				]
+			},
+			{
+				kind: 'stats',
+				id: 'numbers',
+				title: 'By the numbers',
+				items: [
+					{ value: '8', label: 'Thematic data rooms' },
+					{ value: '3', label: 'Access roles' },
+					{ value: '4', label: 'Office formats previewed in-app' },
+					{ value: '−92%', label: 'Login artwork weight after optimising' }
+				]
+			},
+			{
+				kind: 'impact',
+				id: 'impact',
+				title: 'Impact & value',
+				items: [
+					'One source of truth for every IKN project document',
+					'Read documents instantly, without downloading copies',
+					'Access granted per role and per room',
+					'A complete audit trail for accountability'
+				]
+			},
+			{
+				kind: 'stack',
+				id: 'stack',
+				title: 'Tech stack',
+				groups: [
+					{
+						label: 'App',
+						items: [
+							{ name: 'React', why: 'Component-based screens' },
+							{ name: 'Zustand', why: 'Lightweight app state' },
+							{ name: 'Vite', why: 'Bundled single-page build' }
+						]
+					},
+					{
+						label: 'UI',
+						items: [
+							{ name: 'Tailwind CSS', why: 'Consistent, responsive layout' },
+							{ name: 'GSAP', why: 'Interface motion' }
+						]
+					},
+					{
+						label: 'Documents',
+						items: [
+							{ name: 'PDF.js', why: 'In-browser PDF rendering' },
+							{ name: 'SheetJS & docx preview', why: 'Spreadsheets and Word files' }
 						]
 					}
 				]

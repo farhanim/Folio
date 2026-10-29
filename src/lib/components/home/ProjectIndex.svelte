@@ -627,12 +627,16 @@
 		grid-auto-columns: calc((100% - 5 * var(--gap)) / 6);
 		gap: var(--gap);
 		margin: 0;
-		padding: 0 0 12px;
+		padding: 0;
 		list-style: none;
 		overflow-x: auto;
 		overscroll-behavior-x: contain;
 		scroll-snap-type: x mandatory;
-		scrollbar-width: thin;
+		/* No scrollbar: the arrow buttons, swipe and trackpad scroll still work. */
+		scrollbar-width: none;
+	}
+	.rail::-webkit-scrollbar {
+		display: none;
 	}
 	.rail li {
 		scroll-snap-align: start;

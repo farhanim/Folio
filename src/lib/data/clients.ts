@@ -55,7 +55,11 @@ export const showcaseClients = {
 	kee: { name: 'Kee Platforms', logo: '/images/clients/kee.webp' },
 	muskitnas: { name: 'Museum Kebangkitan Nasional', logo: '/images/clients/muskitnas.webp' },
 	sparq: { name: 'SparQ', logo: '/images/clients/sparq.webp' },
-	blastHub: { name: 'Blast Hub', logo: '/images/clients/blast-hub.webp' }
+	blastHub: { name: 'Blast Hub', logo: '/images/clients/blast-hub.webp' },
+	iconplus: { name: 'ICON+ (PLN Icon Plus)', logo: '/images/clients/iconplus.webp' },
+	devfartha: { name: 'Devfartha', logo: '/images/clients/devfartha.webp' },
+	pertamina: { name: 'Pertamina Hulu Kalimantan Timur', logo: '/images/clients/pertamina.webp' },
+	dataroom: { name: 'Dataroom · IKN Nusantara', logo: '/images/clients/dataroom.webp' }
 } satisfies Record<string, Client>;
 
 // Sample clients used by the placeholder projects — remove once real projects are in.
