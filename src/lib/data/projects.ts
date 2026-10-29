@@ -13,7 +13,7 @@ const samples: Project[] = [
 		title: 'Cyclone POS',
 		tagline: 'A point of sale that gets out of the cashier’s way.',
 		summary:
-			'Redesigning checkout, inventory and reporting for 140 retail stores — fewer taps per sale, and a system the team can grow on.',
+			'Redesigning checkout, inventory and reporting for 140 retail stores: fewer taps per sale, and a system the team can grow on.',
 		client: clients.cyclone,
 		role: 'Lead product designer',
 		year: 2026,
@@ -29,7 +29,7 @@ const samples: Project[] = [
 				title: 'Overview',
 				body: [
 					'Cyclone runs 140 stores across Indonesia on a point of sale built in 2014. Cashiers worked around it, not with it: a typical sale took 11 taps and two screens.',
-					'I led design for the rebuild — from field research in six stores to a component library the engineering team now owns.'
+					'I led design for the rebuild: from field research in six stores to a component library the engineering team now owns.'
 				]
 			},
 			{
@@ -218,7 +218,7 @@ const samples: Project[] = [
 		slug: 'folio-site',
 		type: 'code',
 		title: 'Folio',
-		tagline: 'This site — a strict grid and a sleepy lamp.',
+		tagline: 'This site: a strict grid and a sleepy lamp.',
 		summary:
 			'My portfolio, built with SvelteKit and Bun. Fluid 12-column grid, view-transition theme switch and zero UI libraries.',
 		client: clients.folio,
@@ -240,7 +240,7 @@ const samples: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'I wanted a portfolio that feels like a printed index: hairline grid, mono labels, and one playful object — a lamp you pull to switch themes.',
+					'I wanted a portfolio that feels like a printed index: hairline grid, mono labels, and a lamp you pull to switch themes.',
 					'Everything is hand-written CSS on top of SvelteKit; content lives in typed data files.'
 				]
 			},

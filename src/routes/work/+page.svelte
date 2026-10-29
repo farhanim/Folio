@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-	<title>Work — {site.name}</title>
+	<title>Work · {site.name}</title>
 </svelte:head>
 
 <header class="intro frame">

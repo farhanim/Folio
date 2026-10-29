@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { projects } from '#lib/data/projects.ts';
 	import { now, principles, site, toolbox } from '#lib/data/site.ts';
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import SectionHead from '#lib/components/ui/SectionHead.svelte';
@@ -14,24 +15,30 @@
 	}
 
 	let openPrinciple = $state(0);
+
+	// A real case study worth opening (featured first), never one of the placeholder samples.
+	const latest =
+		projects.find((p) => p.featured && p.type === 'design') ??
+		projects.find((p) => p.isNew && p.type === 'design') ??
+		projects[0];
 </script>
 
 <section class="desk frame" id="desk" use:reveal>
-	<SectionHead eyebrow="A peek at what’s going on" title="On the desk" />
+	<SectionHead eyebrow="What I’m working on" title="On the desk" />
 
 	<article class="card now" data-reveal onpointermove={spotlight}>
-		<span class="label"><Icon name="sparkle" size={12} /> Now</span>
+		<span class="label"><Icon name="sparkle" size={12} /> Now at {now.where}</span>
 		<h3>{now.title}</h3>
 		<p>{now.body}</p>
-		<div class="progress" style:--p={now.progress}>
-			<span class="bar"><span class="fill"></span></span>
-			<span class="label">{Math.round(now.progress * 100)}%</span>
-		</div>
+		<ul class="tags">
+			{#each now.tags as t (t)}<li>{t}</li>{/each}
+		</ul>
 	</article>
 
 	<article class="card time" data-reveal onpointermove={spotlight}>
-		<span class="label"><Icon name="pin" size={12} /> {site.location}</span>
+		<span class="label"><Icon name="pin" size={12} /> {site.location}, {site.country}</span>
 		<Clock timeZone={site.timeZone} />
+		<p class="remote">GMT+7 · open to remote work</p>
 	</article>
 
 	<article class="card principles" data-reveal onpointermove={spotlight}>
@@ -71,16 +78,12 @@
 		</div>
 	</article>
 
-	<article class="card playing" data-reveal onpointermove={spotlight}>
-		<span class="label">On repeat</span>
-		<div class="track">
-			<span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-			<div>
-				<p class="song">Rain on a tin roof</p>
-				<p class="artist">Lo-fi focus mix</p>
-			</div>
-		</div>
-	</article>
+	<a class="card latest" href="/work/{latest.slug}" data-reveal onpointermove={spotlight}>
+		<span class="label">Latest work</span>
+		<span class="latest-cover"><img src={latest.cover} alt="" loading="lazy" /></span>
+		<span class="latest-title">{latest.title}</span>
+		<span class="latest-sub">{latest.tagline}</span>
+	</a>
 </section>
 
 <style>
@@ -161,35 +164,25 @@
 	.tools {
 		grid-column: 1 / span 5;
 	}
-	.playing {
+	.latest {
 		grid-column: 6 / span 3;
 	}
 
-	/* Progress */
-	.progress {
+	/* Now: the products as chips */
+	.tags {
 		display: flex;
-		align-items: center;
-		gap: 12px;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin: 4px 0 0;
+		padding: 0;
+		list-style: none;
 	}
-	.bar {
-		flex: 1;
-		height: 4px;
-		border-radius: 4px;
-		background: var(--hairline);
-		overflow: hidden;
-	}
-	.fill {
-		display: block;
-		height: 100%;
-		width: calc(var(--p) * 100%);
-		border-radius: inherit;
-		background: var(--text);
-		transform-origin: left;
-		transform: scaleX(0);
-		transition: transform 1.6s var(--ease-out) 0.4s;
-	}
-	:global(.revealed) .fill {
-		transform: scaleX(1);
+	.tags li {
+		padding: 5px 12px;
+		border: 1px solid var(--hairline);
+		border-radius: 999px;
+		background: var(--bg);
+		font-size: 12px;
 	}
 
 	/* Clock */
@@ -198,6 +191,10 @@
 	}
 	.time :global(.clock) {
 		margin: auto;
+	}
+	.time .remote {
+		text-align: center;
+		font-size: 12px;
 	}
 
 	/* Principles accordion */
@@ -285,50 +282,40 @@
 		}
 	}
 
-	/* Now playing */
-	.track {
-		display: flex;
-		align-items: center;
-		gap: 14px;
-		margin-top: auto;
+	/* Latest work: the newest case study */
+	.latest {
+		gap: 8px;
+		color: var(--text);
+		text-decoration: none;
 	}
-	.song {
-		color: var(--text) !important;
-	}
-	.eq {
-		display: flex;
-		align-items: flex-end;
-		gap: 3px;
-		width: 44px;
-		height: 44px;
-		padding: 10px;
+	.latest-cover {
+		display: block;
+		overflow: hidden;
+		aspect-ratio: 16 / 9;
+		margin-top: 4px;
 		border-radius: 10px;
-		background: var(--text);
+		background: var(--surface);
 	}
-	.eq i {
-		flex: 1;
+	.latest-cover img {
+		width: 100%;
 		height: 100%;
-		border-radius: 2px;
-		background: var(--amber);
-		transform-origin: bottom;
-		animation: eq 1.1s ease-in-out infinite alternate;
+		object-fit: cover;
+		transition: transform 0.8s var(--ease-out);
 	}
-	.eq i:nth-child(2) {
-		animation-delay: -0.4s;
+	.latest:hover .latest-cover img {
+		transform: scale(1.05);
 	}
-	.eq i:nth-child(3) {
-		animation-delay: -0.8s;
+	.latest-title {
+		font-size: 15px;
+		font-weight: 500;
+		letter-spacing: -0.02em;
 	}
-	.eq i:nth-child(4) {
-		animation-delay: -0.2s;
-	}
-	@keyframes eq {
-		from {
-			transform: scaleY(0.2);
-		}
-		to {
-			transform: scaleY(1);
-		}
+	.latest-sub {
+		overflow: hidden;
+		font-size: 13px;
+		color: var(--text-secondary);
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	@media (max-width: 1023px) {
@@ -338,7 +325,7 @@
 			grid-row: auto;
 		}
 		.time,
-		.playing {
+		.latest {
 			grid-column: span 2;
 		}
 		.tools {

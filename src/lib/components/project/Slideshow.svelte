@@ -139,7 +139,7 @@
 	{:else if b.kind === 'quote'}
 		<blockquote>
 			<p>“{b.quote}”</p>
-			<footer>{b.author} — {b.role}</footer>
+			<footer>{b.author}, {b.role}</footer>
 		</blockquote>
 	{:else if b.kind === 'code'}
 		<pre><code>{b.code}</code></pre>
@@ -151,7 +151,7 @@
 					<span class="label">{g.label}</span>
 					{#each g.items as item (item.name)}
 						<p>
-							<b>{item.name}</b>{#if item.why}<span> — {item.why}</span>{/if}
+							<b>{item.name}</b>{#if item.why}<span>: {item.why}</span>{/if}
 						</p>
 					{/each}
 				</div>
@@ -226,7 +226,7 @@
 						</div>
 					{:else}
 						<header class="slide-head">
-							<span class="label">{pad(index)} — {project.title}</span>
+							<span class="label">{pad(index)} · {project.title}</span>
 							<h2>{slide.title}</h2>
 						</header>
 						{#if gallery && gallery.kind === 'gallery'}

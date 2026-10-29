@@ -189,8 +189,8 @@
 									onpointermove={onmove}
 								>
 									<span class="num">{String(page * PAGE_SIZE + i + 1).padStart(2, '0')}</span>
+									<img class="mini" src={project.cover} alt="" loading="lazy" />
 									<span class="title">
-										<img class="mini" src={project.cover} alt="" loading="lazy" />
 										<span class="name">{project.title}</span>
 										{#if project.isNew}<Tag kind="new" />{/if}
 										{#if project.featured}<Tag kind="featured" />{/if}
@@ -208,7 +208,7 @@
 									<span class="client">
 										<img src={project.client.logo} alt="" />{project.client.name}
 									</span>
-									<span class="year">{project.year ?? '—'}</span>
+									<span class="year">{project.year ?? '-'}</span>
 									<span class="arrow"><Icon name="arrowUpRight" size={18} /></span>
 								</a>
 							</li>
@@ -728,48 +728,81 @@
 		.list {
 			margin-top: -12px;
 		}
-		/* Still on the page columns: number in the first, arrow in the last,
-		   project in between (works for 12, 6 or 4 columns) */
+		/* Thumbnail on the left, the title and one meta line beside it, arrow on the right */
 		.row {
-			grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+			grid-template-columns: 64px minmax(0, 1fr) auto;
+			column-gap: 14px;
 			row-gap: 4px;
+			padding: 14px 0;
 		}
-		.num {
-			grid-column: 1;
-			grid-row: 1 / span 2;
-			align-self: start;
-			padding-top: 6px;
-		}
-		.title {
-			grid-column: 2 / -2;
-			flex-wrap: wrap;
-		}
-		.type {
-			grid-column: 2 / -2;
-			grid-row: 2;
-			flex-direction: row;
-			align-items: center;
-			gap: 10px;
-		}
-		.role {
-			font-size: 13px;
-		}
+		.num,
 		.client,
 		.year {
 			display: none;
 		}
-		.arrow {
-			grid-column: -2 / -1;
-			grid-row: 1 / span 2;
-		}
 		.mini {
 			display: block;
-			width: 52px;
-			height: 36px;
-			flex: none;
-			border-radius: 6px;
+			grid-column: 1;
+			grid-row: 1 / span 2;
+			align-self: center;
+			width: 64px;
+			height: 44px;
+			border-radius: 8px;
 			object-fit: cover;
 			background: var(--surface);
+			box-shadow: 0 0 0 1px var(--hairline);
+		}
+		.title {
+			grid-column: 2;
+			grid-row: 1;
+			flex-wrap: wrap;
+			gap: 6px 8px;
+		}
+		.name {
+			font-size: 16px;
+		}
+		.title :global(.tag) {
+			height: 18px;
+			padding: 0 7px;
+			font-size: 9px;
+		}
+		.type {
+			grid-column: 2;
+			grid-row: 2;
+			flex-direction: row;
+			align-items: center;
+			gap: 6px;
+			min-width: 0;
+		}
+		/* The kind shows as its icon only */
+		.kind {
+			gap: 0;
+			font-size: 0;
+		}
+		.role {
+			overflow: hidden;
+			font-size: 12px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.read {
+			flex: none;
+			font-size: 10px;
+		}
+		.read::before {
+			content: '·';
+			margin-right: 2px;
+		}
+		.read :global(svg) {
+			display: none;
+		}
+		.arrow {
+			grid-column: 3;
+			grid-row: 1 / span 2;
+			align-self: center;
+		}
+		a.row:hover .title {
+			transform: none;
 		}
 	}
 	@media (max-width: 600px) {

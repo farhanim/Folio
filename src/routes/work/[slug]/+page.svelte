@@ -65,7 +65,7 @@
 <svelte:window {onkeydown} />
 
 <svelte:head>
-	<title>{project.title} — {site.name}</title>
+	<title>{project.title} · {site.name}</title>
 	<meta name="description" content={project.summary} />
 </svelte:head>
 

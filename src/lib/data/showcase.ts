@@ -38,7 +38,7 @@ export const showcase: Project[] = [
 		title: 'Kee Platforms',
 		tagline: 'An AI-native lending platform, explained in one scroll.',
 		summary:
-			'The company and product site for Kee Platforms — a credit-infrastructure startup whose stack (KeeScore™, KeeIgnite™, KeeIntelligence™ and Kee2Credit™) lets banks and fintechs score, originate and manage loans with AI.',
+			'The company and product site for Kee Platforms: a credit-infrastructure startup whose stack (KeeScore™, KeeIgnite™, KeeIntelligence™ and Kee2Credit™) lets banks and fintechs score, originate and manage loans with AI.',
 		client: c.kee,
 		role: 'Front-end development',
 		year: 2025,
@@ -50,7 +50,7 @@ export const showcase: Project[] = [
 		cover: kee.poster,
 		featured: true,
 		gallery: kee.shots(
-			[1, 'Hero — Revolutionizing Lending with AI'],
+			[1, 'Hero: Revolutionizing Lending with AI'],
 			[2, 'Kee2Credit™ platform capabilities'],
 			[3, 'SME credit products'],
 			[4, 'Partnership network']
@@ -62,7 +62,7 @@ export const showcase: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'Kee sells infrastructure, not a consumer app — so the site has to make an abstract AI credit stack feel concrete to banks, fintechs and partners within a single scroll.',
+					'Kee sells infrastructure, not a consumer app, so the site has to make an abstract AI credit stack feel concrete to banks, fintechs and partners within a single scroll.',
 					'It walks a visitor from the mission (credit for 100 million SMEs and a billion consumers) through the platform, how it works in three steps, the credit products it powers, partners, team and open roles.'
 				]
 			},
@@ -71,7 +71,7 @@ export const showcase: Project[] = [
 				id: 'purpose',
 				title: 'Why it matters',
 				body: [
-					'For a B2B fintech the website is the first due-diligence document. Clear structure and confident motion signal the same reliability the product promises — and turn “AI lending” from a buzzword into four named products with defined jobs.'
+					'For a B2B fintech the website is the first due-diligence document. Clear structure and confident motion signal the same reliability the product promises, and turn “AI lending” from a buzzword into four named products with defined jobs.'
 				]
 			},
 			{
@@ -89,7 +89,7 @@ export const showcase: Project[] = [
 					},
 					{
 						title: 'Product catalogue',
-						body: 'SME and retail credit products — revenue-based financing, revolving lines, working capital, personal loans, checkout financing.'
+						body: 'SME and retail credit products: revenue-based financing, revolving lines, working capital, personal loans, checkout financing.'
 					},
 					{
 						title: 'Content-driven sections',
@@ -161,9 +161,9 @@ export const showcase: Project[] = [
 		slug: 'muskitnas',
 		type: 'code',
 		title: 'Pendar Cahaya',
-		tagline: 'A museum exhibition on Indonesian mental-health history — online.',
+		tagline: 'A museum exhibition on Indonesian mental-health history, online.',
 		summary:
-			'A virtual exhibition for Museum Kebangkitan Nasional on the history of psychiatry in the Dutch East Indies and the STOVIA-trained doctors who pioneered mental-health care in Indonesia — with films, profiles, a recreation room and a bibliography.',
+			'A virtual exhibition for Museum Kebangkitan Nasional on the history of psychiatry in the Dutch East Indies and the STOVIA-trained doctors who pioneered mental-health care in Indonesia, with films, profiles, a recreation room and a bibliography.',
 		client: c.muskitnas,
 		role: 'Design & development',
 		facts: [
@@ -173,7 +173,7 @@ export const showcase: Project[] = [
 		tools: ['Laravel', 'Bootstrap', 'jQuery', 'AOS', 'html2canvas'],
 		cover: muskitnas.poster,
 		gallery: muskitnas.shots(
-			[1, 'Splash — Pendar Cahaya'],
+			[1, 'Splash: Pendar Cahaya'],
 			[2, 'About the exhibition, with film'],
 			[3, 'Recreation room'],
 			[4, 'Digital bibliography']
@@ -198,7 +198,7 @@ export const showcase: Project[] = [
 				id: 'purpose',
 				title: 'Why it matters',
 				body: [
-					'Mental health is still stigmatised, and its history in Indonesia is little known. An online exhibition reaches students and the public far beyond the museum’s walls — and interactive pieces keep younger audiences engaged long enough for the story to land.'
+					'Mental health is still stigmatised, and its history in Indonesia is little known. An online exhibition reaches students and the public far beyond the museum’s walls, and interactive pieces keep younger audiences engaged long enough for the story to land.'
 				]
 			},
 			{
@@ -248,7 +248,7 @@ export const showcase: Project[] = [
 				id: 'impact',
 				title: 'Impact & value',
 				items: [
-					'The exhibition is open to anyone, anywhere — not only museum visitors',
+					'The exhibition is open to anyone, anywhere, not only museum visitors',
 					'Interactive learning instead of passive reading',
 					'Shareable selfies spread the exhibition on social media',
 					'A lasting digital archive with sources for further study'
@@ -303,15 +303,15 @@ export const showcase: Project[] = [
 		cover: jardin.poster,
 		gallery: jardin.shots(
 			[1, 'Sign-in'],
-			[3, 'Professional Service — Activities'],
+			[3, 'Professional Service: Activities'],
 			[4, 'Matters'],
-			[5, 'Finance — Billing']
+			[5, 'Finance: Billing']
 		),
 		preview: {
 			url: '/projects/jardin-timesheet/index.html',
 			video: jardin.video,
 			poster: jardin.poster,
-			note: 'Demo credentials are prefilled — press Sign In.'
+			note: 'Demo credentials are prefilled. Press Sign In.'
 		},
 		blocks: [
 			{
@@ -320,7 +320,7 @@ export const showcase: Project[] = [
 				title: 'Overview',
 				body: [
 					'Billable time is a law firm’s product. Jardin Timesheet gives lawyers one place to record what they did, for which client and matter, and gives partners and finance the views they need to bill accurately.',
-					'It covers the whole firm in five modules — Global Administration, Professional Services, Business Development, Finance and Human Resources — behind role-based access.'
+					'It covers the whole firm in five modules (Global Administration, Professional Services, Business Development, Finance and Human Resources) behind role-based access.'
 				]
 			},
 			{
@@ -328,7 +328,7 @@ export const showcase: Project[] = [
 				id: 'purpose',
 				title: 'Why it matters',
 				body: [
-					'When hours live in spreadsheets and chat, they get lost — and lost hours are lost revenue. A single, structured record of activities per matter makes billing traceable, approvals auditable and month-end far less painful.'
+					'When hours live in spreadsheets and chat, they get lost, and lost hours are lost revenue. A single, structured record of activities per matter makes billing traceable, approvals auditable and month-end far less painful.'
 				]
 			},
 			{
@@ -434,7 +434,7 @@ export const showcase: Project[] = [
 		tools: ['Laravel', 'Bootstrap', 'JavaScript'],
 		cover: derkei.poster,
 		gallery: derkei.shots(
-			[1, 'Hero — Kami Hadir Memberi Rasa Aman'],
+			[1, 'Hero: Kami Hadir Memberi Rasa Aman'],
 			[2, 'Vision & mission'],
 			[3, 'Services'],
 			[4, 'Management system home']
@@ -451,7 +451,7 @@ export const showcase: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'“Kami Hadir Memberi Rasa Aman” — the public site presents Derkei’s services, credentials, gallery and offices to prospective clients.',
+					'“Kami Hadir Memberi Rasa Aman”: the public site presents Derkei’s services, credentials, gallery and offices to prospective clients.',
 					'Behind “Masuk Sistem” sits the company’s own back office: employee data by division, position and posting; accounting with income, expenses and giro records; a manager for the company-profile content; user management and an activity log.'
 				]
 			},
@@ -460,7 +460,7 @@ export const showcase: Project[] = [
 				id: 'purpose',
 				title: 'Why it matters',
 				body: [
-					'Security companies sell trust. A professional public presence wins contracts, while a central back office replaces paper and spreadsheets for guards posted across many client sites — and both are maintained in one place.'
+					'Security companies sell trust. A professional public presence wins contracts, while a central back office replaces paper and spreadsheets for guards posted across many client sites, and both are maintained in one place.'
 				]
 			},
 			{
@@ -509,7 +509,7 @@ export const showcase: Project[] = [
 				items: [
 					'A credible public profile for winning security contracts',
 					'One back office for staff, finance and website content',
-					'Every change is logged — useful for audits',
+					'Every change is logged, useful for audits',
 					'Website content updated from the admin, without a developer'
 				]
 			},
@@ -540,7 +540,7 @@ export const showcase: Project[] = [
 		title: 'SparQ',
 		tagline: 'One workspace for catalogs, workflows, notebooks and ML.',
 		summary:
-			'A clickable product prototype of a data platform — catalog, SQL and notebooks, workflow orchestration, dashboards, connectors, and ML experiments with a model registry — in one workspace that runs entirely in the browser.',
+			'A clickable product prototype of a data platform (catalog, SQL and notebooks, workflow orchestration, dashboards, connectors, and ML experiments with a model registry) in one workspace that runs entirely in the browser.',
 		client: c.sparq,
 		role: 'Product design & prototype',
 		facts: [
@@ -559,7 +559,7 @@ export const showcase: Project[] = [
 			url: '/projects/sparq/index.html',
 			video: sparq.video,
 			poster: sparq.poster,
-			note: 'Demo account is prefilled — press Sign In.'
+			note: 'Demo account is prefilled. Press Sign In.'
 		},
 		blocks: [
 			{
@@ -568,7 +568,7 @@ export const showcase: Project[] = [
 				title: 'Overview',
 				body: [
 					'“Turn your data into your next big idea.” SparQ brings the tools of a modern data team into one workspace, from browsing tables to shipping a model.',
-					'It’s a high-fidelity prototype: realistic demo data and working flows — create a workflow, set task dependencies, inspect a failed run, compare experiments — with no backend required.'
+					'It’s a high-fidelity prototype: realistic demo data and working flows (create a workflow, set task dependencies, inspect a failed run, compare experiments) with no backend required.'
 				]
 			},
 			{
@@ -576,7 +576,7 @@ export const showcase: Project[] = [
 				id: 'purpose',
 				title: 'Why it matters',
 				body: [
-					'Data teams usually juggle separate tools for each step. A unified workspace cuts the context switching — and a prototype this complete lets stakeholders test the product idea before any platform is built.'
+					'Data teams usually juggle separate tools for each step. A unified workspace cuts the context switching, and a prototype this complete lets stakeholders test the product idea before any platform is built.'
 				]
 			},
 			{
@@ -623,7 +623,7 @@ export const showcase: Project[] = [
 					'Stakeholders can click through real flows, not static mockups',
 					'Product ideas are validated before engineering starts',
 					'One mental model for data, workflows and ML',
-					'Runs anywhere — shareable as a single file'
+					'Runs anywhere, shareable as a single file'
 				]
 			},
 			{
@@ -672,7 +672,7 @@ export const showcase: Project[] = [
 			url: '/projects/blast-hub/index.html',
 			video: blast.video,
 			poster: blast.poster,
-			note: 'Credentials are prefilled — press Sign In.'
+			note: 'Credentials are prefilled. Press Sign In.'
 		},
 		blocks: [
 			{
@@ -689,7 +689,7 @@ export const showcase: Project[] = [
 				id: 'purpose',
 				title: 'Why it matters',
 				body: [
-					'SMS is still the most reliable channel to reach customers in Indonesia, but delivery differs by operator. Seeing sent, delivered and failed per campaign — and what it cost — is what lets a business trust the channel and budget for it.'
+					'SMS is still the most reliable channel to reach customers in Indonesia, but delivery differs by operator. Seeing sent, delivered and failed per campaign (and what it cost) is what lets a business trust the channel and budget for it.'
 				]
 			},
 			{
@@ -767,9 +767,9 @@ export const showcase: Project[] = [
 		slug: 'iconplus',
 		type: 'code',
 		title: 'ICON+ Analytics',
-		tagline: 'Plan network growth from one map — POP sites, coverage, churn.',
+		tagline: 'Plan network growth from one map: POP sites, coverage, churn.',
 		summary:
-			'A location-intelligence workspace for ICON+, the telecom arm of PLN: plan new Points of Presence on a map, size fixed-wireless coverage, and track subscribers, revenue, availability and churn by region — with the stories and datasets behind every number.',
+			'A location-intelligence workspace for ICON+, the telecom arm of PLN: plan new Points of Presence on a map, size fixed-wireless coverage, and track subscribers, revenue, availability and churn by region, with the stories and datasets behind every number.',
 		client: c.iconplus,
 		role: 'Front-end development',
 		year: 2026,
@@ -780,16 +780,16 @@ export const showcase: Project[] = [
 		tools: ['Laravel', 'Bootstrap', 'jQuery', 'Mapbox GL'],
 		cover: iconplus.poster,
 		gallery: iconplus.shots(
-			[2, 'Dashboard — network KPIs by region'],
-			[3, 'POP Planner — site scoring on the map'],
-			[4, 'Customer Insight — churn and ARPU'],
-			[5, 'Stories — published analyses']
+			[2, 'Dashboard: network KPIs by region'],
+			[3, 'POP Planner: site scoring on the map'],
+			[4, 'Customer Insight: churn and ARPU'],
+			[5, 'Stories: published analyses']
 		),
 		preview: {
 			url: '/projects/iconplus/index.html',
 			video: iconplus.video,
 			poster: iconplus.poster,
-			note: 'The demo account is filled in — press Sign in. Runs on sample data.'
+			note: 'The demo account is filled in. Press Sign in. Runs on sample data.'
 		},
 		blocks: [
 			{
@@ -797,7 +797,7 @@ export const showcase: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'Where should the next fiber Point of Presence go, and where is fixed wireless the faster answer? ICON+ Analytics puts the inputs for that decision on one map — building density, points of interest, competitor footprint and ICON+ pole availability — next to the business numbers that justify it.',
+					'Where should the next fiber Point of Presence go, and where is fixed wireless the faster answer? ICON+ Analytics puts the inputs for that decision on one map (building density, points of interest, competitor footprint and ICON+ pole availability) next to the business numbers that justify it.',
 					'Around the planners sit a KPI dashboard, a customer-insight app for churn and ARPU, a layer catalog for every geospatial source, and a knowledge repository of the datasets, notebooks and queries behind each figure.'
 				]
 			},
@@ -806,7 +806,7 @@ export const showcase: Project[] = [
 				id: 'purpose',
 				title: 'Why it matters',
 				body: [
-					'Network expansion is capital-heavy: a POP in the wrong place sits underused for years. Bringing location data, network health and customer behaviour into one workspace lets planning, sales and data teams argue from the same facts — and turns a site decision from a hunch into a ranked, explainable shortlist.'
+					'Network expansion is capital-heavy: a POP in the wrong place sits underused for years. Bringing location data, network health and customer behaviour into one workspace lets planning, sales and data teams argue from the same facts, and turns a site decision from a hunch into a ranked, explainable shortlist.'
 				]
 			},
 			{
@@ -892,7 +892,7 @@ export const showcase: Project[] = [
 		title: 'Devfartha IELTS',
 		tagline: 'Real Cambridge IELTS practice with instant band estimates.',
 		summary:
-			'An IELTS preparation platform for Devfartha: learners sit full Cambridge-style tests with official timing, get instant Listening and Reading bands, study examiner guides and track their band toward a target — while admins manage tests, questions and learners.',
+			'An IELTS preparation platform for Devfartha: learners sit full Cambridge-style tests with official timing, get instant Listening and Reading bands, study examiner guides and track their band toward a target, while admins manage tests, questions and learners.',
 		client: c.devfartha,
 		role: 'Design & development',
 		year: 2026,
@@ -903,16 +903,16 @@ export const showcase: Project[] = [
 		tools: ['Laravel', 'Bootstrap', 'jQuery', 'Chart.js'],
 		cover: ielts.poster,
 		gallery: ielts.shots(
-			[2, 'Learner dashboard — band estimate'],
+			[2, 'Learner dashboard: band estimate'],
 			[3, 'Test catalogue'],
-			[4, 'Exam mode — Reading'],
+			[4, 'Exam mode: Reading'],
 			[5, 'Band history']
 		),
 		preview: {
 			url: '/projects/ielts-course/index.html',
 			video: ielts.video,
 			poster: ielts.poster,
-			note: 'A learner demo account is filled in — press Sign in. Switch to Admin on the login screen.'
+			note: 'A learner demo account is filled in. Press Sign in. Switch to Admin on the login screen.'
 		},
 		blocks: [
 			{
@@ -929,7 +929,7 @@ export const showcase: Project[] = [
 				id: 'purpose',
 				title: 'Why it matters',
 				body: [
-					'For many Indonesian learners the IELTS gates a scholarship or a study visa, and a test is expensive to retake. Practising under real timing, seeing an honest band estimate and knowing the single skill that will lift the overall score turns anxious, unfocused study into a plan — with a countdown to exam day.'
+					'For many Indonesian learners the IELTS gates a scholarship or a study visa, and a test is expensive to retake. Practising under real timing, seeing an honest band estimate and knowing the single skill that will lift the overall score turns anxious, unfocused study into a plan, with a countdown to exam day.'
 				]
 			},
 			{
@@ -1033,7 +1033,7 @@ export const showcase: Project[] = [
 		cover: pims.poster,
 		gallery: pims.shots(
 			[2, 'Operations dashboard with asset map'],
-			[3, 'Pipeline detail — integrity and route'],
+			[3, 'Pipeline detail: integrity and route'],
 			[4, 'Pipeline metric report'],
 			[5, 'User privileges']
 		),
@@ -1041,7 +1041,7 @@ export const showcase: Project[] = [
 			url: '/projects/pims-pertamina/index.html',
 			video: pims.video,
 			poster: pims.poster,
-			note: 'Credentials are prefilled (admin / admin123) — press Login. Runs on sample data.'
+			note: 'Credentials are prefilled (admin / admin123). Press Login. Runs on sample data.'
 		},
 		blocks: [
 			{
@@ -1049,8 +1049,8 @@ export const showcase: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'PIMS gives Pertamina Hulu Kalimantan Timur one view of its offshore assets: every platform and the pipelines between them, drawn on a satellite map and coloured by health — healthy, warning or critical.',
-					'Each pipeline opens to its specification, route and integrity history — in-line inspection results, corrosion rate and routine pigging — while incidents, repairs and highlight tasks keep operations and integrity teams working from the same record.'
+					'PIMS gives Pertamina Hulu Kalimantan Timur one view of its offshore assets: every platform and the pipelines between them, drawn on a satellite map and coloured by health (healthy, warning or critical).',
+					'Each pipeline opens to its specification, route and integrity history (in-line inspection results, corrosion rate and routine pigging) while incidents, repairs and highlight tasks keep operations and integrity teams working from the same record.'
 				]
 			},
 			{
@@ -1160,8 +1160,8 @@ export const showcase: Project[] = [
 		tools: ['React', 'Vite', 'Tailwind CSS', 'Zustand'],
 		cover: dataroom.poster,
 		gallery: dataroom.shots(
-			[2, 'All data rooms — recent and favourites'],
-			[3, 'Room — folders and files'],
+			[2, 'All data rooms: recent and favourites'],
+			[3, 'Room: folders and files'],
 			[4, 'Document preview in the browser'],
 			[6, 'Activity log']
 		),
@@ -1169,7 +1169,7 @@ export const showcase: Project[] = [
 			url: '/projects/dataroom/index.html',
 			video: dataroom.video,
 			poster: dataroom.poster,
-			note: 'The admin account is filled in — press Login. Runs on sample data.'
+			note: 'The admin account is filled in. Press Login. Runs on sample data.'
 		},
 		blocks: [
 			{
@@ -1178,7 +1178,7 @@ export const showcase: Project[] = [
 				title: 'Overview',
 				body: [
 					'Building a capital city produces an enormous paper trail: masterplans, land parcel data, detailed engineering designs, progress photos, studies, contracts and regulations. Data Room gives that material one structured, access-controlled home.',
-					'Documents live in eight thematic rooms — planning, land, infrastructure, investment, environment, finance, legal and general documents — with folders, favourites and recent files. PDFs, Word files, spreadsheets and slide decks open in an in-app viewer, so nobody has to download a file just to read it.'
+					'Documents live in eight thematic rooms (planning, land, infrastructure, investment, environment, finance, legal and general documents) with folders, favourites and recent files. PDFs, Word files, spreadsheets and slide decks open in an in-app viewer, so nobody has to download a file just to read it.'
 				]
 			},
 			{
@@ -1186,7 +1186,7 @@ export const showcase: Project[] = [
 				id: 'purpose',
 				title: 'Why it matters',
 				body: [
-					'Megaprojects involve many agencies, contractors and investors, and the cost of a wrong or leaked document is high. A single data room with clear permissions and a complete audit trail means everyone works from the latest version — and every upload, move or download can be accounted for.'
+					'Megaprojects involve many agencies, contractors and investors, and the cost of a wrong or leaked document is high. A single data room with clear permissions and a complete audit trail means everyone works from the latest version, and every upload, move or download can be accounted for.'
 				]
 			},
 			{
@@ -1282,7 +1282,7 @@ export const showcase: Project[] = [
 		title: 'SILMA',
 		tagline: 'State-asset services for the Directorate General of Culture.',
 		summary:
-			'Sistem Informasi dan Layanan Manajemen Aset — the asset-management system of the Secretariat of the Directorate General of Culture, Ministry of Education and Culture: procurement plans, procurement, borrowing and transfers of state property (BMN), each with its own approval workflow, handover documents and printable asset labels.',
+			'Sistem Informasi dan Layanan Manajemen Aset, the asset-management system of the Secretariat of the Directorate General of Culture, Ministry of Education and Culture: procurement plans, procurement, borrowing and transfers of state property (BMN), each with its own approval workflow, handover documents and printable asset labels.',
 		client: c.kemendikbud,
 		role: 'Front-end development',
 		year: 2023,
@@ -1293,7 +1293,7 @@ export const showcase: Project[] = [
 		tools: ['Laravel', 'Bootstrap 4', 'jQuery', 'DataTables'],
 		cover: silma.poster,
 		gallery: silma.shots(
-			[2, 'Dashboard — assets and requests'],
+			[2, 'Dashboard: assets and requests'],
 			[3, 'Procurement plans'],
 			[4, 'Request detail with workflow steps'],
 			[5, 'Asset register']
@@ -1302,7 +1302,7 @@ export const showcase: Project[] = [
 			url: '/projects/silma/index.html',
 			video: silma.video,
 			poster: silma.poster,
-			note: 'The Super Admin account is filled in — press LOGIN. Every demo account uses the password “password”. Runs on sample data.'
+			note: 'The Super Admin account is filled in. Press LOGIN. Every demo account uses the password “password”. Runs on sample data.'
 		},
 		blocks: [
 			{
@@ -1311,7 +1311,7 @@ export const showcase: Project[] = [
 				title: 'Overview',
 				body: [
 					'Every chair, laptop and vehicle a ministry owns is state property (Barang Milik Negara) and must be planned, procured, recorded, lent, moved and eventually written off by the book. SILMA turns those paper-heavy procedures into services employees request online and administrators process step by step.',
-					'A dashboard shows the value and condition of the asset base, open requests per service and a personal task queue; behind it sit the asset master data — KIB, PSP status, supervision (Wasdal), write-offs and stock-taking — and the documents each process requires.'
+					'A dashboard shows the value and condition of the asset base, open requests per service and a personal task queue; behind it sit the asset master data (KIB, PSP status, supervision or Wasdal, write-offs and stock-taking) and the documents each process requires.'
 				]
 			},
 			{
@@ -1319,7 +1319,7 @@ export const showcase: Project[] = [
 				id: 'purpose',
 				title: 'Why it matters',
 				body: [
-					'Government asset records are audited, and a missing handover letter or an unlabelled item becomes a finding. When every request leaves a trail — who asked, who verified, which admin handled it and which BAST was signed — the directorate can show exactly where each asset is and how it got there.'
+					'Government asset records are audited, and a missing handover letter or an unlabelled item becomes a finding. When every request leaves a trail (who asked, who verified, which admin handled it and which BAST was signed) the directorate can show exactly where each asset is and how it got there.'
 				]
 			},
 			{
@@ -1329,11 +1329,11 @@ export const showcase: Project[] = [
 				items: [
 					{
 						title: 'Four request services',
-						body: 'Procurement plans, procurement, borrowing and transfers — each with its own status flow.'
+						body: 'Procurement plans, procurement, borrowing and transfers: each with its own status flow.'
 					},
 					{
 						title: 'Guided approval steps',
-						body: 'Verify, assign an admin, analyse, accept or reject — with notes at every step.'
+						body: 'Verify, assign an admin, analyse, accept or reject, with notes at every step.'
 					},
 					{
 						title: 'Handover documents',

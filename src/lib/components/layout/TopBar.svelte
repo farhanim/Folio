@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ScrambleText from '#lib/components/home/ScrambleText.svelte';
 	import { site } from '#lib/data/site.ts';
 	import { createClock } from '#lib/utils/clock.svelte.ts';
 
@@ -21,11 +22,23 @@
 				<path d="M2 12c3.4-1.9 6.6-1.9 10 0-3.4 1.9-6.6 1.9-10 0Z" />
 			</svg>
 			<span class="name">{site.name}</span>
-			<span class="sub">/ {site.role}</span>
+			<span class="sub"
+				>/ {site.role},
+				<span class="also"><ScrambleText phrases={site.roles} interval={3600} /></span></span
+			>
 		</a>
 
-		<p class="clock label" aria-label="Local time in {site.location}">
-			{site.location}
+		<p class="clock label" aria-label="Local time in {site.location}, {site.country}">
+			<!-- Indonesian flag, drawn so it shows on every platform (Windows has no flag emoji) -->
+			<svg class="flag" viewBox="0 0 3 2" width="15" height="10" aria-hidden="true"
+				><rect width="3" height="1" fill="#ce1126" /><rect
+					y="1"
+					width="3"
+					height="1"
+					fill="#fff"
+				/></svg
+			>
+			{site.location}, {site.country}
 			<span class="time">
 				{clock.label.slice(0, 2)}<span class="colon">:</span>{clock.label.slice(3)}
 			</span>
@@ -34,7 +47,7 @@
 
 		<p class="status">
 			<span class="dot" class:off={!site.available}></span>
-			{site.available ? 'Available for new work' : 'Booked until later'}
+			{site.available ? 'Open to new opportunities' : 'Not taking new work right now'}
 		</p>
 	</div>
 </header>
@@ -81,6 +94,16 @@
 	}
 	.brand:hover .mark {
 		transform: rotate(90deg) scale(0.9);
+	}
+	.flag {
+		display: inline-block;
+		margin-right: 6px;
+		vertical-align: -1px;
+		border-radius: 2px;
+		box-shadow: 0 0 0 1px var(--hairline);
+	}
+	.also {
+		opacity: 0.7;
 	}
 	.sub {
 		color: var(--text-secondary);

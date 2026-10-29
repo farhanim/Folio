@@ -76,7 +76,7 @@
 		</div>
 		{#if feedback.vote}
 			<p class="thanks label" in:fly={{ y: 6 }}>
-				{feedback.vote === 'like' ? 'Thanks — glad it helped!' : 'Thanks — noted for next time.'}
+				{feedback.vote === 'like' ? 'Thanks, glad it helped!' : 'Thanks, noted for next time.'}
 			</p>
 		{/if}
 	</div>
@@ -119,7 +119,7 @@
 					</div>
 				</li>
 			{:else}
-				<li class="empty">No comments yet — be the first.</li>
+				<li class="empty">No comments yet. Be the first.</li>
 			{/each}
 		</ol>
 	</div>

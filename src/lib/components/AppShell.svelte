@@ -2,6 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import { settings } from '#lib/stores/settings.svelte.ts';
 	import Dock from './layout/Dock.svelte';
+	import FloatingCta from './layout/FloatingCta.svelte';
 	import GridOverlay from './layout/GridOverlay.svelte';
 	import LampToggle from './layout/LampToggle.svelte';
 	import TopBar from './layout/TopBar.svelte';
@@ -20,6 +21,7 @@
 </main>
 
 <Dock />
+<FloatingCta />
 
 <style>
 	main {

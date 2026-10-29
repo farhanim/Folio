@@ -74,7 +74,7 @@
 <nav class="dock" aria-label="Sections" bind:this={root}>
 	<div class="popover" class:open={settingsOpen} id="dock-settings" inert={!settingsOpen}>
 		<SettingsControls />
-		<p class="hint label">Tip — press <kbd>L</kbd> to pull the lamp</p>
+		<p class="hint label">Tip: press <kbd>L</kbd> to pull the lamp</p>
 	</div>
 
 	<div class="pill">

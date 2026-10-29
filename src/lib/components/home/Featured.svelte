@@ -38,7 +38,7 @@
 					<span><span class="label">Role</span><span class="v">{lead.role}</span></span>
 					<span>
 						<span class="label">Timeline</span><span class="v"
-							>{lead.duration ?? lead.year ?? '—'}</span
+							>{lead.duration ?? lead.year ?? '-'}</span
 						>
 					</span>
 					{#if lead.facts?.[0]}
@@ -302,8 +302,36 @@
 		.more li {
 			grid-column: 1 / -1;
 		}
+		/* Same scale as the project list below, and a short gap before it */
+		.picks {
+			row-gap: 12px;
+			margin-bottom: 32px;
+		}
 		.story {
-			margin-top: 12px;
+			margin-top: 10px;
+			gap: 4px;
+		}
+		.title {
+			font-size: 20px;
+		}
+		.tagline {
+			overflow: hidden;
+			font-size: 13px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.summary,
+		.facts {
+			display: none;
+		}
+		.cta {
+			margin-top: 6px;
+		}
+		.name {
+			font-size: 15px;
+		}
+		.sub {
+			font-size: 12px;
 		}
 	}
 </style>

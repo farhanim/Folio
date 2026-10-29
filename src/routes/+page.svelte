@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>{site.name} — {site.role}</title>
+	<title>{site.name} · {site.role}</title>
 	<meta name="description" content="{site.name}, {site.role.toLowerCase()} in {site.location}." />
 </svelte:head>
 

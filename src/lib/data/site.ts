@@ -1,10 +1,18 @@
-// Site-wide details (from the CV and Notion portfolio). The Desk cards below are still sample copy.
+// Site-wide details (from the CV and Notion portfolio).
 import type { DockItem, NavLink, Principle } from '#lib/types/index.ts';
 
 export const site = {
 	name: 'Farhan Ikhsan',
 	shortName: 'Farhan',
 	role: 'Product Designer',
+	/** Cycled in the top bar after the main role: 'Product Designer, ___'. Each reads as a full phrase. */
+	roles: [
+		'also a design engineer',
+		'leading design systems',
+		'mentoring new designers',
+		'running a design studio',
+		'wearing multiple hats'
+	],
 	email: 'farhanorscops@gmail.com',
 	location: 'Bogor',
 	country: 'Indonesia',
@@ -37,10 +45,12 @@ export const focus = [
 	'prototypes in code'
 ];
 
+/** The "Now" card on the desk: what I'm working on at the moment. */
 export const now = {
-	title: 'Building Folio',
-	body: 'A quieter home for my work — set in a strict grid, lit by a sleepy lamp.',
-	progress: 0.62
+	where: 'Nikel',
+	title: 'Shipping EWA & Employee Loan',
+	body: 'Taking two lending products from concept to launch, as the only designer.',
+	tags: ['LMS', 'Borrower Portal', 'Lender Portal']
 };
 
 export const toolbox = [
@@ -57,7 +67,16 @@ export const toolbox = [
 ];
 
 export const principles: Principle[] = [
-	{ title: 'Calm by default', body: 'Interfaces should lower the noise, not add to it.' },
-	{ title: 'Systems over screens', body: 'Design the rules once; let a hundred screens follow.' },
-	{ title: 'Ship, then polish', body: 'Real feedback beats perfect guesses every time.' }
+	{
+		title: 'Systems over screens',
+		body: 'Design the rules once, so a hundred screens follow. Renceng and OneFish started there.'
+	},
+	{
+		title: 'Research before pixels',
+		body: 'Talk to the people who use it first: shop owners, agents, fish farmers, ops teams.'
+	},
+	{
+		title: 'Prototype in code',
+		body: 'Ship to the repo early, so the team reacts to real behaviour, not a picture of it.'
+	}
 ];

@@ -36,13 +36,13 @@ export const caseStudies: Project[] = [
 		slug: 'mitra-persona',
 		type: 'design',
 		title: 'Mitra User Persona',
-		tagline: 'Who actually runs a warung — and what they need from us.',
+		tagline: 'Who actually runs a warung, and what they need from us.',
 		summary:
 			'A year of research at Warung Pintar into the shop owners (mitra) and buyers behind the platform: how they learn, keep books, shop for stock and choose a warung, turned into personas, archetypes and journey maps that product teams could build on.',
 		client: companies.warungPintar,
 		role: 'Design lead · UX research',
 		year: 2021,
-		duration: 'Dec 2019 — Jan 2021',
+		duration: 'Dec 2019 - Jan 2021',
 		team: 'UXR Merchant, Growth team',
 		facts: [
 			{ label: 'Methods', value: 'In-depth interviews, surveys, data segmentation' },
@@ -238,7 +238,7 @@ export const caseStudies: Project[] = [
 		slug: 'awp-order-flow',
 		type: 'design',
 		title: 'AWP Order Flow',
-		tagline: 'Fixing the ordering flow mitra use every day — tested, not guessed.',
+		tagline: 'Fixing the ordering flow mitra use every day: tested, not guessed.',
 		summary:
 			'A heuristic evaluation of the Aplikasi Warung Pintar (AWP) ordering flow, a redesigned catalog built around who sells each product, and a Maze usability test that put both versions in front of mitra.',
 		client: companies.warungPintar,
@@ -279,7 +279,7 @@ export const caseStudies: Project[] = [
 				id: 'insights',
 				title: 'What the evaluation found',
 				intro:
-					'The redesign started from a heuristic evaluation of the same flow — written up in full as its own case study.',
+					'The redesign started from a heuristic evaluation of the same flow, written up in full as its own case study.',
 				items: [
 					'Mitra choose by seller first: the store name has to be as visible as the product',
 					'An item that disappears when it’s out of stock reads as a broken app, not an empty shelf',
@@ -335,7 +335,7 @@ export const caseStudies: Project[] = [
 		title: 'AWP Heuristic Evaluation',
 		tagline: 'Twelve screens, three evaluators, 46 findings.',
 		summary:
-			'A heuristic evaluation of the new Aplikasi Warung Pintar (AWP) ordering flow — from the homepage to order tracking — scoring every problem against Nielsen’s heuristics so the team could fix the worst first.',
+			'A heuristic evaluation of the new Aplikasi Warung Pintar (AWP) ordering flow (from the homepage to order tracking) scoring every problem against Nielsen’s heuristics so the team could fix the worst first.',
 		client: companies.warungPintar,
 		role: 'Evaluator · UX research',
 		year: 2020,
@@ -412,7 +412,7 @@ export const caseStudies: Project[] = [
 				id: 'detail',
 				title: 'Detail produk',
 				caption:
-					'The only sign a product came from a grosir was a small store name — the most important fact on the page, shown least.',
+					'The only sign a product came from a grosir was a small store name: the most important fact on the page, shown least.',
 				layout: 'wide',
 				images: [heur('detail', 'Product detail findings with an annotated screen')]
 			},
@@ -431,7 +431,7 @@ export const caseStudies: Project[] = [
 				title: 'Patterns',
 				items: [
 					'Who sells the product was the weakest signal on every screen, from catalog to tracking',
-					'Hidden state — applied filters, voucher scope, sources in the cart — forced mitra to go back and check',
+					'Hidden state (applied filters, voucher scope, sources in the cart) forced mitra to go back and check',
 					'Service labels (“Gratis Ongkir”, “24 Jam Dikirim”) compared unlike things and clashed with onboarding',
 					'Missing product photos and long voucher terms made screens look busy but say little'
 				]
@@ -450,7 +450,7 @@ export const caseStudies: Project[] = [
 				id: 'reflection',
 				title: 'Reflection',
 				body: [
-					'Three evaluators saw different things: one flagged copy and contrast, another missing information, another the flow between screens. Scoring each finding twice — how bad, and how hard to fix — made it easy to agree on what went into the redesign, which we then tested with mitra.'
+					'Three evaluators saw different things: one flagged copy and contrast, another missing information, another the flow between screens. Scoring each finding twice (how bad, and how hard to fix) made it easy to agree on what went into the redesign, which we then tested with mitra.'
 				]
 			}
 		],
@@ -467,7 +467,7 @@ export const caseStudies: Project[] = [
 		client: companies.warungPintar,
 		role: 'Product designer',
 		year: 2020,
-		duration: 'Q1 — Q2 2020',
+		duration: 'Q1 - Q2 2020',
 		team: 'Growth team, Commerce · Merchants',
 		facts: [
 			{ label: 'Methods', value: 'Competitor analysis, crazy 8s, CSAT, feedback sessions' },
@@ -529,7 +529,7 @@ export const caseStudies: Project[] = [
 				id: 'states',
 				title: 'Other states',
 				caption:
-					'First open, verifying registration, product in cart, order tracking and both notification tabs — one layout, one swapped card.',
+					'First open, verifying registration, product in cart, order tracking and both notification tabs: one layout, one swapped card.',
 				layout: 'wide',
 				images: [home('states', 'Six phone screens showing the home in different states')]
 			},
@@ -558,7 +558,7 @@ export const caseStudies: Project[] = [
 		slug: 'tokosmart-reskin',
 		type: 'design',
 		title: 'Tokosmart Reskin',
-		tagline: 'Two retail apps become one — in 594 screens.',
+		tagline: 'Two retail apps become one, in 594 screens.',
 		summary:
 			'Reskinning Bizzy’s Tokosmart app as Warung Pintar: a new brand foundation on an existing product, merged user journeys, and a clear account of what changes for each app’s users.',
 		client: companies.warungPintar,
@@ -580,7 +580,7 @@ export const caseStudies: Project[] = [
 				title: 'Overview',
 				body: [
 					'Warung Pintar and Bizzy combined their retail apps. Tokosmart’s layout and flows would stay; the Warung Pintar identity would carry over. To keep engineering changes small, the reskin touched only the foundation: brand colour, type, copy and illustration.',
-					'On top of that came the hard part — merging two user journeys, with multi-seller orders, multi-catalog shopping, vouchers and cumulative discounts.'
+					'On top of that came the hard part: merging two user journeys, with multi-seller orders, multi-catalog shopping, vouchers and cumulative discounts.'
 				]
 			},
 			{
@@ -622,7 +622,7 @@ export const caseStudies: Project[] = [
 				id: 'impact',
 				title: 'Impact on users',
 				caption:
-					'Registration grows from one step to three, tracking from three to five, navigation shrinks from five tabs to four — each a change AWP users must relearn.',
+					'Registration grows from one step to three, tracking from three to five, navigation shrinks from five tabs to four: each a change AWP users must relearn.',
 				layout: 'wide',
 				images: [
 					reskin(
@@ -636,7 +636,7 @@ export const caseStudies: Project[] = [
 				id: 'concerns',
 				title: 'What we flagged',
 				items: [
-					'AWP users must now add to cart before checkout — a likely broken experience without guidance',
+					'AWP users must now add to cart before checkout: a likely broken experience without guidance',
 					'Bundles, buy-one-get-one and cumulative discounts are new to AWP users',
 					'Tokosmart users lose the look they know, and meet vouchers and multi-seller orders for the first time',
 					'Three sign-up options will confuse without coaching, so we paired the product tour with a campaign'
@@ -656,7 +656,7 @@ export const caseStudies: Project[] = [
 				id: 'reflection',
 				title: 'Reflection',
 				body: [
-					'A reskin sounds cosmetic until two user bases meet. Writing down the impact on each group, screen by screen, turned a visual task into a change-management plan — and made the case for onboarding and a campaign before launch.'
+					'A reskin sounds cosmetic until two user bases meet. Writing down the impact on each group, screen by screen, turned a visual task into a change-management plan, and made the case for onboarding and a campaign before launch.'
 				]
 			}
 		],
@@ -673,7 +673,7 @@ export const caseStudies: Project[] = [
 		client: companies.warungPintar,
 		role: 'Product designer · UX research',
 		year: 2020,
-		duration: 'Feb — Aug 2020',
+		duration: 'Feb - Aug 2020',
 		team: 'Venom squad, Growth squad, team leaders',
 		facts: [
 			{ label: 'Methods', value: 'Field interviews, pilot, service blueprint' },
@@ -825,7 +825,7 @@ export const caseStudies: Project[] = [
 		client: companies.fazz,
 		role: 'UI designer · UX research',
 		year: 2022,
-		duration: 'May — Jun 2022',
+		duration: 'May - Jun 2022',
 		team: 'Experience team',
 		facts: [
 			{ label: 'Methods', value: 'Survey, usability testing, heatmaps, SEQ' },
@@ -840,7 +840,7 @@ export const caseStudies: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'Agents use catat utang to record what their customers owe. Adoption and retention were low, and earlier research suggested “agent diaries”. We proposed a visual debt report — but first needed to know what agents wanted in it, and whether they’d use it.',
+					'Agents use catat utang to record what their customers owe. Adoption and retention were low, and earlier research suggested “agent diaries”. We proposed a visual debt report, but first needed to know what agents wanted in it, and whether they’d use it.',
 					'A survey ran from 18 to 27 May 2022, followed by concept validation in Maze: viewing the report, and recording a sale as debt through two different shortcuts.'
 				]
 			},
@@ -912,7 +912,7 @@ export const caseStudies: Project[] = [
 				id: 'insights',
 				title: 'What we learned',
 				items: [
-					'Agents value detail over visuals — the table is what they trust',
+					'Agents value detail over visuals: the table is what they trust',
 					'They already reach their goal with filters, so the report itself went unseen',
 					'Recording debt without typing a number worried them: is it the base or the selling price?',
 					'Agents used to the cashier’s “Cetak dan Catat” want to see every field before saving'
@@ -937,11 +937,11 @@ export const caseStudies: Project[] = [
 		title: 'Terms of Modal',
 		tagline: 'Letting 816 lending users name the words in their own app.',
 		summary:
-			'A survey for Modal Agen, Fazz’s working-capital loan for agents, to replace finance jargon with the words users actually understand — and the product problems their answers surfaced along the way.',
+			'A survey for Modal Agen, Fazz’s working-capital loan for agents, to replace finance jargon with the words users actually understand, and the product problems their answers surfaced along the way.',
 		client: companies.fazz,
 		role: 'UI designer · UX research',
 		year: 2022,
-		duration: 'Oct — Nov 2022',
+		duration: 'Oct - Nov 2022',
 		team: 'Experience team, marketing',
 		facts: [
 			{ label: 'Method', value: 'In-app survey, 851 responses' },
@@ -957,7 +957,7 @@ export const caseStudies: Project[] = [
 				title: 'Overview',
 				body: [
 					'Modal Agen screens used lending terms such as “Tenor” and “Sisa Plafon” that agents don’t say. We wanted one vocabulary, chosen by users, that every team could align on.',
-					'Active PMA users of Modal Agen — including those paying for Grosir orders with Modal — got the survey as an in-app notification. Each term came with its definition, and users picked the name they’d use.'
+					'Active PMA users of Modal Agen (including those paying for Grosir orders with Modal) got the survey as an in-app notification. Each term came with its definition, and users picked the name they’d use.'
 				]
 			},
 			{
@@ -966,7 +966,7 @@ export const caseStudies: Project[] = [
 				title: 'By the numbers',
 				items: [
 					{ value: '851', label: 'Responses in one week' },
-					{ value: '816', label: 'Valid — had used Modal' },
+					{ value: '816', label: 'Valid: had used Modal' },
 					{ value: '8.5%', label: 'Found the information very hard' },
 					{ value: '2 of 4', label: 'Terms renamed' }
 				]
@@ -984,7 +984,7 @@ export const caseStudies: Project[] = [
 				id: 'understanding',
 				title: 'Is Modal easy to understand?',
 				caption:
-					'71.7% found it very easy, but 8.5% very hard — and the same two terms kept coming up: Tenor and Sisa Plafon.',
+					'71.7% found it very easy, but 8.5% very hard, and the same two terms kept coming up: Tenor and Sisa Plafon.',
 				layout: 'wide',
 				images: [modal('understanding', 'Five-point rating distribution with callouts')]
 			},
@@ -1002,7 +1002,7 @@ export const caseStudies: Project[] = [
 				id: 'issues',
 				title: 'Beyond the words',
 				caption:
-					'Open answers pointed at rejections without reasons, short limits and tenors, Pulsa-only usage and repayment pain — product issues no rename fixes.',
+					'Open answers pointed at rejections without reasons, short limits and tenors, Pulsa-only usage and repayment pain: product issues no rename fixes.',
 				layout: 'wide',
 				images: [modal('issues', 'Grouped product issues and the Modal screen with new terms')]
 			},
@@ -1014,7 +1014,7 @@ export const caseStudies: Project[] = [
 					'Adopt Jangka Waktu, Limit Modal, Perpanjangan Modal Otomatis and Modal Grosir everywhere',
 					'Align every stakeholder on the validated vocabulary',
 					'Follow up the product issues users raised alongside the terms',
-					'Publish clearer information about Modal — FAQ and blog posts'
+					'Publish clearer information about Modal: FAQ and blog posts'
 				]
 			}
 		],
@@ -1027,7 +1027,7 @@ export const caseStudies: Project[] = [
 		title: 'Top Loyal Users',
 		tagline: 'Why our best agents stay without a single coupon.',
 		summary:
-			'Interviews with Fazz Agen’s most loyal new agents — profitable, and never touching a coupon — to find what keeps them, distilled into a proto persona and four recommendations to grow more agents like them.',
+			'Interviews with Fazz Agen’s most loyal new agents (profitable, and never touching a coupon) to find what keeps them, distilled into a proto persona and four recommendations to grow more agents like them.',
 		client: companies.fazz,
 		role: 'UI designer · UX research',
 		year: 2023,
@@ -1066,7 +1066,7 @@ export const caseStudies: Project[] = [
 				id: 'participants',
 				title: 'Who we talked to',
 				caption:
-					'Seven agents, anonymised, with their first months on Fazz Agen — from Rp 4.2 jt to Rp 172.3 jt GMV.',
+					'Seven agents, anonymised, with their first months on Fazz Agen: from Rp 4.2 jt to Rp 172.3 jt GMV.',
 				layout: 'wide',
 				images: [loyal('participants', 'Method, rationale and seven anonymised agent cards')]
 			},
@@ -1075,7 +1075,7 @@ export const caseStudies: Project[] = [
 				id: 'profile',
 				title: 'Where they live and work',
 				caption:
-					'Tier-2 towns in Java and tier-3 areas beyond it, where banks and competitors are rare — most run Fazz Agen alongside another business.',
+					'Tier-2 towns in Java and tier-3 areas beyond it, where banks and competitors are rare: most run Fazz Agen alongside another business.',
 				layout: 'wide',
 				images: [loyal('profile', 'Dot map of Indonesia with agent locations and profile facts')]
 			},
@@ -1084,7 +1084,7 @@ export const caseStudies: Project[] = [
 				id: 'behaviour',
 				title: 'What they sell',
 				caption:
-					'Small prepaid Pulsa dominates (80% of Telkomsel sales are Rp 10k). Coupons go unused — agents don’t know what they are, or are too busy to add them.',
+					'Small prepaid Pulsa dominates (80% of Telkomsel sales are Rp 10k). Coupons go unused: agents don’t know what they are, or are too busy to add them.',
 				layout: 'wide',
 				images: [loyal('behaviour', 'Top product chart, price score and coupon habits')]
 			},
@@ -1093,7 +1093,7 @@ export const caseStudies: Project[] = [
 				id: 'motivations',
 				title: 'Why they stay',
 				caption:
-					'Cheap, easy, fast and a big deposit limit — plus the apps they use alongside Fazz Agen, and why.',
+					'Cheap, easy, fast and a big deposit limit, plus the apps they use alongside Fazz Agen, and why.',
 				layout: 'wide',
 				images: [loyal('motivations', 'Eight motivations and six competing apps')]
 			},
@@ -1127,13 +1127,13 @@ export const caseStudies: Project[] = [
 		slug: 'data-pulsa-improvements',
 		type: 'design',
 		title: 'Data & Pulsa Improvements',
-		tagline: '170 packages in one list — and four ways agents actually choose.',
+		tagline: '170 packages in one list, and four ways agents actually choose.',
 		summary:
-			'Discovery research on Fazz Agen’s Data and Pulsa pages: a survey of 623 agents, competitor benchmarking and sales interviews that traced the complaints to one cause — a list too complex to use — and reshaped it around how customers ask.',
+			'Discovery research on Fazz Agen’s Data and Pulsa pages: a survey of 623 agents, competitor benchmarking and sales interviews that traced the complaints to one cause (a list too complex to use) and reshaped it around how customers ask.',
 		client: companies.fazz,
 		role: 'UI designer · UX research',
 		year: 2023,
-		duration: 'Jan — Feb 2023',
+		duration: 'Jan - Feb 2023',
 		team: 'Experience team, 3 researchers',
 		facts: [
 			{ label: 'Methods', value: 'Survey, competitor analysis, SE interviews' },
@@ -1197,7 +1197,7 @@ export const caseStudies: Project[] = [
 				items: [
 					'Agents want internet packages separated from phone and SMS packages',
 					'Long paragraph descriptions make every package slow to compare',
-					'Complaints about price may come from comparing with resellers and consumer apps — our Indosat 100GB price beat most direct competitors',
+					'Complaints about price may come from comparing with resellers and consumer apps: our Indosat 100GB price beat most direct competitors',
 					'Longer-tenured agents complained most: they remember a simpler, cheaper list'
 				]
 			},
@@ -1263,7 +1263,7 @@ export const caseStudies: Project[] = [
 				title: 'Overview',
 				body: [
 					'Every issue a farmer had in eFisheryKu became a complaint ticket for the Level 1 customer service team. Many of those tickets were the same few questions, and the team struggled to reach the data they needed to answer them quickly.',
-					'The idea: put an FAQ in front of the ticket — a “Level 0” where farmers can solve common problems themselves, so CX can focus on complex and urgent cases.'
+					'The idea: put an FAQ in front of the ticket, a “Level 0” where farmers can solve common problems themselves, so CX can focus on complex and urgent cases.'
 				]
 			},
 			{
@@ -1282,7 +1282,7 @@ export const caseStudies: Project[] = [
 				id: 'context',
 				title: 'Context',
 				caption:
-					'Situation, complication and aim — and the existing flow, where every problem became a ticket for Level 1 and sometimes Level 2.',
+					'Situation, complication and aim, and the existing flow, where every problem became a ticket for Level 1 and sometimes Level 2.',
 				layout: 'wide',
 				images: [faq('context', 'Situation, complication, aim and the existing support flow')]
 			},
@@ -1291,7 +1291,7 @@ export const caseStudies: Project[] = [
 				id: 'problem',
 				title: 'Volume up, resolution down',
 				caption:
-					'Complaints grew more than twentyfold in seven months while on-time resolution fell from 87.66% to 71.16% — and retained farmers fell with it.',
+					'Complaints grew more than twentyfold in seven months while on-time resolution fell from 87.66% to 71.16%, and retained farmers fell with it.',
 				layout: 'wide',
 				images: [faq('problem', 'Monthly complaints and on-time resolution charts')]
 			},
@@ -1322,7 +1322,7 @@ export const caseStudies: Project[] = [
 					'Search with topic chips, so farmers find answers in their own words',
 					'Keep complaint and call-centre buttons at the end of every article, not the start',
 					'Ask “Was this helpful?” to learn which answers work',
-					'Keep the funnel complaint path for transaction tracking — still under discussion with the PM'
+					'Keep the funnel complaint path for transaction tracking, still under discussion with the PM'
 				]
 			}
 		],
@@ -1335,7 +1335,7 @@ export const caseStudies: Project[] = [
 		title: 'Saldo Panen',
 		tagline: 'Testing a harvest wallet with the farmers who would use it.',
 		summary:
-			'Concept testing for Saldo Panen, a balance in eFisheryKu where fish farmers receive surplus from harvest settlement and withdraw it to their bank — with seven farmers in Subang and Bandung Barat.',
+			'Concept testing for Saldo Panen, a balance in eFisheryKu where fish farmers receive surplus from harvest settlement and withdraw it to their bank, with seven farmers in Subang and Bandung Barat.',
 		client: companies.efishery,
 		role: 'Product designer · UX research',
 		year: 2024,
@@ -1394,7 +1394,7 @@ export const caseStudies: Project[] = [
 				id: 'testing',
 				title: 'Concept test results',
 				caption:
-					'Farmers looked for the balance on Home or in Lapak Ikan, skipped onboarding, confused the history list with the withdraw button — but understood the fee.',
+					'Farmers looked for the balance on Home or in Lapak Ikan, skipped onboarding, confused the history list with the withdraw button, but understood the fee.',
 				layout: 'wide',
 				images: [saldo('testing', 'Four heatmapped prototype screens with task results')]
 			},
@@ -1404,7 +1404,7 @@ export const caseStudies: Project[] = [
 				title: 'What we learned',
 				items: [
 					'Farmers trust the field team (FBDO) more than the app, and confirm every step with them',
-					'They expect Saldo Panen to be tied to Tarik Ikan — showing where the money came from',
+					'They expect Saldo Panen to be tied to Tarik Ikan, showing where the money came from',
 					'They imagine it as a full e-wallet: savings, feed purchases and bank transfers',
 					'Admin fees are accepted, but compared with BI-Fast and DANA',
 					'A step-by-step test script guided them better than our onboarding screens'
@@ -1435,7 +1435,7 @@ export const caseStudies: Project[] = [
 		client: companies.efishery,
 		role: 'Product designer',
 		year: 2023,
-		duration: 'Q2 2023 — Q1 2024',
+		duration: 'Q2 2023 - Q1 2024',
 		team: 'Enterprise, PMM, BD, data & engineering',
 		facts: [
 			{ label: 'Methods', value: 'Stakeholder interviews, JTBD, journey mapping' },
@@ -1451,7 +1451,7 @@ export const caseStudies: Project[] = [
 				title: 'Overview',
 				body: [
 					'Indonesia has more than 2.5 million fish farmers, and eFishery had over 800 people reaching them directly. Marketing, telesales and field sales coordinated in spreadsheets, personalised promos happened outside the promo system, and nobody could easily see who should handle which farmer next.',
-					'We set one objective — engage the right farmers, with the right needs, using the right approach — and measured it through campaign engagement, field-visit success and self-transacting farmers.'
+					'We set one objective (engage the right farmers, with the right needs, using the right approach) and measured it through campaign engagement, field-visit success and self-transacting farmers.'
 				]
 			},
 			{
@@ -1495,7 +1495,7 @@ export const caseStudies: Project[] = [
 				id: 'roadmap',
 				title: 'Universe & roadmap',
 				caption:
-					'Enablement in Q2, customer-data enhancement in Q3, predictive in Q4 — across customer experience, engagement and promotion management.',
+					'Enablement in Q2, customer-data enhancement in Q3, predictive in Q4, across customer experience, engagement and promotion management.',
 				layout: 'wide',
 				images: [martech('roadmap', 'Three-phase roadmap and the product universe')]
 			},
@@ -1531,11 +1531,11 @@ export const caseStudies: Project[] = [
 		title: 'Enterprise Payment',
 		tagline: 'From Slack screenshots to automated reconciliation.',
 		summary:
-			'Designing eFishery’s internal payment products — a finance app, AR/AP settlement and payment services in and out — so finance could process growing volumes on time and farmers could pay by themselves.',
+			'Designing eFishery’s internal payment products (a finance app, AR/AP settlement and payment services in and out) so finance could process growing volumes on time and farmers could pay by themselves.',
 		client: companies.efishery,
 		role: 'Product designer',
 		year: 2023,
-		duration: 'Q1 — Q3 2023',
+		duration: 'Q1 - Q3 2023',
 		team: 'Enterprise Payment team',
 		facts: [
 			{ label: 'Methods', value: 'User interviews, value proposition, metrics' },
@@ -1570,7 +1570,7 @@ export const caseStudies: Project[] = [
 				id: 'users',
 				title: 'Who we were serving',
 				caption:
-					'Accounts receivable, accounts payable, treasury and product managers — each blocked by a payment system that didn’t scale.',
+					'Accounts receivable, accounts payable, treasury and product managers: each blocked by a payment system that didn’t scale.',
 				layout: 'wide',
 				images: [payment('users', 'Four user personas with quotes and needs')]
 			},
@@ -1579,7 +1579,7 @@ export const caseStudies: Project[] = [
 				id: 'products',
 				title: 'Products & services',
 				caption:
-					'FAT App, AR/AP settlement, and payment services in and out — from transfer recaps and bank statements to VA payments and payout status.',
+					'FAT App, AR/AP settlement, and payment services in and out: from transfer recaps and bank statements to VA payments and payout status.',
 				layout: 'wide',
 				images: [payment('products', 'Four product groups with their features')]
 			},
@@ -1632,7 +1632,7 @@ export const caseStudies: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'A year after the CRM launched, we checked how its AR/AP settlement feature — where sales settle farmers’ feed debts against their harvest — was working for the people using it every day in the field.',
+					'A year after the CRM launched, we checked how its AR/AP settlement feature (where sales settle farmers’ feed debts against their harvest) was working for the people using it every day in the field.',
 					'All 22 respondents came from the fish business unit, mostly sales. We followed up with several of them to understand the reasons behind their scores.'
 				]
 			},
@@ -1672,7 +1672,7 @@ export const caseStudies: Project[] = [
 				id: 'actions',
 				title: 'Issues & action plan',
 				caption:
-					'Double entry from GForms to GSheet to CRM, late vendor bills and weak field networks — turned into five action items with owners.',
+					'Double entry from GForms to GSheet to CRM, late vendor bills and weak field networks, turned into five action items with owners.',
 				layout: 'wide',
 				images: [arap('actions', 'Issues, the current input flow and five action items')]
 			}

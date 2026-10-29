@@ -13,7 +13,7 @@
 			<img src={prev.cover} alt="" loading="lazy" />
 			<span>
 				<span class="kind label"
-					>{prev.type === 'design' ? 'Design' : 'Code'} · {prev.year ?? '—'}</span
+					>{prev.type === 'design' ? 'Design' : 'Code'} · {prev.year ?? '-'}</span
 				>
 				<span class="title">{prev.title}</span>
 			</span>
@@ -24,7 +24,7 @@
 		<span class="body">
 			<span>
 				<span class="kind label"
-					>{next.type === 'design' ? 'Design' : 'Code'} · {next.year ?? '—'}</span
+					>{next.type === 'design' ? 'Design' : 'Code'} · {next.year ?? '-'}</span
 				>
 				<span class="title">{next.title}</span>
 			</span>

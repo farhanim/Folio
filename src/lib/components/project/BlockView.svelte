@@ -50,7 +50,7 @@
 		{:else if block.kind === 'quote'}
 			<blockquote>
 				<p>“{block.quote}”</p>
-				<footer><strong>{block.author}</strong> — {block.role}</footer>
+				<footer><strong>{block.author}</strong>, {block.role}</footer>
 			</blockquote>
 		{:else if block.kind === 'code'}
 			<div class="code">

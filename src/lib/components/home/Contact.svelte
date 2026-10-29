@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { site, socials } from '#lib/data/site.ts';
 	import Icon from '#lib/components/ui/Icon.svelte';
+	import { profile } from '#lib/data/profile.ts';
 	import { reveal } from '#lib/utils/reveal.ts';
 
 	const headline = "Let's make something good.";
@@ -32,15 +33,38 @@
 		{/each}
 	</h2>
 
+	<!-- Email first, the CV card below it -->
 	<div class="actions" data-reveal>
-		<a class="mail" href="mailto:{site.email}">
-			<span>{site.email}</span>
-			<Icon name="arrowUpRight" size={20} />
+		<div class="act plain">
+			<a class="act-main" href="mailto:{site.email}">
+				<span class="act-icon"><Icon name="mail" size={18} /></span>
+				<span class="act-text">
+					<span class="act-label">Email me</span>
+					<span class="act-value">{site.email}</span>
+				</span>
+			</a>
+			<button
+				type="button"
+				class="act-end"
+				class:copied
+				onclick={copyEmail}
+				aria-label={copied ? 'Email copied' : 'Copy email'}
+			>
+				<Icon name={copied ? 'check' : 'copy'} size={16} />
+				<span class="tip" aria-live="polite">{copied ? 'Copied' : 'Copy'}</span>
+			</button>
+		</div>
+
+		<a class="act cv" href={profile.cv} target="_blank" rel="noopener">
+			<span class="act-main">
+				<span class="act-icon"><Icon name="download" size={18} /></span>
+				<span class="act-text">
+					<span class="act-label">Résumé · PDF</span>
+					<span class="act-value">Download my CV</span>
+				</span>
+			</span>
+			<span class="act-end"><Icon name="arrowUpRight" size={16} /></span>
 		</a>
-		<button type="button" class="copy" class:copied onclick={copyEmail}>
-			<Icon name={copied ? 'check' : 'copy'} size={14} />
-			<span aria-live="polite">{copied ? 'Copied' : 'Copy'}</span>
-		</button>
 	</div>
 
 	<ul class="socials" data-reveal>
@@ -56,8 +80,6 @@
 
 	<div class="colophon" data-reveal>
 		<span>© {site.year} {site.name}</span>
-		<span>Set in Inter Tight &amp; JetBrains Mono</span>
-		<span>Built with SvelteKit + Bun</span>
 		<a href="#index" class="top">
 			Back to top <Icon name="arrowUp" size={12} />
 		</a>
@@ -103,59 +125,149 @@
 	}
 
 	.actions {
-		grid-column: 1 / span 7;
+		grid-column: 1 / span 6;
+		align-self: end;
+		display: grid;
+		gap: 16px;
+		margin-top: 48px;
+	}
+	/* One card shape for both actions: icon chip, label over value, end action */
+	.act {
 		display: flex;
 		align-items: center;
 		gap: 12px;
-		flex-wrap: wrap;
-		margin-top: 48px;
-	}
-	.mail {
-		display: inline-flex;
-		align-items: center;
-		gap: 10px;
-		padding-bottom: 4px;
-		border-bottom: 1px solid var(--rule);
-		color: var(--text);
-		font-size: clamp(20px, 2.2vw, 30px);
-		letter-spacing: -0.03em;
-		text-decoration: none;
-		transition: border-color 0.3s ease;
-	}
-	.mail :global(svg) {
-		transition: transform 0.5s var(--ease-out);
-	}
-	.mail:hover {
-		border-color: var(--text);
-	}
-	.mail:hover :global(svg) {
-		transform: rotate(45deg);
-	}
-	.copy {
-		display: inline-flex;
-		align-items: center;
-		gap: 6px;
-		padding: 7px 12px;
+		min-width: 0;
+		height: 76px;
+		padding: 0 12px 0 14px;
 		border: 1px solid var(--hairline);
-		border-radius: 999px;
+		border-radius: 20px;
+		background: var(--card);
+		color: var(--text);
+		text-decoration: none;
+		transition:
+			border-color 0.3s ease,
+			transform 0.4s var(--ease-out);
+	}
+	.act:hover {
+		border-color: var(--rule);
+		transform: translateY(-2px);
+	}
+	.act-main {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex: 1;
+		min-width: 0;
+		color: inherit;
+		text-decoration: none;
+	}
+	.act-icon {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 46px;
+		height: 46px;
+		border-radius: 14px;
+		background: var(--surface);
+		color: var(--text);
+	}
+	.act-text {
+		display: grid;
+		min-width: 0;
+		line-height: 1.25;
+	}
+	.act-label {
+		font-family: var(--font-mono);
+		font-size: 10px;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--text-secondary);
+	}
+	.act-value {
+		overflow: hidden;
+		font-size: clamp(16px, 1.4vw, 19px);
+		font-weight: 500;
+		letter-spacing: -0.02em;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.act-end {
+		position: relative;
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: 1px solid var(--hairline);
+		border-radius: 50%;
 		background: none;
 		color: var(--text-secondary);
-		font: inherit;
-		font-size: 12px;
 		cursor: pointer;
 		transition:
 			color 0.2s ease,
-			border-color 0.2s ease,
-			background-color 0.3s ease;
+			background-color 0.3s ease,
+			transform 0.5s var(--ease-out);
 	}
-	.copy:hover {
+	button.act-end:hover {
 		color: var(--text);
 		border-color: var(--rule);
 	}
-	.copy.copied {
+	.act-end.copied {
 		background: var(--text);
 		border-color: var(--text);
 		color: var(--bg);
+	}
+	/* Small label that appears above the copy button */
+	.tip {
+		position: absolute;
+		bottom: calc(100% + 6px);
+		padding: 2px 8px;
+		border-radius: 999px;
+		background: var(--text);
+		color: var(--bg);
+		font-size: 11px;
+		white-space: nowrap;
+		opacity: 0;
+		translate: 0 4px;
+		pointer-events: none;
+		transition:
+			opacity 0.2s ease,
+			translate 0.3s var(--ease-out);
+	}
+	.act-end:hover .tip,
+	.act-end.copied .tip {
+		opacity: 1;
+		translate: 0 0;
+	}
+	/* Email: plain text, no card */
+	.act.plain {
+		height: auto;
+		padding: 0;
+		border-color: transparent;
+		background: none;
+	}
+	/* Copy sits right after the address */
+	.plain .act-main {
+		flex: 0 1 auto;
+	}
+	.act.plain:hover {
+		transform: none;
+	}
+	.plain .act-icon {
+		width: 40px;
+		height: 40px;
+		border-radius: 12px;
+	}
+	/* CV: the card, with black controls */
+	.cv .act-icon,
+	.cv .act-end {
+		border-color: var(--text);
+		background: var(--text);
+		color: var(--bg);
+	}
+	.act.cv:hover .act-end {
+		transform: rotate(45deg);
 	}
 
 	.socials {
@@ -213,6 +325,13 @@
 		}
 	}
 	@media (max-width: 600px) {
+		.actions {
+			grid-template-columns: 1fr;
+			gap: 10px;
+		}
+		.act {
+			height: 68px;
+		}
 		.colophon {
 			flex-direction: column;
 			gap: 6px;
