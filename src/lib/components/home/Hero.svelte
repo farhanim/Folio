@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 	import { fade } from 'svelte/transition';
 	import Tag from '#lib/components/project/Tag.svelte';
 	import { companies, showcaseClients } from '#lib/data/clients.ts';
@@ -83,13 +83,14 @@
 			</span>
 			<ProximityText text="systems" />
 		</span>
-		<span class="line muted"><ProximityText text="that ship as code." /></span>
+		<span class="line muted"><ProximityText text="from insight to shipped code." /></span>
 	</h1>
 
 	<div class="intro">
 		<p>
-			I’m {site.name} (Hans), based in {site.location}, {site.country}. 9+ years leading design for
-			lending, aquaculture and retail products, from design systems to prototypes shipped with AI.
+			I’m <strong>{site.name} (Hans)</strong>, a product designer in {site.location}, {site.country}, with
+			<strong>9+ years</strong> across lending, aquaculture, and retail. I take products from research and
+			design systems through to <strong>interactive prototypes in code</strong><span class="cycoffee-inline">, and I’m <span class="cycoffee-selected">newly exploring Cycoffee</span>, a small coffee business.</span>
 		</p>
 		<p class="focus label">
 			<span class="focus-key">Lately</span>
@@ -274,6 +275,20 @@
 		border-radius: 999px;
 		font-size: 10px;
 		text-transform: uppercase;
+	}
+	.intro strong {
+		color: var(--text);
+		font-weight: 550;
+	}
+	.cycoffee-inline {
+		color: var(--text-secondary);
+	}
+	.cycoffee-selected {
+		padding: 1px 3px;
+		border-radius: 3px;
+		background: color-mix(in srgb, var(--amber) 16%, transparent);
+		box-decoration-break: clone;
+		-webkit-box-decoration-break: clone;
 	}
 
 	.aside {
@@ -479,3 +494,4 @@
 		}
 	}
 </style>
+

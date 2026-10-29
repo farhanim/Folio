@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Contact from '#lib/components/home/Contact.svelte';
-	import Desk from '#lib/components/home/Desk.svelte';
 	import Hero from '#lib/components/home/Hero.svelte';
 	import ProjectIndex from '#lib/components/home/ProjectIndex.svelte';
 	import { featuredProjects, projects } from '#lib/data/projects.ts';
@@ -16,5 +15,4 @@
 <div id="work">
 	<ProjectIndex {projects} picks={featuredProjects} />
 </div>
-<Desk />
 <Contact />

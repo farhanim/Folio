@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 	import { site, socials } from '#lib/data/site.ts';
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import { profile } from '#lib/data/profile.ts';
@@ -33,13 +33,13 @@
 		{/each}
 	</h2>
 
-	<!-- Email first, the CV card below it -->
+	<!-- Email and CV actions share the same compact card format. -->
 	<div class="actions" data-reveal>
-		<div class="act plain">
+		<div class="act">
 			<a class="act-main" href="mailto:{site.email}">
 				<span class="act-icon"><Icon name="mail" size={18} /></span>
 				<span class="act-text">
-					<span class="act-label">Email me</span>
+					<span class="act-label">Send an email</span>
 					<span class="act-value">{site.email}</span>
 				</span>
 			</a>
@@ -55,15 +55,15 @@
 			</button>
 		</div>
 
-		<a class="act cv" href={profile.cv} target="_blank" rel="noopener">
+		<a class="act cv" href={profile.cv} target="_blank" rel="noopener" aria-label="Download Hans Curriculum Vitae">
 			<span class="act-main">
 				<span class="act-icon"><Icon name="download" size={18} /></span>
 				<span class="act-text">
-					<span class="act-label">Résumé · PDF</span>
-					<span class="act-value">Download my CV</span>
+					<span class="act-label">Or download a curriculum vitae</span>
+					<span class="act-value">Hire me, Get a CV</span>
 				</span>
 			</span>
-			<span class="act-end"><Icon name="arrowUpRight" size={16} /></span>
+			<span class="act-end" aria-hidden="true"><Icon name="arrowUpRight" size={16} /></span>
 		</a>
 	</div>
 
@@ -128,8 +128,8 @@
 		grid-column: 1 / span 6;
 		align-self: end;
 		display: grid;
-		gap: 16px;
-		margin-top: 48px;
+		gap: 10px;
+		margin-top: 32px;
 	}
 	/* One card shape for both actions: icon chip, label over value, end action */
 	.act {
@@ -139,7 +139,7 @@
 		min-width: 0;
 		height: 76px;
 		padding: 0 12px 0 14px;
-		border: 1px solid var(--hairline);
+		border: 0;
 		border-radius: 20px;
 		background: var(--card);
 		color: var(--text);
@@ -149,8 +149,26 @@
 			transform 0.4s var(--ease-out);
 	}
 	.act:hover {
-		border-color: var(--rule);
 		transform: translateY(-2px);
+	}
+	.act:first-child {
+		background: transparent;
+		padding-left: 0;
+	}
+	.act.cv {
+		position: relative;
+		background: transparent;
+		border: 0;
+		padding-left: 0;
+	}
+	.act.cv::before {
+		position: absolute;
+		top: -5px;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background: var(--hairline);
+		content: '';
 	}
 	.act-main {
 		display: flex;
@@ -170,6 +188,11 @@
 		border-radius: 14px;
 		background: var(--surface);
 		color: var(--text);
+	}
+	.act-icon {
+		background: color-mix(in srgb, var(--amber) 6%, var(--card));
+		color: var(--text);
+		border: 1px solid var(--hairline);
 	}
 	.act-text {
 		display: grid;
@@ -199,7 +222,7 @@
 		width: 40px;
 		height: 40px;
 		padding: 0;
-		border: 1px solid var(--hairline);
+		border: 0;
 		border-radius: 50%;
 		background: none;
 		color: var(--text-secondary);
@@ -211,7 +234,6 @@
 	}
 	button.act-end:hover {
 		color: var(--text);
-		border-color: var(--rule);
 	}
 	.act-end.copied {
 		background: var(--text);
@@ -240,33 +262,7 @@
 		opacity: 1;
 		translate: 0 0;
 	}
-	/* Email: plain text, no card */
-	.act.plain {
-		height: auto;
-		padding: 0;
-		border-color: transparent;
-		background: none;
-	}
-	/* Copy sits right after the address */
-	.plain .act-main {
-		flex: 0 1 auto;
-	}
-	.act.plain:hover {
-		transform: none;
-	}
-	.plain .act-icon {
-		width: 40px;
-		height: 40px;
-		border-radius: 12px;
-	}
-	/* CV: the card, with black controls */
-	.cv .act-icon,
-	.cv .act-end {
-		border-color: var(--text);
-		background: var(--text);
-		color: var(--bg);
-	}
-	.act.cv:hover .act-end {
+	.act:hover .act-end {
 		transform: rotate(45deg);
 	}
 
@@ -341,3 +337,4 @@
 		}
 	}
 </style>
+
