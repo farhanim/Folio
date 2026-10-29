@@ -59,7 +59,11 @@ export const showcaseClients = {
 	iconplus: { name: 'ICON+ (PLN Icon Plus)', logo: '/images/clients/iconplus.webp' },
 	devfartha: { name: 'Devfartha', logo: '/images/clients/devfartha.webp' },
 	pertamina: { name: 'Pertamina Hulu Kalimantan Timur', logo: '/images/clients/pertamina.webp' },
-	dataroom: { name: 'Dataroom · IKN Nusantara', logo: '/images/clients/dataroom.webp' }
+	dataroom: { name: 'Dataroom · IKN Nusantara', logo: '/images/clients/dataroom.webp' },
+	kemendikbud: {
+		name: 'Ditjen Kebudayaan, Kemendikbud',
+		logo: '/images/clients/kemendikbud.webp'
+	}
 } satisfies Record<string, Client>;
 
 // Sample clients used by the placeholder projects — remove once real projects are in.

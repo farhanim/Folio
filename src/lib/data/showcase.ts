@@ -26,6 +26,7 @@ const iconplus = media('iconplus');
 const ielts = media('ielts-course');
 const pims = media('pims-pertamina');
 const dataroom = media('dataroom');
+const silma = media('silma');
 
 const noFeedback = { likes: 0, dislikes: 0, comments: [] };
 
@@ -1266,6 +1267,136 @@ export const showcase: Project[] = [
 						items: [
 							{ name: 'PDF.js', why: 'In-browser PDF rendering' },
 							{ name: 'SheetJS & docx preview', why: 'Spreadsheets and Word files' }
+						]
+					}
+				]
+			}
+		],
+		seed: noFeedback
+	},
+
+	// ───────────────────────────────────────────── SILMA
+	{
+		slug: 'silma',
+		type: 'code',
+		title: 'SILMA',
+		tagline: 'State-asset services for the Directorate General of Culture.',
+		summary:
+			'Sistem Informasi dan Layanan Manajemen Aset — the asset-management system of the Secretariat of the Directorate General of Culture, Ministry of Education and Culture: procurement plans, procurement, borrowing and transfers of state property (BMN), each with its own approval workflow, handover documents and printable asset labels.',
+		client: c.kemendikbud,
+		role: 'Front-end development',
+		year: 2023,
+		facts: [
+			{ label: 'Industry', value: 'Government · Asset management' },
+			{ label: 'Platform', value: 'Web app (internal)' }
+		],
+		tools: ['Laravel', 'Bootstrap 4', 'jQuery', 'DataTables'],
+		cover: silma.poster,
+		gallery: silma.shots(
+			[2, 'Dashboard — assets and requests'],
+			[3, 'Procurement plans'],
+			[4, 'Request detail with workflow steps'],
+			[5, 'Asset register']
+		),
+		preview: {
+			url: '/projects/silma/index.html',
+			video: silma.video,
+			poster: silma.poster,
+			note: 'The Super Admin account is filled in — press LOGIN. Every demo account uses the password “password”. Runs on sample data.'
+		},
+		blocks: [
+			{
+				kind: 'text',
+				id: 'overview',
+				title: 'Overview',
+				body: [
+					'Every chair, laptop and vehicle a ministry owns is state property (Barang Milik Negara) and must be planned, procured, recorded, lent, moved and eventually written off by the book. SILMA turns those paper-heavy procedures into services employees request online and administrators process step by step.',
+					'A dashboard shows the value and condition of the asset base, open requests per service and a personal task queue; behind it sit the asset master data — KIB, PSP status, supervision (Wasdal), write-offs and stock-taking — and the documents each process requires.'
+				]
+			},
+			{
+				kind: 'text',
+				id: 'purpose',
+				title: 'Why it matters',
+				body: [
+					'Government asset records are audited, and a missing handover letter or an unlabelled item becomes a finding. When every request leaves a trail — who asked, who verified, which admin handled it and which BAST was signed — the directorate can show exactly where each asset is and how it got there.'
+				]
+			},
+			{
+				kind: 'features',
+				id: 'features',
+				title: 'Key features',
+				items: [
+					{
+						title: 'Four request services',
+						body: 'Procurement plans, procurement, borrowing and transfers — each with its own status flow.'
+					},
+					{
+						title: 'Guided approval steps',
+						body: 'Verify, assign an admin, analyse, accept or reject — with notes at every step.'
+					},
+					{
+						title: 'Handover documents',
+						body: 'BAST, room inventory lists (DBR) and identity cards (KIB) generated, printed or exported.'
+					},
+					{
+						title: 'Asset labels',
+						body: 'State-asset labels with barcodes and QR codes, ready to print.'
+					},
+					{
+						title: 'Asset master data',
+						body: 'Register, KIB, PSP, supervision, write-off and stock-taking in one place.'
+					},
+					{
+						title: 'Dashboard & tasks',
+						body: 'Asset value and condition, requests per service, and a queue of what needs you.'
+					}
+				]
+			},
+			{
+				kind: 'stats',
+				id: 'numbers',
+				title: 'By the numbers',
+				items: [
+					{ value: '4', label: 'Request services' },
+					{ value: '4', label: 'User roles, Super Admin to User' },
+					{ value: '9', label: 'Asset-management modules' },
+					{ value: '−62%', label: 'Build size after optimising for web' }
+				]
+			},
+			{
+				kind: 'impact',
+				id: 'impact',
+				title: 'Impact & value',
+				items: [
+					'Asset requests submitted and tracked online, not on paper',
+					'Every approval step and handover document on record for audits',
+					'Items labelled with barcodes and QR codes for fast stock-taking',
+					'Administrators see exactly which requests are waiting on them'
+				]
+			},
+			{
+				kind: 'stack',
+				id: 'stack',
+				title: 'Tech stack',
+				groups: [
+					{
+						label: 'Backend',
+						items: [{ name: 'Laravel', why: 'Requests, workflows and documents' }]
+					},
+					{
+						label: 'Front-end',
+						items: [
+							{ name: 'Bootstrap 4', why: 'Admin layout and forms' },
+							{ name: 'jQuery & DataTables', why: 'Interactive lists and filters' },
+							{ name: 'Select2 & Toastr', why: 'Pickers and notifications' }
+						]
+					},
+					{
+						label: 'Labels & documents',
+						items: [
+							{ name: 'JsBarcode', why: 'Barcodes on asset labels' },
+							{ name: 'QRCode.js', why: 'QR codes for quick lookup' }
 						]
 					}
 				]
