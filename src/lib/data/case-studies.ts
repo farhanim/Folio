@@ -14,14 +14,14 @@ const art =
 		alt
 	});
 
-const mitra = art('mitra-persona');
-const awp = art('awp-order-flow');
-const heur = art('awp-heuristic');
-const grosir = art('grosir-pintar');
-const utang = art('catat-utang');
-const modal = art('modal-terms');
-const loyal = art('loyal-users');
-const dataPulsa = art('data-pulsa');
+const mitra = art('mitra-persona', 'webp');
+const awp = art('awp-order-flow', 'webp');
+const heur = art('awp-heuristic', 'webp');
+const grosir = art('grosir-pintar', 'webp');
+const utang = art('catat-utang', 'webp');
+const modal = art('modal-terms', 'webp');
+const loyal = art('loyal-users', 'webp');
+const dataPulsa = art('data-pulsa', 'webp');
 const faq = art('efishery-faq', 'webp');
 const saldo = art('saldo-panen', 'webp');
 const martech = art('martech-crm', 'webp');
@@ -31,8 +31,8 @@ const nikelPortal = (name: string, alt: string): ImageRef => ({
 	src: `/images/work/nikel-lender-portal/${name}`,
 	alt
 });
-const home = art('home-revamp');
-const reskin = art('tokosmart-reskin');
+const home = art('home-revamp', 'webp');
+const reskin = art('tokosmart-reskin', 'webp');
 const noFeedback = { likes: 0, dislikes: 0, comments: [] };
 
 export const caseStudies: Project[] = [
@@ -153,7 +153,7 @@ export const caseStudies: Project[] = [
 					'Metric definitions from the appendix: available balance is real-time; returns are all-time; wallet credits and debits are month-to-date.',
 				layout: 'wide',
 				images: [
-					nikelPortal('metric-model.svg', 'Metric model distinguishing real-time balance, all-time returns, loan status and month-to-date movements')
+					nikelPortal('metric-model.webp', 'Metric model distinguishing real-time balance, all-time returns, loan status and month-to-date movements')
 				]
 			},
 			{

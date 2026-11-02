@@ -90,3 +90,30 @@ export const blocks = (t) => {
 		`<div style="font:500 ${size}px/1.42 ${F};color:${color};margin-top:10px">${text}</div>`;
 	return { card, grid, eyebrow, big, hbars, vbars, donut, numbered, ticks, quote, flow, chips, h, p };
 };
+
+/** Build a deck for one project: slides are { name, title, lede, body(b, t) }. */
+export const deckOf = (t, fonts) => (slug, dir, slides) => {
+	const b = blocks(t);
+	const css = slideCss(t);
+	return slides.map((s, i) => ({
+		slug,
+		dir,
+		name: s.name,
+		fonts,
+		css,
+		html: frame(t, { n: i + 1, total: slides.length, title: s.title, lede: s.lede, content: s.body(b, t) })
+	}));
+};
+
+/** An app screen drawn as a card: coloured header, then rows. */
+export const appScreen = (t, title, rows, { accent = t.accent, foot = '', hl = -1 } = {}) => `
+	<div style="border-radius:22px;border:3px solid ${t.soft};overflow:hidden;background:#fff;height:100%">
+		<div style="padding:14px 18px;background:${accent};color:#fff;font:800 19px ${t.font}">${title}</div>
+		<div style="padding:4px 18px">${rows
+			.map(
+				(r, i) =>
+					`<div style="display:flex;justify-content:space-between;gap:10px;padding:11px 8px;margin:0 -8px;border-radius:10px;border-bottom:2px solid #F0F2F6;${i === hl ? `background:${t.soft};` : ''}font:${i === hl ? 800 : 600} 16px/1.3 ${t.font};color:${t.ink}">${Array.isArray(r) ? `<span>${r[0]}</span><b>${r[1]}</b>` : `<span>${r}</span><span style="color:${accent}">›</span>`}</div>`
+			)
+			.join('')}</div>
+		${foot}
+	</div>`;
