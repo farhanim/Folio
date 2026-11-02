@@ -215,6 +215,7 @@
 	}
 	.more a {
 		flex: 1;
+		min-width: 0;
 		display: flex;
 		align-items: center;
 		gap: 16px;
@@ -242,7 +243,9 @@
 		object-fit: cover;
 		background: var(--surface);
 	}
+	/* The text takes the room that is left and shrinks, so the arrow stays inside the card */
 	.text {
+		flex: 1 1 0;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -265,6 +268,7 @@
 		text-overflow: ellipsis;
 	}
 	.arrow {
+		flex: none;
 		display: flex;
 		margin-left: auto;
 		color: var(--text-secondary);

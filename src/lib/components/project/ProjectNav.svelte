@@ -7,7 +7,17 @@
 	let { prev, next }: { prev: Project; next: Project } = $props();
 </script>
 
-<nav class="pager" aria-label="More projects">
+<nav class="pager" aria-labelledby="pager-title">
+	<!-- A divider and a heading close the case study and open the next one -->
+	<header class="pager-head">
+		<div>
+			<span class="eyebrow label">Before you go</span>
+			<h2 id="pager-title">There’s more to see</h2>
+		</div>
+		<p class="hint">
+			Jump with <kbd>[</kbd> <kbd>]</kbd>
+		</p>
+	</header>
 	<a class="card prev" href="/work/{prev.slug}">
 		<span class="dir label"><Icon name="arrowLeft" size={13} /> Previous</span>
 		<span class="body">
@@ -41,7 +51,49 @@
 		display: grid;
 		grid-template-columns: subgrid;
 		row-gap: var(--gap);
-		padding: 40px 0 120px;
+		padding: 40px 0 40px;
+	}
+	/* Closing heading: a small eyebrow over a title in the page's display voice */
+	.pager-head {
+		grid-column: 1 / -1;
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 16px;
+		margin-bottom: 8px;
+	}
+	.eyebrow {
+		display: block;
+		color: var(--text-secondary);
+	}
+	.pager-head h2 {
+		margin: 8px 0 0;
+		font-size: clamp(26px, 2.8vw, 40px);
+		font-weight: 450;
+		letter-spacing: -0.04em;
+		line-height: 1.05;
+	}
+	.hint {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		margin: 0 0 4px;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--text-secondary);
+	}
+	.hint kbd {
+		display: inline-grid;
+		place-items: center;
+		min-width: 20px;
+		height: 20px;
+		padding: 0 5px;
+		border: 1px solid var(--hairline);
+		border-bottom-width: 2px;
+		border-radius: 6px;
+		background: var(--card);
+		font: inherit;
+		color: var(--text);
 	}
 	.card {
 		grid-column: span 5;
@@ -112,12 +164,55 @@
 			grid-column: span 3;
 		}
 	}
+	/* Phones: two compact cards side by side, text only */
 	@media (max-width: 600px) {
+		/* Room at the bottom so the cards clear the floating CTA and the dock */
+		.pager {
+			padding: 28px 0 24px;
+		}
+		/* No keyboard on phones, so no shortcut hint */
+		.hint {
+			display: none;
+		}
+		.pager-head h2 {
+			font-size: 24px;
+		}
 		.card {
-			grid-column: 1 / -1;
+			grid-column: span 2;
+			gap: 8px;
+			padding: 12px 14px 14px;
+			border-radius: 14px;
+		}
+		.body {
+			gap: 0;
+			width: 100%;
+			min-width: 0;
+		}
+		.body > span {
+			min-width: 0;
+			max-width: 100%;
+		}
+		.next .body {
+			justify-content: flex-end;
 		}
 		.body img {
-			width: 80px;
+			display: none;
+		}
+		.dir {
+			font-size: 10px;
+		}
+		.kind {
+			font-size: 9px;
+		}
+		/* One line only; longer titles end in an ellipsis */
+		.title {
+			max-width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			font-size: 15px;
+			line-height: 1.2;
+			letter-spacing: -0.02em;
 		}
 	}
 </style>

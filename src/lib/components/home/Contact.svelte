@@ -4,7 +4,7 @@
 	import { profile } from '#lib/data/profile.ts';
 	import { reveal } from '#lib/utils/reveal.ts';
 
-	const headline = "Let’s make something good.";
+	const headline = 'Let’s make something good.';
 	const SPACE = ' ';
 
 	let copied = $state(false);
@@ -65,7 +65,7 @@
 			<span class="act-main">
 				<span class="act-icon"><Icon name="download" size={18} /></span>
 				<span class="act-text">
-					<span class="act-label">Prefer a PDF?</span>
+					<span class="act-label">or view a resume?</span>
 					<span class="act-value">Download resume</span>
 				</span>
 			</span>
@@ -144,7 +144,7 @@
 		gap: 12px;
 		min-width: 0;
 		height: 76px;
-		padding: 0 12px 0 14px;
+		padding: 0 0 0 14px;
 		border: 0;
 		border-radius: 20px;
 		background: var(--card);
@@ -227,6 +227,8 @@
 		flex: none;
 		width: 40px;
 		height: 40px;
+		/* The icon sits flush with the right edge, like the social links below */
+		margin-right: -11px;
 		padding: 0;
 		border: 0;
 		border-radius: 50%;
@@ -335,11 +337,7 @@
 			height: 68px;
 		}
 		.colophon {
-			flex-direction: column;
-			gap: 6px;
-		}
-		.top {
-			margin-left: 0;
+			gap: 12px;
 		}
 	}
 </style>

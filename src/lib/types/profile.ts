@@ -109,7 +109,18 @@ export interface Profile {
 	portraitCutout?: string;
 	cv: string;
 	/** Icon names from components/ui/icons.ts. */
-	facts: { icon: string; label: string; value: string }[];
+	/**
+	 * Headline facts under the intro: a value with one line of context. `tone` tints
+	 * the card; `live` marks a status that is current (a pulsing dot instead of an icon).
+	 */
+	facts: {
+		icon: string;
+		label: string;
+		value: string;
+		note?: string;
+		tone?: 'amber' | 'blue' | 'violet' | 'green';
+		live?: boolean;
+	}[];
 	experience: Experience[];
 	education: Education[];
 	recognitions: Recognition[];

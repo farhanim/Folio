@@ -27,9 +27,9 @@ export const profile: Profile = {
 	cv: 'https://drive.google.com/file/d/1TzTitPqrE28xl__0q5sH_yt5omj5WM5L/view?usp=sharing',
 	facts: [
 		{ icon: 'pin', label: 'Based in', value: 'Bogor, Indonesia' },
-		{ icon: 'clock', label: 'Experience', value: '9+ years' },
-		{ icon: 'layers', label: 'Products led', value: '16 products' },
-		{ icon: 'check', label: 'Status', value: 'Open to work' }
+		{ icon: 'briefcase', label: 'Experience', value: '9+ years' },
+		{ icon: 'package', label: 'Products led', value: '16 products' },
+		{ icon: 'check', label: 'Status', value: 'Open to work', tone: 'green', live: true }
 	],
 	experience: [
 		{
@@ -369,6 +369,7 @@ export const profile: Profile = {
 		{ name: 'Paper', category: 'Design' },
 		{ name: 'Webflow', brand: 'webflow', category: 'Design' },
 		{ name: 'Adobe', brand: 'adobe', category: 'Design' },
+		{ name: 'Claude', brand: 'claude', category: 'AI' },
 		{ name: 'GPT', brand: 'openai', category: 'AI' },
 		{ name: 'Replit', brand: 'replit', category: 'AI' },
 		{ name: 'React', brand: 'react', category: 'Code' },

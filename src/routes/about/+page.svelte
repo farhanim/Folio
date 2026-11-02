@@ -277,8 +277,13 @@
 
 				<dl class="facts">
 					{#each profile.facts as f (f.label)}
-						<div>
-							<span class="f-icon"><Icon name={f.icon as IconName} size={15} /></span>
+						<div data-tone={f.tone ?? 'amber'}>
+							<span class="f-icon">
+								{#if f.live}<span class="live" aria-hidden="true"><Icon name="globe" size={15} /></span>{:else}<Icon
+										name={f.icon as IconName}
+										size={15}
+									/>{/if}
+							</span>
 							<dt class="label">{f.label}</dt>
 							<dd>{f.value}</dd>
 						</div>
@@ -742,7 +747,7 @@
 <style>
 	.profile {
 		padding-top: 40px;
-		padding-bottom: 120px;
+		padding-bottom: 56px;
 	}
 	.rail {
 		grid-column: 1 / span 2;
@@ -936,6 +941,7 @@
 	}
 	/* Each fact a small card: icon on the left, label above a one-line value */
 	.facts div {
+		--hue: var(--amber);
 		display: grid;
 		grid-template-columns: auto 1fr;
 		column-gap: 10px;
@@ -948,6 +954,10 @@
 			border-color 0.3s ease,
 			transform 0.4s var(--ease-out);
 	}
+	/* Only the live status gets its own colour */
+	.facts div[data-tone='green'] {
+		--hue: #22a06b;
+	}
 	.facts div:hover {
 		border-color: var(--rule);
 		transform: translateY(-2px);
@@ -959,8 +969,54 @@
 		width: 34px;
 		height: 34px;
 		border-radius: 10px;
-		background: color-mix(in srgb, var(--amber) 16%, transparent);
-		color: var(--amber);
+		/* Neutral tile and icon, so the facts read as one calm set */
+		background: color-mix(in srgb, var(--text) 6%, transparent);
+		box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 8%, transparent);
+		color: color-mix(in srgb, var(--text) 75%, transparent);
+	}
+	/* Except the live status, which keeps its green */
+	.facts div[data-tone='green'] .f-icon {
+		background: color-mix(in srgb, var(--hue) 16%, transparent);
+		box-shadow: none;
+		color: var(--hue);
+	}
+	/* Status: a globe (open to work anywhere) with a soft ring pulsing out behind it */
+	.live {
+		position: relative;
+		display: grid;
+		place-items: center;
+	}
+	.live::before,
+	.live::after {
+		position: absolute;
+		inset: -2px;
+		border: 1.5px solid var(--hue);
+		border-radius: 50%;
+		opacity: 0;
+		animation: live 2.4s ease-out infinite;
+		content: '';
+	}
+	.live::after {
+		animation-delay: 1.2s;
+	}
+	.live :global(svg) {
+		position: relative;
+	}
+	@keyframes live {
+		0% {
+			opacity: 0.7;
+			transform: scale(0.9);
+		}
+		100% {
+			opacity: 0;
+			transform: scale(2.1);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.live::before,
+		.live::after {
+			animation: none;
+		}
 	}
 	.facts dt {
 		font-size: 10px;
@@ -1548,6 +1604,10 @@
 			flex: 0 0 min(300px, 78%);
 			border: 0;
 			scroll-snap-align: start;
+		}
+		/* A row with a single card (Education) has nothing to swipe to: use the full width */
+		.entries > li:only-child {
+			flex-basis: 100%;
 		}
 		.entry {
 			display: flex;

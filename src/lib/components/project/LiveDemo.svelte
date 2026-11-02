@@ -81,7 +81,7 @@
 						<img src={project.gallery?.[0]?.src ?? preview.poster} alt="" loading="lazy" />
 						<span class="start-cta">
 							<span class="play"><Icon name="play" size={15} stroke={2} /></span>
-							Launch live demo
+							Live demo
 						</span>
 					</button>
 				{/if}

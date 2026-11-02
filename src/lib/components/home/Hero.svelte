@@ -523,9 +523,12 @@
 			padding: 4px 10px 4px 4px;
 			font-size: 12px;
 		}
+		/* One smaller size for the intro and the Currently / Previously notes on phones */
 		.intro,
 		.aside {
 			grid-column: 1 / -1;
+			font-size: calc(13.5px * var(--text-scale));
+			line-height: 1.55;
 		}
 		.aside {
 			margin-top: 28px;

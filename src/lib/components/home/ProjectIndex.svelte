@@ -903,8 +903,11 @@
 		}
 	}
 	@media (max-width: 600px) {
-		.index {
-			padding-right: 0;
+		/* Same margin on both sides; only the rail scrolls out to the screen edge */
+		.rail {
+			margin-right: calc(-1 * var(--pad));
+			padding-right: var(--pad);
+			scroll-padding-right: var(--pad);
 		}
 		.filters {
 			flex-wrap: nowrap;

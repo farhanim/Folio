@@ -3,7 +3,6 @@
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import TableOfContents from '#lib/components/ui/TableOfContents.svelte';
 	import BlockView from '#lib/components/project/BlockView.svelte';
-	import Feedback from '#lib/components/project/Feedback.svelte';
 	import LiveDemo from '#lib/components/project/LiveDemo.svelte';
 	import MediaStrip from '#lib/components/project/MediaStrip.svelte';
 	import ProjectCover from '#lib/components/project/ProjectCover.svelte';
@@ -33,8 +32,7 @@
 					{ id: 'live', label: 'Live demo' }
 				]
 			: []),
-		...project.blocks.map((b) => ({ id: b.id, label: b.title })),
-		{ id: 'feedback', label: 'Feedback' }
+		...project.blocks.map((b) => ({ id: b.id, label: b.title }))
 	]);
 
 	// Details row; anything not known for a project is simply left out.
@@ -159,7 +157,7 @@
 			<BlockView {block} />
 		{/each}
 
-		<Feedback {project} />
+		<!-- Likes and comments (Feedback.svelte) are hidden for now -->
 		<ProjectNav prev={data.prev} next={data.next} />
 	</div>
 </article>
