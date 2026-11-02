@@ -66,7 +66,7 @@
 				<span class="act-icon"><Icon name="download" size={18} /></span>
 				<span class="act-text">
 					<span class="act-label">Or download Resume</span>
-					<span class="act-value">Get Resume</span>
+					<span class="act-value">Get a resume</span>
 				</span>
 			</span>
 			<span class="act-end" aria-hidden="true"><Icon name="arrowUpRight" size={16} /></span>

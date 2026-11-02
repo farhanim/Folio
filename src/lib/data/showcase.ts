@@ -50,7 +50,7 @@ export const showcase: Project[] = [
 		],
 		tools: ['Next.js', 'React', 'Tailwind CSS', 'Framer Motion'],
 		cover: kee.thumb,
-		featured: true,
+		special: true,
 		gallery: kee.shots(
 			[1, 'Hero: Revolutionizing Lending with AI'],
 			[2, 'Kee2Credit™ platform capabilities'],
@@ -554,6 +554,7 @@ export const showcase: Project[] = [
 		],
 		tools: ['Vite', 'JavaScript', 'SVG'],
 		cover: sparq.thumb,
+		special: true,
 		gallery: sparq.shots(
 			[1, 'Sign in to SparQ'],
 			[2, 'Workspace'],
@@ -1036,6 +1037,7 @@ export const showcase: Project[] = [
 		],
 		tools: ['Laravel', 'Bootstrap', 'Leaflet', 'Turf.js'],
 		cover: pims.thumb,
+		special: true,
 		gallery: pims.shots(
 			[2, 'Operations dashboard with asset map'],
 			[3, 'Pipeline detail: integrity and route'],
@@ -1165,6 +1167,7 @@ export const showcase: Project[] = [
 		],
 		tools: ['React', 'Vite', 'Tailwind CSS', 'Zustand'],
 		cover: dataroom.thumb,
+		special: true,
 		gallery: dataroom.shots(
 			[2, 'All data rooms: recent and favourites'],
 			[3, 'Room: folders and files'],

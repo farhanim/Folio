@@ -5,5 +5,6 @@ import { warungPintar } from './brands/warung-pintar.mjs';
 import { fazz } from './brands/fazz.mjs';
 import { efishery } from './brands/efishery.mjs';
 import { builds } from './brands/builds.mjs';
+import { klika2c } from './brands/nikel.mjs';
 
-export const covers = [...warungPintar, ...fazz, ...efishery, ...builds];
+export const covers = [...warungPintar, ...fazz, ...efishery, ...builds, klika2c];

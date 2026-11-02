@@ -157,6 +157,16 @@
 				</div>
 			{/each}
 		</div>
+	{:else if b.kind === 'platforms'}
+		{#if b.intro}<p class="intro">{b.intro}</p>{/if}
+		<div class="tours">
+			{#each b.items as item (item.id)}
+				<figure>
+					<video src={item.video} poster={item.poster} muted playsinline autoplay loop></video>
+					<figcaption><b>{item.name}</b><span>{item.summary}</span></figcaption>
+				</figure>
+			{/each}
+		</div>
 	{:else if b.kind === 'gallery' && b.caption}
 		<p class="caption">{b.caption}</p>
 	{/if}
@@ -723,6 +733,37 @@
 		}
 		.shots img {
 			max-height: none;
+		}
+	}
+	.tours {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 20px;
+	}
+	.tours figure {
+		margin: 0;
+	}
+	.tours video {
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 10;
+		object-fit: cover;
+		border-radius: 12px;
+		background: #f5f7fb;
+	}
+	.tours figcaption {
+		display: grid;
+		gap: 6px;
+		margin-top: 14px;
+		font-size: 14px;
+		line-height: 1.5;
+	}
+	.tours figcaption span {
+		color: var(--text-secondary);
+	}
+	@media (max-width: 760px) {
+		.tours {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

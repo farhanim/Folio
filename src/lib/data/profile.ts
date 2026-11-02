@@ -156,7 +156,7 @@ export const profile: Profile = {
 		{
 			kind: 'milestone',
 			title: 'Design systems, built and evolved',
-			summary: 'Renceng, Fazz DS, OneFish and Ulysses.',
+			summary: 'Renceng, Fazz DS, OneFish and Ulysses (Nikel).',
 			from: '',
 			logos: [
 				companies.warungPintar.logo,
@@ -318,7 +318,7 @@ export const profile: Profile = {
 		{
 			name: 'Design System',
 			group: 'Design & Research',
-			proof: 'Renceng, Fazz DS, OneFish and Ulysses',
+			proof: 'Renceng, Fazz DS, OneFish and Ulysses (Nikel)',
 			art: 'systems'
 		},
 		{

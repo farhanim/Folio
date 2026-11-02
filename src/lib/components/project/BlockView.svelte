@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Block } from '#lib/types/index.ts';
 	import { reveal } from '#lib/utils/reveal.ts';
+	import PlatformTour from './PlatformTour.svelte';
 
 	/** Renders one content block of a project page. */
 	let { block }: { block: Block } = $props();
@@ -45,7 +46,7 @@
 		{:else if block.kind === 'gallery'}
 			<div class="gallery">
 				{#each block.images as image, i (image.src)}
-					<figure class:wide={wide(i, block.images.length)}>
+					<figure class:wide={block.layout === 'stack' || wide(i, block.images.length)}>
 						<img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
 						{#if block.id === 'before-after'}
 							<figcaption>{i === 0 ? 'Previous version' : 'Updated design'}</figcaption>
@@ -88,6 +89,9 @@
 					<li><span class="tick" aria-hidden="true"></span>{item}</li>
 				{/each}
 			</ul>
+		{:else if block.kind === 'platforms'}
+			{#if block.intro}<p class="lead">{block.intro}</p>{/if}
+			<PlatformTour items={block.items} label={block.title} />
 		{:else if block.kind === 'stack'}
 			<div class="stack">
 				{#each block.groups as g (g.label)}
@@ -132,6 +136,14 @@
 	}
 	.content {
 		grid-column: 3 / -1;
+	}
+	/* The tour needs the full width: title above, stage across every column */
+	.kind-platforms h2,
+	.kind-platforms .content {
+		grid-column: 1 / -1;
+	}
+	.kind-platforms .lead {
+		margin-bottom: 28px;
 	}
 	.content > :global(*) {
 		grid-column: 1 / -1;

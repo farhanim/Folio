@@ -31,11 +31,317 @@ const nikelPortal = (name: string, alt: string): ImageRef => ({
 	src: `/images/work/nikel-lender-portal/${name}`,
 	alt
 });
+const klik = art('klika2c-platform', 'webp');
 const home = art('home-revamp');
 const reskin = art('tokosmart-reskin');
 const noFeedback = { likes: 0, dislikes: 0, comments: [] };
 
 export const caseStudies: Project[] = [
+	// ───────────────────────────────────────────── KlikA2C lending platform
+	{
+		slug: 'klika2c-platform',
+		type: 'design',
+		title: 'Designing digital lending, end to end',
+		tagline: 'How three disconnected portals became one lending experience that lenders, borrowers and analysts can trust.',
+		summary:
+			'I led end-to-end design for Nikel’s KlikA2C lending marketplace, bringing the Lender Portal, Borrower Portal and Back Office onto one loan lifecycle, one design system and one shared language for money.',
+		client: companies.nikel,
+		role: 'Product Designer',
+		year: 2026,
+		team: 'Solo designer with product, engineering, credit and operations',
+		facts: [
+			{ label: 'Product', value: 'KlikA2C · Lender, Borrower, Back Office' },
+			{ label: 'Loan products', value: 'Invoice, PO, Employee Loan, EWA' }
+		],
+		tools: ['Figma'],
+		cover: '/images/work/klika2c-platform/thumb.webp',
+		featured: true,
+		isNew: true,
+		blocks: [
+			{
+				kind: 'text',
+				id: 'story',
+				title: 'The story',
+				body: [
+					'Lending runs on trust. A lender has to trust a number before moving money, a borrower has to trust that the cost they see is the cost they pay, and an analyst has to trust that every transfer landed.',
+					'At KlikA2C, Nikel’s peer-to-peer lending marketplace, those three people worked in three portals that each told a loan’s story differently. Lenders fund invoice, PO, employee and earned-wage (EWA) loans; borrowers apply for them; and an operations team checks, approves and moves the money in between.',
+					'I set out to design one product instead of three: one loan lifecycle, one design system and one language for money, so the same loan reads the same way from every side.'
+				]
+			},
+			{
+				kind: 'platforms',
+				id: 'portals',
+				title: 'The three portals',
+				intro: 'Scroll to step through each portal, or pick a tab. Each clip is a walkthrough of the working prototype.',
+				items: [
+					{
+						id: 'lender',
+						label: 'Lender',
+						name: 'Lender Portal',
+						summary:
+							'For people who fund loans. They top up and withdraw their balance, fund single loans or whole batches (crowdfunding), and follow every rupiah in their portfolio and mutation history.',
+						video: '/images/work/klika2c-platform/lender.webm',
+						chapters: [
+							{ at: 0, label: 'Home leads with the balance, top up and withdrawal' },
+							{ at: 1.4, label: 'Funding limit and filters before choosing a loan' },
+							{ at: 4.2, label: 'Batch funding: whole batches or single loans' },
+							{ at: 6.8, label: 'Loan detail: summary, factsheet and remaining amount' },
+							{ at: 8.8, label: 'Enter an amount and see the estimated return' },
+							{ at: 10.6, label: 'Read the agreement and sign with OTP (OJK)' },
+							{ at: 15.8, label: 'Portfolio: funded loans by status and risk grade' },
+							{ at: 20.8, label: 'Mutation: every credit and debit, reconciled' }
+						],
+						poster: '/images/work/klika2c-platform/lender-poster.webp',
+						features: [
+							'Home: balance with top up and withdrawal, funding limit, available loans',
+							'Batch funding: select a whole batch or pick loans one by one',
+							'Loan detail: executive summary, factsheet and repayment plan',
+							'Funding with an OJK-compliant agreement signed by OTP',
+							'Portfolio by status and a mutation log of credits and debits'
+						]
+					},
+					{
+						id: 'borrower',
+						label: 'Borrower',
+						name: 'Borrower Portal',
+						summary:
+							'For businesses and employees who borrow. Registration adapts to the product; once active, borrowers apply in four steps, track each loan and manage the bank accounts that receive disbursements.',
+						video: '/images/work/klika2c-platform/borrower.webm',
+						chapters: [
+							{ at: 0, label: 'Sign in, then choose a product: EWA, Employee Loan, Invoice or PO' },
+							{ at: 3.6, label: 'Verify with NIK or NIP' },
+							{ at: 5.2, label: 'Employer data prefills and locks the account' },
+							{ at: 9.1, label: 'Home: remaining limit by product and payroll deductions' },
+							{ at: 13.7, label: 'Apply: pick a product and see what documents it needs' },
+							{ at: 15.7, label: 'Set the amount and tenor' },
+							{ at: 18.6, label: 'Simulation: the full cost before any document' },
+							{ at: 24.1, label: 'Loan detail: schedule and activity timeline' },
+							{ at: 29, label: 'Settings: bank accounts for disbursement' }
+						],
+						poster: '/images/work/klika2c-platform/borrower-poster.webp',
+						features: [
+							'Registration by product, with NIK or NIP and employer-prefilled data',
+							'Home: remaining limit per product and the next payroll deduction',
+							'Apply: amount and tenor, simulation, documents, review and sign',
+							'Loan detail: repayment schedule and an activity timeline',
+							'Settings: bank accounts for disbursement, with a primary account'
+						]
+					},
+					{
+						id: 'backoffice',
+						label: 'Back Office',
+						name: 'Back Office',
+						summary:
+							'For the internal team behind both portals. Analysts validate borrowers, review and offer loans, set up the employers (anchors) behind payroll loans, and watch money move through escrow.',
+						video: '/images/work/klika2c-platform/backoffice.webm',
+						chapters: [
+							{ at: 0, label: 'Dashboard: what needs attention today' },
+							{ at: 1.2, label: 'Borrower: list of applicants and customers' },
+							{ at: 3, label: 'Borrower detail: KYC, legal and financial documents' },
+							{ at: 9.1, label: 'Loan: every application and its status' },
+							{ at: 11, label: 'Loan detail: summary, fees, repayment and lenders' },
+							{ at: 16.2, label: 'Anchor: employers behind payroll loans' },
+							{ at: 18, label: 'Anchor rules: payroll date, billing cut-off, accrual' },
+							{ at: 22.2, label: 'New anchor: a four-step setup with review' },
+							{ at: 25.7, label: 'Transaction: escrow, auto-clearing and disbursement' }
+						],
+						poster: '/images/work/klika2c-platform/backoffice-poster.webp',
+						features: [
+							'Borrower: KYC and legal documents, products held, review comments',
+							'Loan: summary and fees, repayment, lender list, assessment tasks',
+							'Anchor: employer data, payroll and billing rules, four-step setup',
+							'Transaction: escrow balance, auto-clearing and auto-disbursement'
+						]
+					}
+				]
+			},
+			{
+				kind: 'stats',
+				id: 'scope',
+				title: 'Scope',
+				items: [
+					{ value: '3', label: 'Portals designed as one product' },
+					{ value: '4', label: 'Loan products: invoice, PO, employee loan, EWA' },
+					{ value: '2', label: 'Ways to fund: single loan or batch' },
+					{ value: '4', label: 'Core back-office modules, plus 10 supporting ones' }
+				]
+			},
+			{
+				kind: 'gallery',
+				id: 'platform',
+				title: 'One marketplace',
+				caption:
+					'Funding moves from the lender’s account to the KlikA2C escrow, then on to the borrower; repayments flow back the same way.',
+				layout: 'wide',
+				images: [klik('platform', 'Three portal screens above the money flow from lender funding to repayment')]
+			},
+			{
+				kind: 'impact',
+				id: 'problem',
+				title: 'What stood in the way',
+				intro: 'Three people share every loan, and each was let down in a different place:',
+				items: [
+					'Lenders saw plenty of metrics but few answers, and charts went blank whenever a data source had no value.',
+					'Each portal named loans, statuses and amounts its own way, so the same loan read differently on every side.',
+					'Borrowers had to start again for each new product, re-entering details the platform already held.',
+					'Partner and regulatory rules had to be applied by hand, case by case, instead of living in the product.'
+				]
+			},
+			{
+				kind: 'gallery',
+				id: 'process',
+				title: 'Design process',
+				caption:
+					'Double Diamond, from auditing the existing portal to a shared design system and a Bahasa Indonesia pass.',
+				layout: 'wide',
+				images: [klik('process', 'Four phases: discover, define, develop and deliver, with the working Figma file')]
+			},
+			{
+				kind: 'gallery',
+				id: 'personas',
+				title: 'Personas',
+				caption: 'The funder, the business or employee, and the credit analyst: their goals and frustrations.',
+				layout: 'wide',
+				images: [klik('personas', 'Three persona cards for lender, borrower and operations')]
+			},
+			{
+				kind: 'gallery',
+				id: 'experience-map',
+				title: 'Experience map',
+				caption:
+					'One loan across five stages and three lanes, with the opportunity each stage opened up.',
+				layout: 'wide',
+				images: [klik('journey', 'Experience map with borrower, back office and lender lanes across five stages')]
+			},
+			{
+				kind: 'impact',
+				id: 'principles',
+				title: 'Design principles',
+				intro: 'Four principles came out of the research, and every screen was checked against them:',
+				items: [
+					'Lead with the decision: show what someone can act on (balance, limit, status) before analytics.',
+					'Every number explains itself, with its period, its source and how it was calculated.',
+					'One accent per component: colour carries status and risk, never decoration.',
+					'Show the rule where it applies: cut-offs, fees and OTP steps appear at the moment they matter.'
+				]
+			},
+			{
+				kind: 'gallery',
+				id: 'values',
+				title: 'Values and proportion',
+				caption: 'The principles in practice, on a 1440 grid with 40px gutters and an 8-step spacing scale.',
+				layout: 'wide',
+				images: [klik('values', 'Design values, the 1440 layout grid and the spacing and radius scale')]
+			},
+			{
+				kind: 'gallery',
+				id: 'lender-portal',
+				title: 'Lender Portal',
+				caption:
+					'From balance to signed funding to reconciliation. With batch funding on, Home lists loan batches; with it off, single loans only.',
+				layout: 'stack',
+				images: [
+					klik('lender', 'Lender home and funding agreement beside the module list'),
+					klik('anatomy-lender-home', 'Annotated lender home: balance, top up and withdrawal, performance, funding limit and batch funding'),
+					klik('anatomy-agreement', 'Annotated funding confirmation: regulation note, loan summary, agreement, OTP and approve'),
+					klik('anatomy-portfolio', 'Annotated portfolio: totals, status buckets, risk grade and repayment progress'),
+					klik('anatomy-mutation', 'Annotated mutation: period summary, filters, export and signed transactions')
+				]
+			},
+			{
+				kind: 'gallery',
+				id: 'borrower-portal',
+				title: 'Borrower Portal',
+				caption:
+					'Registration adapts to the product, and applying shows the full cost before any document is asked for. New borrowers see the activation flow; active borrowers land on Home.',
+				layout: 'stack',
+				images: [
+					klik('borrower', 'Product choice at registration and the amount and tenor step beside the module list'),
+					klik('anatomy-register', 'Annotated account registration with employer-prefilled, locked fields and OTP'),
+					klik('anatomy-apply', 'Annotated amount and tenor step: steps, limit, amount controls and product fields'),
+					klik('anatomy-simulation', 'Annotated repayment simulation: bullet repayment, totals and payroll note'),
+					klik('anatomy-borrower-loan', 'Annotated loan detail: amounts owed, terms, schedule and timeline')
+				]
+			},
+			{
+				kind: 'gallery',
+				id: 'back-office',
+				title: 'Back Office',
+				caption:
+					'Borrower, Loan, Anchor and Transaction carry the lifecycle from KYC to repayment; partner rules are set once and drive every loan.',
+				layout: 'stack',
+				images: [
+					klik('backoffice', 'Four back-office modules: borrower, loan, anchor and transaction'),
+					klik('anatomy-bo-loan', 'Annotated back-office loan detail: status, tabs, summary and fees'),
+					klik('anatomy-bo-transactions', 'Annotated transactions: totals, escrow, automation and retry policy'),
+					klik('rules', 'Anchor configuration, transfer retry policy and the supporting modules')
+				]
+			},
+			{
+				kind: 'features',
+				id: 'more-modules',
+				title: 'Also in the back office',
+				items: [
+					{ title: 'Leads and Lender', body: 'Prospects before onboarding, and the lender accounts that fund loans.' },
+					{ title: 'Collection and Funding Insurance', body: 'Overdue follow-up, and cover on funded loans.' },
+					{ title: 'Product and Workflow Configuration', body: 'Products, fees and limits, and submission templates built from legal and regulatory rules.' },
+					{ title: 'Roles, Users and Blacklist', body: 'Who can see and approve what, and identities that are blocked.' },
+					{ title: 'Workbench and Task Management', body: 'Review work assigned to each analyst, in one queue.' },
+					{ title: 'Partners', body: 'The channels and integrations loans come through.' }
+				]
+			},
+			{
+				kind: 'gallery',
+				id: 'design-decisions',
+				title: 'Design decisions',
+				caption: 'Eight decision records: the problem, what we chose, why, and what it cost.',
+				layout: 'stack',
+				images: [
+					klik('decisions-1', 'Decision records: balance before analytics, and batch funding'),
+					klik('decisions-2', 'Decision records: approval after the agreement, and statements that reconcile'),
+					klik('decisions-3', 'Decision records: locked employer data, and simulation before documents'),
+					klik('decisions-4', 'Decision records: list-to-detail, and automated transfers with a manual fallback')
+				]
+			},
+			{
+				kind: 'gallery',
+				id: 'metrics',
+				title: 'Product metrics',
+				caption:
+					'A north star of healthy funded volume, the signals each portal answers for, and a guardrail on overdue loans.',
+				layout: 'wide',
+				images: [klik('metrics', 'North star, guardrail and metrics for lender, borrower and operations')]
+			},
+			{
+				kind: 'gallery',
+				id: 'design-system',
+				title: 'Design system',
+				caption:
+					'Shared tokens across two surfaces: the portals in Geist and navy, the back office denser in Inter and green.',
+				layout: 'wide',
+				images: [klik('design-system', 'Colour, type, risk grades, loan statuses and the loan card component')]
+			},
+			{
+				kind: 'gallery',
+				id: 'value',
+				title: 'Product value',
+				caption: 'What lenders, borrowers and KlikA2C each get from one connected platform.',
+				layout: 'wide',
+				images: [klik('value', 'Value for lenders, borrowers and KlikA2C')]
+			},
+			{
+				kind: 'text',
+				id: 'reflection',
+				title: 'What I learned',
+				body: [
+					'The biggest lever wasn’t a single screen but shared definitions. Once “available balance”, “outstanding” and “overdue” meant one thing everywhere, every screen got simpler.',
+					'Rules belong in the product. Turning payroll calendars, retry policies and agreement steps into visible configuration made the back office the place where policy lives, and made both portals more predictable.',
+					'Next, I want to validate these metrics with live data and take batch funding and the activation flow into usability testing.'
+				]
+			}
+		],
+		seed: noFeedback
+	},
 	{
 		slug: 'nikel-lender-portal',
 		type: 'design',
@@ -187,7 +493,6 @@ export const caseStudies: Project[] = [
 		tools: ['Interviews', 'Prompt cards', 'Google Forms', 'Data Studio', 'Miro'],
 		cover: '/images/work/mitra-persona/thumb.webp',
 		featured: true,
-		isNew: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -387,7 +692,6 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Figma', 'Maze', 'Miro', 'Data Studio'],
 		cover: '/images/work/awp-order-flow/thumb.webp',
-		isNew: true,
 		links: [{ label: 'Heuristic evaluation', href: '/work/awp-heuristic-evaluation' }],
 		blocks: [
 			{
@@ -483,7 +787,6 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Google Slides', 'Nielsen’s 10 heuristics'],
 		cover: '/images/work/awp-heuristic/thumb.webp',
-		isNew: true,
 		links: [{ label: 'The redesign it led to', href: '/work/awp-order-flow' }],
 		blocks: [
 			{
@@ -610,7 +913,7 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Figma', 'Miro', 'Google Forms'],
 		cover: '/images/work/home-revamp/thumb.webp',
-		isNew: true,
+		special: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -707,7 +1010,6 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Figma', 'Miro', 'ClickUp'],
 		cover: '/images/work/tokosmart-reskin/thumb.webp',
-		isNew: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -816,7 +1118,7 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Figma', 'Miro', 'Google Sheets', 'WhatsApp'],
 		cover: '/images/work/grosir-pintar/thumb.webp',
-		isNew: true,
+		special: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -967,7 +1269,6 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Figma', 'Maze', 'Google Forms'],
 		cover: '/images/work/catat-utang/thumb.webp',
-		isNew: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -1083,7 +1384,6 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Google Forms', 'Figma', 'Sheets'],
 		cover: '/images/work/modal-terms/thumb.webp',
-		isNew: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -1173,8 +1473,7 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['WhatsApp', 'Figma', 'Sheets'],
 		cover: '/images/work/loyal-users/thumb.webp',
-		featured: true,
-		isNew: true,
+		special: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -1276,7 +1575,6 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Typeform', 'Figma', 'Sheets'],
 		cover: '/images/work/data-pulsa/thumb.webp',
-		isNew: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -1390,7 +1688,7 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Figma', 'Miro', 'N-gram analysis', 'BI dashboard'],
 		cover: '/images/work/efishery-faq/thumb.webp',
-		isNew: true,
+		special: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -1483,7 +1781,6 @@ export const caseStudies: Project[] = [
 		tools: ['Figma', 'Maze', 'Miro'],
 		cover: '/images/work/saldo-panen/thumb.webp',
 		featured: true,
-		isNew: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -1579,7 +1876,6 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Figma', 'Miro', 'CleverTap', 'ClickUp'],
 		cover: '/images/work/martech-crm/thumb.webp',
-		isNew: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -1679,7 +1975,6 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Figma', 'Notion', 'ClickUp'],
 		cover: '/images/work/enterprise-payment/thumb.webp',
-		isNew: true,
 		blocks: [
 			{
 				kind: 'text',
@@ -1761,7 +2056,6 @@ export const caseStudies: Project[] = [
 		],
 		tools: ['Google Forms', 'Sheets', 'Figma'],
 		cover: '/images/work/crm-arap/thumb.webp',
-		isNew: true,
 		blocks: [
 			{
 				kind: 'text',

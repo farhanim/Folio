@@ -8,7 +8,7 @@
 </script>
 
 <span class="meta label">
-	<Icon name={project.type === 'design' ? 'layers' : 'code'} size={11} />
+	<Icon name={project.type === 'design' ? 'palette' : 'code'} size={11} />
 	{project.type === 'design' ? 'Design' : 'Code'} · {project.year ?? '-'} ·
 	<Icon name="clock" size={11} />
 	{readingTime(project)} min

@@ -98,6 +98,7 @@
 			<div class="tags">
 				{#if project.isNew}<Tag kind="new" />{/if}
 				{#if project.featured}<Tag kind="featured" />{/if}
+				{#if project.special}<Tag kind="special" />{/if}
 				<Tag label="{readingTime(project)} min read" />
 			</div>
 

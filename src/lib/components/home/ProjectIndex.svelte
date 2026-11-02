@@ -192,13 +192,13 @@
 									<span class="num">{String(page * PAGE_SIZE + i + 1).padStart(2, '0')}</span>
 									<img class="mini" src={coverSmall(project.cover)} alt="" loading="lazy" />
 									<span class="title">
-										<span class="name">{project.title}</span>
+										<span class="name" title={project.title}>{project.title}</span>
 										{#if project.isNew}<Tag kind="new" />{/if}
-										{#if project.featured}<Tag kind="featured" />{/if}
+										{#if project.featured}<Tag kind="featured" />{/if}{#if project.special}<Tag kind="special" />{/if}
 									</span>
 									<span class="type">
 										<span class="kind" class:code={project.type === 'code'}>
-											<Icon name={project.type === 'design' ? 'layers' : 'code'} size={12} />
+											<Icon name={project.type === 'design' ? 'palette' : 'code'} size={12} />
 											{typeLabel(project)}
 										</span>
 										<span class="role">{project.role}</span>
@@ -255,9 +255,9 @@
 									<span class="card-body">
 										<ProjectMeta {project} />
 										<span class="card-title"
-											>{project.title}{#if project.isNew}<Tag
+											><span class="t" title={project.title}>{project.title}</span>{#if project.isNew}<Tag
 													kind="new"
-												/>{/if}{#if project.featured}<Tag kind="featured" />{/if}</span
+												/>{/if}{#if project.featured}<Tag kind="featured" />{/if}{#if project.special}<Tag kind="special" />{/if}</span
 										>
 										<span class="card-sub">{project.tagline}</span>
 									</span>
@@ -301,9 +301,9 @@
 											<span class="card-body">
 												<ProjectMeta {project} />
 												<span class="card-title"
-													>{project.title}{#if project.isNew}<Tag
+													><span class="t" title={project.title}>{project.title}</span>{#if project.isNew}<Tag
 															kind="new"
-														/>{/if}{#if project.featured}<Tag kind="featured" />{/if}</span
+														/>{/if}{#if project.featured}<Tag kind="featured" />{/if}{#if project.special}<Tag kind="special" />{/if}</span
 												>
 											</span>
 										</a>
@@ -498,6 +498,7 @@
 		display: flex;
 		align-items: center;
 		gap: 12px;
+		min-width: 0;
 		transition: transform 0.5s var(--ease-out);
 	}
 	.name {
@@ -582,17 +583,29 @@
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
+		min-width: 0;
 		padding-top: 10px;
 	}
+	/* One line, always: tags keep their size and the title truncates with an ellipsis */
 	.card-title {
 		display: flex;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 		align-items: center;
-		gap: 4px 8px;
+		gap: 8px;
+		min-width: 0;
 		font-size: 15px;
 		font-weight: 450;
 		letter-spacing: -0.03em;
 		transition: transform 0.5s var(--ease-out);
+	}
+	/* Tags stay beside the title; a long title wraps its own text, never truncates */
+	.card-title .t,
+	.name {
+		min-width: 0;
+	}
+	.card-title :global(.tag),
+	.title :global(.tag) {
+		flex: none;
 	}
 	.card:hover .card-title {
 		transform: translateX(6px);
@@ -836,8 +849,7 @@
 		.title {
 			grid-column: 2;
 			grid-row: 1;
-			flex-wrap: wrap;
-			gap: 6px 8px;
+			gap: 8px;
 		}
 		.name {
 			font-size: 16px;
@@ -846,6 +858,10 @@
 			height: 18px;
 			padding: 0 7px;
 			font-size: 9px;
+		}
+		.title :global(.tag.special) {
+			width: 18px;
+			padding: 0;
 		}
 		.type {
 			grid-column: 2;

@@ -18,6 +18,25 @@ export interface ImageRef {
 	alt: string;
 }
 
+/** One surface in a `platforms` block. */
+export interface PlatformTour {
+	id: string;
+	/** Short tab label, e.g. "Lender". */
+	label: string;
+	/** Full name, e.g. "Lender Portal". */
+	name: string;
+	/** Who it is for and what they do there. */
+	summary: string;
+	/** Muted walkthrough clip (WebM). */
+	video: string;
+	/** First frame of the clip. */
+	poster: string;
+	/** Key modules or features, shown beside the clip when there are no chapters. */
+	features: string[];
+	/** Steps in the clip: captioned while it plays and listed beside it to jump to. */
+	chapters?: { at: number; label: string }[];
+}
+
 /** Content blocks that make up a project page. Each one is also a slideshow slide. */
 export type Block =
 	| { kind: 'text'; id: string; title: string; body: string[] }
@@ -27,7 +46,8 @@ export type Block =
 			id: string;
 			title: string;
 			caption?: string;
-			layout: 'wide' | 'row';
+			/** `stack` shows every image at full width, one under another. */
+			layout: 'wide' | 'row' | 'stack';
 			images: ImageRef[];
 	  }
 	| { kind: 'quote'; id: string; title: string; quote: string; author: string; role: string }
@@ -36,6 +56,8 @@ export type Block =
 	| { kind: 'features'; id: string; title: string; items: { title: string; body: string }[] }
 	/** Outcome list: what changes for the people using it. */
 	| { kind: 'impact'; id: string; title: string; intro?: string; items: string[] }
+	/** A guided tour of a product's surfaces: tabs with a motion clip each, switched by scrolling. */
+	| { kind: 'platforms'; id: string; title: string; intro?: string; items: PlatformTour[] }
 	/** Tech stack grouped by layer, each item with a one-line reason. */
 	| {
 			kind: 'stack';
@@ -83,6 +105,8 @@ export interface Project {
 	};
 	/** Highlighted in "Worth a read". */
 	featured?: boolean;
+	/** Shows a "Special project" tag. */
+	special?: boolean;
 	/** Shows a "New" tag. */
 	isNew?: boolean;
 	links?: { label: string; href: string }[];

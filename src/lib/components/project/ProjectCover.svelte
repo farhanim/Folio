@@ -115,6 +115,7 @@
 		<span class="tags">
 			{#if project.isNew}<Tag kind="new" />{/if}
 			{#if showFeatured && project.featured}<Tag kind="featured" />{/if}
+			{#if project.special}<Tag kind="special" />{/if}
 		</span>
 	{/if}
 	<span class="client"><ClientBadge client={project.client} /></span>
@@ -155,24 +156,71 @@
 	:global(a:hover) .cover video {
 		transform: scale(1.035);
 	}
-	/* A light sweep across the cover on hover; transform-only, so it stays cheap */
+	/*
+	 * A glass glint on hover: a soft band that widens as it crosses the middle of the
+	 * cover and narrows again on the way out, like light passing through a pane.
+	 * Movement, swell and fade are separate animations, so the band travels in one
+	 * continuous ease and never pauses mid-way.
+	 */
 	.cover::after {
 		content: '';
 		position: absolute;
-		inset: 0;
+		top: -10%;
+		bottom: -10%;
+		left: 0;
 		z-index: 1;
-		background: linear-gradient(
-			105deg,
-			transparent 35%,
-			rgba(255, 255, 255, 0.22) 50%,
-			transparent 65%
+		width: 55%;
+		/*
+		 * Clear glass: a wide, soft wash of light with no edges of its own. It lifts what
+		 * is behind it a touch, with a hair of blur for the refraction, so it reads on
+		 * any cover without adding a colour.
+		 */
+		background: radial-gradient(
+			ellipse 50% 70% at 50% 50%,
+			rgba(255, 255, 255, 0.1),
+			rgba(255, 255, 255, 0.04) 55%,
+			transparent 80%
 		);
-		transform: translateX(-110%);
+		backdrop-filter: blur(1px) brightness(1.05);
+		mask-image: linear-gradient(90deg, transparent, #000 35%, #000 65%, transparent);
+		opacity: 0;
+		translate: -150% 0;
+		scale: 0.6 1;
+		transform: skewX(-14deg);
 		pointer-events: none;
 	}
 	:global(a:hover) .cover::after {
-		transform: translateX(110%);
-		transition: transform 1.1s var(--ease-out);
+		animation:
+			glint-move 2.4s cubic-bezier(0.37, 0, 0.63, 1),
+			glint-swell 2.4s ease-in-out,
+			glint-fade 2.4s linear;
+	}
+	@keyframes glint-move {
+		from {
+			translate: -150% 0;
+		}
+		to {
+			translate: 260% 0;
+		}
+	}
+	@keyframes glint-swell {
+		0%,
+		100% {
+			scale: 0.6 1;
+		}
+		50% {
+			scale: 1.7 1;
+		}
+	}
+	@keyframes glint-fade {
+		0%,
+		100% {
+			opacity: 0;
+		}
+		20%,
+		80% {
+			opacity: 0.6;
+		}
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.cover::after {
