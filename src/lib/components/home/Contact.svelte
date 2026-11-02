@@ -55,12 +55,18 @@
 			</button>
 		</div>
 
-		<a class="act cv" href={profile.cv} target="_blank" rel="noopener" aria-label="Download Hans Curriculum Vitae">
+		<a
+			class="act cv"
+			href={profile.cv}
+			target="_blank"
+			rel="noopener"
+			aria-label="Download Hans Curriculum Vitae"
+		>
 			<span class="act-main">
 				<span class="act-icon"><Icon name="download" size={18} /></span>
 				<span class="act-text">
-					<span class="act-label">Or download my CV</span>
-					<span class="act-value">Get my CV</span>
+					<span class="act-label">Or download Resume</span>
+					<span class="act-value">Get Resume</span>
 				</span>
 			</span>
 			<span class="act-end" aria-hidden="true"><Icon name="arrowUpRight" size={16} /></span>
@@ -337,4 +343,3 @@
 		}
 	}
 </style>
-

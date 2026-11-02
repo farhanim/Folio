@@ -9,7 +9,7 @@
 	 * it switches copy. Hovering speeds the ring up and holds the label. It steps aside once
 	 * the contact section is on screen.
 	 */
-	const lines = ['Hiring? Let’s talk', 'Get my CV', 'Open to full-time roles'];
+	const lines = ['Hiring? Let’s talk', 'Get Resume', 'Open to full-time roles'];
 	const id = $props.id();
 
 	let index = $state(0);
@@ -44,7 +44,7 @@
 	class="cta"
 	{href}
 	class:away={atContact}
-	aria-label="Contact me or get my CV"
+	aria-label="Contact me or get Resume"
 	onpointerenter={() => (paused = true)}
 	onpointerleave={() => (paused = false)}
 >
@@ -75,7 +75,7 @@
 			<g class="ring">
 				<text
 					><textPath href="#cta-ring-{id}" textLength="280"
-						>Hiring · Get my CV · Let’s talk ·
+						>Hiring · Get Resume · Let’s talk ·
 					</textPath></text
 				>
 			</g>
