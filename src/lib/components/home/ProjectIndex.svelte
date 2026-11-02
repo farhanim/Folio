@@ -11,6 +11,7 @@
 	import type { Project } from '#lib/types/index.ts';
 	import { readingTime } from '#lib/data/projects.ts';
 	import { reveal } from '#lib/utils/reveal.ts';
+	import { coverSmall } from '#lib/utils/cover.ts';
 
 	/**
 	 * Every project — design and code — in one index, shown as a numbered list
@@ -189,7 +190,7 @@
 									onpointermove={onmove}
 								>
 									<span class="num">{String(page * PAGE_SIZE + i + 1).padStart(2, '0')}</span>
-									<img class="mini" src={project.cover} alt="" loading="lazy" />
+									<img class="mini" src={coverSmall(project.cover)} alt="" loading="lazy" />
 									<span class="title">
 										<span class="name">{project.title}</span>
 										{#if project.isNew}<Tag kind="new" />{/if}
@@ -245,10 +246,19 @@
 						{#each lead as project (project.slug)}
 							<li animate:flip={{ duration: 450 }} transition:fade={{ duration: 200 }}>
 								<a class="card" href="/work/{project.slug}">
-									<ProjectCover {project} ratio="16 / 9" />
+									<ProjectCover
+										{project}
+										ratio="16 / 9"
+										sizes="(max-width: 600px) 100vw, (max-width: 1023px) 50vw, 25vw"
+										tags={false}
+									/>
 									<span class="card-body">
 										<ProjectMeta {project} />
-										<span class="card-title">{project.title}</span>
+										<span class="card-title"
+											>{project.title}{#if project.isNew}<Tag
+													kind="new"
+												/>{/if}{#if project.featured}<Tag kind="featured" />{/if}</span
+										>
 										<span class="card-sub">{project.tagline}</span>
 									</span>
 								</a>
@@ -282,10 +292,19 @@
 								{#each rest as project (project.slug)}
 									<li>
 										<a class="card small" href="/work/{project.slug}">
-											<ProjectCover {project} ratio="16 / 9" />
+											<ProjectCover
+												{project}
+												ratio="16 / 9"
+												sizes="(max-width: 600px) 70vw, (max-width: 1023px) 40vw, 17vw"
+												tags={false}
+											/>
 											<span class="card-body">
 												<ProjectMeta {project} />
-												<span class="card-title">{project.title}</span>
+												<span class="card-title"
+													>{project.title}{#if project.isNew}<Tag
+															kind="new"
+														/>{/if}{#if project.featured}<Tag kind="featured" />{/if}</span
+												>
 											</span>
 										</a>
 									</li>
@@ -307,7 +326,12 @@
 		aria-hidden="true"
 	>
 		{#each projects as p (p.slug)}
-			<img src={p.cover} alt="" class:active={hovered?.slug === p.slug} loading="lazy" />
+			<img
+				src={coverSmall(p.cover)}
+				alt=""
+				class:active={hovered?.slug === p.slug}
+				loading="lazy"
+			/>
 		{/each}
 		{#if hovered}
 			<span class="preview-badge"><ClientBadge client={hovered.client} size="sm" /></span>
@@ -561,6 +585,10 @@
 		padding-top: 10px;
 	}
 	.card-title {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 4px 8px;
 		font-size: 15px;
 		font-weight: 450;
 		letter-spacing: -0.03em;
@@ -641,6 +669,59 @@
 	.rail li {
 		scroll-snap-align: start;
 		min-width: 0;
+	}
+
+	/*
+	 * Motion, CSS-only and compositor-friendly (transform/opacity, no JS per frame).
+	 * Rail: cards bend around a shallow cylinder as they cross the rail, flat in the
+	 * middle and turned in at the edges. Grid: cards rise in as they scroll into view,
+	 * alternate columns a beat apart. Browsers without scroll timelines show them still.
+	 */
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.rail {
+				perspective: 1400px;
+				perspective-origin: 50% 40%;
+			}
+			.rail li {
+				transform-origin: 50% 50%;
+				animation: curve linear both;
+				animation-timeline: view(inline);
+				animation-range: cover;
+				will-change: transform;
+			}
+			.grid li {
+				animation: rise linear both;
+				animation-timeline: view();
+				animation-range: entry 0% entry 80%;
+			}
+			.grid li:nth-child(even) {
+				animation-range: entry 15% entry 95%;
+			}
+		}
+	}
+	@keyframes curve {
+		0% {
+			transform: rotateY(-26deg) translateZ(-40px) scale(0.94);
+			opacity: 0.55;
+		}
+		38%,
+		62% {
+			transform: none;
+			opacity: 1;
+		}
+		100% {
+			transform: rotateY(26deg) translateZ(-40px) scale(0.94);
+			opacity: 0.55;
+		}
+	}
+	/* translate/scale, not transform: Svelte's flip owns transform on these items */
+	@keyframes rise {
+		from {
+			opacity: 0;
+			translate: 0 48px;
+			scale: 0.97;
+		}
 	}
 	.small .card-body {
 		padding-top: 8px;

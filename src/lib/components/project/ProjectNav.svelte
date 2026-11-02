@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import type { Project } from '#lib/types/index.ts';
+	import { coverSmall } from '#lib/utils/cover.ts';
 
 	/** Previous / next project cards at the end of a project page. Also bound to [ and ]. */
 	let { prev, next }: { prev: Project; next: Project } = $props();
@@ -10,7 +11,7 @@
 	<a class="card prev" href="/work/{prev.slug}">
 		<span class="dir label"><Icon name="arrowLeft" size={13} /> Previous</span>
 		<span class="body">
-			<img src={prev.cover} alt="" loading="lazy" />
+			<img src={coverSmall(prev.cover)} alt="" loading="lazy" />
 			<span>
 				<span class="kind label"
 					>{prev.type === 'design' ? 'Design' : 'Code'} · {prev.year ?? '-'}</span
@@ -28,7 +29,7 @@
 				>
 				<span class="title">{next.title}</span>
 			</span>
-			<img src={next.cover} alt="" loading="lazy" />
+			<img src={coverSmall(next.cover)} alt="" loading="lazy" />
 		</span>
 	</a>
 </nav>

@@ -915,8 +915,9 @@
 		letter-spacing: -0.045em;
 		line-height: 1.04;
 	}
+	/* Same measure as the headline above, so the summary fills the column */
 	.copy p {
-		max-width: 62ch;
+		text-wrap: pretty;
 		color: var(--text-secondary);
 		font-size: calc(15px * var(--text-scale));
 		line-height: 1.6;

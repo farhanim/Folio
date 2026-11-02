@@ -150,7 +150,7 @@
 			<LiveDemo {project} bind:loaded={live} />
 		{:else}
 			<div class="hero-cover">
-				<ProjectCover {project} ratio="16 / 9" showFeatured={false} eager />
+				<ProjectCover {project} ratio="16 / 9" showFeatured={false} eager sizes="100vw" />
 			</div>
 		{/if}
 

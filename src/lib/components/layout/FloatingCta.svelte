@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
 	import { page } from '$app/state';
 
@@ -12,6 +13,7 @@
 	const id = $props.id();
 
 	let index = $state(0);
+	let widths = $state<number[]>([]);
 	let paused = $state(false);
 	let atContact = $state(false);
 
@@ -46,10 +48,20 @@
 	onpointerenter={() => (paused = true)}
 	onpointerleave={() => (paused = false)}
 >
-	<span class="pill" aria-hidden="true">
+	<!-- The pill eases to the incoming label's measured width instead of jumping once the old one leaves -->
+	<span
+		class="pill"
+		aria-hidden="true"
+		style:width={widths[index] ? `${widths[index] + 42}px` : null}
+	>
+		{#each lines as line, i (line)}
+			<span class="measure" bind:clientWidth={widths[i]}>{line}</span>
+		{/each}
 		{#key index}
-			<span in:fly={{ y: 24, duration: 420 }} out:fly={{ y: -24, duration: 300 }}
-				>{lines[index]}</span
+			<span
+				class="line"
+				in:fly={{ y: 20, duration: 380, easing: cubicOut }}
+				out:fly={{ y: -20, duration: 220, easing: cubicIn }}>{lines[index]}</span
 			>
 		{/key}
 	</span>
@@ -91,7 +103,9 @@
 	}
 	/* Label: a glass pill tucked behind the sticker */
 	.pill {
-		display: grid;
+		position: relative;
+		display: block;
+		box-sizing: border-box;
 		overflow: hidden;
 		height: 36px;
 		margin-right: -18px;
@@ -106,10 +120,25 @@
 		font-weight: 500;
 		line-height: 36px;
 		white-space: nowrap;
-		transition: transform 0.5s var(--ease-out);
+		transition:
+			width 0.45s var(--ease-out),
+			transform 0.5s var(--ease-out);
 	}
-	.pill span {
-		grid-area: 1 / 1;
+	/* Labels sit on top of each other at the left; the pill's width does the resizing */
+	.line {
+		position: absolute;
+		left: 14px;
+		top: 0;
+	}
+	/* Until the labels are measured (server render), the label sizes the pill itself */
+	.pill:not([style*='width']) .line {
+		position: static;
+	}
+	/* Off-screen copies, only to measure each label once */
+	.measure {
+		position: absolute;
+		visibility: hidden;
+		pointer-events: none;
 	}
 	.sticker {
 		position: relative;

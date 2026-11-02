@@ -347,11 +347,15 @@ export const projects: Project[] = allProjects.filter((p) => !hiddenProjectSlugs
 // Worth a read: design case studies only.
 export const featuredProjects = projects.filter((p) => p.featured && p.type === 'design');
 
+// Previous / next only ever step through listed projects, so hidden samples are
+// never offered as the next read — even from a hidden project's own page.
 export function getProject(slug: string) {
-	const index = allProjects.findIndex((p) => p.slug === slug);
-	if (index === -1) return null;
-	const at = (i: number) => allProjects[(i + allProjects.length) % allProjects.length];
-	return { project: allProjects[index], prev: at(index - 1), next: at(index + 1) };
+	const project = allProjects.find((p) => p.slug === slug);
+	if (!project) return null;
+	const index = projects.findIndex((p) => p.slug === slug);
+	const at = (i: number) => projects[(i + projects.length) % projects.length];
+	if (index === -1) return { project, prev: at(-1), next: at(0) };
+	return { project, prev: at(index - 1), next: at(index + 1) };
 }
 
 /** Rough reading time from the text in a project's blocks. */

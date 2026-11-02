@@ -3,6 +3,7 @@
 	import Tag from '#lib/components/project/Tag.svelte';
 	import { companies, showcaseClients } from '#lib/data/clients.ts';
 	import { projects } from '#lib/data/projects.ts';
+	import { coverSmall } from '#lib/utils/cover.ts';
 	import { focus, site } from '#lib/data/site.ts';
 	import ProximityText from './ProximityText.svelte';
 	import ScrambleText from './ScrambleText.svelte';
@@ -23,6 +24,9 @@
 			name: c.name,
 			src: c.logo
 		}));
+
+	// Each cover enters its own way, so consecutive switches don't feel identical.
+	const reveals = ['zoom', 'wipe', 'rise', 'iris'] as const;
 
 	let index = $state(0);
 	let paused = $state(false);
@@ -71,7 +75,13 @@
 					onblur={() => hold(false)}
 				>
 					{#each picks as p, i (p.slug)}
-						<img src={p.cover} alt="" class:active={i === index} loading={i ? 'lazy' : 'eager'} />
+						<img
+							src={coverSmall(p.cover)}
+							alt=""
+							class:active={i === index}
+							data-fx={reveals[i % reveals.length]}
+							loading={i ? 'lazy' : 'eager'}
+						/>
 					{/each}
 				</a>
 				{#if showTip && current}
@@ -88,9 +98,14 @@
 
 	<div class="intro">
 		<p>
-			I’m <strong>{site.name} (Hans)</strong>, a product designer in {site.location}, {site.country}, with
-			<strong>9+ years</strong> across lending, aquaculture, and retail. I take products from research and
-			design systems through to <strong>interactive prototypes in code</strong><span class="cycoffee-inline">, and now <span class="cycoffee-selected">newly exploring Cycoffee</span>, a small coffee business.</span>
+			I’m <strong>{site.name} (Hans)</strong>, a product designer in {site.location}, {site.country},
+			with
+			<strong>9+ years</strong> across lending, aquaculture and retail. I take products from
+			research and design systems through to <strong>interactive prototypes in code</strong><span
+				class="cycoffee-inline"
+				>, and I’m now <span class="cycoffee-selected">exploring Cycoffee</span>, a small coffee
+				business.</span
+			>
 		</p>
 		<p class="focus label">
 			<span class="focus-key">Lately</span>
@@ -193,22 +208,57 @@
 	.thumb:hover {
 		width: 2.6em;
 	}
-	/* Covers stack; the active one fades and settles in */
+	/*
+	 * Covers stack. The incoming one sits on top and reveals itself (zoom, wipe,
+	 * rise or iris); the outgoing one only fades once it's covered.
+	 */
 	.thumb img {
 		position: absolute;
 		inset: 0;
+		z-index: 0;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 		opacity: 0;
 		transform: scale(1.12);
 		transition:
-			opacity 0.6s ease,
-			transform 1.2s var(--ease-out);
+			opacity 0.2s ease 0.8s,
+			transform 1.2s var(--ease-out),
+			clip-path 0.9s var(--ease-out);
 	}
 	.thumb img.active {
+		z-index: 1;
 		opacity: 1;
 		transform: none;
+		clip-path: inset(0 round 0);
+		transition:
+			opacity 0.5s ease,
+			transform 1.2s var(--ease-out),
+			clip-path 0.9s var(--ease-out);
+	}
+	.thumb img[data-fx='wipe'],
+	.thumb img[data-fx='iris'],
+	.thumb img[data-fx='rise'] {
+		transform: none;
+	}
+	.thumb img[data-fx='wipe']:not(.active) {
+		clip-path: inset(0 0 0 100% round 0);
+	}
+	.thumb img[data-fx='wipe'].active,
+	.thumb img[data-fx='iris'].active {
+		opacity: 1;
+		transition:
+			opacity 0s,
+			clip-path 0.9s var(--ease-out);
+	}
+	.thumb img[data-fx='iris']:not(.active) {
+		clip-path: circle(0% at 50% 50%);
+	}
+	.thumb img[data-fx='iris'].active {
+		clip-path: circle(75% at 50% 50%);
+	}
+	.thumb img[data-fx='rise']:not(.active) {
+		transform: translateY(105%);
 	}
 	.thumb:hover img.active {
 		transform: scale(1.06);
@@ -502,4 +552,3 @@
 		}
 	}
 </style>
-

@@ -12,6 +12,8 @@ import { showcaseClients as c } from './clients.ts';
 const media = (slug: string) => ({
 	video: `/images/work/${slug}/preview.mp4`,
 	poster: `/images/work/${slug}/poster.webp`,
+	/** Designed thumbnail, rendered by scripts/covers. */
+	thumb: `/images/work/${slug}/thumb.webp`,
 	shots: (...list: [number, string][]): ImageRef[] =>
 		list.map(([n, alt]) => ({ src: `/images/work/${slug}/shot-${n}.webp`, alt }))
 });
@@ -47,7 +49,7 @@ export const showcase: Project[] = [
 			{ label: 'Platform', value: 'Web, responsive' }
 		],
 		tools: ['Next.js', 'React', 'Tailwind CSS', 'Framer Motion'],
-		cover: kee.poster,
+		cover: kee.thumb,
 		featured: true,
 		gallery: kee.shots(
 			[1, 'Hero: Revolutionizing Lending with AI'],
@@ -172,7 +174,7 @@ export const showcase: Project[] = [
 			{ label: 'Platform', value: 'Web, responsive' }
 		],
 		tools: ['Laravel', 'Bootstrap', 'jQuery', 'AOS', 'html2canvas'],
-		cover: muskitnas.poster,
+		cover: muskitnas.thumb,
 		gallery: muskitnas.shots(
 			[1, 'Splash: Pendar Cahaya'],
 			[2, 'About the exhibition, with film'],
@@ -301,7 +303,7 @@ export const showcase: Project[] = [
 			{ label: 'Platform', value: 'Web app (internal)' }
 		],
 		tools: ['React', 'Vite', 'Tailwind CSS', 'Redux', 'SheetJS'],
-		cover: jardin.poster,
+		cover: jardin.thumb,
 		gallery: jardin.shots(
 			[1, 'Sign-in'],
 			[3, 'Professional Service: Activities'],
@@ -434,7 +436,7 @@ export const showcase: Project[] = [
 			{ label: 'Platform', value: 'Website + web app' }
 		],
 		tools: ['Laravel', 'Bootstrap', 'JavaScript'],
-		cover: derkei.poster,
+		cover: derkei.thumb,
 		gallery: derkei.shots(
 			[1, 'Hero: Kami Hadir Memberi Rasa Aman'],
 			[2, 'Vision & mission'],
@@ -551,7 +553,7 @@ export const showcase: Project[] = [
 			{ label: 'Platform', value: 'Web app prototype' }
 		],
 		tools: ['Vite', 'JavaScript', 'SVG'],
-		cover: sparq.poster,
+		cover: sparq.thumb,
 		gallery: sparq.shots(
 			[1, 'Sign in to SparQ'],
 			[2, 'Workspace'],
@@ -665,7 +667,7 @@ export const showcase: Project[] = [
 			{ label: 'Platform', value: 'Web admin' }
 		],
 		tools: ['Laravel', 'AdminLTE', 'Bootstrap 3', 'jQuery'],
-		cover: blast.poster,
+		cover: blast.thumb,
 		gallery: blast.shots(
 			[2, 'Campaign dashboard'],
 			[3, 'Status data per recipient'],
@@ -781,7 +783,7 @@ export const showcase: Project[] = [
 			{ label: 'Platform', value: 'Web app (internal)' }
 		],
 		tools: ['Laravel', 'Bootstrap', 'jQuery', 'Mapbox GL'],
-		cover: iconplus.poster,
+		cover: iconplus.thumb,
 		gallery: iconplus.shots(
 			[2, 'Dashboard: network KPIs by region'],
 			[3, 'POP Planner: site scoring on the map'],
@@ -800,7 +802,7 @@ export const showcase: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'Where should the next fiber Point of Presence go, and where is fixed wireless the faster answer? ICON+ Analytics puts the inputs for that decision on one map (building density, points of interest, competitor footprint and ICON+ pole availability) next to the business numbers that justify it.',
+					'Where should the next fibre Point of Presence go, and where is fixed wireless the faster answer? ICON+ Analytics puts the inputs for that decision on one map (building density, points of interest, competitor footprint and ICON+ pole availability) next to the business numbers that justify it.',
 					'Around the planners sit a KPI dashboard, a customer-insight app for churn and ARPU, a layer catalog for every geospatial source, and a knowledge repository of the datasets, notebooks and queries behind each figure.'
 				]
 			},
@@ -827,7 +829,7 @@ export const showcase: Project[] = [
 					},
 					{
 						title: 'Airnet Planner',
-						body: 'Plans fixed-wireless towers, coverage radius and backhaul capacity where fiber can’t reach yet.'
+						body: 'Plans fixed-wireless towers, coverage radius and backhaul capacity where fibre can’t reach yet.'
 					},
 					{
 						title: 'Customer Insight',
@@ -860,7 +862,7 @@ export const showcase: Project[] = [
 				title: 'Impact & value',
 				items: [
 					'Site decisions backed by ranked, explainable location data',
-					'Fiber and fixed-wireless planned side by side',
+					'Fibre and fixed-wireless planned side by side',
 					'At-risk customers turned into concrete retention tasks',
 					'Every published number traceable to its dataset or query'
 				]
@@ -904,7 +906,7 @@ export const showcase: Project[] = [
 			{ label: 'Platform', value: 'Web app, learner + admin' }
 		],
 		tools: ['Laravel', 'Bootstrap', 'jQuery', 'Chart.js'],
-		cover: ielts.poster,
+		cover: ielts.thumb,
 		gallery: ielts.shots(
 			[2, 'Learner dashboard: band estimate'],
 			[3, 'Test catalogue'],
@@ -1033,7 +1035,7 @@ export const showcase: Project[] = [
 			{ label: 'Platform', value: 'Web app (internal)' }
 		],
 		tools: ['Laravel', 'Bootstrap', 'Leaflet', 'Turf.js'],
-		cover: pims.poster,
+		cover: pims.thumb,
 		gallery: pims.shots(
 			[2, 'Operations dashboard with asset map'],
 			[3, 'Pipeline detail: integrity and route'],
@@ -1162,7 +1164,7 @@ export const showcase: Project[] = [
 			{ label: 'Platform', value: 'Web app (internal)' }
 		],
 		tools: ['React', 'Vite', 'Tailwind CSS', 'Zustand'],
-		cover: dataroom.poster,
+		cover: dataroom.thumb,
 		gallery: dataroom.shots(
 			[2, 'All data rooms: recent and favourites'],
 			[3, 'Room: folders and files'],
@@ -1295,7 +1297,7 @@ export const showcase: Project[] = [
 			{ label: 'Platform', value: 'Web app (internal)' }
 		],
 		tools: ['Laravel', 'Bootstrap 4', 'jQuery', 'DataTables'],
-		cover: silma.poster,
+		cover: silma.thumb,
 		gallery: silma.shots(
 			[2, 'Dashboard: assets and requests'],
 			[3, 'Procurement plans'],

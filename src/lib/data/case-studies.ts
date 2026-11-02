@@ -6,10 +6,11 @@
 import type { ImageRef, Project } from '#lib/types/index.ts';
 import { companies } from './clients.ts';
 
+// Slides redrawn with scripts/slides render to .webp; the rest are still SVG.
 const art =
-	(slug: string) =>
+	(slug: string, ext: 'svg' | 'webp' = 'svg') =>
 	(name: string, alt: string): ImageRef => ({
-		src: `/images/work/${slug}/${name}.svg`,
+		src: `/images/work/${slug}/${name}.${ext}`,
 		alt
 	});
 
@@ -21,11 +22,11 @@ const utang = art('catat-utang');
 const modal = art('modal-terms');
 const loyal = art('loyal-users');
 const dataPulsa = art('data-pulsa');
-const faq = art('efishery-faq');
-const saldo = art('saldo-panen');
-const martech = art('martech-crm');
-const payment = art('enterprise-payment');
-const arap = art('crm-arap');
+const faq = art('efishery-faq', 'webp');
+const saldo = art('saldo-panen', 'webp');
+const martech = art('martech-crm', 'webp');
+const payment = art('enterprise-payment', 'webp');
+const arap = art('crm-arap', 'webp');
 const nikelPortal = (name: string, alt: string): ImageRef => ({
 	src: `/images/work/nikel-lender-portal/${name}`,
 	alt
@@ -50,7 +51,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Scope', value: 'Home, Portfolio, Mutation, loan & borrower detail' }
 		],
 		tools: [],
-		cover: '/images/work/nikel-lender-portal/thumbnail.png',
+		cover: '/images/work/nikel-lender-portal/thumb.webp',
 		isNew: true,
 		blocks: [
 			{
@@ -120,7 +121,7 @@ export const caseStudies: Project[] = [
 					},
 					{
 						title: 'Prioritize decisions',
-						body: 'Organize the home view around available balance, active funding and returns; keep allocation and reconciliation details in their natural next step.'
+						body: 'Organise the home view around available balance, active funding and returns; keep allocation and reconciliation details in their natural next step.'
 					},
 					{
 						title: 'Define the measures',
@@ -184,7 +185,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Cities', value: 'Jakarta, Bekasi, Surabaya, Semarang' }
 		],
 		tools: ['Interviews', 'Prompt cards', 'Google Forms', 'Data Studio', 'Miro'],
-		cover: '/images/work/mitra-persona/cover.svg',
+		cover: '/images/work/mitra-persona/thumb.webp',
 		featured: true,
 		isNew: true,
 		blocks: [
@@ -193,7 +194,7 @@ export const caseStudies: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'Warung Pintar serves thousands of small shops (warung) and their owners, the mitra. We had learned them through GMV segments and photos of their storefronts, but the profiles were too varied to design for. We didn’t really know who they were, or how to reach the right users for each product.',
+					'Warung Pintar serves thousands of small shops (warung) and their owners, the mitra. We knew them only through GMV segments and photos of their storefronts, but the profiles were too varied to design for. We didn’t really know who they were, or how to reach the right users for each product.',
 					'This compilation brings together four studies: how mitra learn and keep books, how cooperative they are as partners, who our top users really are, and who buys from a warung. Each one ends in personas or archetypes that a product vertical could pick up and use.'
 				]
 			},
@@ -385,7 +386,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Platform', value: 'Android app' }
 		],
 		tools: ['Figma', 'Maze', 'Miro', 'Data Studio'],
-		cover: '/images/work/awp-order-flow/cover.svg',
+		cover: '/images/work/awp-order-flow/thumb.webp',
 		isNew: true,
 		links: [{ label: 'Heuristic evaluation', href: '/work/awp-heuristic-evaluation' }],
 		blocks: [
@@ -481,7 +482,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Scope', value: 'Transaction vertical, Merchant tribe' }
 		],
 		tools: ['Google Slides', 'Nielsen’s 10 heuristics'],
-		cover: '/images/work/awp-heuristic/cover.svg',
+		cover: '/images/work/awp-heuristic/thumb.webp',
 		isNew: true,
 		links: [{ label: 'The redesign it led to', href: '/work/awp-order-flow' }],
 		blocks: [
@@ -608,7 +609,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Platform', value: 'Android app' }
 		],
 		tools: ['Figma', 'Miro', 'Google Forms'],
-		cover: '/images/work/home-revamp/cover.svg',
+		cover: '/images/work/home-revamp/thumb.webp',
 		isNew: true,
 		blocks: [
 			{
@@ -672,7 +673,7 @@ export const caseStudies: Project[] = [
 				id: 'next',
 				title: 'Metrics & timeline',
 				caption:
-					'CSAT, time to order and conversion, the steps to an MVP in Q2, and the homescreen iteration on the team roadmap (W12–W27).',
+					'CSAT, time to order and conversion, the steps to an MVP in Q2, and the home screen iteration on the team roadmap (W12–W27).',
 				layout: 'wide',
 				images: [home('next', 'Metrics, next steps and a week-by-week timeline')]
 			},
@@ -705,7 +706,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Platform', value: 'Android app' }
 		],
 		tools: ['Figma', 'Miro', 'ClickUp'],
-		cover: '/images/work/tokosmart-reskin/cover.svg',
+		cover: '/images/work/tokosmart-reskin/thumb.webp',
 		isNew: true,
 		blocks: [
 			{
@@ -814,7 +815,7 @@ export const caseStudies: Project[] = [
 			{ label: 'City', value: 'Surabaya' }
 		],
 		tools: ['Figma', 'Miro', 'Google Sheets', 'WhatsApp'],
-		cover: '/images/work/grosir-pintar/cover.svg',
+		cover: '/images/work/grosir-pintar/thumb.webp',
 		isNew: true,
 		blocks: [
 			{
@@ -965,7 +966,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Product', value: 'Fazz Agen · Catat Utang' }
 		],
 		tools: ['Figma', 'Maze', 'Google Forms'],
-		cover: '/images/work/catat-utang/cover.svg',
+		cover: '/images/work/catat-utang/thumb.webp',
 		isNew: true,
 		blocks: [
 			{
@@ -1068,7 +1069,7 @@ export const caseStudies: Project[] = [
 		slug: 'modal-terms',
 		type: 'design',
 		title: 'Terms of Modal',
-		tagline: 'Letting 816 lending users name the words in their own app.',
+		tagline: 'Letting 816 lending users choose the words in their own app.',
 		summary:
 			'A survey for Modal Agen, Fazz’s working-capital loan for agents, to replace finance jargon with the words users actually understand, and the product problems their answers surfaced along the way.',
 		client: companies.fazz,
@@ -1081,7 +1082,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Product', value: 'Modal Agen (Modal Rakyat)' }
 		],
 		tools: ['Google Forms', 'Figma', 'Sheets'],
-		cover: '/images/work/modal-terms/cover.svg',
+		cover: '/images/work/modal-terms/thumb.webp',
 		isNew: true,
 		blocks: [
 			{
@@ -1089,7 +1090,7 @@ export const caseStudies: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'Modal Agen screens used lending terms such as “Tenor” and “Sisa Plafon” that agents don’t say. We wanted one vocabulary, chosen by users, that every team could align on.',
+					'Modal Agen screens used lending terms such as “Tenor” and “Sisa Plafon” that agents don’t use. We wanted one vocabulary, chosen by users, that every team could align on.',
 					'Active PMA users of Modal Agen (including those paying for Grosir orders with Modal) got the survey as an in-app notification. Each term came with its definition, and users picked the name they’d use.'
 				]
 			},
@@ -1171,7 +1172,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Product', value: 'Fazz Agen' }
 		],
 		tools: ['WhatsApp', 'Figma', 'Sheets'],
-		cover: '/images/work/loyal-users/cover.svg',
+		cover: '/images/work/loyal-users/thumb.webp',
 		featured: true,
 		isNew: true,
 		blocks: [
@@ -1180,7 +1181,7 @@ export const caseStudies: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'Data showed a group of agents who were profitable and already hooked with almost no coupon or marketing spend. If we understood what kept them, we could grow more of them.',
+					'Data showed a group of agents who were profitable and already engaged with almost no coupon or marketing spend. If we understood what kept them, we could grow more of them.',
 					'We interviewed seven agents who registered between October and December 2022 and used no coupon in their first 30 days, by WhatsApp call on 19–20 January 2023, and checked what they said against internal data.'
 				]
 			},
@@ -1274,7 +1275,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Product', value: 'Fazz Agen · Data & Pulsa' }
 		],
 		tools: ['Typeform', 'Figma', 'Sheets'],
-		cover: '/images/work/data-pulsa/cover.svg',
+		cover: '/images/work/data-pulsa/thumb.webp',
 		isNew: true,
 		blocks: [
 			{
@@ -1388,7 +1389,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Product', value: 'eFisheryKu · Bantuan' }
 		],
 		tools: ['Figma', 'Miro', 'N-gram analysis', 'BI dashboard'],
-		cover: '/images/work/efishery-faq/cover.svg',
+		cover: '/images/work/efishery-faq/thumb.webp',
 		isNew: true,
 		blocks: [
 			{
@@ -1480,7 +1481,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Product', value: 'eFisheryKu · Saldo Panen' }
 		],
 		tools: ['Figma', 'Maze', 'Miro'],
-		cover: '/images/work/saldo-panen/cover.svg',
+		cover: '/images/work/saldo-panen/thumb.webp',
 		featured: true,
 		isNew: true,
 		blocks: [
@@ -1577,7 +1578,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Product', value: 'CRM · Promotion Management System' }
 		],
 		tools: ['Figma', 'Miro', 'CleverTap', 'ClickUp'],
-		cover: '/images/work/martech-crm/cover.svg',
+		cover: '/images/work/martech-crm/thumb.webp',
 		isNew: true,
 		blocks: [
 			{
@@ -1677,7 +1678,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Product', value: 'FAT App · Payment services' }
 		],
 		tools: ['Figma', 'Notion', 'ClickUp'],
-		cover: '/images/work/enterprise-payment/cover.svg',
+		cover: '/images/work/enterprise-payment/thumb.webp',
 		isNew: true,
 		blocks: [
 			{
@@ -1759,7 +1760,7 @@ export const caseStudies: Project[] = [
 			{ label: 'Product', value: 'CRM · AR/AP settlement' }
 		],
 		tools: ['Google Forms', 'Sheets', 'Figma'],
-		cover: '/images/work/crm-arap/cover.svg',
+		cover: '/images/work/crm-arap/thumb.webp',
 		isNew: true,
 		blocks: [
 			{

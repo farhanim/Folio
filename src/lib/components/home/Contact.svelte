@@ -59,8 +59,8 @@
 			<span class="act-main">
 				<span class="act-icon"><Icon name="download" size={18} /></span>
 				<span class="act-text">
-					<span class="act-label">Or download a curriculum vitae</span>
-					<span class="act-value">Hire me, Get a CV</span>
+					<span class="act-label">Or download my CV</span>
+					<span class="act-value">Get my CV</span>
 				</span>
 			</span>
 			<span class="act-end" aria-hidden="true"><Icon name="arrowUpRight" size={16} /></span>

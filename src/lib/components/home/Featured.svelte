@@ -4,6 +4,7 @@
 	import ProjectCover from '#lib/components/project/ProjectCover.svelte';
 	import ProjectMeta from '#lib/components/project/ProjectMeta.svelte';
 	import type { Project } from '#lib/types/index.ts';
+	import { coverSmall } from '#lib/utils/cover.ts';
 
 	/**
 	 * "Worth a read": recommended case studies inside the project index, under its
@@ -62,7 +63,7 @@
 					<li>
 						<a href="/work/{project.slug}">
 							<span class="thumb">
-								<img src={project.cover} alt="" loading="lazy" />
+								<img src={coverSmall(project.cover)} alt="" loading="lazy" />
 								<span class="badge"><ClientBadge client={project.client} size="sm" /></span>
 							</span>
 							<span class="text">

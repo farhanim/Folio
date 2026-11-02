@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import type { Project } from '#lib/types/index.ts';
+	import { coverSrcset } from '#lib/utils/cover.ts';
 	import ClientBadge from './ClientBadge.svelte';
 	import Tag from './Tag.svelte';
 
@@ -15,13 +16,19 @@
 		ratio = '16 / 10',
 		showFeatured = true,
 		eager = false,
-		autoplay = false
+		autoplay = false,
+		sizes = '(max-width: 600px) 100vw, (max-width: 1023px) 50vw, 34vw',
+		tags = true
 	}: {
 		project: Project;
 		ratio?: string;
 		showFeatured?: boolean;
 		eager?: boolean;
 		autoplay?: boolean;
+		/** Rendered width of the cover, for picking from the srcset. */
+		sizes?: string;
+		/** Status tags on the image; cards that show them by the title turn this off. */
+		tags?: boolean;
 	} = $props();
 
 	let root: HTMLSpanElement;
@@ -81,7 +88,14 @@
 </script>
 
 <span class="cover" class:playing style:aspect-ratio={ratio} bind:this={root}>
-	<img src={project.cover} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+	<img
+		src={project.cover}
+		srcset={coverSrcset(project.cover)}
+		{sizes}
+		alt=""
+		loading={eager ? 'eager' : 'lazy'}
+		decoding="async"
+	/>
 	{#if project.preview}
 		<video
 			bind:this={video}
@@ -97,10 +111,12 @@
 			<Icon name="play" size={10} stroke={2.2} /> Live preview
 		</span>
 	{/if}
-	<span class="tags">
-		{#if project.isNew}<Tag kind="new" />{/if}
-		{#if showFeatured && project.featured}<Tag kind="featured" />{/if}
-	</span>
+	{#if tags}
+		<span class="tags">
+			{#if project.isNew}<Tag kind="new" />{/if}
+			{#if showFeatured && project.featured}<Tag kind="featured" />{/if}
+		</span>
+	{/if}
 	<span class="client"><ClientBadge client={project.client} /></span>
 </span>
 
@@ -120,10 +136,11 @@
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		object-position: top center;
 		transition: transform 0.9s var(--ease-out);
 	}
+	/* Designed covers keep their content centred; screen recordings read from the top */
 	video {
+		object-position: top center;
 		position: absolute;
 		inset: 0;
 		opacity: 0;
@@ -137,6 +154,35 @@
 	:global(a:hover) .cover img,
 	:global(a:hover) .cover video {
 		transform: scale(1.035);
+	}
+	/* A light sweep across the cover on hover; transform-only, so it stays cheap */
+	.cover::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		background: linear-gradient(
+			105deg,
+			transparent 35%,
+			rgba(255, 255, 255, 0.22) 50%,
+			transparent 65%
+		);
+		transform: translateX(-110%);
+		pointer-events: none;
+	}
+	:global(a:hover) .cover::after {
+		transform: translateX(110%);
+		transition: transform 1.1s var(--ease-out);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cover::after {
+			display: none;
+		}
+	}
+	.tags,
+	.client,
+	.motion {
+		z-index: 2;
 	}
 	.tags {
 		position: absolute;

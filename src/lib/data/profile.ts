@@ -20,9 +20,7 @@ export const profile: Profile = {
 	nickname: 'Hans',
 	headline: 'Product designer who turns interaction design into code.',
 	summary: [
-		'I’m Farhan Ikhsan (Hans), a product designer based in Bogor, Indonesia. Open to working from anywhere.',
-		'For 9+ years I’ve led design in fintech, aquaculture and retail. I build design systems, internal tools and design teams.',
-		'Now I ship prototypes straight into the repo with Claude, so handoff takes hours instead of days.'
+		'I’m Farhan Ikhsan (Hans), a product designer based in Bogor, Indonesia, and open to working from anywhere. Over the past 9+ years I’ve led design in fintech, aquaculture and retail at Warung Pintar, Fazz, eFishery and now Nikel, where I built design systems like Renceng, replaced manual processes with internal tools, and grew a design team from zero to more than twelve designers. These days I ship prototypes straight into the repo with Claude, so handoff takes hours instead of days, and I run Twonity, a small design and development studio, on the side.'
 	],
 	portrait: '/images/profile/portrait.webp',
 	portraitCutout: '/images/profile/portrait-cutout.webp',
@@ -40,7 +38,7 @@ export const profile: Profile = {
 			period: 'Oct 2025 - Present',
 			location: 'Indonesia',
 			type: 'Full-time',
-			scope: 'Lead design across LMS, Borrower and Lender Portal',
+			scope: 'Leading design across the LMS, Borrower Portal and Lender Portal',
 			summary:
 				'Shipping design systems and prototypes straight into the repo with Claude, giving stakeholders an early view of design intent.',
 			highlights: [
@@ -55,7 +53,7 @@ export const profile: Profile = {
 			period: 'Mar 2023 - Feb 2025',
 			location: 'Indonesia',
 			type: 'Full-time',
-			scope: 'Lead design across FAT, PRF, CRM, FDS, CMS and Compro',
+			scope: 'Led design across FAT, PRF, CRM, FDS, CMS and the company profile',
 			summary:
 				'Specialised in internal tools, replacing manual processes with centralised systems across 6 products.',
 			highlights: [
@@ -70,7 +68,7 @@ export const profile: Profile = {
 			period: 'Oct 2021 - Mar 2023',
 			location: 'Indonesia',
 			type: 'Full-time',
-			scope: 'Lead design across Modal Rakyat, Fazz Agen and Master Agen',
+			scope: 'Led design across Modal Rakyat, Fazz Agen and Master Agen',
 			summary:
 				'Discovery and product design across P2P lending and bookkeeping, including the Fazz super-app rebrand.',
 			highlights: [
@@ -84,7 +82,7 @@ export const profile: Profile = {
 			period: 'Oct 2018 - Oct 2021',
 			location: 'Indonesia',
 			type: 'Full-time',
-			scope: 'Lead design across the Warung Pintar app and Renceng design system',
+			scope: 'Led design across the Warung Pintar app and the Renceng design system',
 			summary:
 				'Built the design team and Renceng, a design system covering customer-facing and internal products on mobile and web.',
 			highlights: [
@@ -109,8 +107,8 @@ export const profile: Profile = {
 			location: 'Remote',
 			type: 'Side hustle',
 			scope: 'Design & development studio',
-			summary: 'Running a design and dev studio for 10+ clients.',
-			highlights: ['Lead scope, contracts and small teams end to end']
+			summary: 'Running a design and development studio for 10+ clients.',
+			highlights: ['Leading scope, contracts and small teams end to end']
 		}
 	],
 	education: [
@@ -160,7 +158,12 @@ export const profile: Profile = {
 			title: 'Design systems, built and evolved',
 			summary: 'Renceng, Fazz DS, OneFish and Ulysses.',
 			from: '',
-			logos: [companies.warungPintar.logo, companies.fazz.logo, companies.efishery.logo],
+			logos: [
+				companies.warungPintar.logo,
+				companies.fazz.logo,
+				companies.efishery.logo,
+				companies.nikel.logo
+			],
 			year: 'Since 2018',
 			stat: { value: '4', label: 'systems' },
 			visual: { src: '/images/recognition/design-systems.svg' }
@@ -345,7 +348,7 @@ export const profile: Profile = {
 		{
 			name: 'Experience Mapping',
 			group: 'Design & Research',
-			proof: 'Double diamond, grounded in psychology and principles',
+			proof: 'Double Diamond, grounded in psychology and design principles',
 			art: 'journey'
 		},
 		{
