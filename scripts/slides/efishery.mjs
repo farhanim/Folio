@@ -409,11 +409,11 @@ const arap = deck('crm-arap-survey', 'crm-arap', 'CRM AR/AP Survey', [
 		body: (b) =>
 			b.grid(
 				b.card(b.eyebrow('Issues found', RED) + b.ticks(['Settlement often takes a long time', 'Weak network in the field', 'Vendor bills arrive late, so sheets are filled in by hand', 'Bills only appear after payment completes'], { color: RED, size: 20 }), { col: 'span 5' }) +
-					b.card(b.eyebrow('Today’s flow') + b.flow(['GForms', 'GSheet AR/AP', 'CRM'], { size: 24 }) + b.p('The same data is typed twice; vendor-bill delays with no ETA stall input and raise the risk of mistakes.', 21), { col: 'span 7' }) +
+					b.card(b.eyebrow('Today’s flow') + b.flow(['Google Forms', 'Google Sheets AR/AP', 'CRM'], { size: 24 }) + b.p('The same data is typed twice; vendor-bill delays with no ETA stall input and raise the risk of mistakes.', 21), { col: 'span 7' }) +
 					b.card(
 						b.eyebrow('Action items') +
 							`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 30px;margin-top:14px">${[
-								['Input from GForms straight into CRM AR/AP', 'Sales & FBDC'],
+								['Input from Google Forms straight into the CRM', 'Sales & FBDC'],
 								['Show an ETA for vendor bills, then “report issue”', 'FAT → Sales'],
 								['Announce every CRM improvement', 'All CRM users'],
 								['Faster loading for weak field networks', 'Sales team'],

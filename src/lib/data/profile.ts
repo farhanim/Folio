@@ -20,11 +20,11 @@ export const profile: Profile = {
 	nickname: 'Hans',
 	headline: 'Product designer who turns interaction design into code.',
 	summary: [
-		'I’m Farhan Ikhsan (Hans), a product designer based in Bogor, Indonesia, and open to working from anywhere. Over the past 9+ years I’ve led design in fintech, aquaculture and retail at Warung Pintar, Fazz, eFishery and now Nikel, where I built design systems like Renceng, replaced manual processes with internal tools, and grew a design team from zero to more than twelve designers. These days I ship prototypes straight into the repo with Claude, so handoff takes hours instead of days, and I run Twonity, a small design and development studio, on the side.'
+		'I’m Farhan Ikhsan (Hans), a product designer based in Bogor, Indonesia, and open to working from anywhere. Over the past 9+ years I’ve led design in retail, fintech and aquaculture at Warung Pintar, Fazz, eFishery and now Nikel. Along the way I’ve built design systems such as Renceng, replaced manual processes with internal tools, and grown a design team from zero to more than twelve designers. These days I use AI tools to ship prototypes straight into the repo, so handoff takes hours instead of days, and I run Twonity, a small design and development studio, on the side.'
 	],
 	portrait: '/images/profile/portrait.webp',
 	portraitCutout: '/images/profile/portrait-cutout.webp',
-	cv: 'https://drive.google.com/file/d/1H7J3coTxXee_YdkYYTEZjJE-pHU-esPS/view?usp=sharing',
+	cv: 'https://drive.google.com/file/d/1TzTitPqrE28xl__0q5sH_yt5omj5WM5L/view?usp=sharing',
 	facts: [
 		{ icon: 'pin', label: 'Based in', value: 'Bogor, Indonesia' },
 		{ icon: 'clock', label: 'Experience', value: '9+ years' },
@@ -40,7 +40,7 @@ export const profile: Profile = {
 			type: 'Full-time',
 			scope: 'Leading design across the LMS, Borrower Portal and Lender Portal',
 			summary:
-				'Shipping design systems and prototypes straight into the repo with Claude, giving stakeholders an early view of design intent.',
+				'Shipping design systems and prototypes straight into the repo with AI tools, giving stakeholders an early view of design intent.',
 			highlights: [
 				'Cut design handoff from days to hours',
 				'Replaced manual review with back-office tooling for 30+ ops staff',
@@ -146,7 +146,7 @@ export const profile: Profile = {
 		{
 			kind: 'milestone',
 			title: 'One loop from design to code',
-			summary: 'Figma, Claude Design, Git and Figma Make.',
+			summary: 'Figma, Figma Make, Git and AI tools.',
 			from: 'Nikel',
 			logos: [companies.nikel.logo],
 			year: 'Since 2025',
@@ -243,12 +243,12 @@ export const profile: Profile = {
 			role: 'Design Manager',
 			company: companies.fazz,
 			avatar: '/images/people/tewi-bowo.webp',
-			highlight: 'Farhan is a critical thinker product designer.',
+			highlight: 'Farhan is a critical-thinking product designer.',
 			headline: 'Leadership, People Manager, Product Management, Product Design',
 			relation: 'Direct manager',
 			date: 'Mar 2023',
 			quote:
-				'Farhan is a critical thinker product designer. Having this special trait made him able to approach complex problems with a thoughtful and analytical mindset that has been invaluable to our team. Farhan consistently demonstrates a deep understanding of user needs and works tirelessly to ensure that the product delivers the highest quality work.'
+				'Farhan is a critical-thinking product designer. This trait lets him approach complex problems with a thoughtful, analytical mindset that has been invaluable to our team. He consistently shows a deep understanding of user needs and works tirelessly to make sure the product is of the highest quality.'
 		},
 		{
 			name: 'Apolos Avrialdo',
@@ -268,24 +268,24 @@ export const profile: Profile = {
 			role: 'Associate PM',
 			company: companies.warungPintar,
 			avatar: '/images/people/faiz-anggoro-mukti.webp',
-			highlight: 'Always thinking about the user when giving a solution.',
+			highlight: 'Always thinking about the user when proposing a solution.',
 			headline: 'Assistant Manager at Central Bank of Indonesia',
 			relation: 'Same team',
 			date: 'Aug 2022',
 			quote:
-				'I worked with Farhan during my tenure as Associate Product Manager at Warung Pintar. Immediately what shine through is his quality as a human being. As He joined before me, he helped me settle in the team and the company. He also has determination to better himself through continuous learning from peers and superiors. He also strikes me as a customer driven person, always thinking about the user when giving a solution. This is shown by his willingness and ability to always do user research before designing a solution.'
+				'I worked with Farhan during my tenure as Associate Product Manager at Warung Pintar. What immediately shines through is his quality as a human being. As he joined before me, he helped me settle into the team and the company. He also has the determination to better himself through continuous learning from peers and superiors. He strikes me as a customer-driven person, always thinking about the user when proposing a solution. This shows in his willingness and ability to always do user research before designing a solution.'
 		},
 		{
 			name: 'Mahira Falevy',
 			role: 'UI/UX Designer',
 			company: companies.fazz,
 			avatar: '/images/people/mahira-falevy.webp',
-			highlight: 'Having Hans in a team is definitely a blessing.',
+			highlight: 'Having Hans on a team is definitely a blessing.',
 			headline: 'UI/UX Designer at Shopee · Master of Interaction Design at USYD',
 			relation: 'Same team',
 			date: 'Aug 2022',
 			quote:
-				'Hans was a good UI Designer to work with. We collaborated together in warung tools domain and he also give a lot of recommendation and feedback in the ux design process. Not limited to that, he came up with a lot of initiatives that helps us grow as a team. He also likes to share his experience and knowledge which is really helpful and inspiring. Having Hans in a team is definitely a blessing. I truly believe that Hans will excel in any job he gets!'
+				'Hans was a great UI designer to work with. We collaborated in the Warung Tools domain, and he gave a lot of recommendations and feedback during the UX design process. Beyond that, he came up with many initiatives that helped us grow as a team. He also likes to share his experience and knowledge, which is really helpful and inspiring. Having Hans on a team is definitely a blessing. I truly believe Hans will excel in any job he takes on!'
 		},
 		{
 			name: 'Arief Naufal Pramudito',
@@ -298,7 +298,7 @@ export const profile: Profile = {
 			relation: 'Different team',
 			date: 'Nov 2021',
 			quote:
-				'One of our first Interaction Designers, Hans knows all about Warung Pintar’s products, and has worked on almost every aspect of our product offering. He’s an eager, fast learner, and he’s not afraid to do activities that would fall outside of traditional design work - he and his team spent weeks in East Java to immerse themselves while incubating a new line of business, for which Hans went on to design the app. He’s a native of the Jakarta IXD community, and he knows what it’s like to be a designer at a startup going through its growing pains - which speaks to his mental fortitude.'
+				'One of our first Interaction Designers, Hans knows all about Warung Pintar’s products, and has worked on almost every aspect of our product offering. He’s an eager, fast learner, and he’s not afraid to do activities that would fall outside of traditional design work: he and his team spent weeks in East Java to immerse themselves while incubating a new line of business, for which Hans went on to design the app. He’s a native of the Jakarta IXD community, and he knows what it’s like to be a designer at a startup going through its growing pains, which speaks to his mental fortitude.'
 		},
 		{
 			name: 'Nabilah B Gelshirani',
@@ -310,7 +310,7 @@ export const profile: Profile = {
 			relation: 'Same team',
 			date: 'Aug 2021',
 			quote:
-				'I have worked with Hans for more than a year in the same squad. He is always passionate about everything that he designs. By working on the same project with him, I can see that he has outstanding knowledge in the multi-area of tech. Although his focus is on design, he is not hesitant to explore other things. Furthermore, he also often delivers superb performance.'
+				'I have worked with Hans for more than a year in the same squad. He is always passionate about everything that he designs. Working on the same projects with him, I could see his outstanding knowledge across many areas of tech. Although his focus is design, he never hesitates to explore other things, and he consistently delivers superb work.'
 		}
 	],
 	// Shown as a bento grid; each skill has a small drawing (`art`) made in CSS.
@@ -324,7 +324,7 @@ export const profile: Profile = {
 		{
 			name: 'AI-Assisted Design',
 			group: 'Design & Research',
-			proof: 'GPT, Gemini, Paper and Claude across research, design and code',
+			proof: 'GPT, Gemini and Paper across research, design and code',
 			art: 'flow'
 		},
 		{
@@ -369,7 +369,6 @@ export const profile: Profile = {
 		{ name: 'Paper', category: 'Design' },
 		{ name: 'Webflow', brand: 'webflow', category: 'Design' },
 		{ name: 'Adobe', brand: 'adobe', category: 'Design' },
-		{ name: 'Claude', brand: 'claude', category: 'AI' },
 		{ name: 'GPT', brand: 'openai', category: 'AI' },
 		{ name: 'Replit', brand: 'replit', category: 'AI' },
 		{ name: 'React', brand: 'react', category: 'Code' },

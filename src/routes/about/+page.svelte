@@ -238,7 +238,9 @@
 	<aside class="rail">
 		<TableOfContents items={toc}>
 			{#snippet footer()}
-				<a class="cv" href={profile.cv}><Icon name="download" size={13} /> Download CV</a>
+				<a class="cv" href={profile.cv} target="_blank" rel="noopener"
+					><Icon name="download" size={13} /> Download resume</a
+				>
 			{/snippet}
 		</TableOfContents>
 	</aside>
@@ -285,7 +287,7 @@
 
 				<div class="actions">
 					<a class="primary" href={profile.cv} target="_blank" rel="noopener"
-						><span class="p-icon"><Icon name="download" size={16} /></span> Download CV</a
+						><span class="p-icon"><Icon name="download" size={16} /></span> Download resume</a
 					>
 					<a class="secondary" href="/#contact">Get in touch <Icon name="arrowRight" size={14} /></a
 					>
@@ -473,7 +475,7 @@
 					<span class="hub">AI</span>
 					<span class="tools-r">
 						<span class="t"><span class="ai-mono">Pa</span></span>
-						<span class="t"><Brand name="claude" size={14} /></span>
+						<span class="t"><Brand name="replit" size={14} /></span>
 					</span>
 					<span class="uses">
 						{#each ['Research', 'Design', 'Code'] as u (u)}<i>{u}</i>{/each}

@@ -102,7 +102,7 @@ const archetypes = {
 		n: 2,
 		total: TOTAL,
 		title: 'Half-hearted acceptance',
-		lede: 'Most accepted with help from the field team (FBDO), but stayed skeptical.',
+		lede: 'Most accepted with help from the field team (FBDO), but stayed sceptical.',
 		content: `
 		<div class="abs" style="left:72px;right:72px;top:370px">
 			<div style="position:relative;height:18px;border-radius:18px;background:linear-gradient(90deg,${RED},${LEMON} 50%,${GREEN})">

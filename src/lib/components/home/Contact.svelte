@@ -4,7 +4,7 @@
 	import { profile } from '#lib/data/profile.ts';
 	import { reveal } from '#lib/utils/reveal.ts';
 
-	const headline = "Let's make something good.";
+	const headline = "Let’s make something good.";
 	const SPACE = ' ';
 
 	let copied = $state(false);
@@ -60,13 +60,13 @@
 			href={profile.cv}
 			target="_blank"
 			rel="noopener"
-			aria-label="Download Hans Curriculum Vitae"
+			aria-label="Download Hans’s resume"
 		>
 			<span class="act-main">
 				<span class="act-icon"><Icon name="download" size={18} /></span>
 				<span class="act-text">
-					<span class="act-label">Or download Resume</span>
-					<span class="act-value">Get a resume</span>
+					<span class="act-label">Prefer a PDF?</span>
+					<span class="act-value">Download resume</span>
 				</span>
 			</span>
 			<span class="act-end" aria-hidden="true"><Icon name="arrowUpRight" size={16} /></span>

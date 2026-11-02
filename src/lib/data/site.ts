@@ -57,7 +57,6 @@ export const toolbox = [
 	'Paper',
 	'Webflow',
 	'Adobe',
-	'Claude',
 	'GPT',
 	'Replit',
 	'React',

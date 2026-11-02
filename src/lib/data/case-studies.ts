@@ -64,7 +64,7 @@ export const caseStudies: Project[] = [
 				title: 'The story',
 				body: [
 					'Lending runs on trust. A lender has to trust a number before moving money, a borrower has to trust that the cost they see is the cost they pay, and an analyst has to trust that every transfer landed.',
-					'At KlikA2C, Nikel’s peer-to-peer lending marketplace, those three people worked in three portals that each told a loan’s story differently. Lenders fund invoice, PO, employee and earned-wage (EWA) loans; borrowers apply for them; and an operations team checks, approves and moves the money in between.',
+					'At KlikA2C, Nikel’s peer-to-peer lending marketplace, those three people worked in three portals that each told a loan’s story differently. Lenders fund invoice, PO, employee and earned wage access (EWA) loans; borrowers apply for them; and an operations team checks, approves and moves the money in between.',
 					'I set out to design one product instead of three: one loan lifecycle, one design system and one language for money, so the same loan reads the same way from every side.'
 				]
 			},
@@ -110,11 +110,11 @@ export const caseStudies: Project[] = [
 						chapters: [
 							{ at: 0, label: 'Sign in, then choose a product: EWA, Employee Loan, Invoice or PO' },
 							{ at: 3.6, label: 'Verify with NIK or NIP' },
-							{ at: 5.2, label: 'Employer data prefills and locks the account' },
+							{ at: 5.2, label: 'Employer data prefills the account and locks key fields' },
 							{ at: 9.1, label: 'Home: remaining limit by product and payroll deductions' },
 							{ at: 13.7, label: 'Apply: pick a product and see what documents it needs' },
 							{ at: 15.7, label: 'Set the amount and tenor' },
-							{ at: 18.6, label: 'Simulation: the full cost before any document' },
+							{ at: 18.6, label: 'Simulation: the full cost before any documents' },
 							{ at: 24.1, label: 'Loan detail: schedule and activity timeline' },
 							{ at: 29, label: 'Settings: bank accounts for disbursement' }
 						],
@@ -348,12 +348,12 @@ export const caseStudies: Project[] = [
 		title: 'Lender Portal Enhancement',
 		tagline: 'A clearer view of every lender decision.',
 		summary:
-			'Reworking Nikel’s Klik A2C lender portal around the questions investors need to answer: what is available, how their funds are performing, where money is allocated, and what changed in their wallet.',
+			'Reworking Nikel’s KlikA2C lender portal around the questions investors need to answer: what is available, how their funds are performing, where money is allocated, and what changed in their wallet.',
 		client: companies.nikel,
 		role: 'UX Designer',
 		year: 2026,
 		facts: [
-			{ label: 'Product', value: 'Klik A2C · Lender Portal' },
+			{ label: 'Product', value: 'KlikA2C · Lender Portal' },
 			{ label: 'Scope', value: 'Home, Portfolio, Mutation, loan & borrower detail' }
 		],
 		tools: [],
@@ -365,8 +365,8 @@ export const caseStudies: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'The lender portal put performance data, wallet balance and loan information in front of people funding loans through Klik A2C. The source deck describes a dashboard crowded with metrics and charts that could appear empty when a data source did not have the required information.',
-					'The enhancement reframes the portal around four connected tasks: check available balance, assess returns, understand loan allocation, and reconcile wallet movement. The project deck is dated 29 May 2026.'
+					'The lender portal puts performance data, wallet balance and loan information in front of people funding loans through KlikA2C. The previous dashboard was crowded with metrics, and its charts could appear empty when a data source lacked the required information.',
+					'The enhancement reframes the portal around four connected tasks: check available balance, assess returns, understand loan allocation, and reconcile wallet movement.'
 				]
 			},
 			{
@@ -406,7 +406,7 @@ export const caseStudies: Project[] = [
 				id: 'screens',
 				title: 'The portal in use',
 				caption:
-					'Five real screens from the product deck show the full path: review balance, browse available loans, track funded loans by status and follow wallet activity.',
+					'Five screens show the full path: review your balance, browse available loans, track funded loans by status and follow wallet activity.',
 				layout: 'wide',
 				images: [
 					nikelPortal('home-dashboard.png', 'Lender home dashboard with available balance, funding summary and loan list'),
@@ -423,10 +423,10 @@ export const caseStudies: Project[] = [
 				items: [
 					{
 						title: 'Audit the current experience',
-						body: 'Use the deck’s pain-point review to identify metric noise, missing data and places where a chart did not help a lender act.'
+						body: 'Review the pain points to find metric noise, missing data and places where a chart did not help a lender act.'
 					},
 					{
-						title: 'Prioritize decisions',
+						title: 'Prioritise decisions',
 						body: 'Organise the home view around available balance, active funding and returns; keep allocation and reconciliation details in their natural next step.'
 					},
 					{
@@ -435,7 +435,7 @@ export const caseStudies: Project[] = [
 					},
 					{
 						title: 'Carry feedback into the next iteration',
-						body: 'The deck closes by identifying loan and borrower detail as the next area to streamline.'
+						body: 'Loan and borrower detail were identified as the next area to streamline.'
 					}
 				]
 			},
@@ -456,7 +456,7 @@ export const caseStudies: Project[] = [
 				id: 'metric-model',
 				title: 'A shared language for money',
 				caption:
-					'Metric definitions from the appendix: available balance is real-time; returns are all-time; wallet credits and debits are month-to-date.',
+					'Metric definitions: available balance is real-time, returns are all-time, and wallet credits and debits are month-to-date.',
 				layout: 'wide',
 				images: [
 					nikelPortal('metric-model.svg', 'Metric model distinguishing real-time balance, all-time returns, loan status and month-to-date movements')
@@ -467,7 +467,7 @@ export const caseStudies: Project[] = [
 				id: 'next-iteration',
 				title: 'Next iteration',
 				body: [
-					'The product deck identifies loan and borrower detail as the next opportunity: streamline the data so lenders can find the information they need without adding more noise.'
+					'Loan and borrower detail are the next opportunity: streamlining the data so lenders find what they need without adding more noise.'
 				]
 			}
 		],
@@ -1184,7 +1184,7 @@ export const caseStudies: Project[] = [
 			{
 				kind: 'gallery',
 				id: 'partnership',
-				title: 'Logistic partnership',
+				title: 'Logistics partnership',
 				caption:
 					'Retailers keep ordering from their wholesaler; Warung Pintar restocks the wholesaler and delivers for them. Rolled out in stages, with a lead funnel growing from 21 to 37.',
 				layout: 'wide',
@@ -1500,7 +1500,7 @@ export const caseStudies: Project[] = [
 				id: 'participants',
 				title: 'Who we talked to',
 				caption:
-					'Seven agents, anonymised, with their first months on Fazz Agen: from Rp 4.2 jt to Rp 172.3 jt GMV.',
+					'Seven agents, anonymised, with their first months on Fazz Agen: from Rp 4.2 million to Rp 172.3 million in GMV.',
 				layout: 'wide',
 				images: [loyal('participants', 'Method, rationale and seven anonymised agent cards')]
 			},
@@ -1816,7 +1816,7 @@ export const caseStudies: Project[] = [
 				id: 'archetypes',
 				title: 'Half-hearted acceptance',
 				caption:
-					'Most farmers accepted with help from the field team but stayed skeptical. Three archetypes explain why, through motivation, ability and opportunity.',
+					'Most farmers accepted with help from the field team but stayed sceptical. Three archetypes explain why, through motivation, ability and opportunity.',
 				layout: 'wide',
 				images: [
 					saldo('archetypes', 'Resist-to-accept scale, three archetypes and their mental model')
@@ -1981,7 +1981,7 @@ export const caseStudies: Project[] = [
 				id: 'overview',
 				title: 'Overview',
 				body: [
-					'Payments started as field staff posting receipt photos in Slack for finance to key into Odoo. As transactions grew, finance hit its limits: payments arrived around the clock, about 200 records a day per business unit came in manually, and treasury reconciled ~18 bank accounts in spreadsheets.',
+					'Payments started as field staff posting receipt photos in Slack for finance to key into Odoo. As transactions grew, finance hit its limits: payments arrived around the clock, about 200 records a day per business unit came in manually, and treasury reconciled about 18 bank accounts in spreadsheets.',
 					'The team built finance services and payment services together, with each step replacing a manual one.'
 				]
 			},
@@ -2102,7 +2102,7 @@ export const caseStudies: Project[] = [
 				id: 'actions',
 				title: 'Issues & action plan',
 				caption:
-					'Double entry from GForms to GSheet to CRM, late vendor bills and weak field networks, turned into five action items with owners.',
+					'Double entry from Google Forms to Google Sheets to the CRM, late vendor bills and weak field networks, turned into five action items with owners.',
 				layout: 'wide',
 				images: [arap('actions', 'Issues, the current input flow and five action items')]
 			}
