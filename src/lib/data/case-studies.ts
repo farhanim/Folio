@@ -46,7 +46,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'I led end-to-end design for Nikel’s KlikA2C lending marketplace, bringing the Lender Portal, Borrower Portal and Back Office onto one loan lifecycle, one design system and one shared language for money.',
 		client: companies.nikel,
-		role: 'Product Designer',
+		role: 'UX Designer',
 		year: 2026,
 		team: 'Solo designer with product, engineering, credit and operations',
 		facts: [
@@ -482,7 +482,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'A year of research at Warung Pintar into the shop owners (mitra) and buyers behind the platform: how they learn, keep books, shop for stock and choose a warung, turned into personas, archetypes and journey maps that product teams could build on.',
 		client: companies.warungPintar,
-		role: 'Design lead · UX research',
+		role: 'Interaction Designer · UX research',
 		year: 2021,
 		duration: 'Dec 2019 - Jan 2021',
 		team: 'UXR Merchant, Growth team',
@@ -683,7 +683,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'A heuristic evaluation of the Aplikasi Warung Pintar (AWP) ordering flow, a redesigned catalog built around who sells each product, and a Maze usability test that put both versions in front of mitra.',
 		client: companies.warungPintar,
-		role: 'Design lead · UX research',
+		role: 'Interaction Designer · UX research',
 		year: 2020,
 		team: 'Growth team, 3 evaluators',
 		facts: [
@@ -777,7 +777,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'A heuristic evaluation of the new Aplikasi Warung Pintar (AWP) ordering flow (from the homepage to order tracking) scoring every problem against Nielsen’s heuristics so the team could fix the worst first.',
 		client: companies.warungPintar,
-		role: 'Evaluator · UX research',
+		role: 'Interaction Designer · UX research',
 		year: 2020,
 		duration: 'Oct 2020',
 		team: 'Growth team, 3 evaluators',
@@ -903,7 +903,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'Redesigning the Warung Pintar app home for mitra who signed up online without a sales agent: competitor analysis and crazy 8s, three lo-fi layouts, two hi-fi revamps and every state the home can be in.',
 		client: companies.warungPintar,
-		role: 'Product designer',
+		role: 'Interaction Designer',
 		year: 2021,
 		duration: 'Q1 - Q2 2020',
 		team: 'Growth team, Commerce · Merchants',
@@ -1000,7 +1000,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'Reskinning Bizzy’s Tokosmart app as Warung Pintar: a new brand foundation on an existing product, merged user journeys, and a clear account of what changes for each app’s users.',
 		client: companies.warungPintar,
-		role: 'Design lead',
+		role: 'Interaction Designer',
 		year: 2021,
 		duration: '2 weeks + extension',
 		team: 'Warung Pintar × Bizzy',
@@ -1108,7 +1108,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'Research and service design for Grosir Pintar (codename Venom) in Surabaya: closing the price gap with wholesalers, a logistics partnership that delivers for them, and the app roadmap that let wholesalers sell to and restock their own retailers.',
 		client: companies.warungPintar,
-		role: 'Product designer · UX research',
+		role: 'Interaction Designer · UX research',
 		year: 2021,
 		duration: 'Feb - Aug 2020',
 		team: 'Venom squad, Growth squad, team leaders',
@@ -1259,7 +1259,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'Research for Fazz Agen’s debt book (catat utang): a survey of 377 agents on what a debt report should hold, then a Maze usability test of a visual report and two “record as debt” shortcuts with five agents.',
 		client: companies.fazz,
-		role: 'UI designer · UX research',
+		role: 'UI Designer · UX research',
 		year: 2022,
 		duration: 'May - Jun 2022',
 		team: 'Experience team',
@@ -1374,7 +1374,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'A survey for Modal Agen, Fazz’s working-capital loan for agents, to replace finance jargon with the words users actually understand, and the product problems their answers surfaced along the way.',
 		client: companies.fazz,
-		role: 'UI designer · UX research',
+		role: 'UI Designer · UX research',
 		year: 2022,
 		duration: 'Oct - Nov 2022',
 		team: 'Experience team, marketing',
@@ -1463,7 +1463,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'Interviews with Fazz Agen’s most loyal new agents (profitable, and never touching a coupon) to find what keeps them, distilled into a proto persona and four recommendations to grow more agents like them.',
 		client: companies.fazz,
-		role: 'UI designer · UX research',
+		role: 'UI Designer · UX research',
 		year: 2023,
 		duration: 'Jan 2023',
 		team: 'Experience team, data analysts',
@@ -1565,7 +1565,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'Discovery research on Fazz Agen’s Data and Pulsa pages: a survey of 623 agents, competitor benchmarking and sales interviews that traced the complaints to one cause (a list too complex to use) and reshaped it around how customers ask.',
 		client: companies.fazz,
-		role: 'UI designer · UX research',
+		role: 'UI Designer · UX research',
 		year: 2023,
 		duration: 'Jan - Feb 2023',
 		team: 'Experience team, 3 researchers',
@@ -1678,7 +1678,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'A Design Ops initiative for eFisheryKu: complaint data analysed with N-grams to find the questions farmers actually ask, turned into a self-service FAQ that comes before every “submit a complaint” option.',
 		client: companies.efishery,
-		role: 'Interaction designer',
+		role: 'Interaction Designer',
 		year: 2024,
 		duration: 'Q4 2024',
 		team: 'Design Ops, CX, data team, PM',
@@ -1770,7 +1770,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'Concept testing for Saldo Panen, a balance in eFisheryKu where fish farmers receive surplus from harvest settlement and withdraw it to their bank, with seven farmers in Subang and Bandung Barat.',
 		client: companies.efishery,
-		role: 'Product designer · UX research',
+		role: 'Interaction Designer · UX research',
 		year: 2024,
 		duration: 'Mar 2024',
 		team: 'Product design, Core Fintech',
@@ -1866,7 +1866,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'Discovery and design for eFishery’s marketing and growth products: a CRM with self-segmentation, a promotion engine with budget control, and a journey that decides whether a farmer gets a campaign, a call or a visit.',
 		client: companies.efishery,
-		role: 'Product designer',
+		role: 'Interaction Designer',
 		year: 2023,
 		duration: 'Q2 2023 - Q1 2024',
 		team: 'Enterprise, PMM, BD, data & engineering',
@@ -1965,7 +1965,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'Designing eFishery’s internal payment products (a finance app, AR/AP settlement and payment services in and out) so finance could process growing volumes on time and farmers could pay by themselves.',
 		client: companies.efishery,
-		role: 'Product designer',
+		role: 'Interaction Designer',
 		year: 2023,
 		duration: 'Q1 - Q3 2023',
 		team: 'Enterprise Payment team',
@@ -2046,7 +2046,7 @@ export const caseStudies: Project[] = [
 		summary:
 			'An evaluative survey of the CRM’s AR/AP settlement feature with 22 sales and FBDC staff: how they use it, how they rate it, and the double-entry flow they wanted gone.',
 		client: companies.efishery,
-		role: 'Product designer · UX research',
+		role: 'Interaction Designer · UX research',
 		year: 2023,
 		duration: 'Feb 2023',
 		team: 'Two researchers',

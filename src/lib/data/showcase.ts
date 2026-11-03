@@ -1587,7 +1587,7 @@ export const showcase: Project[] = [
 			'A weekly command centre for Telkomsel’s customer complaints: remedy tickets, closed & resolved rates, SLA and the complaint index, drilled down from nationwide to region, department, sub-department and city, with twelve weeks of trends.',
 		client: c.telkomsel,
 		via: companies.immobi,
-		role: 'Front-end development',
+		role: 'Web Designer',
 		year: 2018,
 		facts: [
 			{ label: 'Industry', value: 'Telecommunications · Customer care' },
@@ -2121,7 +2121,7 @@ export const showcase: Project[] = [
 			'Artemis brings a mobile operator’s network capacity into one place: end-to-end occupancy for core, transport and radio, a forecast that shows when each element will cross its threshold, anomaly detection, and capacity planning for events such as New Year’s Eve and Lebaran.',
 		client: c.telkomsel,
 		via: companies.immobi,
-		role: 'Design & front-end development',
+		role: 'Web Designer',
 		year: 2018,
 		facts: [
 			{ label: 'Industry', value: 'Telecommunications · Network planning' },
@@ -2255,7 +2255,7 @@ export const showcase: Project[] = [
 			'SIMAL (Sistem Informasi Manajemen Angkatan Laut) brings three tools for naval command into one system: a call identifier that traces personnel calls and where they were made, personnel monitoring for attendance and leave across every base, and remote control of each base’s lights, air conditioning, power and CCTV, with the fleet on a live map.',
 		client: c.simal,
 		via: companies.immobi,
-		role: 'Design & front-end development',
+		role: 'Web Designer',
 		year: 2019,
 		special: true,
 		facts: [
@@ -2390,7 +2390,7 @@ export const showcase: Project[] = [
 			'A data ingestion console for property data: connect FTP, SFTP, HTTP and SQL sources, describe each feed once with a step-by-step wizard, and let scheduled jobs extract, validate, parse, transform and load it into the warehouse, with every run, its tasks and its logs one click away.',
 		client: companies.immobi,
 		via: companies.immobi,
-		role: 'Design & front-end development',
+		role: 'Web Designer',
 		year: 2018,
 		facts: [
 			{ label: 'Industry', value: 'Property · Data engineering' },
@@ -2513,7 +2513,7 @@ export const showcase: Project[] = [
 			'Remote Task manages a fleet of measurement boxes placed across Indonesia: it schedules speed tests on each one, tracks every box’s heartbeat, signal, data quota and battery, and turns the results into download, upload and latency figures by hour, region, network and operator.',
 		client: c.telkomsel,
 		via: companies.immobi,
-		role: 'Design & front-end development',
+		role: 'Web Designer',
 		year: 2018,
 		special: true,
 		facts: [
@@ -2644,7 +2644,7 @@ export const showcase: Project[] = [
 			'Smart Survey runs telecom site surveys end to end: project managers set up a project with its sites and form templates, assign survey and audit tasks to field engineers, and follow progress on one dashboard, while engineers fill in the forms with photos on the mobile app and the results come back as reports ready to review and print.',
 		client: companies.immobi,
 		via: companies.immobi,
-		role: 'Design & front-end development',
+		role: 'Web Designer',
 		year: 2019,
 		facts: [
 			{ label: 'Industry', value: 'Telecommunications · Field operations' },
@@ -2776,7 +2776,7 @@ export const showcase: Project[] = [
 			'The reporting dashboard for SignalViewer, an app that measures mobile network quality from users’ phones: monthly and daily summaries of installs, spot tests and route tests, installs by country and on the map, a daily input form for social media and e-mail figures, and user management.',
 		client: companies.immobi,
 		via: companies.immobi,
-		role: 'Design & front-end development',
+		role: 'Web Designer',
 		year: 2018,
 		special: true,
 		facts: [
