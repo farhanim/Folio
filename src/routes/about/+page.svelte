@@ -291,7 +291,8 @@
 
 				<div class="actions">
 					<a class="primary" href={profile.cv} target="_blank" rel="noopener"
-						><span class="p-icon"><Icon name="download" size={16} /></span> Download resume</a
+						><span class="p-icon"><Icon name="download" size={14} /></span>
+						Download resume</a
 					>
 					<a class="secondary" href="/#contact">Get in touch <Icon name="arrowRight" size={14} /></a
 					>
@@ -1049,17 +1050,18 @@
 		text-decoration: none;
 		transition: transform 0.3s var(--ease-out);
 	}
-	/* Primary: the amber chip makes the CV the one thing to click */
+	/* Primary: the amber chip makes the CV the one thing to click; same height and
+	   right padding as "Get in touch", with the chip inset evenly from the edge */
 	.primary {
-		padding-left: 6px;
+		padding: 0 20px 0 9px;
 		background: var(--text);
 		color: var(--bg);
 	}
 	.p-icon {
 		display: grid;
 		place-items: center;
-		width: 36px;
-		height: 36px;
+		width: 30px;
+		height: 30px;
 		border-radius: 50%;
 		background: var(--amber);
 		color: #1a1a1a;
@@ -1761,8 +1763,14 @@
 	}
 	.t-who {
 		display: grid;
+		flex: 1;
 		min-width: 0;
 		line-height: 1.35;
+	}
+	.t-who strong {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	.t-who strong {
 		font-size: 13px;
@@ -1772,18 +1780,21 @@
 		font-size: 12px;
 		color: var(--text-secondary);
 	}
-	/* Where we worked together: company logo and name */
+	/* Where we worked together: company logo and name, one line ending in "…" when long */
 	.t-who .t-src {
-		display: inline-flex;
-		align-items: center;
-		gap: 5px;
-		white-space: nowrap;
+		display: block;
+		overflow: hidden;
 		margin-top: 1px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	.t-src img {
+		display: inline-block;
 		width: 16px;
 		height: 16px;
+		margin: 0 4px 0 1px;
 		border-radius: 4px;
+		vertical-align: -4px;
 		box-shadow: 0 0 0 1px var(--hairline);
 	}
 	.more {
@@ -1826,9 +1837,32 @@
 	}
 	@media (max-width: 600px) {
 		.t-card {
-			width: 280px;
+			width: min(300px, calc(100vw - 2 * var(--pad) - 28px));
 			height: 244px;
 			padding: 14px;
+		}
+		.t-card blockquote {
+			font-size: 13.5px;
+		}
+		/* Footer: tighter, so the name and role keep room beside "Read all" */
+		.t-card footer {
+			gap: 8px;
+		}
+		.t-card .avatar {
+			width: 28px;
+			height: 28px;
+			font-size: 11px;
+		}
+		.t-who span {
+			font-size: 11.5px;
+		}
+		.t-src img {
+			width: 14px;
+			height: 14px;
+			vertical-align: -3px;
+		}
+		.more {
+			font-size: 11.5px;
 		}
 		.qb {
 			padding: 20px;
@@ -2607,23 +2641,41 @@
 			margin-top: 20px;
 			gap: 8px;
 		}
-		/* Both buttons on one row, each label on one line */
+		/* Two equal buttons on one row */
+		.actions {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+		}
 		.actions a {
-			flex: 1 1 auto;
+			min-width: 0;
 			height: 44px;
 			gap: 8px;
 			font-size: 13px;
 			white-space: nowrap;
 		}
-		.primary {
-			padding: 0 14px 0 5px;
+		/* Icons pinned to the outer edges, labels left-aligned in each button */
+		.actions a {
+			position: relative;
+			justify-content: flex-start;
+			padding: 0 40px 0 18px;
+		}
+		/* Resume label starts just after its icon chip; no icon on its right, so less padding there */
+		.actions .primary {
+			padding: 0 12px 0 45px;
 		}
 		.p-icon {
-			width: 34px;
-			height: 34px;
+			position: absolute;
+			top: 50%;
+			left: 7px;
+			width: 30px;
+			height: 30px;
+			translate: 0 -50%;
 		}
-		.secondary {
-			padding: 0 16px;
+		.secondary :global(svg) {
+			position: absolute;
+			top: 50%;
+			right: 16px;
+			translate: 0 -50%;
 		}
 
 		/* Experience: logo + role with the toggle; the period sits under the company */
@@ -2655,6 +2707,23 @@
 		}
 		.logos img {
 			height: 30px;
+		}
+	}
+	/* Narrowest phones: a smaller label and chip so "Download resume" still fits one line */
+	@media (max-width: 359px) {
+		.actions a {
+			font-size: 12px;
+		}
+		.actions .primary {
+			padding: 0 8px 0 40px;
+		}
+		.p-icon {
+			left: 6px;
+			width: 27px;
+			height: 27px;
+		}
+		.secondary :global(svg) {
+			right: 12px;
 		}
 	}
 </style>

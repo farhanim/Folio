@@ -226,8 +226,9 @@
 		color: var(--text);
 	}
 
+	/* Full content width: title, tagline and summary run to the right edge, as the details row below does */
 	.intro {
-		grid-column: 1 / span 8;
+		grid-column: 1 / -1;
 		animation: enter 0.9s var(--ease-out) both;
 	}
 	/* One line: the parent links keep their size, the current page truncates */
@@ -281,7 +282,6 @@
 		color: var(--text-secondary);
 	}
 	.summary {
-		max-width: 80ch;
 		margin-top: 20px;
 		font-size: calc(15px * var(--text-scale));
 		line-height: 1.6;

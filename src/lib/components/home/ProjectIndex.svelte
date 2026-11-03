@@ -200,7 +200,7 @@
 											/>{/if}
 									</span>
 									<span class="type">
-										<span class="kind" class:code={project.type === 'code'}>
+										<span class="kind">
 											<Icon name={project.type === 'design' ? 'palette' : 'code'} size={12} />
 											{typeLabel(project)}
 										</span>
@@ -533,9 +533,6 @@
 		letter-spacing: 0.03em;
 		text-transform: uppercase;
 		color: var(--text);
-	}
-	.kind.code :global(svg) {
-		color: var(--amber);
 	}
 	.read {
 		display: inline-flex;
