@@ -1,0 +1,91 @@
+/* Add-ons only: the original interface (ccm.css) is untouched apart from full width. */
+
+/* Full width: no centred max-width, so no empty margins on wide screens */
+.container-fluid { max-width: none; }
+
+/* Filter panel: labelled fields, rounded inputs, Reset / Apply (original navy palette) */
+.well.ccm-filter.f-panel {
+    height: auto; display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px 14px;
+    background: #141e30; border: 1px solid #374254; border-radius: 10px; padding: 14px 16px 16px; margin: 4px 0 14px;
+}
+.f-panel .f-field { display: flex; flex-direction: column; gap: 6px; min-width: 150px; }
+.f-panel .f-field label { margin: 0; color: #617492; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; }
+.f-panel select.custom-select, .f-panel select {
+    height: 36px; min-width: 150px; padding: 0 30px 0 12px; border-radius: 8px; border: 1px solid #374254;
+    background-color: #0e1624 !important; color: #e6ebf5 !important; font-size: 13px; text-align: left; box-shadow: none;
+}
+.f-panel select:hover { border-color: #4d5b75; }
+.f-panel select:focus { outline: none; border-color: #ed1c24; box-shadow: 0 0 0 3px rgba(237, 28, 36, .2); }
+.f-panel .f-group { display: flex; gap: 14px; }
+.f-panel .f-time { display: flex; gap: 8px; }
+.f-panel .f-actions { margin-left: auto; display: flex; gap: 8px; }
+.f-panel .f-apply, .f-panel .f-reset {
+    height: 36px; padding: 0 20px; border-radius: 8px; display: inline-flex; align-items: center; font-size: 12px;
+    letter-spacing: .05em; text-transform: uppercase; text-decoration: none !important; cursor: pointer;
+}
+.f-panel .f-apply { background: #ed1c24; color: #fff !important; border: 0; }
+.f-panel .f-apply:hover { background: #d3151c; }
+.f-panel .f-reset { color: #c9d3e3 !important; border: 1px solid #374254; }
+.f-panel .f-reset:hover { background: #1d2940; }
+
+/* Colored trend panels: header and body read as one block */
+.box-header.trend-head { margin: 0; border: 0; }
+.box.trend-body { margin-top: 0; border-radius: 0 0 4px 4px; }
+
+/* SUMMARY menu: text + chevron inline */
+#summary_navbar_menu { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+#summary_navbar_menu::after { display: none; }
+#summary_navbar_menu .nav-chevron { width: 12px; height: 12px; transition: transform .15s ease; }
+.open > #summary_navbar_menu .nav-chevron { transform: rotate(180deg); }
+
+/* First section: equal-height columns (tiles, gauge card, trend panels) */
+.eq-row { display: flex; flex-wrap: wrap; }
+.eq-row [class*="col-md-"] { float: none; display: flex; flex-direction: column; }
+.eq-row .eq-nest { flex-direction: row; flex-wrap: wrap; align-content: stretch; }
+.eq-row .clearfix { display: none; }
+.eq-row .modul-icon > .box { flex: 1; height: auto; min-height: 85px; }
+.eq-row .box-header { flex: none; }
+.eq-row .box-header + .box { flex: 1; height: auto !important; display: flex; flex-direction: column; justify-content: center; }
+/* Bottom gap matches the tiles' 5px so every column ends on the same line */
+.eq-row [class*="col-md-"]:not(.eq-nest) > .box:last-child { margin-bottom: 5px; }
+.eq-row .eq-nest > [class*="col-md-"]:not(.modul-icon) > .box:last-child { margin-bottom: 5px; }
+
+/* KPI change badge: bottom-right, next to the value (labels stay fully visible) */
+.modul-icon .box { position: relative; }
+.modul-icon .kpi-delta { position: absolute; right: 10px; bottom: 12px; }
+.modul-icon .kpi-delta span, .delta {
+    float: none !important; margin: 0 !important; font-size: 10px !important; line-height: 1.5 !important; letter-spacing: 0 !important;
+    font-family: 'montserratregular', sans-serif !important; display: inline-block; padding: 0 6px; border-radius: 8px;
+}
+.delta.good { color: #3c8c0c !important; background: #eef8e6; }
+.delta.bad { color: #c8161d !important; background: #fdeaea; }
+.delta.flat { color: #617492 !important; background: #edf2f7; }
+
+/* Box notes (counts next to a title) */
+.box-header h5 small.box-note { text-transform: none; color: #617492; font-size: 11px; margin-left: 8px; }
+.ccm-box-foot { display: flex; justify-content: space-between; padding: 8px 0 2px; font-size: 11.5px; color: #617492; border-top: 1px solid #edf2f7; }
+
+/* Sample tables */
+.table.ccm-data-table { font-size: 9pt; margin-bottom: 0; }
+.table.ccm-data-table th { font-weight: normal; color: #617492; text-transform: uppercase; font-size: 8pt; border-top: 0; white-space: nowrap; }
+.table.ccm-data-table td { vertical-align: middle; white-space: nowrap; padding: 6px 8px; }
+.table.ccm-data-table .r { text-align: right; }
+.table.ccm-data-table .mono { font-family: Consolas, monospace; }
+.table.ccm-data-table .muted { color: #617492; font-size: 8pt; }
+.status { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 8pt; }
+.status.good { color: #3c8c0c; background: #eef8e6; }
+.status.warn { color: #8a6500; background: #fff6d6; }
+.status.bad { color: #c8161d; background: #fdeaea; }
+.status.info { color: #0c65e8; background: #e8f0fd; }
+.svc { display: inline-block; padding: 0 6px; border: 1px solid #dfe5ee; border-radius: 3px; font-size: 8pt; }
+.spark { display: block; }
+.bar-meter { display: inline-block; width: 60px; height: 6px; border-radius: 3px; background: #edf2f7; vertical-align: middle; margin-right: 8px; overflow: hidden; }
+.bar-meter > i { display: block; height: 100%; background: #0c65e8; }
+
+/* Login hint + reset page */
+.login-right .box-login .login-alert { min-height: 18px; color: #ff6b70; font-size: 12px; }
+.login-hint { margin: 14px auto 0; max-width: 260px; font-size: 11.5px; color: #617492; border: 1px dashed #374254; border-radius: 6px; padding: 8px 10px; line-height: 1.5; }
+.login-hint b { color: #fff; font-weight: normal; }
+.reset-copy { color: #617492; font-size: 12.5px; line-height: 1.55; margin: -4px 0 18px; }
+.reset-ok { color: #8fd65c; font-size: 12.5px; line-height: 1.55; margin: 6px 0 14px; display: none; }
+.login-right a.back-link { color: #617492; font-size: 12px; }

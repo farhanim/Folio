@@ -4,6 +4,7 @@
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import SectionHead from '#lib/components/ui/SectionHead.svelte';
 	import ClientBadge from '#lib/components/project/ClientBadge.svelte';
+	import { source } from '#lib/utils/credit.ts';
 	import ProjectCover from '#lib/components/project/ProjectCover.svelte';
 	import ProjectMeta from '#lib/components/project/ProjectMeta.svelte';
 	import Tag from '#lib/components/project/Tag.svelte';
@@ -194,7 +195,9 @@
 									<span class="title">
 										<span class="name" title={project.title}>{project.title}</span>
 										{#if project.isNew}<Tag kind="new" />{/if}
-										{#if project.featured}<Tag kind="featured" />{/if}{#if project.special}<Tag kind="special" />{/if}
+										{#if project.featured}<Tag kind="featured" />{/if}{#if project.special}<Tag
+												kind="special"
+											/>{/if}
 									</span>
 									<span class="type">
 										<span class="kind" class:code={project.type === 'code'}>
@@ -255,9 +258,10 @@
 									<span class="card-body">
 										<ProjectMeta {project} />
 										<span class="card-title"
-											><span class="t" title={project.title}>{project.title}</span>{#if project.isNew}<Tag
-													kind="new"
-												/>{/if}{#if project.featured}<Tag kind="featured" />{/if}{#if project.special}<Tag kind="special" />{/if}</span
+											><span class="t" title={project.title}>{project.title}</span
+											>{#if project.isNew}<Tag kind="new" />{/if}{#if project.featured}<Tag
+													kind="featured"
+												/>{/if}{#if project.special}<Tag kind="special" />{/if}</span
 										>
 										<span class="card-sub">{project.tagline}</span>
 									</span>
@@ -301,9 +305,10 @@
 											<span class="card-body">
 												<ProjectMeta {project} />
 												<span class="card-title"
-													><span class="t" title={project.title}>{project.title}</span>{#if project.isNew}<Tag
-															kind="new"
-														/>{/if}{#if project.featured}<Tag kind="featured" />{/if}{#if project.special}<Tag kind="special" />{/if}</span
+													><span class="t" title={project.title}>{project.title}</span
+													>{#if project.isNew}<Tag kind="new" />{/if}{#if project.featured}<Tag
+															kind="featured"
+														/>{/if}{#if project.special}<Tag kind="special" />{/if}</span
 												>
 											</span>
 										</a>
@@ -334,7 +339,7 @@
 			/>
 		{/each}
 		{#if hovered}
-			<span class="preview-badge"><ClientBadge client={hovered.client} size="sm" /></span>
+			<span class="preview-badge"><ClientBadge client={source(hovered)} size="sm" /></span>
 			<span class="preview-tag label">{hovered.tagline}</span>
 		{/if}
 	</div>
@@ -598,10 +603,19 @@
 		letter-spacing: -0.03em;
 		transition: transform 0.5s var(--ease-out);
 	}
-	/* Tags stay beside the title; a long title wraps its own text, never truncates */
-	.card-title .t,
+	/* List rows: one line too */
 	.name {
 		min-width: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	/* Tags stay beside the title; a long title truncates (the full name is in its tooltip) */
+	.card-title .t {
+		min-width: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 	.card-title :global(.tag),
 	.title :global(.tag) {
@@ -610,9 +624,13 @@
 	.card:hover .card-title {
 		transform: translateX(6px);
 	}
+	/* One line; the full tagline is on the project page */
 	.card-sub {
+		overflow: hidden;
 		font-size: 13px;
 		color: var(--text-secondary);
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 
 	.pager {

@@ -6,5 +6,6 @@ import { fazz } from './brands/fazz.mjs';
 import { efishery } from './brands/efishery.mjs';
 import { builds } from './brands/builds.mjs';
 import { klika2c } from './brands/nikel.mjs';
+import { gpp } from './brands/gpp.mjs';
 
-export const covers = [...warungPintar, ...fazz, ...efishery, ...builds, klika2c];
+export const covers = [...warungPintar, ...fazz, ...efishery, ...builds, klika2c, gpp];

@@ -26,7 +26,7 @@
 				<span class="kind label"
 					>{prev.type === 'design' ? 'Design' : 'Code'} · {prev.year ?? '-'}</span
 				>
-				<span class="title">{prev.title}</span>
+				<span class="title" title={prev.title}>{prev.title}</span>
 			</span>
 		</span>
 	</a>
@@ -37,7 +37,7 @@
 				<span class="kind label"
 					>{next.type === 'design' ? 'Design' : 'Code'} · {next.year ?? '-'}</span
 				>
-				<span class="title">{next.title}</span>
+				<span class="title" title={next.title}>{next.title}</span>
 			</span>
 			<img src={coverSmall(next.cover)} alt="" loading="lazy" />
 		</span>
@@ -151,10 +151,17 @@
 	.kind {
 		display: block;
 	}
+	/* One line; longer titles end in an ellipsis (full name in the tooltip) */
+	.body > span {
+		min-width: 0;
+	}
 	.title {
 		display: block;
+		overflow: hidden;
 		margin-top: 4px;
 		font-size: clamp(20px, 2.2vw, 30px);
+		white-space: nowrap;
+		text-overflow: ellipsis;
 		letter-spacing: -0.035em;
 		line-height: 1.05;
 	}

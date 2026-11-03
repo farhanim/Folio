@@ -11,6 +11,7 @@
 	import Tag from '#lib/components/project/Tag.svelte';
 	import { readingTime } from '#lib/data/projects.ts';
 	import { site } from '#lib/data/site.ts';
+	import { credit } from '#lib/utils/credit.ts';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -38,7 +39,7 @@
 	// Details row; anything not known for a project is simply left out.
 	const meta = $derived(
 		[
-			{ label: 'Client', value: project.client.name },
+			credit(project),
 			{ label: 'Role', value: project.role },
 			{ label: 'Year', value: project.year?.toString() },
 			{ label: 'Duration', value: project.duration },
@@ -100,7 +101,9 @@
 				<Tag label="{readingTime(project)} min read" />
 			</div>
 
-			<h1>{project.title}</h1>
+			<h1>
+				{project.title}{#if project.headline}<span class="headline">{project.headline}</span>{/if}
+			</h1>
 			<p class="tagline">{project.tagline}</p>
 			<p class="summary">{project.summary}</p>
 
@@ -253,6 +256,12 @@
 		letter-spacing: -0.055em;
 		line-height: 0.95;
 	}
+	/* The product's value, read as one heading with its name */
+	.headline {
+		display: block;
+		margin-top: 0.12em;
+		color: var(--text-secondary);
+	}
 	.tagline {
 		margin-top: 14px;
 		font-size: clamp(18px, 1.6vw, 22px);
@@ -260,7 +269,7 @@
 		color: var(--text-secondary);
 	}
 	.summary {
-		max-width: 60ch;
+		max-width: 80ch;
 		margin-top: 20px;
 		font-size: calc(15px * var(--text-scale));
 		line-height: 1.6;

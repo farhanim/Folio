@@ -26,6 +26,9 @@
 	]);
 	const motion = $derived(items.find((i) => i.kind === 'motion'));
 	const shots = $derived(items.filter((i) => i.kind === 'shot'));
+	// Beside the motion clip there's room for a 2 × 2 grid; the rest open from the lightbox.
+	const tiles = $derived(motion ? shots.slice(0, 4) : shots);
+	const more = $derived(shots.length - tiles.length);
 
 	// Lightbox
 	let open = $state<number | null>(null);
@@ -81,7 +84,7 @@
 			</button>
 		{/if}
 		<div class="shots" class:full={!motion}>
-			{#each shots as shot (shot.src)}
+			{#each tiles as shot, i (shot.src)}
 				<button
 					type="button"
 					class="tile"
@@ -90,6 +93,9 @@
 				>
 					<img src={shot.src} alt="" loading="lazy" />
 					<span class="caption">{shot.label}</span>
+					{#if more && i === tiles.length - 1}
+						<span class="more" aria-label="{more} more screens">+{more}</span>
+					{/if}
 				</button>
 			{/each}
 		</div>
@@ -248,6 +254,17 @@
 	.tile:hover .caption {
 		opacity: 1;
 		transform: none;
+	}
+	.more {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		padding: 3px 9px;
+		border-radius: 999px;
+		background: var(--text);
+		color: var(--bg);
+		font-family: var(--font-mono);
+		font-size: 11px;
 	}
 	.expand {
 		position: absolute;

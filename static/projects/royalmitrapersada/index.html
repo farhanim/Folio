@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#3c8dbc">
+  <title>Royal Mitra Persada | CMS</title>
+  <style>
+    :root{font-family:"Source Sans Pro","Segoe UI",Arial,sans-serif;color:#333;background:#ecf0f5;font-size:14px;font-synthesis:none}
+    *{box-sizing:border-box}
+    body{margin:0;min-width:320px;background:#ecf0f5}
+    button,input,select,textarea{font:inherit}
+    button,a{ -webkit-tap-highlight-color:transparent}
+    button{cursor:pointer}
+    .login-page{min-height:100vh;display:grid;place-items:center;padding:24px;background:#d2d6de}
+    .login-box{width:360px;max-width:100%}
+    .login-logo{text-align:center;font-size:35px;margin-bottom:22px;color:#444}
+    .login-logo b{font-weight:700}
+    .login-card{background:#fff;padding:22px 24px;border-top:0;border-radius:3px;box-shadow:0 1px 5px #0000001c}
+    .login-card p{margin:0 0 20px;text-align:center;color:#666}
+    .login-field{position:relative;margin:0 0 15px}
+    .login-field input{width:100%;height:40px;padding:8px 38px 8px 12px;border:1px solid #d2d6de;border-radius:0;outline:none}
+    .login-field input:focus,.control:focus{border-color:#3c8dbc;box-shadow:0 0 0 2px #3c8dbc1c}
+    .login-field span{position:absolute;right:12px;top:11px;color:#999}
+    .login-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+    .login-hint{color:#999;font-size:12px}
+    .login-error{display:none;margin:0 0 14px;padding:9px 11px;background:#fbe9e7;color:#bd362f;border-radius:3px}
+    .app{min-height:100vh}
+    .topbar{position:fixed;z-index:20;top:0;left:0;right:0;height:50px;background:#3c8dbc;color:#fff;display:flex;box-shadow:0 1px 3px #0002}
+    .brand{width:230px;flex-shrink:0;background:#367fa9;color:#fff;text-align:center;line-height:50px;text-decoration:none;font-size:20px}
+    .brand b{font-weight:700}
+    .top-actions{margin-left:auto;display:flex;align-items:stretch}
+    .top-button{border:0;background:transparent;color:#fff;padding:0 16px}
+    .top-button:hover{background:#367fa9}
+    .user-menu{position:relative}
+    .user-dropdown{display:none;position:absolute;right:0;top:50px;width:185px;padding:12px;background:#fff;color:#444;box-shadow:0 3px 8px #0003}
+    .user-menu.open .user-dropdown{display:block}
+    .user-dropdown button{width:100%;text-align:left;border:0;background:#fff;padding:9px;color:#444}
+    .user-dropdown button:hover{background:#f4f4f4}
+    .hamburger{border:0;background:none;color:white;width:48px;font-size:19px}
+    .sidebar{position:fixed;z-index:10;left:0;top:50px;bottom:0;width:230px;background:#222d32;color:#b8c7ce;overflow-y:auto;transition:transform .2s}
+    .sidebar-label{padding:18px 15px 9px;font-size:11px;color:#4b646f;font-weight:600}
+    .nav-link{display:flex;align-items:center;gap:12px;color:#b8c7ce;text-decoration:none;padding:12px 15px;border-left:3px solid transparent;cursor:pointer}
+    .nav-link:hover{color:#fff;background:#1e282c}
+    .nav-link.active{color:#fff;background:#1e282c;border-left-color:#3c8dbc}
+    .nav-icon{width:18px;text-align:center;font-size:15px}
+    .nav-sub{display:none;background:#2c3b41}
+    .nav-sub.visible{display:block}
+    .nav-sub .nav-link{padding:10px 15px 10px 43px;font-size:13px}
+    .nav-chevron{margin-left:auto;font-size:12px}
+    .main{margin-left:230px;padding-top:50px;min-height:100vh;transition:margin .2s}
+    .content-header{padding:18px 25px 0;display:flex;align-items:flex-end;justify-content:space-between}
+    .content-header h1{font-size:24px;font-weight:400;margin:0;color:#333}
+    .content-header small{font-size:14px;color:#777}
+    .breadcrumb{list-style:none;padding:0;margin:0 0 2px;color:#777;font-size:12px}
+    .breadcrumb li{display:inline}
+    .breadcrumb li+li:before{content:" / ";padding:0 6px;color:#ccc}
+    .content{padding:20px 25px 32px}
+    .box{background:#fff;border-top:3px solid #3c8dbc;margin-bottom:20px;box-shadow:0 1px 1px #0001}
+    .box-header{padding:13px 15px;border-bottom:1px solid #f4f4f4;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .box-title{margin:0;font-size:18px;font-weight:400}
+    .box-body{padding:15px;overflow-x:auto}
+    .box-footer{padding:12px 15px;border-top:1px solid #f4f4f4}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid transparent;border-radius:3px;padding:8px 12px;text-decoration:none;line-height:1.2;font-size:14px;color:#fff;background:#3c8dbc}
+    .btn:hover{filter:brightness(.95)}
+    .btn-success{background:#00a65a}
+    .btn-danger{background:#dd4b39}
+    .btn-default{background:#f4f4f4;border-color:#ddd;color:#444}
+    .btn-primary{background:#3c8dbc}
+    .btn-small{padding:5px 8px;font-size:12px}
+    .table-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px 0}
+    .search{width:220px;max-width:100%;height:34px;padding:7px 10px;border:1px solid #d2d6de;border-radius:3px}
+    table{width:100%;border-collapse:collapse;min-width:650px}
+    th,td{padding:10px 9px;text-align:left;border:1px solid #ddd;vertical-align:middle}
+    th{font-weight:600;background:#f9f9f9}
+    tbody tr:hover{background:#f5faff}
+    .table-image{width:72px;height:48px;object-fit:contain;background:#f7f7f7;border-radius:2px}
+    .table-image.wide{width:110px;object-fit:cover}
+    .table-actions{display:flex;gap:5px;white-space:nowrap}
+    .muted{color:#999}
+    .empty{text-align:center;padding:32px!important;color:#888}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .form-group{min-width:0}
+    .form-group.full{grid-column:1/-1}
+    .form-group label{display:block;font-weight:600;margin-bottom:6px}
+    .control{display:block;width:100%;min-height:36px;border:1px solid #d2d6de;border-radius:3px;padding:7px 10px;outline:none;background:white}
+    textarea.control{resize:vertical;min-height:90px}
+    .help{margin-top:5px;color:#999;font-size:12px}
+    .form-actions{display:flex;gap:8px}
+    .image-preview{display:flex;align-items:center;gap:12px;margin-top:8px}
+    .image-preview img{max-width:180px;max-height:90px;object-fit:contain;border:1px solid #eee;padding:3px}
+    .repeater{display:grid;gap:8px}
+    .repeater-row{display:flex;gap:8px}
+    .repeater-row .control{flex:1}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-bottom:20px}
+    .stat{min-height:92px;padding:18px;color:#fff;position:relative;overflow:hidden}
+    .stat strong{display:block;font-size:31px;font-weight:400}
+    .stat span{font-size:14px}
+    .stat i{position:absolute;right:14px;top:13px;font-size:48px;opacity:.22;font-style:normal}
+    .stat.blue{background:#00c0ef}.stat.green{background:#00a65a}.stat.orange{background:#f39c12}.stat.red{background:#dd4b39}
+    .dashboard-box{min-height:210px}
+    .contact-detail{display:grid;grid-template-columns:150px 1fr;gap:10px;margin:0}
+    .contact-detail dt{color:#777;font-weight:600}
+    .contact-detail dd{margin:0 0 10px}
+    .footer{padding:15px 25px;background:#fff;border-top:1px solid #d2d6de;color:#666;font-size:12px}
+    .footer span{float:right}
+    .toast{position:fixed;z-index:50;right:22px;top:66px;display:none;background:#00a65a;color:#fff;padding:12px 16px;border-radius:3px;box-shadow:0 3px 10px #0002;max-width:360px}
+    .toast.error{background:#dd4b39}
+    .modal-backdrop{position:fixed;z-index:40;inset:0;background:#0006;display:grid;place-items:center;padding:20px}
+    .modal{width:560px;max-width:100%;background:#fff;border-radius:3px;box-shadow:0 5px 20px #0004}
+    .modal-header,.modal-footer{padding:14px 18px;border-bottom:1px solid #eee}
+    .modal-header{display:flex;justify-content:space-between;align-items:center}
+    .modal-header h3{margin:0;font-size:18px;font-weight:400}
+    .modal-body{padding:18px}
+    .modal-footer{border-top:1px solid #eee;border-bottom:0;text-align:right}
+    .close-x{border:0;background:none;color:#777;font-size:22px}
+    .mobile-shade{display:none}
+    .public-site{--site-blue:#086ad8;--site-ink:#191335;background:#fff;color:#444;font-family:"DM Sans","Segoe UI",Arial,sans-serif;letter-spacing:.2px}
+    .site-topbar{min-height:40px;padding:8px 0;background:#0a3c74;color:#fff;font-size:13px}
+    .site-container{width:min(1120px,calc(100% - 40px));margin:0 auto}
+    .site-topbar-inner{display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .site-topbar a,.site-footer a{color:inherit;text-decoration:none}
+    .site-header{position:sticky;z-index:15;top:0;background:#ffffffed;box-shadow:0 2px 15px #01297018;backdrop-filter:blur(10px)}
+    .site-nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:25px}
+    .site-logo img{display:block;width:auto;height:48px;max-width:230px;object-fit:contain}
+    .site-links{display:flex;align-items:center;gap:28px}
+    .site-links button{border:0;background:none;color:#777;font-weight:600;padding:10px 0}
+    .site-logo{border:0;background:none;padding:0;cursor:pointer}
+    .site-topbar-link{border:0;padding:0;background:none;color:#fff;text-decoration:underline;cursor:pointer}
+    .login-back{border:0;background:none;padding:0;cursor:pointer}
+    .site-links button:hover,.site-links button.active{color:#191335}
+    .site-links .site-contact{background:var(--site-blue);color:#fff;padding:10px 19px;border-radius:4px}
+    .site-links .site-contact:hover{color:#fff;background:#0759b6}
+    .site-menu-toggle{display:none;background:#235381;color:white;border:0;border-radius:4px;padding:7px 11px;font-size:20px}
+    .site-hero{position:relative;min-height:550px;display:flex;align-items:center;color:#fff;background:#102e48 center/cover no-repeat;isolation:isolate}
+    .site-hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#081a2be8 0%,#102e48bd 43%,#102e4850 100%);z-index:-1}
+    .site-hero-content{max-width:640px;padding:70px 0}
+    .site-eyebrow{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#76c4ff}
+    .site-hero h1,.site-page-hero h1{font-family:"Bebas Neue","Segoe UI",sans-serif;font-size:clamp(42px,6vw,72px);line-height:1.04;margin:14px 0 18px;font-weight:500;letter-spacing:.3px}
+    .site-hero p{font-size:17px;line-height:1.7;color:#e3edf8;max-width:620px}
+    .site-hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:27px}
+    .site-btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;padding:11px 20px;border:1px solid var(--site-blue);border-radius:4px;background:var(--site-blue);color:#fff;text-decoration:none;font-family:"Bebas Neue","Segoe UI",sans-serif;font-size:17px;letter-spacing:.4px}
+    .site-btn:hover{background:#0759b6;border-color:#0759b6;color:#fff}
+    .site-btn.outline{background:transparent;border-color:#fff;color:#fff}
+    .site-btn.outline:hover{background:#fff;color:#173b5b}
+    .site-slide-controls{position:absolute;right:max(20px,calc((100vw - 1120px)/2));bottom:24px;display:flex;gap:8px}
+    .site-slide-controls button{width:38px;height:38px;border:1px solid #ffffff85;border-radius:50%;background:#102e486b;color:#fff;font-size:20px}
+    .site-section{padding:76px 0}
+    .site-section.soft{background:#f7f9fc}
+    .site-section-heading{text-align:center;max-width:720px;margin:0 auto 38px}
+    .site-section-heading span{color:var(--site-blue);font-size:12px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase}
+    .site-section-heading h2{color:var(--site-ink);font:500 clamp(30px,4vw,44px)/1.1 "Bebas Neue","Segoe UI",sans-serif;margin:9px 0 12px}
+    .site-section-heading p{color:#6b7280;line-height:1.7;margin:0}
+    .site-brands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+    .site-brand-card,.site-product-card,.site-promo-card,.site-info-card{background:#fff;border:1px solid #e8edf3;border-radius:7px;overflow:hidden;box-shadow:0 8px 28px #102e480c}
+    .site-brand-card{padding:26px;display:flex;flex-direction:column;align-items:flex-start;min-height:270px}
+    .site-brand-card img{height:60px;max-width:160px;object-fit:contain;margin-bottom:19px}
+    .site-brand-card h3,.site-product-card h3,.site-promo-card h3{margin:0 0 10px;color:#191335;font:500 24px "Bebas Neue","Segoe UI",sans-serif}
+    .site-brand-card p,.site-product-card p,.site-promo-card p{color:#6b7280;line-height:1.65;margin:0 0 18px}
+    .site-text-link{margin-top:auto;color:var(--site-blue);text-decoration:none;font-weight:700}
+    .site-text-link:hover{text-decoration:underline}
+    .site-solution-row{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:48px;padding:34px 0}
+    .site-solution-row:nth-child(even) .site-solution-image{order:2}
+    .site-solution-image{height:270px;display:grid;place-items:center;background:linear-gradient(140deg,#f3f8ff,#e6f0fb);border-radius:8px}
+    .site-solution-image img{width:58%;height:72%;object-fit:contain}
+    .site-solution-row h3{font:500 34px "Bebas Neue","Segoe UI",sans-serif;color:#191335;margin:0 0 12px}
+    .site-solution-row p{line-height:1.75;color:#626b78}
+    .site-page-hero{padding:100px 0 85px;min-height:280px;color:#fff;background:#10395d url("assets/hero.webp") center/cover no-repeat;position:relative;isolation:isolate}
+    .site-page-hero:before{content:"";position:absolute;inset:0;background:#0d3154b8;z-index:-1}
+    .site-page-hero h1{font-size:52px;margin:0 0 10px}
+    .site-page-hero p{max-width:800px;line-height:1.7;color:#e4edf7;margin:0}
+    .site-filter{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 28px}
+    .site-filter button{border:1px solid #d5deea;background:#fff;color:#526174;border-radius:30px;padding:8px 15px}
+    .site-filter button.active,.site-filter button:hover{background:var(--site-blue);border-color:var(--site-blue);color:#fff}
+    .site-products,.site-promos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+    .site-product-card img{width:100%;height:210px;padding:22px;object-fit:contain;background:#f8fafc}
+    .site-product-card-body,.site-promo-card-body{padding:20px}
+    .site-product-card .site-price{color:#0a3c74;font-weight:700;margin:3px 0 12px}
+    .site-product-actions{display:flex;flex-wrap:wrap;gap:8px}
+    .site-product-actions .site-btn{padding:8px 13px;font-size:15px}
+    .site-btn.light{background:#fff;color:var(--site-blue);border-color:#d6e2f0}
+    .site-promo-card img{width:100%;height:190px;object-fit:cover}
+    .site-contact-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:24px}
+    .site-info-card{padding:26px}
+    .site-info-card h3{font:500 27px "Bebas Neue","Segoe UI",sans-serif;color:#191335;margin:0 0 12px}
+    .site-info-card p{line-height:1.7;color:#687386}
+    .site-info-card a{color:var(--site-blue);text-decoration:none}
+    .site-contact-form{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+    .site-contact-form label{display:block;font-weight:600;margin-bottom:6px;color:#444}
+    .site-contact-form .form-group.full{grid-column:1/-1}
+    .site-contact-form input,.site-contact-form select,.site-contact-form textarea{width:100%;padding:10px;border:1px solid #dce2e9;border-radius:4px;background:#fff;color:#333}
+    .site-contact-form textarea{min-height:115px;resize:vertical}
+    .site-footer{padding:48px 0 18px;background:#f6f8fb;color:#626b78}
+    .site-footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;padding-bottom:30px}
+    .site-footer-logo{width:205px;max-height:58px;object-fit:contain;object-position:left center}
+    .site-footer h4{font:500 21px "Bebas Neue","Segoe UI",sans-serif;color:#191335;margin:0 0 14px}
+    .site-footer-links{display:grid;gap:9px}
+    .site-footer-links button{border:0;background:none;color:#687386;text-align:left;padding:0}
+    .site-footer-links button:hover{color:var(--site-blue)}
+    .site-footer-bottom{border-top:1px solid #e2e7ee;padding-top:17px;font-size:13px}
+    .site-detail{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center}
+    .site-detail-image{width:100%;height:360px;object-fit:contain;background:#f7f9fc;border-radius:8px;padding:30px}
+    .site-detail h2{font:500 40px "Bebas Neue","Segoe UI",sans-serif;color:#191335;margin:0 0 12px}
+    .site-detail p{line-height:1.7;color:#657080}
+    .site-demo-note{font-size:12px;color:#aab8ca;margin-top:15px}
+    @media(max-width:900px){.site-products,.site-promos{grid-template-columns:repeat(2,minmax(0,1fr))}.site-brands{gap:14px}.site-brand-card{padding:20px}.site-contact-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:680px){.site-container{width:min(100% - 30px,560px)}.site-topbar-inner{justify-content:center;text-align:center}.site-topbar-inner>span:last-child{display:none}.site-nav{min-height:66px}.site-logo img{height:42px;max-width:180px}.site-menu-toggle{display:block}.site-links{display:none;position:absolute;left:0;right:0;top:66px;background:#fff;padding:12px 20px 18px;box-shadow:0 8px 15px #0002;align-items:stretch;gap:2px}.site-links.open{display:flex;flex-direction:column}.site-links button{text-align:left;padding:11px 5px}.site-links .site-contact{padding:10px 15px}.site-hero{min-height:500px;background-position:60% center}.site-hero-content{padding:60px 0}.site-hero p{font-size:15px}.site-section{padding:55px 0}.site-brands,.site-products,.site-promos{grid-template-columns:1fr}.site-brand-card{min-height:230px}.site-solution-row{grid-template-columns:1fr;gap:20px;padding:23px 0}.site-solution-row:nth-child(even) .site-solution-image{order:0}.site-solution-image{height:220px}.site-page-hero{min-height:240px;padding:75px 0 60px}.site-page-hero h1{font-size:43px}.site-contact-grid,.site-detail{grid-template-columns:1fr}.site-contact-form{grid-template-columns:1fr}.site-contact-form .form-group.full{grid-column:auto}.site-footer-grid{grid-template-columns:1fr 1fr;gap:26px}.site-footer-grid>div:first-child{grid-column:1/-1}.site-detail-image{height:270px}}
+    @media(max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.brand{width:200px}.sidebar{width:200px}.main{margin-left:200px}}
+    @media(max-width:680px){.brand{width:160px;font-size:17px}.sidebar{transform:translateX(-100%);width:230px}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.content-header{padding:16px 15px 0}.content-header h1{font-size:21px}.breadcrumb{display:none}.content{padding:16px 12px 24px}.box-body{padding:12px}.stats{gap:10px}.stat{padding:13px;min-height:82px}.stat strong{font-size:25px}.table-tools{align-items:stretch;flex-direction:column}.search{width:100%}.form-grid{grid-template-columns:1fr}.form-group.full{grid-column:auto}.footer{padding:12px 15px}.mobile-shade.visible{display:block;position:fixed;inset:50px 0 0;z-index:8;background:#0005}}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script>
+  (() => {
+    "use strict";
+    const STORE = "rmp-standalone-cms-v1";
+    const SESSION = "rmp-standalone-cms-auth";
+    const asset = name => "assets/" + name;
+    const seed = {
+      sources:[
+        {id:1,name:"Alcatel • Lucent",slug:"alcatel",description:"ALE, operating under the Alcatel-Lucent Enterprise brand, provides advanced cloud services and simple IT solutions for SMBs.",cover:asset("alcatel.webp")},
+        {id:2,name:"Aruba Networks",slug:"aruba",description:"A global leader in wired, wireless, and SD-WAN solutions that use AI to automate and secure the network.",cover:asset("aruba.webp")},
+        {id:3,name:"Ruijie Networks",slug:"ruijie",description:"A leading ICT company providing innovative, scenario-based network products.",cover:asset("ruijie.png")}
+      ],
+      categories:[
+        {id:1,name:"PABX",sourceId:1},{id:2,name:"Switch",sourceId:1},{id:3,name:"Access Point",sourceId:1},{id:4,name:"Elektronik",sourceId:2}
+      ],
+      products:[
+        {id:1,name:"Access Point - 3y76df",slug:"access-point-3y760f",price:10000000,sourceId:1,categoryId:3,description:"Alcatel-Lucent M3 SIP DeskPhone provides rich SIP communication with eight accounts, call logs, and up to 1,000 local contacts.",cover:asset("accesspointhome.webp"),advantages:["Flexible connections for headsets, key modules, and Wi-Fi adapters"],features:["USB A/C port"],characteristics:["Height: 183mm"]},
+        {id:2,name:"PABX Product",slug:"pabx-product",price:10000000,sourceId:1,categoryId:1,description:"A reliable enterprise phone system for modern business teams.",cover:asset("accesspointhome.webp"),advantages:["Reliable business communications"],features:["Easy deployment"],characteristics:["Compact design"]}
+      ],
+      promos:[
+        {id:1,name:"Kemerdekaan",description:"Special offers on business communication and networking solutions.",cover:asset("promo-1.webp")},
+        {id:2,name:"Network solutions",description:"Discover connected workplace solutions from Royal Mitra Persada.",cover:asset("promo-2.webp")}
+      ],
+      banners:[
+        {id:1,title:"SOLUSI JARINGAN AMAN",redirectUrl:"/promo",description:"Jajaran ALE DeskPhones Enterprise dirancang untuk kualitas audio HD dan pengalaman komunikasi yang lebih baik.",cover:asset("network-banner.webp")}
+      ],
+      contacts:[
+        {id:1,name:"Rina Putri",company:"PT Nusantara Teknologi",email:"rina@example.com",phone:"+62 812-3456-7890",product:"Access Point",comment:"Kami ingin berdiskusi mengenai solusi jaringan untuk kantor baru.",created:"2026-10-28"},
+        {id:2,name:"Andi Pratama",company:"CV Mitra Digital",email:"andi@example.com",phone:"+62 811-2233-4455",product:"PABX",comment:"Mohon informasi penawaran dan jadwal demo produk.",created:"2026-10-24"},
+        {id:3,name:"Siti Rahma",company:"PT Karya Bersama",email:"siti@example.com",phone:"+62 813-5678-9012",product:"Switch",comment:"Mencari solusi switch untuk kebutuhan 3 lantai kantor.",created:"2026-10-19"}
+      ]
+    };
+    const labels = {
+      dashboard:{title:"Dashboard",sub:"Control panel",crumb:"Dashboard"},
+      sources:{title:"Source Produk",sub:"Control panel",crumb:"Source Produk",entity:"Source Produk",add:"Tambah Source Produk"},
+      categories:{title:"Kategori Produk",sub:"Control panel",crumb:"Kategori Produk",entity:"Kategori Produk",add:"Tambah Kategori Produk"},
+      products:{title:"Produk",sub:"Control panel",crumb:"Produk",entity:"Produk",add:"Tambah Produk"},
+      promos:{title:"Promo",sub:"Control panel",crumb:"Promo",entity:"Promo",add:"Tambah Promo"},
+      banners:{title:"Banner",sub:"Control panel",crumb:"Banner",entity:"Banner",add:"Tambah Banner"},
+      contacts:{title:"Kontak",sub:"Control panel",crumb:"Kontak",entity:"Kontak"}
+    };
+    const nav = [
+      {id:"dashboard",name:"Dashboard",icon:"▦"},
+      {id:"productGroup",name:"Product",icon:"◉",children:[{id:"sources",name:"Source Product"},{id:"categories",name:"Category Product"},{id:"products",name:"Product"}]},
+      {id:"promos",name:"Promo",icon:"▧"},
+      {id:"banners",name:"Banner",icon:"▣"},
+      {id:"contacts",name:"Kontak",icon:"♙"}
+    ];
+    let data;
+    let state = {surface:"public", publicPage:"home", publicSourceId:null, publicProductId:null, publicMenu:false, slide:0, page:"dashboard", form:null, search:"", modal:null, sidebar:false};
+    let toastTimer;
+    try {
+      const saved = localStorage.getItem(STORE);
+      data = saved ? {...seed,...JSON.parse(saved)} : structuredClone(seed);
+    } catch (error) {
+      data = JSON.parse(JSON.stringify(seed));
+      console.error("Could not load saved demo data:", error);
+    }
+    const persist = () => {
+      try { localStorage.setItem(STORE, JSON.stringify(data)); return true; }
+      catch (error) { notify("Could not save changes in this browser. Storage may be full.", true); console.error(error); return false; }
+    };
+    const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+    const sourceName = id => data.sources.find(item => item.id == id)?.name || "—";
+    const categoryName = id => data.categories.find(item => item.id == id)?.name || "—";
+    const currency = amount => new Intl.NumberFormat("id-ID").format(Number(amount) || 0);
+    const notify = (message, error=false) => {
+      const el = document.getElementById("toast");
+      el.textContent = message;
+      el.className = "toast" + (error ? " error" : "");
+      el.style.display = "block";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { el.style.display = "none"; }, 2800);
+    };
+    const table = (heads, rows, emptyText="No records found.") => `
+      <div class="table-tools"><span class="muted">Showing ${rows.length} record${rows.length===1?"":"s"}</span><input class="search" type="search" placeholder="Search..." value="${esc(state.search)}" data-search></div>
+      <table><thead><tr>${heads.map(head=>`<th>${head}</th>`).join("")}</tr></thead>
+      <tbody>${rows.length ? rows.join("") : `<tr><td class="empty" colspan="${heads.length}">${emptyText}</td></tr>`}</tbody></table>`;
+    const actions = (type,id) => `<div class="table-actions"><button class="btn btn-success btn-small" data-action="edit" data-type="${type}" data-id="${id}">Edit</button><button class="btn btn-danger btn-small" data-action="delete" data-type="${type}" data-id="${id}">Delete</button></div>`;
+    const filtered = records => {
+      const term = state.search.trim().toLowerCase();
+      return term ? records.filter(record => Object.values(record).some(value => String(value ?? "").toLowerCase().includes(term))) : records;
+    };
+    const listPage = () => {
+      const page = state.page;
+      const specs = {
+        sources:{type:"sources",headers:["#","Nama","Deskripsi","Cover","Opsi"],rows:filtered(data.sources).map((item,i)=>`<tr><td>${i+1}</td><td>${esc(item.name)}</td><td style="max-width:260px">${esc(item.description)}</td><td><img class="table-image" src="${esc(item.cover)}" alt=""></td><td>${actions("sources",item.id)}</td></tr>`)},
+        categories:{type:"categories",headers:["#","Nama","Produk","Opsi"],rows:filtered(data.categories).map((item,i)=>`<tr><td>${i+1}</td><td>${esc(item.name)}</td><td>${esc(sourceName(item.sourceId))}</td><td>${actions("categories",item.id)}</td></tr>`)},
+        products:{type:"products",headers:["#","Nama","Harga","Source","Kategori","Cover","Opsi"],rows:filtered(data.products).map((item,i)=>`<tr><td>${i+1}</td><td>${esc(item.name)}</td><td>Rp ${currency(item.price)}</td><td>${esc(sourceName(item.sourceId))}</td><td>${esc(categoryName(item.categoryId))}</td><td><img class="table-image" src="${esc(item.cover)}" alt=""></td><td>${actions("products",item.id)}</td></tr>`)},
+        promos:{type:"promos",headers:["#","Nama","Deskripsi","Cover","Opsi"],rows:filtered(data.promos).map((item,i)=>`<tr><td>${i+1}</td><td>${esc(item.name)}</td><td style="max-width:260px">${esc(item.description)}</td><td><img class="table-image wide" src="${esc(item.cover)}" alt=""></td><td>${actions("promos",item.id)}</td></tr>`)},
+        banners:{type:"banners",headers:["#","Judul","Deskripsi","Cover","Opsi"],rows:filtered(data.banners).map((item,i)=>`<tr><td>${i+1}</td><td>${esc(item.title)}</td><td style="max-width:260px">${esc(item.description)}</td><td><img class="table-image wide" src="${esc(item.cover)}" alt=""></td><td>${actions("banners",item.id)}</td></tr>`)},
+        contacts:{type:"contacts",headers:["#","Nama","Email","Perusahaan","Nomor Telepon","Produk","Permintaan","Opsi"],rows:filtered(data.contacts).map((item,i)=>`<tr><td>${i+1}</td><td>${esc(item.name)}</td><td>${esc(item.email)}</td><td>${esc(item.company)}</td><td>${esc(item.phone)}</td><td>${esc(item.product)}</td><td style="max-width:210px">${esc(item.comment)}</td><td><button class="btn btn-primary btn-small" data-action="view-contact" data-id="${item.id}">Detail</button></td></tr>`)}
+      };
+      const spec=specs[page];
+      return `<div class="box"><div class="box-header"><h2 class="box-title">Kelola ${labels[page].entity}</h2>${page!=="contacts"?`<button class="btn btn-success" data-action="add" data-type="${spec.type}">＋ Tambah Data</button>`:""}</div><div class="box-body">${table(spec.headers,spec.rows)}</div></div>`;
+    };
+    const metric = (count,label,color,icon) => `<div class="stat ${color}"><strong>${count}</strong><span>${label}</span><i>${icon}</i></div>`;
+    const dashboard = () => `<div class="stats">${metric(data.products.length,"Total Produk","blue","▦")}${metric(data.sources.length,"Source Produk","green","◉")}${metric(data.promos.length,"Promo Aktif","orange","▧")}${metric(data.contacts.length,"Permintaan Kontak","red","✉")}</div>
+      <div class="box dashboard-box"><div class="box-header"><h2 class="box-title">Welcome to CMS RMP</h2></div><div class="box-body"><p>Selamat datang di panel pengelolaan website <strong>PT Royal Mitra Persada</strong>.</p><p class="muted">Gunakan menu di sebelah kiri untuk mengelola produk, kategori, source, promo, banner, dan permintaan kontak. Perubahan tersimpan secara lokal di browser ini.</p><button class="btn btn-primary" data-page="products">Kelola Produk</button></div></div>
+      <div class="box"><div class="box-header"><h2 class="box-title">Permintaan Kontak Terbaru</h2><button class="btn btn-default btn-small" data-page="contacts">Lihat Semua</button></div><div class="box-body"><table><thead><tr><th>Nama</th><th>Perusahaan</th><th>Email</th><th>Produk</th><th>Tanggal</th></tr></thead><tbody>${data.contacts.slice(0,3).map(item=>`<tr><td>${esc(item.name)}</td><td>${esc(item.company)}</td><td>${esc(item.email)}</td><td>${esc(item.product)}</td><td>${esc(item.created)}</td></tr>`).join("") || '<tr><td colspan="5" class="empty">Belum ada permintaan kontak.</td></tr>'}</tbody></table></div></div>`;
+    const field = (name,label,value="",opts={}) => {
+      const required=opts.required===false?"":"required";
+      const full=opts.full?" full":"";
+      if(opts.options) return `<div class="form-group${full}"><label for="${name}">${label}</label><select class="control" id="${name}" name="${name}" ${required}>${opts.options.map(option=>`<option value="${esc(option.value)}" ${String(value)===String(option.value)?"selected":""}>${esc(option.label)}</option>`).join("")}</select></div>`;
+      if(opts.file) return `<div class="form-group${full}"><label for="${name}">${label}</label><input class="control" type="file" id="${name}" name="${name}" accept="image/*" ${opts.required===false?"":"required"}><div class="help">Image files up to 2 MB. Optional when editing.</div>${value?`<div class="image-preview"><img src="${esc(value)}" alt="Current image"><span class="muted">Current image</span></div>`:""}<input type="hidden" name="currentCover" value="${esc(value)}"></div>`;
+      if(opts.textarea) return `<div class="form-group${full}"><label for="${name}">${label}</label><textarea class="control" id="${name}" name="${name}" rows="4" ${required}>${esc(value)}</textarea></div>`;
+      return `<div class="form-group${full}"><label for="${name}">${label}</label><input class="control" id="${name}" name="${name}" type="${opts.type||"text"}" value="${esc(value)}" ${required} ${opts.min!==undefined?`min="${opts.min}"`:""}></div>`;
+    };
+    const repeated = (name,label,values=[]) => `<div class="form-group full"><label>${label}</label><div class="repeater" data-repeater="${name}">${(values.length?values:[""]).map(value=>`<div class="repeater-row"><input class="control" name="${name}[]" value="${esc(value)}" required><button class="btn btn-danger btn-small" type="button" data-action="remove-repeat" aria-label="Remove item">×</button></div>`).join("")}</div><button class="btn btn-success btn-small" style="margin-top:8px" type="button" data-action="add-repeat" data-name="${name}">＋ Tambah</button></div>`;
+    const formPage = () => {
+      const {type,id}=state.form;
+      const record=id ? data[type].find(item=>item.id===id) : {};
+      const isEdit=Boolean(id);
+      let html="";
+      if(type==="sources") html=field("name","Nama",record.name)+field("slug","Slug",record.slug)+field("description","Deskripsi",record.description,{textarea:true,full:true})+field("cover","Cover",record.cover,{file:true,required:!isEdit});
+      if(type==="categories") html=field("name","Nama",record.name)+field("sourceId","Source Produk",record.sourceId,{options:data.sources.map(item=>({value:item.id,label:item.name}))});
+      if(type==="products") {
+        const selectedSource=record.sourceId||data.sources[0]?.id;
+        const cats=data.categories.filter(item=>item.sourceId==selectedSource);
+        html=field("name","Nama",record.name)+field("slug","Slug",record.slug)+field("price","Harga",record.price,{type:"number",min:"0"})+
+          field("sourceId","Source Produk",selectedSource,{options:data.sources.map(item=>({value:item.id,label:item.name}))})+
+          field("categoryId","Kategori Produk",record.categoryId,{options:cats.map(item=>({value:item.id,label:item.name}))})+
+          field("description","Deskripsi",record.description,{textarea:true,full:true})+
+          field("cover","Cover",record.cover,{file:true,required:!isEdit})+
+          repeated("advantages","Keuntungan",record.advantages)+repeated("features","Fitur",record.features)+repeated("characteristics","Karakter Fisik",record.characteristics);
+      }
+      if(type==="promos") html=field("name","Nama",record.name)+field("description","Deskripsi",record.description,{textarea:true,full:true})+field("cover","Cover",record.cover,{file:true,required:!isEdit});
+      if(type==="banners") html=field("title","Judul",record.title)+field("redirectUrl","Redirect Url",record.redirectUrl,{required:false})+field("description","Deskripsi",record.description,{textarea:true,full:true})+field("cover","Gambar",record.cover,{file:true,required:!isEdit});
+      return `<div class="box"><div class="box-header"><h2 class="box-title">${isEdit?"Ubah":"Tambah"} ${labels[state.page].entity}</h2></div><form id="record-form" data-type="${type}" data-id="${id||""}"><div class="box-body"><div class="form-grid">${html||'<p class="muted">No fields available.</p>'}</div></div><div class="box-footer form-actions"><button class="btn btn-primary" type="submit">Submit</button><button class="btn btn-default" type="button" data-action="cancel-form">Cancel</button></div></form></div>`;
+    };
+    const modal = () => {
+      if(!state.modal) return "";
+      const contact=data.contacts.find(item=>item.id===state.modal.id);
+      if(!contact) return "";
+      return `<div class="modal-backdrop" data-action="close-modal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-header"><h3 id="modal-title">Detail Permintaan Kontak</h3><button class="close-x" data-action="close-modal" aria-label="Close">×</button></div><div class="modal-body"><dl class="contact-detail"><dt>Nama</dt><dd>${esc(contact.name)}</dd><dt>Email</dt><dd><a href="mailto:${esc(contact.email)}">${esc(contact.email)}</a></dd><dt>Perusahaan</dt><dd>${esc(contact.company)}</dd><dt>Nomor Telepon</dt><dd>${esc(contact.phone)}</dd><dt>Produk</dt><dd>${esc(contact.product)}</dd><dt>Tanggal</dt><dd>${esc(contact.created)}</dd><dt>Permintaan</dt><dd>${esc(contact.comment)}</dd></dl></div><div class="modal-footer"><button class="btn btn-default" data-action="close-modal">Tutup</button></div></div></div>`;
+    };
+    const publicNav = () => `<div class="site-links ${state.publicMenu?"open":""}">${[
+      ["home","Beranda"],["solutions","Solusi"],["products","Produk"],["promos","Promo"]
+    ].map(([page,name])=>`<button class="${state.publicPage===page?"active":""}" data-public="${page}">${name}</button>`).join("")}<button class="site-contact" data-public="contact">Kontak</button><button data-action="show-login">Login</button></div>`;
+    const siteHeader = () => `<div class="site-topbar"><div class="site-container site-topbar-inner"><span>Discount 50% for all products · <button class="site-topbar-link" data-public="products">Order now ›</button></span><span><a href="mailto:sales@royalmitrapersada.com">sales@royalmitrapersada.com</a> &nbsp; · &nbsp; <a href="tel:02128541720">021-2854 1720</a></span></div></div><header class="site-header"><nav class="site-container site-nav"><button class="site-logo" data-public="home" aria-label="Royal Mitra Persada home"><img src="${asset("logo.webp")}" alt="Royal Mitra Persada"></button><button class="site-menu-toggle" data-action="toggle-site-menu" aria-label="Toggle menu">☰</button>${publicNav()}</nav></header>`;
+    const siteFooter = () => `<footer class="site-footer"><div class="site-container"><div class="site-footer-grid"><div><button class="site-logo" data-public="home" aria-label="Home"><img class="site-footer-logo" src="${asset("logo.webp")}" alt="Royal Mitra Persada"></button><p>PT Royal Mitra Persada based in South Jakarta, Indonesia.</p><p><a href="mailto:sales@royalmitrapersada.com">sales@royalmitrapersada.com</a><br><a href="tel:02128541720">021 2854 1720</a></p></div><div><h4>Menu</h4><div class="site-footer-links">${[["home","Beranda"],["solutions","Solusi"],["products","Produk"],["promos","Promo"],["contact","Kontak"]].map(([page,name])=>`<button data-public="${page}">${name}</button>`).join("")}</div></div><div><h4>Lainnya</h4><div class="site-footer-links"><button data-public="contact">Tentang Kami</button><button data-action="show-login">Login CMS</button></div></div></div><div class="site-footer-bottom">© Copyright <strong>PT Royal Mitra Persada</strong>. All Rights Reserved <span style="float:right">Demo landing page</span></div></div></footer>`;
+    const publicPageHero = (title,description) => `<section class="site-page-hero"><div class="site-container"><span class="site-eyebrow">ROYAL MITRA PERSADA</span><h1>${title}</h1><p>${description}</p></div></section>`;
+    const publicProductCards = (products=data.products) => products.length?`<div class="site-products">${products.map(item=>`<article class="site-product-card"><img src="${esc(item.cover)}" alt="${esc(item.name)}"><div class="site-product-card-body"><h3>${esc(item.name)}</h3><div class="site-price">Rp ${currency(item.price)}</div><p>${esc(item.description)}</p><div class="site-product-actions"><button class="site-btn" data-action="open-public-product" data-id="${item.id}">Lihat Detail</button><button class="site-btn light" data-public="contact">Tanya Kami</button></div></div></article>`).join("")}</div>`:`<div class="site-info-card">Produk akan ditampilkan di sini.</div>`;
+    const publicHome = () => {
+      const slides=data.banners.length?data.banners:[{title:"SOLUSI JARINGAN AMAN",description:"Solusi teknologi dan komunikasi untuk bisnis Anda.",cover:asset("network-banner.webp")}];
+      const banner=slides[state.slide%slides.length];
+      return `<section class="site-hero" style="background-image:url('${esc(banner.cover)}')"><div class="site-container"><div class="site-hero-content"><span class="site-eyebrow">ROYAL MITRA PERSADA</span><h1>${esc(banner.title||"Solusi teknologi untuk bisnis Anda")}</h1><p>${esc(banner.description||"Menghadirkan solusi komunikasi dan jaringan yang dirancang untuk membantu bisnis berkembang.")}</p><div class="site-hero-actions"><button class="site-btn" data-public="products">Jelajahi Produk</button><button class="site-btn outline" data-public="contact">Hubungi Kami</button></div></div></div><div class="site-slide-controls"><button data-action="prev-slide" aria-label="Previous banner">‹</button><button data-action="next-slide" aria-label="Next banner">›</button></div></section>
+      <section class="site-section"><div class="site-container"><div class="site-section-heading"><span>Our Partners</span><h2>Technology for your business</h2><p>Jelajahi brand dan solusi teknologi untuk memenuhi kebutuhan bisnis Anda.</p></div><div class="site-brands">${data.sources.map(source=>`<article class="site-brand-card"><img src="${esc(source.cover)}" alt="${esc(source.name)}"><h3>${esc(source.name)}</h3><p>${esc(source.description)}</p><button class="site-text-link" data-action="browse-source" data-id="${source.id}">See Product&nbsp; →</button></article>`).join("")}</div></div></section>
+      <section class="site-section soft"><div class="site-container"><div class="site-section-heading"><span>Featured</span><h2>Produk pilihan</h2><p>Produk komunikasi dan jaringan untuk mendukung lingkungan kerja yang produktif.</p></div>${publicProductCards(data.products.slice(0,3))}<div style="text-align:center;margin-top:26px"><button class="site-btn" data-public="products">Lihat Semua Produk</button></div></div></section>
+      <section class="site-section"><div class="site-container"><div class="site-section-heading"><span>Get in touch</span><h2>Siap menemukan solusi yang tepat?</h2><p>Hubungi tim kami untuk membicarakan kebutuhan produk dan solusi bisnis Anda.</p><button class="site-btn" style="margin-top:20px" data-public="contact">Hubungi Kami</button></div></div></section>`;
+    };
+    const publicSolutions = () => `${publicPageHero("Solusi","Royal Mitra Persada menghadirkan solusi komunikasi dan jaringan untuk meningkatkan produktivitas di lingkungan kerja bisnis Anda.")}<section class="site-section"><div class="site-container">${[
+      ["PABX","Sistem komunikasi internal bisnis yang menghubungkan tim dan membantu koordinasi lebih mudah.","pabx.webp"],
+      ["Switch","Infrastruktur jaringan yang mendukung koneksi data yang cepat, aman, dan stabil.","switch.png"],
+      ["Access Point","Jaringan nirkabel yang praktis dan andal untuk mendukung produktivitas di berbagai area kerja.","accesspointhome.webp"]
+    ].map(([title,description,image])=>`<div class="site-solution-row"><div class="site-solution-image"><img src="${asset(image)}" alt="${title}"></div><div><h3>${title}</h3><p>${description}</p><button class="site-btn" data-public="products">Lihat Produk</button><button class="site-btn light" style="margin-left:8px" data-public="promos">Promo</button></div></div>`).join("")}</div></section>`;
+    const publicProducts = () => {
+      const selected=state.publicSourceId;
+      const products=selected?data.products.filter(item=>item.sourceId===selected):data.products;
+      return `${publicPageHero("Produk","Temukan perangkat dan solusi teknologi untuk memenuhi kebutuhan bisnis Anda.")}<section class="site-section"><div class="site-container"><div class="site-filter"><button class="${selected===null?"active":""}" data-action="filter-source" data-id="">Semua Produk</button>${data.sources.map(source=>`<button class="${selected===source.id?"active":""}" data-action="filter-source" data-id="${source.id}">${esc(source.name)}</button>`).join("")}</div>${publicProductCards(products)}</div></section>`;
+    };
+    const publicPromos = () => `${publicPageHero("Promo","Dapatkan keuntungan untuk memenuhi kebutuhan Anda.")}<section class="site-section"><div class="site-container"><div class="site-promos">${data.promos.map(promo=>`<article class="site-promo-card"><img src="${esc(promo.cover)}" alt="${esc(promo.name)}"><div class="site-promo-card-body"><h3>${esc(promo.name)}</h3><p>${esc(promo.description)}</p><button class="site-btn" data-public="contact">Tanya Promo</button></div></article>`).join("")||'<p class="muted">Belum ada promo.</p>'}</div></div></section>`;
+    const publicContact = () => `${publicPageHero("Kontak","Kami di sini untuk membantu memenuhi kebutuhan Anda.")}<section class="site-section"><div class="site-container site-contact-grid"><div class="site-info-card"><h3>Head Office</h3><p>EightyEight@Kasablanka, Lantai 9, Unit A<br>Jl. Casablanca Kav. 88, Jakarta Selatan 12870</p><p><strong>Phone:</strong> <a href="tel:02128541720">021 2854 1720</a><br><strong>E-Mail:</strong> <a href="mailto:sales@royalmitrapersada.com">sales@royalmitrapersada.com</a></p><p class="muted">Form ini menyimpan permintaan demo secara lokal di browser, tidak mengirim ke server.</p></div><div class="site-info-card"><h3>Form Request</h3><form id="public-contact-form" class="site-contact-form"><div class="form-group"><label for="contact-name">Nama</label><input id="contact-name" name="name" required></div><div class="form-group"><label for="contact-company">Perusahaan</label><input id="contact-company" name="company" required></div><div class="form-group"><label for="contact-email">Email address</label><input id="contact-email" name="email" type="email" required></div><div class="form-group"><label for="contact-phone">Nomor Telepon</label><input id="contact-phone" name="phone" type="tel" required></div><div class="form-group full"><label for="contact-product">Pilih Produk</label><select id="contact-product" name="product" required><option value="">Pilih produk</option>${data.sources.map(source=>`<option>${esc(source.name)}</option>`).join("")}</select></div><div class="form-group full"><label for="contact-comment">Permintaan Khusus</label><textarea id="contact-comment" name="comment" required></textarea></div><div class="form-group full"><button class="site-btn" type="submit">Submit Request</button></div></form></div></div></section>`;
+    const publicProductDetail = () => {
+      const product=data.products.find(item=>item.id===state.publicProductId);
+      if(!product) return `${publicPageHero("Produk","Produk yang Anda cari tidak ditemukan.")}<section class="site-section"><div class="site-container"><button class="site-btn" data-public="products">Kembali ke Produk</button></div></section>`;
+      return `${publicPageHero(esc(product.name),esc(sourceName(product.sourceId)+" · "+categoryName(product.categoryId)))}<section class="site-section"><div class="site-container site-detail"><img class="site-detail-image" src="${esc(product.cover)}" alt="${esc(product.name)}"><div><span class="site-eyebrow">${esc(sourceName(product.sourceId))}</span><h2>${esc(product.name)}</h2><div class="site-price">Rp ${currency(product.price)}</div><p>${esc(product.description)}</p><h3>Keuntungan</h3><ul>${(product.advantages||[]).map(item=>`<li>${esc(item)}</li>`).join("")}</ul><button class="site-btn" data-public="contact">Tanya Produk</button><button class="site-btn light" style="margin-left:8px" data-public="products">Kembali</button></div></div></section>`;
+    };
+    const renderPublic = () => {
+      const content={home:publicHome,solutions:publicSolutions,products:publicProducts,promos:publicPromos,contact:publicContact,"product-detail":publicProductDetail}[state.publicPage]||publicHome;
+      document.getElementById("root").innerHTML=`<div class="public-site">${siteHeader()}<main>${content()}</main>${siteFooter()}</div>`;
+    };
+    const goPublic = page => {
+      state.surface="public";state.publicPage=["home","solutions","products","promos","contact"].includes(page)?page:"home";
+      state.publicMenu=false;state.publicProductId=null;state.publicSourceId=page==="products"?state.publicSourceId:null;state.form=null;state.modal=null;
+      render();
+    };
+    const render = () => {
+      if(state.surface==="public") {renderPublic();return;}
+      if(state.surface==="login") {
+        document.getElementById("root").innerHTML=`<main class="login-page"><div class="login-box"><div class="login-logo"><b>CMS</b> RMP</div><div class="login-card"><p>Sign in to start your session</p><div id="login-error" class="login-error">Please enter an email and password.</div><form id="login-form"><div class="login-field"><input name="email" type="email" aria-label="Email" value="admin@rmp.local" required><span>✉</span></div><div class="login-field"><input name="password" type="password" aria-label="Password" value="password123" required><span>●</span></div><div class="login-row"><button type="button" class="login-hint login-back" data-action="show-site">← Back to website</button><button class="btn btn-primary" type="submit">Sign In</button></div></form><div class="login-hint" style="margin-top:14px;text-align:center">Demo account is prefilled</div></div></div></main>`;
+        return;
+      }
+      const page=labels[state.page]||labels.dashboard;
+      const section=state.form?formPage():state.page==="dashboard"?dashboard():listPage();
+      const productOpen=["sources","categories","products"].includes(state.page);
+      const navHtml=nav.map(item=>{
+        if(item.children) return `<div><a class="nav-link ${productOpen?"active":""}" data-action="toggle-product" href="#"><span class="nav-icon">${item.icon}</span><span>${item.name}</span><span class="nav-chevron">⌄</span></a><div class="nav-sub ${productOpen?"visible":""}">${item.children.map(child=>`<a class="nav-link ${state.page===child.id?"active":""}" data-page="${child.id}">${child.name}</a>`).join("")}</div></div>`;
+        return `<a class="nav-link ${state.page===item.id?"active":""}" data-page="${item.id}"><span class="nav-icon">${item.icon}</span><span>${item.name}</span></a>`;
+      }).join("");
+      document.getElementById("root").innerHTML=`<div class="app"><header class="topbar"><a class="brand" href="#" data-page="dashboard"><b>CMS</b>&nbsp;RMP</a><button class="hamburger" data-action="toggle-sidebar" aria-label="Toggle navigation">☰</button><div class="top-actions"><div class="user-menu" id="user-menu"><button class="top-button" data-action="toggle-user">♙&nbsp; Admin &nbsp;⌄</button><div class="user-dropdown"><div style="padding:8px 9px 10px;border-bottom:1px solid #eee"><strong>Admin</strong><br><span class="muted">Administrator</span></div><button data-action="logout">Sign out</button></div></div></div></header>
+        <aside class="sidebar ${state.sidebar?"open":""}"><div class="sidebar-label">MAIN NAVIGATION</div>${navHtml}</aside><div class="mobile-shade ${state.sidebar?"visible":""}" data-action="toggle-sidebar"></div>
+        <main class="main"><section class="content-header"><h1>${page.title} <small>${page.sub}</small></h1><ol class="breadcrumb"><li>CMS</li><li>${page.crumb}</li></ol></section><section class="content">${section}</section><footer class="footer">© Copyright <strong>PT Royal Mitra Persada</strong>. All Rights Reserved <span>Version 1.0</span></footer></main>${modal()}</div>`;
+    };
+    const go = page => { state.surface="cms";state.page=labels[page]?page:"dashboard";state.form=null;state.search="";state.modal=null;state.sidebar=false;render(); };
+    const addRecord = type => { state.page=type;state.search="";state.form={type,id:null};render(); };
+    const editRecord = (type,id) => { state.page=type;state.form={type,id:Number(id)};render(); };
+    const deleteRecord = (type,id) => {
+      const item=data[type].find(record=>record.id===Number(id));
+      if(!item) return;
+      if(type==="sources"&&(data.categories.some(record=>record.sourceId===item.id)||data.products.some(record=>record.sourceId===item.id))){notify("This source is in use. Remove its categories and products first.",true);return;}
+      if(type==="categories"&&data.products.some(record=>record.categoryId===item.id)){notify("This category is in use by a product. Reassign or delete that product first.",true);return;}
+      if(!confirm(`Delete "${item.name||item.title}"? This cannot be undone.`)) return;
+      data[type]=data[type].filter(record=>record.id!==Number(id));
+      if(persist()){render();notify("Record deleted.");}
+    };
+    const slugify = value => value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+    const readImage = file => new Promise((resolve,reject)=>{
+      if(file.size>2*1024*1024){reject(new Error("Images must be 2 MB or smaller."));return;}
+      const reader=new FileReader();
+      reader.onerror=()=>reject(new Error("The selected image could not be read."));
+      reader.onload=()=>{const image=new Image();image.onerror=()=>reject(new Error("The selected file is not a valid image."));image.onload=()=>{const scale=Math.min(1,1000/image.width,800/image.height);const canvas=document.createElement("canvas");canvas.width=Math.round(image.width*scale);canvas.height=Math.round(image.height*scale);canvas.getContext("2d").drawImage(image,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL("image/jpeg",.78));};image.src=reader.result;};
+      reader.readAsDataURL(file);
+    });
+    const saveForm = async form => {
+      const type=form.dataset.type,id=Number(form.dataset.id)||null,fd=new FormData(form);
+      const record=id?data[type].find(item=>item.id===id):{};
+      const values=Object.fromEntries(fd.entries());
+      if(type==="products"&&!data.categories.some(item=>item.id===Number(values.categoryId)&&item.sourceId===Number(values.sourceId))){notify("Choose a category belonging to the selected source.",true);return;}
+      const updated={...record};
+      if(type==="sources") Object.assign(updated,{name:values.name,slug:values.slug||slugify(values.name),description:values.description});
+      if(type==="categories") Object.assign(updated,{name:values.name,sourceId:Number(values.sourceId)});
+      if(type==="products") Object.assign(updated,{name:values.name,slug:values.slug||slugify(values.name),price:Number(values.price),sourceId:Number(values.sourceId),categoryId:Number(values.categoryId),description:values.description,advantages:fd.getAll("advantages[]").filter(Boolean),features:fd.getAll("features[]").filter(Boolean),characteristics:fd.getAll("characteristics[]").filter(Boolean)});
+      if(type==="promos") Object.assign(updated,{name:values.name,description:values.description});
+      if(type==="banners") Object.assign(updated,{title:values.title,redirectUrl:values.redirectUrl,description:values.description});
+      const upload=form.querySelector('input[type="file"]');
+      try {
+        if(upload?.files?.[0]) updated.cover=await readImage(upload.files[0]);
+        else updated.cover=values.currentCover||updated.cover||"";
+      } catch(error) { notify(error.message,true);return; }
+      if(!id) updated.id=Math.max(0,...data[type].map(item=>item.id))+1;
+      if(id) data[type]=data[type].map(item=>item.id===id?updated:item);
+      else data[type].unshift(updated);
+      if(persist()){state.form=null;state.search="";render();notify(id?"Record updated.":"Record added.");}
+    };
+    document.addEventListener("click",event=>{
+      const publicLink=event.target.closest("[data-public]");
+      if(publicLink){event.preventDefault();goPublic(publicLink.dataset.public);return;}
+      const pageLink=event.target.closest("[data-page]");
+      if(pageLink){event.preventDefault();go(pageLink.dataset.page);return;}
+      const action=event.target.closest("[data-action]");
+      if(!action) return;
+      const kind=action.dataset.action;
+      if(kind==="show-login"){state.surface="login";state.publicMenu=false;render();return;}
+      if(kind==="show-site"){goPublic("home");return;}
+      if(kind==="toggle-site-menu"){state.publicMenu=!state.publicMenu;render();return;}
+      if(kind==="next-slide"){state.slide=(state.slide+1)%Math.max(data.banners.length,1);render();return;}
+      if(kind==="prev-slide"){state.slide=(state.slide-1+Math.max(data.banners.length,1))%Math.max(data.banners.length,1);render();return;}
+      if(kind==="filter-source"){state.publicSourceId=action.dataset.id?Number(action.dataset.id):null;renderPublic();return;}
+      if(kind==="browse-source"){state.publicSourceId=Number(action.dataset.id);state.publicPage="products";renderPublic();return;}
+      if(kind==="open-public-product"){state.publicProductId=Number(action.dataset.id);state.publicPage="product-detail";window.scrollTo(0,0);renderPublic();return;}
+      if(kind==="toggle-product"){event.preventDefault();action.nextElementSibling?.classList.toggle("visible");}
+      if(kind==="toggle-sidebar"){state.sidebar=!state.sidebar;render();}
+      if(kind==="toggle-user")document.getElementById("user-menu")?.classList.toggle("open");
+      if(kind==="logout"){localStorage.removeItem(SESSION);state.form=null;goPublic("home");}
+      if(kind==="add")addRecord(action.dataset.type);
+      if(kind==="edit")editRecord(action.dataset.type,action.dataset.id);
+      if(kind==="delete")deleteRecord(action.dataset.type,action.dataset.id);
+      if(kind==="cancel-form")go(state.page);
+      if(kind==="add-repeat"){const box=document.querySelector(`[data-repeater="${action.dataset.name}"]`);if(box){const row=document.createElement("div");row.className="repeater-row";row.innerHTML=`<input class="control" name="${esc(action.dataset.name)}[]" required><button class="btn btn-danger btn-small" type="button" data-action="remove-repeat" aria-label="Remove item">×</button>`;box.append(row);row.querySelector("input").focus();}}
+      if(kind==="remove-repeat"){const box=action.closest(".repeater");if(box?.children.length>1)action.closest(".repeater-row").remove();else notify("Keep at least one item.",true);}
+      if(kind==="view-contact"){state.modal={id:Number(action.dataset.id)};render();}
+      if(kind==="close-modal"&&(event.target===action||action.classList.contains("modal-backdrop"))){state.modal=null;render();}
+    });
+    document.addEventListener("input",event=>{
+      if(event.target.matches("[data-search]")){state.search=event.target.value;const cursor=event.target.selectionStart;render();const search=document.querySelector("[data-search]");search?.focus();search?.setSelectionRange(cursor,cursor);}
+    });
+    document.addEventListener("change",event=>{
+      if(event.target.name==="sourceId"&&state.form?.type==="products"){
+        const select=document.getElementById("categoryId");
+        const categories=data.categories.filter(item=>item.sourceId===Number(event.target.value));
+        select.innerHTML=categories.map(item=>`<option value="${item.id}">${esc(item.name)}</option>`).join("");
+        if(!categories.length)select.innerHTML='<option value="">Add a category for this source first</option>';
+      }
+    });
+    document.addEventListener("submit",event=>{
+      if(event.target.id==="login-form"){
+        event.preventDefault();
+        const values=new FormData(event.target);
+        if(!values.get("email")||!values.get("password")){document.getElementById("login-error").style.display="block";return;}
+        localStorage.setItem(SESSION,"yes");go("dashboard");return;
+      }
+      if(event.target.id==="public-contact-form"){
+        event.preventDefault();
+        const values=Object.fromEntries(new FormData(event.target).entries());
+        data.contacts.unshift({id:Math.max(0,...data.contacts.map(item=>item.id))+1,name:values.name,company:values.company,email:values.email,phone:values.phone,product:values.product,comment:values.comment,created:new Date().toISOString().slice(0,10)});
+        if(persist()){event.target.reset();notify("Request saved locally. Our demo inbox has been updated.");}
+        return;
+      }
+      if(event.target.id==="record-form"){event.preventDefault();saveForm(event.target);}
+    });
+    render();
+  })();
+  </script>
+</body>
+</html>

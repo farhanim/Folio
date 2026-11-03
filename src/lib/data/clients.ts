@@ -60,6 +60,14 @@ export const showcaseClients = {
 	devfartha: { name: 'Devfartha', logo: '/images/clients/devfartha.webp' },
 	pertamina: { name: 'Pertamina Hulu Kalimantan Timur', logo: '/images/clients/pertamina.webp' },
 	dataroom: { name: 'Dataroom · IKN Nusantara', logo: '/images/clients/dataroom.webp' },
+	gpp: { name: 'Graha Pesona Pakansari', logo: '/images/clients/gpp.webp' },
+	telkomsel: { name: 'Telkomsel', logo: '/images/clients/telkomsel.webp' },
+	royalMitraPersada: {
+		name: 'PT Royal Mitra Persada',
+		logo: '/images/clients/royal-mitra-persada.webp'
+	},
+	cycloneCoffee: { name: 'Cyclone Coffee', logo: '/images/clients/cyclone-coffee.webp' },
+	simal: { name: 'Indonesian Navy', logo: '/images/clients/simal.webp' },
 	kemendikbud: {
 		name: 'Ditjen Kebudayaan, Kemendikbud',
 		logo: '/images/clients/kemendikbud.webp'

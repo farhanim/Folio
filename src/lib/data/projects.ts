@@ -293,12 +293,18 @@ transition.ready.then(() => {
 
 // Newest year first; the supplied order breaks ties within a year.
 const requestedProjectOrder = [
+	'klika2c-platform',
+	'nikel-lender-portal',
+	'gpp-ipl',
+	'cycoffee',
 	'mitra-persona',
 	'awp-heuristic-evaluation',
 	'grosir-pintar',
 	'iconplus',
 	'ielts-course',
 	'pims-pertamina',
+	'ccm',
+	'repo-muskitnas',
 	'kee-platforms',
 	'jardin-timesheet',
 	'efishery-faq',
@@ -311,26 +317,31 @@ const requestedProjectOrder = [
 	'silma',
 	'dataroom',
 	'blast-hub',
+	'royalmitrapersada',
 	'muskitnas',
 	'derkei',
 	'sparq',
+	'navy',
+	'site-survey',
+	'artemis',
+	'svreport',
+	'remote-task',
+	'parsing-tools'
 ];
 const requestedOrderIndex = new Map(requestedProjectOrder.map((slug, index) => [slug, index]));
 
-export const allProjects: Project[] = [...caseStudies, ...showcase, ...samples].sort(
-	(a, b) => {
-		const yearOrder = (b.year ?? 0) - (a.year ?? 0);
-		if (yearOrder !== 0) return yearOrder;
-		const aOrder = requestedOrderIndex.get(a.slug);
-		const bOrder = requestedOrderIndex.get(b.slug);
-		if (aOrder !== undefined || bOrder !== undefined) {
-			if (aOrder === undefined) return 1;
-			if (bOrder === undefined) return -1;
-			return aOrder - bOrder;
-		}
-		return 0;
+export const allProjects: Project[] = [...caseStudies, ...showcase, ...samples].sort((a, b) => {
+	const yearOrder = (b.year ?? 0) - (a.year ?? 0);
+	if (yearOrder !== 0) return yearOrder;
+	const aOrder = requestedOrderIndex.get(a.slug);
+	const bOrder = requestedOrderIndex.get(b.slug);
+	if (aOrder !== undefined || bOrder !== undefined) {
+		if (aOrder === undefined) return 1;
+		if (bOrder === undefined) return -1;
+		return aOrder - bOrder;
 	}
-);
+	return 0;
+});
 
 // Keep these records available for their direct pages while leaving them out
 // of the project index and other list-based features.

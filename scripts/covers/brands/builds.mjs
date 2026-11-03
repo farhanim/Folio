@@ -9,5 +9,38 @@ import { ielts, jardin } from './builds-studio.mjs';
 import { derkei, muskitnas, silma } from './builds-stories.mjs';
 import { dataroom } from './builds-elegant.mjs';
 import { sparq } from './builds-sparq-bento.mjs';
+import { ccm, repoMuskitnas, royalMitraPersada } from './builds-archive.mjs';
+import {
+	cycoffee,
+	artemis,
+	navy,
+	parsingTools,
+	remoteTask,
+	siteSurvey,
+	svreport
+} from './builds-ops.mjs';
 
-export const builds = [nikel, kee, muskitnas, jardin, derkei, sparq, blast, iconplus, ielts, pims, dataroom, silma];
+export const builds = [
+	nikel,
+	kee,
+	muskitnas,
+	jardin,
+	derkei,
+	sparq,
+	blast,
+	iconplus,
+	ielts,
+	pims,
+	dataroom,
+	silma,
+	ccm,
+	repoMuskitnas,
+	royalMitraPersada,
+	cycoffee,
+	artemis,
+	navy,
+	parsingTools,
+	remoteTask,
+	siteSurvey,
+	svreport
+];

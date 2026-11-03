@@ -12,7 +12,8 @@
 
 	type Device = 'desktop' | 'mobile';
 	const sizes: Record<Device, [number, number]> = { desktop: [1280, 800], mobile: [390, 760] };
-	let device = $state<Device>('desktop');
+	// svelte-ignore state_referenced_locally
+	let device = $state<Device>(project.preview?.device ?? 'desktop');
 	let frameKey = $state(0);
 	let stageW = $state(0);
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import ClientBadge from '#lib/components/project/ClientBadge.svelte';
+	import { source } from '#lib/utils/credit.ts';
 	import ProjectCover from '#lib/components/project/ProjectCover.svelte';
 	import ProjectMeta from '#lib/components/project/ProjectMeta.svelte';
 	import type { Project } from '#lib/types/index.ts';
@@ -64,11 +65,11 @@
 						<a href="/work/{project.slug}">
 							<span class="thumb">
 								<img src={coverSmall(project.cover)} alt="" loading="lazy" />
-								<span class="badge"><ClientBadge client={project.client} size="sm" /></span>
+								<span class="badge"><ClientBadge client={source(project)} size="sm" /></span>
 							</span>
 							<span class="text">
 								<ProjectMeta {project} />
-								<span class="name">{project.title}</span>
+								<span class="name" title={project.title}>{project.title}</span>
 								<span class="sub">{project.tagline}</span>
 							</span>
 							<span class="arrow"><Icon name="arrowUpRight" size={16} /></span>
@@ -252,8 +253,12 @@
 		gap: 3px;
 		min-width: 0;
 	}
+	/* One line, like the tagline under it */
 	.name {
+		overflow: hidden;
 		font-size: 18px;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 		letter-spacing: -0.02em;
 		transition: transform 0.4s var(--ease-out);
 	}

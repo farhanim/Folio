@@ -1,0 +1,1858 @@
+<!doctype html>
+<html lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Smart Survey</title>
+    <link rel="icon" href="favicon.ico">
+    <!-- CSS Style (copied from the original project /public) -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="assets/css/animate.min.css">
+    <link rel="stylesheet" media="all" href="assets/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="assets/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="assets/css/fixedColumns.dataTables.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/poppins.css">
+    <!-- UI refinement layer -->
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <style>
+        @font-face { font-family: 'Poppins'; font-weight: 400; src: url('assets/fonts/Poppins-Regular.ttf') format('truetype'); }
+        @font-face { font-family: 'Poppins'; font-weight: 500; src: url('assets/fonts/Poppins-Medium.ttf') format('truetype'); }
+        @font-face { font-family: 'Poppins'; font-weight: 600; src: url('assets/fonts/Poppins-SemiBold.ttf') format('truetype'); }
+        @font-face { font-family: 'Poppins'; font-weight: 700; src: url('assets/fonts/Poppins-Bold.ttf') format('truetype'); }
+        @font-face { font-family: 'poppins'; font-weight: 400; src: url('assets/fonts/Poppins-Regular.ttf') format('truetype'); }
+        .errorInputModal { color: #dc3545; font-size: 75%; display: block; margin-top: 2px; }
+        @media print { #sidebar-container, .ss-navbar, .bg-subnavbar, .no-print { display: none !important; } .main-content { margin-left: 0 !important; } body { background: #fff; } }
+    </style>
+</head>
+<body>
+    <div class="modal-loading freak"></div>
+    <div id="app"></div>
+
+    <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="assets/js/popper.min.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="assets/js/dataTables.fixedColumns.min.js"></script>
+    <script type="text/javascript" src="assets/js/sweetalert2.all.min.js"></script>
+    <script type="text/javascript" src="assets/js/highcharts.js"></script>
+    <script type="text/javascript" src="assets/js/form-builder.min.js"></script>
+
+<script type="text/javascript">
+(function ($) {
+'use strict';
+
+/* =====================================================================
+ *  Helpers
+ * ===================================================================== */
+var STORE_KEY = 'ss-demo-db-v2';
+var SESSION_KEY = 'ss-demo-session';
+var DAY = 864e5;
+
+function pad(n) { return (n < 10 ? '0' : '') + n; }
+function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function addDays(n) { var d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n); return ymd(d); }
+function today() { return addDays(0); }
+function dayDiff(a, b) { return Math.round((Date.parse(b) - Date.parse(a)) / DAY); }
+function DMY(s) { if (!s) return ''; var p = String(s).substr(0, 10).split('-'); return p[2] + '-' + p[1] + '-' + p[0]; }
+var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var MONTHS_L = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+function niceDate(s) { if (!s) return '-'; var p = String(s).substr(0, 10).split('-'); return parseInt(p[2], 10) + ' ' + MONTHS[parseInt(p[1], 10) - 1] + ' ' + p[0]; }
+function longDate(s) { var p = s.split('-'); return parseInt(p[2], 10) + ' ' + MONTHS_L[parseInt(p[1], 10) - 1] + ' ' + p[0]; }
+function stamp(offsetMin) {
+    var d = new Date(Date.now() + (offsetMin || 0) * 60000);
+    return ymd(d) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+}
+function relTime(ts) {
+    var diff = (Date.now() - Date.parse(String(ts).replace(' ', 'T'))) / 60000;
+    if (isNaN(diff)) return '';
+    if (diff < 1) return 'just now';
+    if (diff < 60) return Math.floor(diff) + ' min ago';
+    if (diff < 1440) return Math.floor(diff / 60) + ' hours ago';
+    if (diff < 2880) return 'Yesterday';
+    return Math.floor(diff / 1440) + ' days ago';
+}
+function relDay(d) { var n = dayDiff(d, today()); return n === 0 ? 'Today' : n === 1 ? 'Yesterday' : n > 0 ? n + ' days ago' : 'in ' + (-n) + ' days'; }
+function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+}
+function nextId(arr) { return arr.reduce(function (m, x) { return Math.max(m, x.id); }, 0) + 1; }
+function byId(arr, id) { id = Number(id); for (var i = 0; i < arr.length; i++) if (arr[i].id === id) return arr[i]; return null; }
+function uniq(arr) { return arr.filter(function (v, i) { return v && arr.indexOf(v) === i; }); }
+function sum(arr) { return arr.reduce(function (a, b) { return a + b; }, 0); }
+function pct(a, b) { return b ? Math.round(a / b * 100) : 0; }
+function createErrorList(errorList) { return errorList.join('</br>'); }
+function isFinished(t) { return /^(done|complete|completed|finished)$/i.test(t.status); }
+function isComplete(t) { return /^complete/i.test(t.status); }
+function isLate(t) { return t.end_date < today() && (t.status === 'Open' || t.status === 'Re-Open' || t.status === 'Reopen' || t.status === 'On Progress'); }
+function isOnGoing(t) { return t.start_date <= today() && t.end_date >= today() && !isFinished(t); }
+
+/* =====================================================================
+ *  UI components
+ * ===================================================================== */
+var STATUS_CLASS = { 'open': 'st-open', 're-open': 'st-reopen', 'reopen': 'st-reopen', 'on progress': 'st-progress', 'done': 'st-done', 'finished': 'st-done',
+    'complete': 'st-complete', 'completed': 'st-complete', 'approval': 'st-approval', 'late': 'st-late', 'active': 'st-complete', 'deactive': 'st-inactive' };
+var STATUS_COLOR = { 'Open': '#0B9CF0', 'Re-Open': '#f0a04b', 'Reopen': '#f0a04b', 'On Progress': '#16b9d0', 'Done': '#8cc63f', 'Finished': '#8cc63f',
+    'Complete': '#128c7e', 'Completed': '#128c7e', 'Approval': '#7b4fd6' };
+var AVATAR_COLORS = ['#0B9CF0', '#128c7e', '#f8766d', '#f0a04b', '#7b4fd6', '#16b9d0', '#8cc63f', '#e83e8c', '#5c6bc0'];
+
+function badge(s) { return '<span class="badge-status ' + (STATUS_CLASS[String(s).toLowerCase()] || 'st-inactive') + '">' + esc(s) + '</span>'; }
+function initials(n) { return String(n || '?').replace(/^PT\s+/i, '').split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0); }).join('').toUpperCase(); }
+function avatar(name, cls) {
+    var h = 0; String(name).split('').forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) >>> 0; });
+    return '<span class="avatar ' + (cls || '') + '" style="background:' + AVATAR_COLORS[h % AVATAR_COLORS.length] + '" title="' + esc(name) + '">' + esc(initials(name)) + '</span>';
+}
+function userCell(u, sub, cls) {
+    if (!u || !u.name) return '<span class="text-muted-2">-</span>';
+    return '<div class="user-cell">' + avatar(u.name, cls) + '<div class="meta"><b>' + esc(u.name) + '</b>' + (sub !== undefined ? '<small>' + sub + '</small>' : '') + '</div></div>';
+}
+function progress(p) {
+    var cls = p >= 100 ? 'full' : p < 30 ? 'low' : '';
+    return '<div class="progress-wrap"><div class="progress progress-thin"><div class="progress-bar ' + cls + '" style="width:' + p + '%"></div></div><span class="pct">' + p + '%</span></div>';
+}
+function kpi(label, value, icon, color, sub) {
+    return '<div class="card kpi-card"><div class="kpi"><div class="kpi-icon ic-' + color + '"><span class="mdi ' + icon + '"></span></div>' +
+        '<div class="min-w-0"><div class="kpi-label">' + label + '</div><div class="kpi-value">' + value + '</div>' + (sub ? '<div class="kpi-sub">' + sub + '</div>' : '') + '</div></div></div>';
+}
+function kpiRow(items, colCls) { return '<div class="row ss-row">' + items.map(function (i) { return '<div class="' + (colCls || 'col') + '">' + i + '</div>'; }).join('') + '</div>'; }
+function pageHead(title, sub, actions) {
+    return '<div class="page-head"><div><h5 class="page-title">' + title + '</h5>' + (sub ? '<p class="page-sub">' + sub + '</p>' : '') + '</div>' +
+        (actions ? '<div class="page-actions">' + actions + '</div>' : '') + '</div>';
+}
+function cardHead(title, sub, right, icon) {
+    return '<div class="card-header d-flex align-items-center justify-content-between"><div class="min-w-0"><h6 class="ss-card-title">' + (icon ? '<span class="mdi ' + icon + '"></span>' : '') + title + '</h6>' +
+        (sub ? '<p class="ss-card-sub">' + sub + '</p>' : '') + '</div>' + (right ? '<div class="d-flex align-items-center ml-2">' + right + '</div>' : '') + '</div>';
+}
+function searchBox(id, ph) { return '<div class="search-box form-group"><span class="mdi mdi-magnify"></span><input type="search" id="' + id + '" class="form-control form-control-sm" placeholder="' + (ph || 'Search...') + '"></div>'; }
+function emptyState(text, icon) { return '<div class="empty"><span class="mdi ' + (icon || 'mdi-inbox') + '"></span>' + text + '</div>'; }
+function dueInfo(t) {
+    if (isFinished(t)) return '<span class="cell-sub text-success"><span class="mdi mdi-check-circle"></span> ' + (t.finished_at ? 'Finished ' + niceDate(t.finished_at) : 'Finished') + '</span>';
+    var left = dayDiff(today(), t.end_date);
+    if (left < 0) return '<span class="cell-sub text-danger font-weight-600"><span class="mdi mdi-alert-circle"></span> Late ' + (-left) + ' day' + (left === -1 ? '' : 's') + '</span>';
+    var st = dayDiff(today(), t.start_date);
+    if (st > 0) return '<span class="cell-sub"><span class="mdi mdi-calendar-clock"></span> Starts in ' + st + ' days</span>';
+    return '<span class="cell-sub"><span class="mdi mdi-timer-sand"></span> ' + (left === 0 ? 'Due today' : left + ' days left') + '</span>';
+}
+
+/* =====================================================================
+ *  Dummy database (seeded generator, persisted in localStorage)
+ * ===================================================================== */
+var T_SURVEY = [
+    { type: 'header', subtype: 'h3', label: 'General Information', className: '3' },
+    { type: 'text', subtype: 'text', label: 'Site Name', name: 'site_name', className: 'form-control' },
+    { type: 'text', subtype: 'text', label: 'Site Code', name: 'site_code', className: 'form-control' },
+    { type: 'date', label: 'Survey Date', name: 'survey_date', className: 'form-control' },
+    { type: 'text', subtype: 'text', label: 'GPS Coordinate', name: 'gps', className: 'form-control' },
+    { type: 'select', label: 'Site Type', name: 'site_type', className: 'form-control', values: [
+        { label: 'Greenfield', value: 'Greenfield', selected: true }, { label: 'Rooftop', value: 'Rooftop' }, { label: 'Camouflage', value: 'Camouflage' }] },
+    { type: 'select', label: 'Power Source', name: 'power_source', className: 'form-control', values: [
+        { label: 'PLN 3 Phase', value: 'PLN 3 Phase', selected: true }, { label: 'PLN 1 Phase', value: 'PLN 1 Phase' }, { label: 'Genset', value: 'Genset' }, { label: 'Solar Hybrid', value: 'Solar Hybrid' }] },
+    { type: 'header', subtype: 'h3', label: 'Tower Information', className: '3' },
+    { type: 'number', label: 'Tower Height (m)', name: 'tower_height', className: 'form-control' },
+    { type: 'text', subtype: 'text', label: 'Tower Type', name: 'tower_type', className: 'form-control' },
+    { type: 'number', label: 'Number of Antenna', name: 'antenna_count', className: 'form-control' },
+    { type: 'header', subtype: 'h3', label: 'Documentation', className: '2' },
+    { type: 'file', label: 'Tower Photo', name: 'photo_tower', className: 'form-control' },
+    { type: 'file', label: 'Site Layout', name: 'photo_layout', className: 'form-control' },
+    { type: 'header', subtype: 'h3', label: 'Remarks', className: '1' },
+    { type: 'textarea', label: 'Surveyor Notes', name: 'notes', className: 'form-control' }
+];
+var T_AUDIT = [
+    { type: 'header', subtype: 'h3', label: 'Tower Audit', className: '3' },
+    { type: 'text', subtype: 'text', label: 'Auditor Name', name: 'auditor', className: 'form-control' },
+    { type: 'date', label: 'Audit Date', name: 'audit_date', className: 'form-control' },
+    { type: 'text', subtype: 'text', label: 'GPS Coordinate', name: 'gps', className: 'form-control' },
+    { type: 'header', subtype: 'h3', label: 'Structure Condition', className: '3' },
+    { type: 'select', label: 'Grounding Condition', name: 'grounding', className: 'form-control', values: [
+        { label: 'Good', value: 'Good', selected: true }, { label: 'Need Repair', value: 'Need Repair' }] },
+    { type: 'number', label: 'Corrosion Level (%)', name: 'corrosion', className: 'form-control' },
+    { type: 'text', subtype: 'text', label: 'Bolt Condition', name: 'bolt_condition', className: 'form-control' },
+    { type: 'header', subtype: 'h3', label: 'Evidence', className: '2' },
+    { type: 'file', label: 'Tower Photo', name: 'photo_tower', className: 'form-control' },
+    { type: 'textarea', label: 'Audit Notes', name: 'notes', className: 'form-control' }
+];
+var T_LOS = [
+    { type: 'header', subtype: 'h3', label: 'Link Information', className: '3' },
+    { type: 'text', subtype: 'text', label: 'Near End Site', name: 'site_name', className: 'form-control' },
+    { type: 'text', subtype: 'text', label: 'Far End Site', name: 'far_end', className: 'form-control' },
+    { type: 'text', subtype: 'text', label: 'Azimuth', name: 'azimuth', className: 'form-control' },
+    { type: 'number', label: 'Link Distance (km)', name: 'distance_km', className: 'form-control' },
+    { type: 'number', label: 'Antenna Height (m)', name: 'antenna_height', className: 'form-control' },
+    { type: 'select', label: 'LOS Result', name: 'los_result', className: 'form-control', values: [
+        { label: 'Clear', value: 'Clear', selected: true }, { label: 'Partially Blocked', value: 'Partially Blocked' }, { label: 'Blocked', value: 'Blocked' }] },
+    { type: 'header', subtype: 'h3', label: 'Evidence', className: '2' },
+    { type: 'file', label: 'LOS Photo', name: 'photo_los', className: 'form-control' },
+    { type: 'file', label: 'Tower Photo', name: 'photo_tower', className: 'form-control' }
+];
+var T_FIBER = [
+    { type: 'header', subtype: 'h3', label: 'Route Information', className: '3' },
+    { type: 'text', subtype: 'text', label: 'Site Name', name: 'site_name', className: 'form-control' },
+    { type: 'number', label: 'Route Length (km)', name: 'route_length', className: 'form-control' },
+    { type: 'select', label: 'Duct Availability', name: 'duct', className: 'form-control', values: [
+        { label: 'Available', value: 'Available', selected: true }, { label: 'Partial', value: 'Partial' }, { label: 'Not Available', value: 'Not Available' }] },
+    { type: 'select', label: 'Permit Status', name: 'permit', className: 'form-control', values: [
+        { label: 'Approved', value: 'Approved', selected: true }, { label: 'On Process', value: 'On Process' }] },
+    { type: 'number', label: 'Handhole Count', name: 'handhole', className: 'form-control' },
+    { type: 'text', subtype: 'text', label: 'GPS Coordinate', name: 'gps', className: 'form-control' },
+    { type: 'header', subtype: 'h3', label: 'Evidence', className: '2' },
+    { type: 'file', label: 'Route Map', name: 'photo_route', className: 'form-control' },
+    { type: 'textarea', label: 'Surveyor Notes', name: 'notes', className: 'form-control' }
+];
+var TPL = { survey: T_SURVEY, audit: T_AUDIT, los: T_LOS, fiber: T_FIBER };
+var TPL_PREFIX = { survey: 'Survey', audit: 'Audit', los: 'LOS', fiber: 'Fiber Route' };
+
+function seed() {
+    var s0 = 20261103;
+    function R() { s0 |= 0; s0 = s0 + 0x6D2B79F5 | 0; var t = Math.imul(s0 ^ s0 >>> 15, 1 | s0); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+    function pick(a) { return a[Math.floor(R() * a.length)]; }
+    function rint(a, b) { return a + Math.floor(R() * (b - a + 1)); }
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+    var ts = '2026-01-12 09:00:00';
+    var db = {};
+
+    db.roles = [
+        [1, 'Project Manager', 'Plan project, assign resources and monitor progress'],
+        [2, 'Rigger', 'Field engineer performing site survey & audit (mobile app)'],
+        [3, 'Customer', 'Project owner, read access to project & report'],
+        [4, 'Admin', 'Full access to every module and configuration'],
+        [5, 'Project Director', 'Approve project and review overall performance'],
+        [6, 'Radio Network Performance and Optimization', 'RNPO engineer, validate survey result']
+    ].map(function (r) { return { id: r[0], name: r[1], description: r[2], created_at: ts, updated_at: ts }; });
+
+    db.users = [
+        [1, 'Budi Santoso', 'pm1@ss.com', 1, 1, 1, '0812-8890-1123'], [2, 'Rina Wulandari', 'pm2@ss.com', 1, 1, 1, '0813-1102-7781'],
+        [3, 'Agus Setiawan', 'rigger1@ss.com', 2, 0, 1, '0812-2231-4410'], [4, 'Dedi Kurniawan', 'rigger2@ss.com', 2, 0, 1, '0821-3341-9902'],
+        [5, 'Eko Prasetyo', 'rigger3@ss.com', 2, 0, 1, '0857-1122-3390'], [6, 'PT Nusantara Seluler', 'customer1@ss.com', 3, 1, 1, '021-5099-1200'],
+        [7, 'PT Garuda Telekomunikasi', 'customer2@ss.com', 3, 1, 1, '021-2988-7700'], [8, 'PT Mitra Komunika', 'customer3@ss.com', 3, 1, 1, '021-8064-3311'],
+        [9, 'Administrator', 'admin@ss.com', 4, 1, 1, '0811-9000-0001'], [10, 'Hendra Wijaya', 'projectdirector@ss.com', 5, 1, 1, '0811-1888-2020'],
+        [11, 'Siti Rahmawati', 'rnpo1@ss.com', 6, 0, 1, '0812-7781-0091'], [12, 'Fajar Nugroho', 'rigger4@ss.com', 2, 0, 1, '0813-5520-1188'],
+        [13, 'Yusuf Hidayat', 'rigger5@ss.com', 2, 0, 1, '0852-2109-4412'], [14, 'Dewi Lestari', 'rnpo2@ss.com', 6, 0, 1, '0819-4410-2290'],
+        [15, 'Rizky Ramadhan', 'rigger6@ss.com', 2, 0, 0, '0878-3301-5521'], [16, 'Bayu Saputra', 'rigger7@ss.com', 2, 0, 1, '0812-6612-0034'],
+        [17, 'Galih Permana', 'rigger8@ss.com', 2, 0, 1, '0838-1290-7745'], [18, 'Andi Firmansyah', 'rnpo3@ss.com', 6, 0, 1, '0811-7712-3098'],
+        [19, 'Lukman Hakim', 'pm3@ss.com', 1, 1, 1, '0815-6003-2211']
+    ].map(function (u) {
+        return { id: u[0], name: u[1], email: u[2], password: '123456', role_id: u[3], application: u[4], status: u[5], phone: u[6],
+            created_at: ts, updated_at: ts, last_login: u[5] ? stamp(-rint(5, 60 * 48)) : '2026-08-01 10:12:00' };
+    });
+    byId(db.users, 9).last_login = stamp();
+
+    db.resources = [
+        ['', 'Project'], ['Project', 'Create'], ['Project', 'Read'], ['Project', 'Update'], ['Project', 'Delete'],
+        ['', 'Task'], ['Task', 'Create'], ['Task', 'Read'], ['Task', 'Update'], ['Task', 'Delete'],
+        ['', 'Site'], ['Site', 'Create'], ['Site', 'Read'], ['Site', 'Update'], ['Site', 'Delete'],
+        ['', 'Report'], ['Report', 'Read'], ['Report', 'Update'], ['Report', 'Delete']
+    ].map(function (r, i) { return { id: i + 1, parent_name: r[0], module_name: r[1] }; });
+    db.roleResources = {
+        1: [1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14, 16, 17, 18], 2: [6, 8, 9, 16, 17], 3: [1, 3, 16, 17],
+        4: db.resources.map(function (r) { return r.id; }), 5: [1, 3, 4, 6, 8, 11, 13, 16, 17], 6: [6, 8, 9, 16, 17, 18]
+    };
+
+    db.projects = [
+        [1, 'Site Survey Jabodetabek 2026', 1, 6, 'Site Survey 4G LTE', 'Open', -60, 60, [3, 4, 5, 16, 11], 'Jabodetabek', 'Survey of new 4G LTE sites for capacity expansion in Greater Jakarta.'],
+        [2, 'Tower Audit Jawa Barat', 2, 7, 'Tower Audit', 'Open', -30, 90, [4, 12, 13, 14], 'Jawa Barat', 'Structural & grounding audit for existing towers in West Java.'],
+        [3, 'Microwave LOS Survey Jawa Tengah', 1, 8, 'LOS Survey', 'Re-Open', -90, 10, [3, 5, 17, 11], 'Jawa Tengah', 'Line-of-sight validation for microwave backhaul links.'],
+        [4, 'Site Acquisition Jawa Timur', 2, 6, 'Site Acquisition', 'Done', -180, -20, [12, 13, 14], 'Jawa Timur', 'Candidate site survey and land acquisition support.'],
+        [5, '5G Readiness Survey Bali', 19, 7, '5G Readiness', 'Approval', -14, 120, [3, 4, 16, 18], 'Bali Nusra', 'Rooftop & tower readiness check for 5G NR deployment.'],
+        [6, 'Fiber Backhaul Survey Sumatera Utara', 19, 8, 'Fiber Survey', 'Open', -25, 70, [16, 17, 12, 18], 'Sumatera Utara', 'Fiber route survey to replace microwave backhaul in Medan area.'],
+        [7, 'Small Cell Densification Makassar', 2, 6, 'Small Cell', 'Complete', -150, -40, [5, 13, 14], 'Sulawesi', 'Small cell candidate survey for downtown Makassar.']
+    ].map(function (p) {
+        return { id: p[0], name: p[1], pm_id: p[2], customer_id: p[3], scope: p[4], status: p[5], start_date: addDays(p[6]), end_date: addDays(p[7]),
+            resource: p[8], region: p[9], description: p[10], created_at: ts };
+    });
+
+    var siteData = {
+        1: [['JKT001', 'Kebayoran Lama', -6.2420, 106.7826, 'Jakarta Selatan'], ['JKT002', 'Kemang Raya', -6.2607, 106.8133, 'Jakarta Selatan'], ['JKT003', 'Kelapa Gading', -6.1588, 106.9057, 'Jakarta Utara'],
+            ['JKT004', 'Grogol', -6.1667, 106.7900, 'Jakarta Barat'], ['JKT005', 'Cawang', -6.2425, 106.8710, 'Jakarta Timur'], ['TNG001', 'BSD City', -6.3016, 106.6528, 'Tangerang Selatan'], ['BKS001', 'Summarecon Bekasi', -6.2253, 107.0004, 'Bekasi']],
+        2: [['BDG001', 'Dago Atas', -6.8701, 107.6186, 'Bandung'], ['BDG002', 'Buah Batu', -6.9475, 107.6371, 'Bandung'], ['CMH001', 'Cimahi Tengah', -6.8722, 107.5425, 'Cimahi'],
+            ['BGR001', 'Bogor Baru', -6.5776, 106.7947, 'Bogor'], ['CRB001', 'Cirebon Kota', -6.7063, 108.5570, 'Cirebon']],
+        3: [['SMG001', 'Simpang Lima', -6.9903, 110.4220, 'Semarang'], ['SMG002', 'Tembalang', -7.0573, 110.4381, 'Semarang'], ['SLO001', 'Laweyan', -7.5695, 110.7963, 'Surakarta'], ['MGL001', 'Magelang Kota', -7.4797, 110.2177, 'Magelang']],
+        4: [['SBY001', 'Gubeng', -7.2754, 112.7520, 'Surabaya'], ['SBY002', 'Rungkut', -7.3266, 112.7756, 'Surabaya'], ['MLG001', 'Klojen', -7.9797, 112.6304, 'Malang'], ['SDA001', 'Sidoarjo Kota', -7.4478, 112.7183, 'Sidoarjo']],
+        5: [['DPS001', 'Kuta', -8.7180, 115.1689, 'Badung'], ['DPS002', 'Renon', -8.6725, 115.2341, 'Denpasar'], ['GNR001', 'Ubud', -8.5069, 115.2625, 'Gianyar'], ['DPS003', 'Nusa Dua', -8.8008, 115.2297, 'Badung']],
+        6: [['MDN001', 'Medan Baru', -3.5952, 98.6722, 'Medan'], ['MDN002', 'Polonia', -3.5600, 98.6600, 'Medan'], ['BNJ001', 'Binjai Kota', -3.6000, 98.4854, 'Binjai'], ['PMS001', 'Siantar Barat', -2.9595, 99.0687, 'Pematangsiantar']],
+        7: [['MKS001', 'Pantai Losari', -5.1435, 119.4075, 'Makassar'], ['MKS002', 'Panakkukang', -5.1477, 119.4327, 'Makassar'], ['MKS003', 'Tamalanrea', -5.1349, 119.4895, 'Makassar']]
+    };
+    var owners = ['PT Menara Prima', 'PT Tower Jaya', 'PT Infra Nusantara', 'Telco Owned'];
+    var streets = ['Jl. Sudirman', 'Jl. Gatot Subroto', 'Jl. Diponegoro', 'Jl. Ahmad Yani', 'Jl. Pahlawan', 'Jl. Merdeka', 'Jl. Veteran', 'Jl. Raya Utama'];
+    db.sites = [];
+    Object.keys(siteData).forEach(function (pid) {
+        var p = byId(db.projects, pid);
+        siteData[pid].forEach(function (s) {
+            db.sites.push({ id: db.sites.length + 1, project_id: Number(pid), site_id: s[0], name: s[1], latitude: s[2].toFixed(4), longitude: s[3].toFixed(4),
+                address: pick(streets) + ' No. ' + rint(1, 220) + ', ' + s[4], region: p.region, city: s[4], tower_owner: pick(owners) });
+        });
+    });
+
+    db.templates = [
+        [1, 'Site Survey Form', 'survey'], [1, 'Tower Audit Checklist', 'audit'], [2, 'Tower Audit Checklist', 'audit'], [3, 'LOS Survey Form', 'los'],
+        [4, 'Site Acquisition Survey', 'survey'], [5, '5G Readiness Form', 'survey'], [5, 'Rooftop Audit Checklist', 'audit'], [6, 'Fiber Route Survey', 'fiber'], [7, 'Small Cell Survey', 'survey']
+    ].map(function (t, i) { return { id: i + 1, project_id: t[0], name: t[1], kind: t[2], json: TPL[t[2]], created_at: ts, updated_at: ts }; });
+
+    function sampleValues(t, site, pic, kind, partial) {
+        var all = {
+            site_name: site.name, site_code: site.site_id, survey_date: t.finished_at || today(), gps: site.latitude + ', ' + site.longitude,
+            site_type: pick(['Greenfield', 'Greenfield', 'Rooftop', 'Camouflage']), power_source: pick(['PLN 3 Phase', 'PLN 1 Phase', 'Genset', 'Solar Hybrid']),
+            tower_height: String(rint(24, 72)), tower_type: pick(['SST 4 Leg', 'SST 3 Leg', 'Monopole', 'Pole Rooftop']), antenna_count: String(rint(3, 12)),
+            photo_tower: 'assets/img/sample-tower.svg', photo_layout: 'assets/img/sample-layout.svg',
+            notes: pick(['Site accessible 24h, power available from PLN. No obstacle found.', 'Access road narrow, need small vehicle. Landlord cooperative.',
+                'Grounding resistance 2.1 Ohm (OK). Minor rust on leg B.', 'Rooftop structure strong enough for additional antenna load.']),
+            auditor: pic.name, audit_date: t.finished_at || today(), grounding: pick(['Good', 'Good', 'Need Repair']), corrosion: String(rint(0, 25)),
+            bolt_condition: pick(['Tight', 'Tight', 'Loose (2 pcs)']), far_end: pick(db.sites).name, azimuth: rint(0, 359) + '°', distance_km: (R() * 8 + 1).toFixed(2),
+            antenna_height: String(rint(20, 60)), los_result: pick(['Clear', 'Clear', 'Partially Blocked']), photo_los: 'assets/img/sample-los.svg',
+            route_length: (R() * 12 + 0.5).toFixed(2), duct: pick(['Available', 'Partial', 'Not Available']), permit: pick(['Approved', 'On Process']),
+            handhole: String(rint(4, 30)), photo_route: 'assets/img/sample-route.svg'
+        };
+        var v = {}, section = 0;
+        TPL[kind].forEach(function (f) {
+            if (f.type === 'header') { section++; return; }
+            if (!partial || section <= 1) v[f.name] = all[f.name];
+        });
+        return v;
+    }
+
+    db.tasks = [];
+    db.projects.forEach(function (p) {
+        var res = p.resource.map(function (id) { return byId(db.users, id); });
+        var riggers = res.filter(function (u) { return u.role_id === 2; });
+        var rnpos = res.filter(function (u) { return u.role_id === 6; });
+        var tpls = db.templates.filter(function (t) { return t.project_id === p.id; });
+        var pS = dayDiff(today(), p.start_date), pE = dayDiff(today(), p.end_date);
+        var ended = p.status === 'Done' || p.status === 'Complete';
+        db.sites.filter(function (s) { return s.project_id === p.id; }).forEach(function (site, si) {
+            tpls.forEach(function (tpl, ti) {
+                if (ti > 0 && R() < 0.4) return;
+                var pic = riggers[(si + ti) % riggers.length], start, dur = rint(5, 14), status, fin = null;
+                if (ended) {
+                    start = rint(pS, pE - 16); status = R() < 0.85 ? 'Complete' : 'Done'; fin = clamp(start + dur - rint(0, 3), start, pE);
+                } else {
+                    start = rint(Math.max(pS, -34), 2);
+                    var end = start + dur, r = R();
+                    if (end < 0) {
+                        status = r < 0.5 ? 'Complete' : r < 0.74 ? 'Done' : r < 0.9 ? 'Open' : 'Re-Open';
+                        if (isFinished({ status: status })) fin = clamp(end - rint(0, 2), Math.max(start, -13), 0);
+                    } else if (start > 0) {
+                        status = 'Open';
+                    } else {
+                        status = r < 0.42 ? 'On Progress' : r < 0.75 ? 'Open' : r < 0.85 ? 'Re-Open' : 'Done';
+                        if (status === 'Done') fin = rint(Math.max(start, -6), 0);
+                    }
+                }
+                var t = { id: db.tasks.length + 1, project_id: p.id, name: TPL_PREFIX[tpl.kind] + ' ' + site.name, site_id: site.id, project_template_id: tpl.id,
+                    rnpo_id: rnpos[(si + ti) % rnpos.length].id, start_date: addDays(start), end_date: addDays(start + dur), pic_id: pic.id, status: status,
+                    finished_at: fin !== null ? addDays(fin) : null, values: {} };
+                if (t.finished_at) t.submitted_at = t.finished_at + ' ' + pad(rint(8, 17)) + ':' + pad(rint(0, 59));
+                if (t.finished_at) t.values = sampleValues(t, site, pic, tpl.kind, false);
+                else if (status === 'On Progress') t.values = sampleValues(t, site, pic, tpl.kind, true);
+                db.tasks.push(t);
+            });
+        });
+    });
+
+    var fin = db.tasks.filter(function (t) { return t.finished_at; }).sort(function (a, b) { return a.submitted_at < b.submitted_at ? 1 : -1; });
+    var late = db.tasks.filter(isLate);
+    var n = [];
+    fin.slice(0, 4).forEach(function (t, i) {
+        n.push({ type: 'complete', title: 'Report submitted', message: '"' + t.name + '" was ' + (isComplete(t) ? 'completed' : 'marked done') + ' by ' + byId(db.users, t.pic_id).name, time: stamp(-[8, 52, 140, 1500][i]), link: '/report/preview/' + t.id });
+    });
+    late.slice(0, 2).forEach(function (t, i) {
+        n.push({ type: 'late', title: 'Task overdue', message: '"' + t.name + '" is late ' + dayDiff(t.end_date, today()) + ' days (PIC ' + byId(db.users, t.pic_id).name + ')', time: stamp(-[25, 1600][i]), link: '/task/listtask/' + t.project_id });
+    });
+    n.push({ type: 'approval', title: 'Approval required', message: 'Project "5G Readiness Survey Bali" is waiting for director approval', time: stamp(-300), link: '/project/info/5' });
+    n.push({ type: 'import', title: 'Site list imported', message: '4 sites imported to "Fiber Backhaul Survey Sumatera Utara"', time: stamp(-2900), link: '/project/info/6' });
+    n.push({ type: 'user', title: 'New user registered', message: 'Galih Permana joined as Rigger (Mobile Application)', time: stamp(-4400), link: '/user' });
+    n.push({ type: 'template', title: 'Template updated', message: '"LOS Survey Form" template was updated by Budi Santoso', time: stamp(-7300), link: '/project/template/4' });
+    n.sort(function (a, b) { return a.time < b.time ? 1 : -1; });
+    db.notifications = n.map(function (x, i) { x.id = i + 1; x.read = i >= 3; return x; });
+    return db;
+}
+
+var DB = (function () {
+    try { var s = localStorage.getItem(STORE_KEY); if (s) return JSON.parse(s); } catch (e) {}
+    return seed();
+})();
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(DB)); } catch (e) {} }
+save();
+
+function user(id) { return byId(DB.users, id) || { name: '', role_id: null }; }
+function role(id) { return byId(DB.roles, id) || { name: '' }; }
+function project(id) { return byId(DB.projects, id); }
+function usersByRole(rid) { return DB.users.filter(function (u) { return u.role_id === rid; }); }
+function projectResources(pid) { var p = project(pid); return p ? p.resource.map(user).filter(function (u) { return u.id; }) : []; }
+function currentUser() { var id = localStorage.getItem(SESSION_KEY); return id ? byId(DB.users, id) : null; }
+function tasksOf(pid) { return DB.tasks.filter(function (t) { return t.project_id === pid; }); }
+function sitesOf(pid) { return DB.sites.filter(function (s) { return s.project_id === pid; }); }
+function templatesOf(pid) { return DB.templates.filter(function (t) { return t.project_id === pid; }); }
+function projectStats(p) {
+    var t = tasksOf(p.id), done = t.filter(isFinished).length;
+    return { sites: sitesOf(p.id).length, tasks: t.length, done: done, late: t.filter(isLate).length, ongoing: t.filter(isOnGoing).length,
+        progress: pct(done, t.length), daysLeft: dayDiff(today(), p.end_date) };
+}
+function templateInfo(tpl) {
+    var f = (tpl && tpl.json) || [];
+    return { sections: f.filter(function (x) { return x.type === 'header'; }).length, fields: f.filter(function (x) { return x.type !== 'header'; }).length,
+        photos: f.filter(function (x) { return x.type === 'file'; }).length };
+}
+function filledCount(t) {
+    var tpl = byId(DB.templates, t.project_template_id), fields = ((tpl && tpl.json) || []).filter(function (x) { return x.type !== 'header'; });
+    var filled = fields.filter(function (f) { return t.values && t.values[f.name]; }).length;
+    return { filled: filled, total: fields.length };
+}
+
+/* =====================================================================
+ *  "Laravel Collective" style form helpers
+ * ===================================================================== */
+function fLabel(name, text, cls) { return '<label for="' + name + '" class="' + (cls || '') + '">' + text + '</label>'; }
+function fInput(type, name, value, cls, attrs) {
+    return '<input class="' + cls + '" ' + (attrs || '') + ' name="' + name + '" type="' + type + '"' +
+        (value !== null && value !== undefined ? ' value="' + esc(value) + '"' : '') + ' id="' + name + '">';
+}
+function fSelect(name, options, selected, cls, attrs) {
+    var h = '<select class="' + cls + '" ' + (attrs || '') + ' id="' + name + '" name="' + name + '">';
+    options.forEach(function (o) {
+        h += '<option value="' + esc(o[0]) + '"' + (String(o[0]) === String(selected == null ? '' : selected) ? ' selected="selected"' : '') + '>' + esc(o[1]) + '</option>';
+    });
+    return h + '</select>';
+}
+function makeOptions(list) { return [['', '-- Select --']].concat(list.map(function (x) { return [x.id, x.name]; })); }
+function statusOptions() { return [['', '-- Select --'], ['Open', 'Open'], ['Re-Open', 'Re-Open'], ['Done', 'Done'], ['Complete', 'Complete'], ['Approval', 'Approval']]; }
+function field(name, label, inputHtml) { return '<div class="form-group">' + fLabel(name, label, 'control-label') + inputHtml + '</div>'; }
+
+/* =====================================================================
+ *  Layout
+ * ===================================================================== */
+function sidebar() {
+    var late = DB.tasks.filter(isLate).length;
+    function item(href, id, title, icon, extraCls, badgeTxt) {
+        return '<a href="' + href + '" data-toggle="tooltip" data-placement="right" title="' + title + '" id="side-' + id + '" class="menu-side list-group-item list-group-item-action flex-column align-items-start pr-3 ' + extraCls + '">' +
+            '<div class="d-flex w-100 justify-content-start align-items-center"><span class="mdi ' + icon + ' mx-4" style="font-size:24px"></span><span class="menu-collapsed">' + title + '</span>' +
+            (badgeTxt ? '<span class="side-badge">' + badgeTxt + '</span>' : '') + '</div></a>';
+    }
+    return '<img src="assets/img/ss-white-logo.webp" class="ss-logo m-4" width="auto" height="70px" value="SmartSurvey">' +
+        '<li class="sidebar-separator-title text-muted d-flex align-items-center menu-collapsed pr-0 p-4"><label class="mb-0">MAIN MENU</label></li>' +
+        '<ul class="list-group sticky-top sticky-offset">' +
+        item('#/', 'dashboard', 'Dashboard', 'mdi-television-guide', 'my-2') +
+        item('#/project', 'project', 'Project', 'mdi-google-analytics', 'my-2', DB.projects.length) +
+        item('#/task', 'task', 'Task', 'mdi-library-books', 'my-2', late ? late + ' late' : '') +
+        item('#/report', 'report', 'Report', 'mdi-buffer', 'my-2') +
+        '<hr class="border border-light" width="185px">' +
+        item('#/user', 'configuration', 'Configurations', 'mdi-settings', '') +
+        '</ul>' +
+        '<div class="side-footer"><b><span class="mdi mdi-cloud-check"></span> Smart Survey v2.0</b>Data synced &middot; ' + DB.sites.length + ' sites monitored</div>';
+}
+
+var NOTIF_ICON = { complete: ['mdi-check-circle', 'ic-green'], late: ['mdi-alert-circle', 'ic-red'], approval: ['mdi-gavel', 'ic-purple'],
+    import: ['mdi-file-upload', 'ic-blue'], user: ['mdi-account-plus', 'ic-orange'], template: ['mdi-file-document', 'ic-cyan'] };
+function notifIcon(type) { var i = NOTIF_ICON[type] || ['mdi-bell', 'ic-blue']; return '<span class="notif-ic ' + i[1] + '"><span class="mdi ' + i[0] + '"></span></span>'; }
+
+function clockText() {
+    var d = new Date(), days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return days[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear() + ' · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+}
+
+function navbar(navTitle, navTrail) {
+    var me = currentUser() || {};
+    var unread = DB.notifications.filter(function (n) { return !n.read; }).length;
+    var items = DB.notifications.slice(0, 5).map(function (n) {
+        return '<a class="notif-row notif-link' + (n.read ? '' : ' unread') + '" href="#" data-id="' + n.id + '">' + notifIcon(n.type) +
+            '<div class="min-w-0"><span class="notif-title">' + esc(n.title) + '</span><div>' + esc(n.message) + '</div><small>' + relTime(n.time) + '</small></div></a>';
+    }).join('') || emptyState('No notifications', 'mdi-bell-off');
+    return '<nav class="navbar navbar-expand-lg navbar-light bg-white ss-navbar">' +
+        '<label class="navbar-brand font-weight-bold blue-text mb-0" href="#">' + (navTitle || 'Smart Survey') +
+        '<span class="nav-trail">Smart Survey &rsaquo; ' + (navTrail || navTitle || 'Workspace') + '</span></label>' +
+        '<ul class="navbar-nav mr-auto"></ul>' +
+        '<span class="nav-chip"><span class="dot-live"></span>System Online</span>' +
+        '<span class="nav-chip"><span class="mdi mdi-clock-outline"></span><span id="navClock">' + clockText() + '</span></span>' +
+        '<span class="navbar-text mb-0"><ul class="nav navbar-nav align-items-center">' +
+        '<li class="dropdown"><a class="nav-icon-btn" id="notifBar" data-toggle="dropdown" href="#"><span class="mdi ' + (unread ? 'mdi-bell-ring' : 'mdi-bell') + '"></span>' +
+        (unread ? '<span class="badge badge-pill badge-danger">' + unread + '</span>' : '') + '</a>' +
+        '<div class="dropdown-menu dropdown-menu-right dropdown-shadow notif-menu"><div class="head">Notifications' + (unread ? '<span class="badge-status st-open">' + unread + ' new</span>' : '') + '</div>' +
+        '<div class="scroll-y" style="max-height:340px">' + items + '</div><a class="foot" href="#/notifications">See All Notifications</a></div></li>' +
+        '<li class="dropdown"><a class="nav-user" data-toggle="dropdown" href="#">' + avatar(me.name || '?') +
+        '<span class="d-none d-md-block"><span class="name d-block">' + esc(me.name) + '</span><span class="role d-block">' + esc(role(me.role_id).name) + '</span></span>' +
+        '<span class="mdi mdi-chevron-down ml-1 text-muted-2"></span></a>' +
+        '<div class="dropdown-menu dropdown-menu-right dropdown-shadow user-menu"><div class="head"><b>' + esc(me.name) + '</b><small>' + esc(me.email) + '</small></div>' +
+        '<a class="dropdown-item mdi mdi-account" href="#/profile">&nbsp;Profile</a>' +
+        '<a class="dropdown-item mdi mdi-bell-outline" href="#/notifications">&nbsp;Notifications</a>' +
+        '<a class="dropdown-item mdi mdi-settings" href="#/user">&nbsp;Configurations</a>' +
+        '<a class="dropdown-item mdi mdi-logout border-top text-danger logout-link" href="#">&nbsp;Sign Out</a></div></li>' +
+        '</ul></span></nav>';
+}
+
+function subNavbar(breadcrumb, back) {
+    var li = breadcrumb.map(function (b) {
+        return b[1] == null
+            ? '<li class="breadcrumb-item breadcrumb-link active" aria-current="page">' + esc(b[0]) + '</li>'
+            : '<li class="breadcrumb-item breadcrumb-link"><a href="' + b[1] + '">' + esc(b[0]) + '</a></li>';
+    }).join('');
+    return '<nav class="card card-body bg-subnavbar" aria-label="breadcrumb"><div class="row">' +
+        '<ul class="breadcrumb py-0 mb-0 bg-transparent col">' + li + '</ul>' +
+        '<span class="breadcrumb-link"><a class="text-right col mdi mdi-arrow-left" href="' + back.href + '" style="font-size:16px; position:relative; top:3px;">&nbsp;Back to ' + esc(back.text) + '</a></span>' +
+        '</div></nav>';
+}
+
+/* =====================================================================
+ *  Renderer & Router
+ * ===================================================================== */
+var loaderTimer;
+function showLoader(ms) {
+    clearTimeout(loaderTimer);
+    $('.freak').addClass('modal-loading');
+    loaderTimer = setTimeout(function () { $('.freak').removeClass('modal-loading'); }, ms);
+}
+setInterval(function () { var c = document.getElementById('navClock'); if (c) c.textContent = clockText(); }, 1000);
+
+function render(p) {
+    $('body').toggleClass('bg-login', p.layout === 'none');
+    var html;
+    if (p.layout === 'none') {
+        html = p.html;
+    } else if (p.layout === 'top') {
+        html = '<div id="small-content"><div class="container px-0">' +
+            '<div class="row py-3">' + subNavbar(p.breadcrumb, p.back) + '</div>' +
+            '<div class="row py-3"><div class="col-12">' + p.html + '</div></div></div></div>';
+    } else {
+        html = '<div id="big-content"><div id="sidebar-container" class="d-md-block">' + sidebar() + '</div>' +
+            '<div class="main-content animated fadeIn delay-1" id="row-body"><div class="col py-2">' + navbar(p.navTitle, p.navTrail) +
+            '<div class="row my-3"><div class="col">' + p.html + '</div></div></div></div></div>';
+    }
+    $('#app').html(html);
+    $('.menu-side').removeClass('active');
+    if (p.side) $('#side-' + p.side).addClass('active');
+    if (p.layout === 'none') { $('.freak').removeClass('modal-loading'); } else { showLoader(600); }
+    if (p.init) p.init();
+}
+
+var routes = [
+    [/^\/login$/, pageLogin, true],
+    [/^\/user\/changePassword$/, pageChangePassword, true],
+    [/^\/(dashboard)?$/, pageDashboard],
+    [/^\/project$/, pageProjectIndex],
+    [/^\/project\/create$/, pageProjectCreate],
+    [/^\/project\/info\/(\d+)$/, pageProjectInfo],
+    [/^\/project\/(\d+)\/addSite$/, pageSiteForm],
+    [/^\/project\/(\d+)\/editSite\/(\d+)$/, pageSiteForm],
+    [/^\/project\/(\d+)\/create\/template$/, pageTemplateCreate],
+    [/^\/project\/template\/(\d+)$/, pageTemplateEdit],
+    [/^\/task$/, pageTaskIndex],
+    [/^\/task\/listtask\/(\d+)$/, pageTaskList],
+    [/^\/task\/create\/(\d+)$/, pageTaskCreate],
+    [/^\/report$/, pageReportIndex],
+    [/^\/report\/listreport\/(\d+)$/, pageReportList],
+    [/^\/report\/preview\/(\d+)$/, pageReportPreview],
+    [/^\/user$/, pageUser],
+    [/^\/profile$/, pageProfile],
+    [/^\/notifications$/, pageNotif]
+];
+
+function go(path) { if (location.hash === '#' + path) router(); else location.hash = '#' + path; }
+function reload() { router(); }
+
+function router() {
+    var hash = location.hash;
+    if (hash && hash.indexOf('#/') !== 0) return;
+    var path = hash.replace(/^#/, '') || '/';
+    $('.modal-backdrop').remove();
+    $('body').removeClass('modal-open').css('padding-right', '');
+    var me = currentUser();
+    for (var i = 0; i < routes.length; i++) {
+        var m = path.match(routes[i][0]);
+        if (m) {
+            var guest = routes[i][2];
+            if (!guest && !me) return go('/login');
+            if (path === '/login' && me) return go('/dashboard');
+            var args = m.slice(1).filter(function (x) { return x !== undefined && x !== 'dashboard'; }).map(Number);
+            var page = routes[i][1].apply(null, args);
+            if (page) render(page);
+            window.scrollTo(0, 0);
+            return;
+        }
+    }
+    go(me ? '/dashboard' : '/login');
+}
+
+function dataTable(sel, filterSel, opts) {
+    var t = $(sel).DataTable($.extend({ iDisplayLength: 10, dom: '<"top">rt<"bottom"ip><"clear">', bLengthChange: false }, opts || {}));
+    if (filterSel) $(filterSel).on('keyup search', function () { t.search($(this).val()).draw(); });
+    return t;
+}
+function swalSuccess(title) { swal({ title: title, type: 'success', showConfirmButton: false, timer: 1300 }); }
+function confirmDelete(title, cb) {
+    swal({ title: title, text: 'This action cannot be undone.', type: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes, delete it!' })
+        .then(function (result) { if (result.value) cb(); });
+}
+function errorSwal(list) { return swal({ title: 'Complete Data', type: 'error', html: createErrorList(list), confirmButtonText: 'Ok' }); }
+function chartBase() { return { credits: { enabled: false }, title: { text: null }, subtitle: { text: null }, navigation: { buttonOptions: { enabled: false } }, chart: { style: { fontFamily: 'Poppins' } } }; }
+
+/* Site import (CSV parsed, other files add demo rows) */
+function importSites(file, projectId, done) {
+    function upsert(row) {
+        if (!row.site_id) return;
+        var exist = DB.sites.filter(function (s) { return s.site_id === row.site_id; })[0];
+        var data = { project_id: projectId, site_id: row.site_id, name: row.site_name || '', longitude: String(row.longitude || '').replace(',', '.'),
+            latitude: String(row.latitude || '').replace(',', '.'), address: row.address || '', region: row.region || '', city: row.city || '', tower_owner: row.tower_owner || '' };
+        if (exist) $.extend(exist, data); else { data.id = nextId(DB.sites); DB.sites.push(data); }
+    }
+    var ext = file.name.split('.').pop().toLowerCase();
+    if (ext === 'csv' || ext === 'txt') {
+        var r = new FileReader();
+        r.onload = function () {
+            var lines = String(r.result).split(/\r?\n/).filter(function (l) { return $.trim(l); });
+            var sep = lines[0].indexOf(';') > -1 ? ';' : ',';
+            var head = lines[0].split(sep).map(function (h) { return $.trim(h).toLowerCase().replace(/\s+/g, '_'); });
+            lines.slice(1).forEach(function (l) {
+                var cols = l.split(sep), row = {};
+                head.forEach(function (h, i) { row[h] = $.trim(cols[i] || ''); });
+                upsert(row);
+            });
+            save(); done(lines.length - 1);
+        };
+        r.readAsText(file);
+    } else {
+        var n = Date.now() % 1000;
+        [['Demo Site A', 'Jabodetabek', 'Jakarta Barat'], ['Demo Site B', 'Jabodetabek', 'Jakarta Timur'], ['Demo Site C', 'Jawa Barat', 'Bekasi']].forEach(function (d, i) {
+            upsert({ site_id: 'IMP' + n + i, site_name: d[0], longitude: (106.8 + i / 10).toFixed(4), latitude: (-6.2 - i / 10).toFixed(4), address: 'Imported from ' + file.name, region: d[1], city: d[2], tower_owner: 'PT Menara Prima' });
+        });
+        save(); done(3);
+    }
+}
+
+/* =====================================================================
+ *  PAGE: Login
+ * ===================================================================== */
+function pageLogin() {
+    var html =
+        '<div class="container-fluid">' +
+        '<span class="logos"><img src="assets/img/ss-color-logo.webp" class="m-4" width="auto" height="80px"/></span>' +
+        '<span class="text-center"><h1 class="font-weight-bold blue-text"> Sign In </h1><p class="text-muted smaller">You have an account, if you are part of us.</p><hr class="hr-title"></span>' +
+        '<div class="row justify-content-md-center"><div class="card card-body bg-whites col-md-3 col-xs-6 m-0">' +
+        '<form class="form-horizontal" id="loginForm" method="POST">' +
+        '<span class="help-block" id="loginError" style="display:none"><strong class="text-danger small" style="position:relative; top:-10px"></strong></span>' +
+        '<div class="form-group mb-0"><label class="small font-weight-bold blue-text">Email</label>' +
+        '<input id="email" type="email" name="email" class="form-control line-form text-muted" value="admin@ss.com" placeholder="Email" required autofocus></div>' +
+        '<div class="form-group my-4"><label class="small font-weight-bold blue-text">Password</label>' +
+        '<input type="password" class="form-control input-line text-muted line-form" name="password" id="password-field" value="123456" placeholder="Password" required>' +
+        '<span toggle="#password-field" class="mdi mdi-eye field-icon toggle-password"></span></div>' +
+        '<button type="submit" class="btn bg-blues font-weight-bold btn-block text-white" style="letter-spacing: 1px">LOGIN</button>' +
+        '<div class="login-hint"><span class="mdi mdi-information-outline"></span> Demo account prefilled &middot; <b>admin@ss.com</b> / <b>123456</b></div>' +
+        '</form></div></div>' +
+        '<footer class="footer text-center smaller"><p><button class="btn btn-link px-0" data-toggle="modal" data-target="#exampleModalCenter">Forgot Password</button> | <span class="text-muted">Powered by Immobi Solusi Prima</span></p></footer>' +
+        '</div>' +
+        '<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-hidden="true">' +
+        '<div class="modal-dialog modal-dialog-centered" role="document"><div class="modal-content">' +
+        '<div class="modal-header"><h5 class="modal-title">Forgot Password</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>' +
+        '<form id="resetPasswordForm" method="POST"><div class="modal-body"><div class="form-group">' +
+        '<label for="exampleInputEmail1" class="small">Email</label>' +
+        '<input type="email" class="form-control form-control-sm" id="exampleInputEmail1" name="email" placeholder="Enter email" value="admin@ss.com" required>' +
+        '<i class="form-text text-muted small">*Send Email for confirmations request new password.</i>' +
+        '</div></div><div class="modal-footer"><input type="submit" name="submit" class="btn btn-sm btn-primary" value="Submit"></div></form>' +
+        '</div></div></div>';
+
+    return {
+        layout: 'none', html: html, init: function () {
+            $('#loginForm').on('submit', function (e) {
+                e.preventDefault();
+                var email = $.trim($('#email').val()).toLowerCase(), pass = $('#password-field').val();
+                var u = DB.users.filter(function (x) { return x.email.toLowerCase() === email; })[0];
+                var msg = null;
+                if (!u || u.password !== pass) msg = 'These credentials do not match our records.';
+                else if (String(u.status) !== '1') msg = 'Your account is deactive.';
+                if (msg) { $('#loginError').show().find('strong').text(msg); return; }
+                u.last_login = stamp(); save();
+                localStorage.setItem(SESSION_KEY, u.id);
+                go('/dashboard');
+            });
+            $('#resetPasswordForm').on('submit', function (e) {
+                e.preventDefault();
+                var email = $.trim($('#exampleInputEmail1').val()).toLowerCase();
+                var u = DB.users.filter(function (x) { return x.email.toLowerCase() === email; })[0];
+                $('#exampleModalCenter').modal('hide');
+                if (!u) return swal('Email not found', '', 'warning');
+                sessionStorage.setItem('ss-reset-user', u.id);
+                swal({ title: 'Reset Password Requested', html: 'A reset link has been sent to <b>' + esc(u.email) + '</b>.<br><small class="text-muted">(Demo: click below to open the link)</small>', type: 'success', confirmButtonText: 'Open Reset Link' })
+                    .then(function (r) { if (r.value) go('/user/changePassword'); });
+            });
+        }
+    };
+}
+
+/* =====================================================================
+ *  PAGE: Change password
+ * ===================================================================== */
+function pageChangePassword() {
+    var html =
+        '<div class="container-fluid">' +
+        '<span class="logos"><img src="assets/img/ss-color-logo.webp" class="m-4" width="auto" height="80px"/></span>' +
+        '<span class="text-center"><h1 class="font-weight-bold blue-text"> Change Password </h1><p class="text-muted smaller">Use at least 6 characters for your new password.</p><hr class="hr-title"></span>' +
+        '<div class="row justify-content-md-center"><div class="card card-body bg-whites col-md-3 col-xs-6 m-0">' +
+        '<form id="resetPasswordForm" method="POST" class="form-horizontal">' +
+        '<div class="form-group my-4"><label class="small font-weight-bold blue-text">New Password</label>' +
+        '<input type="password" class="form-control input-line text-muted line-form" name="password1" id="new-password" placeholder="New Password" required>' +
+        '<span toggle="#new-password" class="mdi mdi-eye field-icon toggle-password"></span></div>' +
+        '<div class="form-group my-4"><label class="small font-weight-bold blue-text">Confirm Password</label>' +
+        '<input type="password" class="form-control input-line text-muted line-form" name="password2" id="confirm-password" placeholder="Confirmation Password" required>' +
+        '<span toggle="#confirm-password" class="mdi mdi-eye field-icon toggle-password"></span></div>' +
+        '<button type="submit" class="btn bg-blues font-weight-bold btn-block text-white" style="letter-spacing: 1px">Done</button>' +
+        '<a href="#/login" class="btn btn-link btn-block btn-sm">Back to Sign In</a>' +
+        '</form></div></div>' +
+        '<footer class="footer text-center smaller"><p><span class="text-muted">Powered by Immobi Solusi Prima</span></p></footer></div>';
+    return {
+        layout: 'none', html: html, init: function () {
+            $('#resetPasswordForm').on('submit', function (e) {
+                e.preventDefault();
+                var p1 = $('#new-password').val(), p2 = $('#confirm-password').val();
+                if (p1 !== p2) return swal('Your password is not match', '', 'warning');
+                if (p1.length < 6) return swal('New password at least 6 characters', '', 'warning');
+                var u = byId(DB.users, sessionStorage.getItem('ss-reset-user')) || currentUser();
+                if (u) { u.password = p1; u.updated_at = stamp(); save(); }
+                sessionStorage.removeItem('ss-reset-user');
+                localStorage.removeItem(SESSION_KEY);
+                swal({ title: 'Your password has been changed successfully!', type: 'success' }).then(function () { go('/login'); });
+            });
+        }
+    };
+}
+
+/* =====================================================================
+ *  PAGE: Dashboard
+ * ===================================================================== */
+var dashFilter = { project: 'Project', region: 'Nationwide', city: 'City', rigger: 'Rigger', progress: 'Task' };
+
+function pageDashboard() {
+    var f = dashFilter;
+    var riggers = usersByRole(2);
+    var proj = DB.projects.filter(function (p) { return p.name === f.project; })[0];
+    var sites = DB.sites.filter(function (s) {
+        return project(s.project_id) && (!proj || s.project_id === proj.id) && (f.region === 'Nationwide' || s.region === f.region) && (f.city === 'City' || s.city === f.city);
+    });
+    var siteIds = sites.map(function (s) { return s.id; });
+    var rig = riggers.filter(function (r) { return r.name === f.rigger; })[0];
+    var tasks = DB.tasks.filter(function (t) { return siteIds.indexOf(t.site_id) > -1 && (!rig || t.pic_id === rig.id) && project(t.project_id); });
+    var late = tasks.filter(isLate).sort(function (a, b) { return a.end_date < b.end_date ? -1 : 1; });
+    var ongoing = tasks.filter(isOnGoing).sort(function (a, b) { return a.end_date < b.end_date ? -1 : 1; });
+    var finished = tasks.filter(isFinished);
+    var thisWeek = finished.filter(function (t) { return t.finished_at && dayDiff(t.finished_at, today()) < 7; }).length;
+    var activeEng = uniq(ongoing.map(function (t) { return t.pic_id; })).length;
+    var regions = uniq(sites.map(function (s) { return s.region; })).length;
+    var filtered = f.project !== 'Project' || f.region !== 'Nationwide' || f.city !== 'City' || f.rigger !== 'Rigger';
+
+    var perf = {};
+    tasks.forEach(function (t) {
+        var p = perf[t.pic_id] || (perf[t.pic_id] = { user: user(t.pic_id), task_complete: 0, task_all: 0 });
+        p.task_all++; if (isComplete(t)) p.task_complete++;
+    });
+    var perfList = Object.keys(perf).map(function (k) { var p = perf[k]; p.rate = p.task_complete / p.task_all * 100; return p; });
+    var top = perfList.slice().sort(function (a, b) { return b.task_complete - a.task_complete || b.rate - a.rate; }).slice(0, 5);
+    var less = perfList.slice().sort(function (a, b) { return a.task_complete - b.task_complete || a.rate - b.rate; }).slice(0, 5);
+
+    function sel(key, first, values) {
+        return '<select class="form-control form-control-sm dash-filter" data-key="' + key + '"><option>' + first + '</option>' +
+            values.map(function (v) { return '<option' + (f[key] === v ? ' selected' : '') + '>' + esc(v) + '</option>'; }).join('') + '</select>';
+    }
+    function taskTable(list, empty) {
+        if (!list.length) return emptyState(empty, 'mdi-check-all');
+        return '<table class="table table-sm"><thead class="thead-light"><tr><th> No </th><th> Task Name </th><th> Engineer Name </th><th> Due </th><th> Status </th></tr></thead><tbody>' +
+            list.map(function (t, i) {
+                var s = byId(DB.sites, t.site_id) || {};
+                return '<tr><td>' + (i + 1) + '</td><td><a class="cell-title" href="#/task/listtask/' + t.project_id + '">' + esc(t.name) + '</a><span class="cell-sub">' + esc(s.site_id) + ' &middot; ' + esc(s.city) + '</span></td>' +
+                    '<td>' + userCell(user(t.pic_id), undefined, 'avatar-sm') + '</td><td>' + dueInfo(t) + '</td><td>' + badge(t.status) + '</td></tr>';
+            }).join('') + '</tbody></table>';
+    }
+    function perfTable(list) {
+        if (!list.length) return emptyState('No engineer data', 'mdi-account-off');
+        return '<table class="table table-sm perf-table"><thead><tr><th> No </th><th> Engineer Name </th><th> Task Complete </th><th style="width:38%"> Rate </th></tr></thead><tbody>' +
+            list.map(function (p, i) {
+                return '<tr><td>' + (i + 1) + '</td><td>' + userCell(p.user, p.task_all + ' tasks assigned', 'avatar-sm') + '</td><td><b>' + p.task_complete + '</b> / ' + p.task_all + '</td><td>' + progress(Math.floor(p.rate)) + '</td></tr>';
+            }).join('') + '</tbody></table>';
+    }
+    var projList = DB.projects.filter(function (p) { return !proj || p.id === proj.id; }).map(function (p) {
+        var st = projectStats(p);
+        return '<div class="list-row"><div class="min-w-0 flex-grow-1 mr-3"><a href="#/project/info/' + p.id + '" class="d-block text-truncate" style="color:#1f2d3d;font-weight:600;font-size:.8rem">' + esc(p.name) + '</a>' +
+            '<small class="text-muted-2">' + st.done + '/' + st.tasks + ' tasks &middot; ' + esc(p.region) + '</small>' + progress(st.progress) + '</div>' + badge(p.status) + '</div>';
+    }).join('');
+    var acts = finished.filter(function (t) { return t.submitted_at; }).sort(function (a, b) { return a.submitted_at < b.submitted_at ? 1 : -1; }).slice(0, 6).map(function (t) {
+        return '<li><span class="tl-dot" style="background:' + (STATUS_COLOR[t.status] || '#0B9CF0') + '"></span><b>' + esc(user(t.pic_id).name) + '</b> ' + (isComplete(t) ? 'completed' : 'submitted') +
+            ' <a href="#/report/preview/' + t.id + '">' + esc(t.name) + '</a><small>' + relDay(t.finished_at) + ' &middot; ' + t.submitted_at.substr(11) + ' &middot; ' + esc(project(t.project_id).name) + '</small></li>';
+    }).join('');
+
+    var html =
+        pageHead('Operations Overview', 'Real-time survey progress across ' + DB.projects.length + ' projects &middot; Data as of ' + niceDate(today()) + (filtered ? ' &middot; <span class="text-primary">Filter applied</span>' : ''),
+            '<a href="#/project/create" class="btn btn-primary btn-sm mdi mdi-plus-circle"> New Project</a><a href="#/report" class="btn btn-light btn-sm mdi mdi-buffer"> Reports</a>') +
+        '<div class="card mb-3"><div class="filter-bar"><label class="filter-title mdi mdi-filter-variant"> FILTERING BY</label>' +
+        sel('project', 'Project', DB.projects.map(function (p) { return p.name; })) +
+        sel('region', 'Nationwide', uniq(DB.sites.map(function (s) { return s.region; }))) +
+        sel('city', 'City', uniq(DB.sites.map(function (s) { return s.city; }))) +
+        sel('rigger', 'Rigger', riggers.map(function (r) { return r.name; })) +
+        '<button type="button" class="btn btn-primary btn-sm px-4 my-1" id="dashFilterBtn">Filter</button>' +
+        (filtered ? '<button type="button" class="btn btn-light btn-sm my-1 ml-2" id="dashResetBtn">Reset</button>' : '') + '</div></div>' +
+        kpiRow([
+            kpi('Total of Site', sites.length, 'mdi-radio-tower', 'blue', 'Across ' + regions + ' region' + (regions === 1 ? '' : 's')),
+            kpi('Total of Task', tasks.length, 'mdi-clipboard-text', 'cyan', '<span class="up">' + pct(finished.length, tasks.length) + '%</span> finished'),
+            kpi('Total Late Task', late.length, 'mdi-clipboard-alert', 'red', late.length ? '<span class="down">Needs attention</span>' : 'All on schedule'),
+            kpi('Total On Going', ongoing.length, 'mdi-clipboard-pulse', 'orange', '<span class="up">+' + thisWeek + '</span> finished this week'),
+            kpi('Total Engineer', rig ? 1 : riggers.length, 'mdi-file-account', 'purple', activeEng + ' active in field')
+        ], 'col-xl col-md-4 col-sm-6') +
+        '<div class="row ss-row">' +
+        '<div class="col-lg-5"><div class="card h-100">' + cardHead('Progress Project', 'Count by current status', '<select id="inputState" class="form-control form-control-sm"><option' + (f.progress === 'Task' ? ' selected' : '') + '>Task</option><option' + (f.progress === 'Site' ? ' selected' : '') + '>Site</option></select>', 'mdi-chart-bar') +
+        '<div class="card-body"><div id="column-progress" class="chart-box"></div></div></div></div>' +
+        '<div class="col-lg-7"><div class="card h-100">' + cardHead('Activity Trend', 'Reports finished per day &middot; last 14 days', '<span class="tag"><span class="mdi mdi-check-all"></span>' + thisWeek + ' this week</span>', 'mdi-chart-line') +
+        '<div class="card-body"><div id="line-trend" class="chart-box"></div></div></div></div>' +
+        '</div>' +
+        '<div class="row ss-row">' +
+        '<div class="col-lg-6"><div class="card table-card h-100">' + cardHead('Late Task', 'Unfinished tasks past their end date', '<span class="badge-status st-late">' + late.length + '</span>', 'mdi-alarm') +
+        '<div class="card-body scroll-y" style="height:300px">' + taskTable(late, 'No late task, great job!') + '</div></div></div>' +
+        '<div class="col-lg-6"><div class="card table-card h-100">' + cardHead('On Going Task', '*Based on today', '<span class="badge-status st-progress">' + ongoing.length + '</span>', 'mdi-progress-clock') +
+        '<div class="card-body scroll-y" style="height:300px">' + taskTable(ongoing, 'No task in progress today') + '</div></div></div>' +
+        '</div>' +
+        '<div class="row ss-row">' +
+        '<div class="col-lg-4"><div class="card h-100">' + cardHead('Project Progress', 'Finished tasks vs total', '<a href="#/project" class="small">View all</a>', 'mdi-google-analytics') +
+        '<div class="card-body py-1 scroll-y" style="height:320px">' + projList + '</div></div></div>' +
+        '<div class="col-lg-4"><div class="card table-card h-100">' + cardHead('Good Perfomance', 'Top engineers by completed task', '', 'mdi-trophy') + '<div class="card-body scroll-y" style="height:320px">' + perfTable(top) + '</div></div></div>' +
+        '<div class="col-lg-4"><div class="card table-card h-100">' + cardHead('Less Perfomance', 'Engineers needing support', '', 'mdi-account-alert') + '<div class="card-body scroll-y" style="height:320px">' + perfTable(less) + '</div></div></div>' +
+        '</div>' +
+        '<div class="row ss-row">' +
+        '<div class="col-lg-8"><div class="card h-100">' + cardHead('Site Geo Distribution', 'GPS position of every site (longitude / latitude) &middot; drag to zoom', '<span class="tag"><span class="mdi mdi-crosshairs-gps"></span>' + sites.length + ' sites</span>', 'mdi-map-marker-radius') +
+        '<div class="card-body"><div id="geo-chart" style="height:320px"></div></div></div></div>' +
+        '<div class="col-lg-4"><div class="card h-100">' + cardHead('Recent Activity', 'Latest submitted reports', '', 'mdi-history') +
+        '<div class="card-body scroll-y" style="height:352px">' + (acts ? '<ul class="timeline">' + acts + '</ul>' : emptyState('No activity yet', 'mdi-history')) + '</div></div></div>' +
+        '</div>';
+
+    return {
+        layout: 'side', side: 'dashboard', navTitle: 'Dashboard', navTrail: 'Operations Overview', html: html, init: function () {
+            $('#dashFilterBtn').on('click', function () { $('.dash-filter').each(function () { dashFilter[$(this).data('key')] = $(this).val(); }); reload(); });
+            $('#dashResetBtn').on('click', function () { dashFilter = { project: 'Project', region: 'Nationwide', city: 'City', rigger: 'Rigger', progress: dashFilter.progress }; reload(); });
+            $('#inputState').on('change', function () { dashFilter.progress = $(this).val(); renderProgress(); });
+
+            function renderProgress() {
+                var counts = {}, colors;
+                if (dashFilter.progress === 'Site') {
+                    sites.forEach(function (s) {
+                        var st = tasks.filter(function (t) { return t.site_id === s.id; });
+                        var k = !st.length ? 'Not Assigned' : (st.some(isFinished) ? 'Surveyed' : 'In Survey');
+                        counts[k] = (counts[k] || 0) + 1;
+                    });
+                    colors = { 'Surveyed': '#128c7e', 'In Survey': '#0B9CF0', 'Not Assigned': '#c0c8d2' };
+                } else {
+                    tasks.forEach(function (t) { counts[t.status] = (counts[t.status] || 0) + 1; });
+                    colors = STATUS_COLOR;
+                }
+                renderProgressProjectColumn({ series: Object.keys(counts).map(function (k) { return { name: k, data: [counts[k]], color: colors[k] }; }) });
+            }
+            renderProgress();
+
+            var cats = [], done = [], complete = [];
+            for (var i = -13; i <= 0; i++) {
+                var d = addDays(i);
+                cats.push(d.substr(8, 2) + ' ' + MONTHS[parseInt(d.substr(5, 2), 10) - 1]);
+                done.push(tasks.filter(function (t) { return t.finished_at === d && /^done/i.test(t.status); }).length);
+                complete.push(tasks.filter(function (t) { return t.finished_at === d && isComplete(t); }).length);
+            }
+            renderActivityTrendLine({ categories: cats, seriesDataDone: done, seriesDataComplete: complete });
+
+            var byRegion = {};
+            sites.forEach(function (s) {
+                (byRegion[s.region] = byRegion[s.region] || []).push({ x: parseFloat(s.longitude), y: parseFloat(s.latitude), name: s.site_id + ' · ' + s.name, city: s.city });
+            });
+            Highcharts.chart('geo-chart', $.extend(true, chartBase(), {
+                chart: { type: 'scatter', zoomType: 'xy', plotBackgroundColor: '#f7fbff' },
+                colors: ['#0B9CF0', '#128c7e', '#f0a04b', '#7b4fd6', '#f8766d', '#16b9d0', '#8cc63f'],
+                xAxis: { title: { text: 'Longitude', style: { fontSize: '11px' } }, gridLineWidth: 1, gridLineColor: '#e7edf3' },
+                yAxis: { title: { text: 'Latitude', style: { fontSize: '11px' } }, gridLineColor: '#e7edf3' },
+                legend: { itemStyle: { fontWeight: 500, fontSize: '11px' } },
+                tooltip: { headerFormat: '<b>{series.name}</b><br>', pointFormat: '{point.name}<br>{point.city}<br>Lat {point.y} · Lon {point.x}' },
+                plotOptions: { scatter: { marker: { radius: 6, symbol: 'circle', lineWidth: 2, lineColor: '#fff' } } },
+                series: Object.keys(byRegion).map(function (k) { return { name: k, data: byRegion[k] }; })
+            }));
+        }
+    };
+}
+
+function renderProgressProjectColumn(progressData) {
+    Highcharts.chart('column-progress', $.extend(true, chartBase(), {
+        chart: { type: 'column' },
+        xAxis: { labels: { enabled: false }, lineColor: '#e7edf3' },
+        yAxis: { min: 0, tickAmount: 5, allowDecimals: false, title: { enabled: false }, gridLineColor: '#eef2f6' },
+        legend: { layout: 'vertical', align: 'right', verticalAlign: 'middle', itemStyle: { fontWeight: 500, fontSize: '11px' } },
+        responsive: { rules: [{ condition: { maxWidth: 500 }, chartOptions: { legend: { align: 'center', verticalAlign: 'bottom', layout: 'horizontal' } } }] },
+        tooltip: { headerFormat: '', pointFormat: '<b>{series.name}</b>: {point.y}' },
+        plotOptions: { column: { dataLabels: { enabled: true, style: { fontFamily: 'poppins', fontWeight: 600 } }, pointPadding: 0.08, borderWidth: 0, borderRadius: 4 } },
+        colors: ['#fac364', '#5bbbe5', '#f8766d', '#b6d957', '#128c7e', '#fb6464'],
+        series: progressData.series
+    }));
+}
+
+function renderActivityTrendLine(activityData) {
+    Highcharts.chart('line-trend', $.extend(true, chartBase(), {
+        chart: { type: 'areaspline' },
+        colors: ['#8cc63f', '#0B9CF0'],
+        xAxis: { categories: activityData.categories, labels: { style: { fontSize: '10px' } }, lineColor: '#e7edf3' },
+        yAxis: { title: { text: null }, allowDecimals: false, gridLineColor: '#eef2f6' },
+        tooltip: { shared: true },
+        plotOptions: { areaspline: { fillOpacity: 0.12, marker: { radius: 3 }, dataLabels: { enabled: true, style: { fontFamily: 'poppins', fontSize: '10px' } } } },
+        legend: { layout: 'horizontal', align: 'right', verticalAlign: 'top', floating: true, borderWidth: 0, backgroundColor: '#FFFFFF', itemStyle: { fontWeight: 500, fontSize: '11px' } },
+        series: [{ name: 'Done', data: activityData.seriesDataDone }, { name: 'Complete', data: activityData.seriesDataComplete }]
+    }));
+}
+
+/* =====================================================================
+ *  Shared: project table (Project / Task / Report menus)
+ * ===================================================================== */
+function projectSummaryKpi() {
+    var stats = DB.projects.map(projectStats);
+    var active = DB.projects.filter(function (p) { return p.status === 'Open' || p.status === 'Re-Open' || p.status === 'Approval'; }).length;
+    return kpiRow([
+        kpi('Total Project', DB.projects.length, 'mdi-briefcase', 'blue', active + ' active'),
+        kpi('Total Site', DB.sites.length, 'mdi-radio-tower', 'cyan', uniq(DB.sites.map(function (s) { return s.region; })).length + ' regions'),
+        kpi('Total Task', DB.tasks.length, 'mdi-clipboard-text', 'purple', sum(stats.map(function (s) { return s.late; })) + ' late'),
+        kpi('Avg. Progress', pct(sum(stats.map(function (s) { return s.done; })), sum(stats.map(function (s) { return s.tasks; }))) + '%', 'mdi-chart-donut', 'green', 'Finished tasks overall')
+    ], 'col-lg-3 col-sm-6');
+}
+function projectTable(actionFn) {
+    return '<table class="table table-striped table-sm" id="dataTables"><thead><tr>' +
+        '<th scope="col">ID</th><th scope="col" style="min-width:220px">Project Name</th><th scope="col">Project Manager</th><th scope="col">Customer</th>' +
+        '<th scope="col">Sites</th><th scope="col">Tasks</th><th scope="col" style="width:130px">Progress</th><th scope="col">Status</th><th scope="col">Schedule</th><th scope="col">Action</th></tr></thead><tbody>' +
+        DB.projects.map(function (p) {
+            var st = projectStats(p);
+            var left = st.daysLeft < 0 ? '<span class="cell-sub">Ended ' + (-st.daysLeft) + ' days ago</span>' : '<span class="cell-sub">' + st.daysLeft + ' days left</span>';
+            return '<tr><td><span class="id-chip">PRJ-' + pad(p.id) + '</span></td>' +
+                '<td><a href="#/project/info/' + p.id + '" class="cell-title">' + esc(p.name) + '</a><span class="cell-sub">' + esc(p.scope) + ' &middot; ' + esc(p.region || '') + '</span></td>' +
+                '<td>' + userCell(user(p.pm_id), 'Project Manager', 'avatar-sm') + '</td><td>' + esc(user(p.customer_id).name) + '</td>' +
+                '<td>' + st.sites + '</td><td>' + st.tasks + (st.late ? '<span class="cell-sub text-danger">' + st.late + ' late</span>' : '') + '</td>' +
+                '<td data-order="' + st.progress + '">' + progress(st.progress) + '</td><td>' + badge(p.status) + '</td>' +
+                '<td data-order="' + p.start_date + '"><span class="cell-title" style="font-weight:500">' + DMY(p.start_date) + ' &rarr; ' + DMY(p.end_date) + '</span>' + left + '</td>' +
+                '<td class="text-nowrap">' + actionFn(p) + '</td></tr>';
+        }).join('') + '</tbody></table>';
+}
+function deleteBtn(cls, id, title) { return '<button type="button" class="btn-icon btn-soft-danger mdi mdi-delete ' + cls + '" data-id="' + id + '" title="' + (title || 'Delete') + '"></button>'; }
+function deleteProject(id) {
+    id = Number(id);
+    DB.projects = DB.projects.filter(function (p) { return p.id !== id; });
+    DB.sites = DB.sites.filter(function (s) { return s.project_id !== id; });
+    DB.templates = DB.templates.filter(function (t) { return t.project_id !== id; });
+    DB.tasks = DB.tasks.filter(function (t) { return t.project_id !== id; });
+    save(); swalSuccess('Project has been deleted!'); reload();
+}
+function bindProjectDelete() {
+    $('#dataTables').on('click', '.deleteProject', function (e) {
+        e.preventDefault(); var id = $(this).data('id');
+        confirmDelete('Are you sure to delete this project?', function () { deleteProject(id); });
+    });
+}
+
+/* =====================================================================
+ *  PAGE: Project index
+ * ===================================================================== */
+function pageProjectIndex() {
+    var html = pageHead('List Project', 'Manage survey projects, schedule, customer and assigned resources',
+            searchBox('project-filter', 'Search project...') + '<a href="#/project/create" class="btn btn-primary btn-sm mdi mdi-plus-circle"> Add New Project</a>') +
+        projectSummaryKpi() +
+        '<div class="card table-card">' + cardHead('All Projects', 'Click a project name to see detail, sites and templates', '', 'mdi-format-list-bulleted') +
+        '<div class="card-body table-responsive">' +
+        projectTable(function (p) {
+            return '<a class="btn btn-soft-primary btn-sm mdi mdi-information-outline" href="#/project/info/' + p.id + '">&nbsp;Info</a> ' + deleteBtn('deleteProject', p.id, 'Delete project');
+        }) + '</div></div>';
+    return { layout: 'side', side: 'project', navTitle: 'Project', navTrail: 'List Project', html: html, init: function () { dataTable('#dataTables', '#project-filter', { columnDefs: [{ orderable: false, targets: -1 }] }); bindProjectDelete(); } };
+}
+
+/* =====================================================================
+ *  PAGE: Project create
+ * ===================================================================== */
+function resourceRows(list, name, checkedIds) {
+    return list.map(function (u) {
+        var chk = checkedIds && checkedIds.indexOf(u.id) > -1 ? ' checked="checked"' : '';
+        var load = DB.tasks.filter(function (t) { return t.pic_id === u.id && !isFinished(t); }).length;
+        return '<tr><td><input name="' + name + '" type="checkbox" class="role-check" value="' + u.id + '"' + chk + '></td><td>' + userCell(u, esc(u.email), 'avatar-sm') + '</td>' +
+            '<td>' + esc(u.role_id === 6 ? 'RNPO' : role(u.role_id).name) + '</td><td><span class="tag">' + load + ' open task' + (load === 1 ? '' : 's') + '</span></td></tr>';
+    }).join('');
+}
+function bindSearchResource(tableSel) {
+    tableSel = tableSel || '#table-resource';
+    $('#searchResource').on('keyup', function () {
+        var value = $(this).val().toLowerCase();
+        $(tableSel + ' tbody tr').filter(function () { $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1); });
+    });
+    function count() { $('#resourceCount').text($(tableSel + ' tbody :checkbox:checked').length + ' selected'); }
+    $(tableSel + ' thead :checkbox').on('change', function () { $(tableSel + ' tbody tr:visible :checkbox').prop('checked', this.checked); count(); });
+    $(tableSel).on('change', 'tbody :checkbox', count);
+    count();
+}
+function bindFileLabel(sel) {
+    $(sel).on('change', function () { if (this.files[0]) $(this).next('.custom-file-label').html('&nbsp;' + esc(this.files[0].name)); });
+}
+
+function pageProjectCreate() {
+    var c = 'form-control form-control-sm', l = 'small control-label';
+    var build =
+        '<div class="card h-100">' + cardHead('Build *', 'Project information & schedule', '', 'mdi-briefcase-edit') + '<div class="card-body">' +
+        '<div class="section-label">General</div>' +
+        '<div class="row"><div class="col"><div class="form-group">' + fLabel('name', 'Project Name*', l) + fInput('text', 'name', null, c, 'required placeholder="e.g. Site Survey Jabodetabek 2027"') + '</div></div></div>' +
+        '<div class="row"><div class="col"><div class="form-group">' + fLabel('pm_id', 'Project Manager*', l) + fSelect('pm_id', makeOptions(usersByRole(1)), null, c, 'required') + '</div></div>' +
+        '<div class="col"><div class="form-group">' + fLabel('customer_id', 'Customer*', l) + fSelect('customer_id', makeOptions(usersByRole(3)), null, c, 'required') + '</div></div></div>' +
+        '<div class="row"><div class="col"><div class="form-group">' + fLabel('scope', 'Scope*', l) + fInput('text', 'scope', null, c, 'required placeholder="e.g. Site Survey 5G"') + '</div></div>' +
+        '<div class="col"><div class="form-group">' + fLabel('status', 'Status*', l) + fSelect('status', statusOptions(), 'Open', c) + '</div></div></div>' +
+        '<div class="section-label mt-2">Schedule</div>' +
+        '<div class="row"><div class="col"><div class="form-group">' + fLabel('start_date', 'Start Date*', l) + fInput('date', 'start_date', today(), c, 'required') + '</div></div>' +
+        '<div class="col"><div class="form-group">' + fLabel('end_date', 'End Date*', l) + fInput('date', 'end_date', addDays(90), c, 'required') + '</div></div></div>' +
+        '<div class="section-label mt-2">Site List</div>' +
+        '<div class="row"><div class="col"><label class="small">Import Site List <span class="text-muted-2">(.csv / .xlsx &middot; sample: assets/sample-site-import.csv)</span></label><div class="col-12 form-group">' +
+        '<input type="file" class="custom-file-input" id="site" accept=".csv,.xls,.xlsx">' +
+        '<label class="custom-file-label mdi mdi-file-document" for="site">&nbsp;Import File</label></div></div></div>' +
+        '</div></div>';
+    var resource =
+        '<div class="card h-100">' + cardHead('Resource *', 'Select minimal 1 Rigger and 1 RNPO', '<span class="tag" id="resourceCount">0 selected</span>', 'mdi-account-group') +
+        '<div class="card-body p-0"><div class="p-3 border-bottom">' + fInput('text', 'searchResource', null, 'form-control form-control-sm', 'placeholder="Search name or email..."') + '</div>' +
+        '<div class="scroll-y" style="height: 430px;"><table class="table table-sm" id="table-resource"><thead><tr><th style="width:36px"><input type="checkbox" class="role-check"></th><th>Name</th><th>Role</th><th>Workload</th></tr></thead>' +
+        '<tbody>' + resourceRows(usersByRole(2).filter(function (u) { return u.status; }), 'riggerCheck[]') + resourceRows(usersByRole(6), 'rnpoCheck[]') + '</tbody></table></div></div></div>';
+    var html = pageHead('Add New Project', 'Create a project, set the schedule and assign field resources') +
+        '<div class="row ss-row"><div class="col-lg-6"><form id="formProjectBuild" class="h-100" enctype="multipart/form-data" onsubmit="return false">' + build + '</form></div>' +
+        '<div class="col-lg-6"><form id="formProjectResource" class="h-100" onsubmit="return false">' + resource + '</form></div></div>' +
+        '<div class="action-bar pt-0"><a href="#/project" class="btn btn-light">Cancel</a><button class="btn-primary btn mdi mdi-check" id="projectNext" type="button"> Done</button></div>';
+
+    return {
+        layout: 'top', navTitle: 'Project', breadcrumb: [['Project', '#/project'], ['Add New Project', null]], back: { text: 'Project', href: '#/project' },
+        html: html, init: function () {
+            bindSearchResource(); bindFileLabel('#site');
+            $('#projectNext').on('click', function () {
+                var errorMessage = [];
+                var okInput = $('#formProjectBuild input').filter(function () { return this.id !== 'site' && $.trim($(this).val()).length === 0; }).length === 0;
+                var okSelect = $('#formProjectBuild select').filter(function () { return $.trim($(this).val()).length === 0; }).length === 0;
+                var riggers = $('input[name="riggerCheck[]"]:checked').map(function () { return Number(this.value); }).get();
+                var rnpos = $('input[name="rnpoCheck[]"]:checked').map(function () { return Number(this.value); }).get();
+                if (!okInput || !okSelect) errorMessage.push('Complete build form');
+                if (riggers.length < 1) errorMessage.push('Select minimal 1 rigger');
+                if (rnpos.length < 1) errorMessage.push('Select minimal 1 RNPO');
+                if (errorMessage.length) return errorSwal(errorMessage);
+                var p = {
+                    id: nextId(DB.projects), name: $('#name').val(), start_date: $('#start_date').val(), end_date: $('#end_date').val(),
+                    pm_id: Number($('#pm_id').val()), customer_id: Number($('#customer_id').val()), scope: $('#scope').val(), status: $('#status').val(),
+                    resource: riggers.concat(rnpos), region: '-', description: '', created_at: stamp()
+                };
+                DB.projects.push(p); save();
+                var file = $('#site')[0].files[0];
+                swalSuccess('Project has been created!');
+                if (file) importSites(file, p.id, function () { go('/project/info/' + p.id); });
+                else go('/project/info/' + p.id);
+            });
+        }
+    };
+}
+
+/* =====================================================================
+ *  PAGE: Project info (detail / site list / template)
+ * ===================================================================== */
+function pageProjectInfo(id) {
+    var p = project(id);
+    if (!p) { go('/project'); return null; }
+    var c = 'form-control form-control-sm', l = 'small control-label';
+    var siteList = sitesOf(id), templateList = templatesOf(id), tasks = tasksOf(id), st = projectStats(p);
+    function dis(name, label, val) { return '<div class="form-group">' + fLabel(name, label, l) + fInput('text', name, val, c, 'disabled="disabled"') + '</div>'; }
+    var statusCount = {};
+    tasks.forEach(function (t) { statusCount[t.status] = (statusCount[t.status] || 0) + 1; });
+
+    var detail =
+        '<div class="row"><div class="col-lg-7">' +
+        '<div class="card mb-3"><div class="card-body">' +
+        '<div class="section-label">Project Information</div>' +
+        '<div class="row"><div class="col">' + dis('name', 'Project Name', p.name) + '</div></div>' +
+        '<div class="row"><div class="col">' + dis('pm_id', 'Project Manager Name', user(p.pm_id).name) + '</div><div class="col">' + dis('customer_id', 'Customer', user(p.customer_id).name) + '</div></div>' +
+        '<div class="row"><div class="col">' + dis('scope', 'Scope', p.scope) + '</div><div class="col">' + dis('status', 'Status', p.status) + '</div></div>' +
+        '<div class="row"><div class="col">' + dis('start_date', 'Start Date', DMY(p.start_date)) + '</div><div class="col">' + dis('end_date', 'End Date', DMY(p.end_date)) + '</div></div>' +
+        '<div class="row"><div class="col">' + dis('site_list', 'Site List', siteList.length) + '</div><div class="col">' + dis('list_template', 'List Template', templateList.length) + '</div></div>' +
+        (p.description ? '<div class="form-group mb-0"><label class="small control-label">Description</label><div class="form-control form-control-sm" style="height:auto;background:#f7f9fc">' + esc(p.description) + '</div></div>' : '') +
+        '</div></div>' +
+        '<div class="card"><div class="card-body"><div class="section-label">Task Status Breakdown</div>' +
+        (tasks.length ? Object.keys(statusCount).map(function (k) {
+            return '<div class="d-flex align-items-center mb-2"><div style="width:110px">' + badge(k) + '</div><div class="flex-grow-1">' + progress(pct(statusCount[k], tasks.length)).replace('class="progress-bar ', 'style="background:' + (STATUS_COLOR[k] || '#0B9CF0') + '" class="progress-bar ') + '</div><b class="ml-3 small" style="width:30px;text-align:right">' + statusCount[k] + '</b></div>';
+        }).join('') : emptyState('No task yet', 'mdi-clipboard-outline')) +
+        '</div></div></div>' +
+        '<div class="col-lg-5"><div class="card mb-3"><div class="card-header pb-2"><h6 class="ss-card-title"><span class="mdi mdi-account-group"></span>Resource project</h6><p class="ss-card-sub">' + projectResources(id).length + ' people assigned</p></div>' +
+        '<div class="card-body p-0"><table class="table table-sm" id="table-resource"><thead><tr><th>Name</th><th>Role</th><th>Tasks</th></tr></thead><tbody>' +
+        projectResources(id).map(function (u) {
+            var n = tasks.filter(function (t) { return t.pic_id === u.id || t.rnpo_id === u.id; }).length;
+            return '<tr><td>' + userCell(u, esc(u.phone || u.email), 'avatar-sm') + '</td><td>' + esc(u.role_id === 6 ? 'RNPO' : role(u.role_id).name) + '</td><td>' + n + '</td></tr>';
+        }).join('') + '</tbody></table></div></div>' +
+        '<div class="card"><div class="card-body"><div class="section-label">Key Facts</div>' +
+        '<div class="kv"><span>Project Code</span><b class="id-chip">PRJ-' + pad(p.id) + '</b></div>' +
+        '<div class="kv"><span>Region</span><b>' + esc(p.region || '-') + '</b></div>' +
+        '<div class="kv"><span>Duration</span><b>' + dayDiff(p.start_date, p.end_date) + ' days</b></div>' +
+        '<div class="kv"><span>Time Remaining</span><b>' + (st.daysLeft < 0 ? 'Ended' : st.daysLeft + ' days') + '</b></div>' +
+        '<div class="kv"><span>Cities Covered</span><b>' + (esc(uniq(siteList.map(function (s) { return s.city; })).join(', ')) || '-') + '</b></div>' +
+        '<div class="kv"><span>Report Submitted</span><b>' + st.done + ' of ' + st.tasks + '</b></div>' +
+        '</div></div></div></div>';
+
+    var sites =
+        '<div class="card table-card"><div class="card-body table-responsive"><table class="table table-striped table-sm" id="siteTable"><thead><tr>' +
+        '<th>Site ID</th><th>Site Name</th><th>Coordinate</th><th>Address</th><th>Region</th><th>City</th><th>Tower Owner</th><th>Tasks</th><th>Action</th></tr></thead><tbody>' +
+        siteList.map(function (s) {
+            var stTasks = tasks.filter(function (t) { return t.site_id === s.id; }), d = stTasks.filter(isFinished).length;
+            return '<tr><td><span class="id-chip">' + esc(s.site_id) + '</span></td><td class="cell-title">' + esc(s.name) + '</td>' +
+                '<td class="mono text-nowrap"><span class="mdi mdi-crosshairs-gps text-primary"></span> ' + esc(s.latitude) + ', ' + esc(s.longitude) + '</td><td style="max-width:220px">' + esc(s.address) + '</td>' +
+                '<td>' + esc(s.region) + '</td><td>' + esc(s.city) + '</td><td>' + esc(s.tower_owner) + '</td>' +
+                '<td>' + (stTasks.length ? d + '/' + stTasks.length + '<span class="cell-sub">' + (d === stTasks.length ? 'surveyed' : 'in survey') + '</span>' : '<span class="text-muted-2">-</span>') + '</td><td class="text-nowrap">' +
+                '<a class="btn btn-soft-primary btn-sm mdi mdi-square-edit-outline" href="#/project/' + id + '/editSite/' + s.id + '">&nbsp;Edit</a> ' + deleteBtn('deleteSite', s.id, 'Delete site') + '</td></tr>';
+        }).join('') + '</tbody></table>' + (siteList.length ? '' : emptyState('No site yet. Add a site or import a file.', 'mdi-radio-tower')) + '</div></div>';
+
+    var templates =
+        '<div class="card table-card"><div class="card-body table-responsive"><table class="table table-striped table-sm"><thead><tr>' +
+        '<th>ID</th><th>Template Name</th><th>Sections</th><th>Fields</th><th>Photo Fields</th><th>Used by Task</th><th>Last Updated</th><th>Action</th></tr></thead><tbody>' +
+        templateList.map(function (t) {
+            var ti = templateInfo(t), used = tasks.filter(function (x) { return x.project_template_id === t.id; }).length;
+            return '<tr><td><span class="id-chip">TPL-' + pad(t.id) + '</span></td><td class="cell-title"><span class="mdi mdi-file-document-box-outline text-primary"></span> ' + esc(t.name) + '</td>' +
+                '<td>' + ti.sections + '</td><td>' + ti.fields + '</td><td>' + ti.photos + '</td><td>' + used + ' tasks</td><td>' + niceDate(t.updated_at) + '</td>' +
+                '<td><a class="btn btn-soft-primary btn-sm mdi mdi-square-edit-outline" href="#/project/template/' + t.id + '">&nbsp;Edit</a></td></tr>';
+        }).join('') + '</tbody></table>' + (templateList.length ? '' : emptyState('No template yet. Create a form template for the field team.', 'mdi-file-document-box-outline')) + '</div></div>';
+
+    var html =
+        pageHead(esc(p.name) + badge(p.status), esc(p.scope) + ' &middot; ' + esc(user(p.customer_id).name) + ' &middot; ' + niceDate(p.start_date) + ' &rarr; ' + niceDate(p.end_date),
+            '<a href="#/task/listtask/' + id + '" class="btn btn-light btn-sm mdi mdi-library-books"> View Task</a><a href="#/report/listreport/' + id + '" class="btn btn-light btn-sm mdi mdi-buffer"> Report</a>') +
+        kpiRow([
+            kpi('Sites', st.sites, 'mdi-radio-tower', 'blue', uniq(siteList.map(function (s) { return s.city; })).length + ' cities'),
+            kpi('Tasks', st.tasks, 'mdi-clipboard-text', 'cyan', st.ongoing + ' on going'),
+            kpi('Finished', st.done, 'mdi-check-circle', 'green', 'Report submitted'),
+            kpi('Late', st.late, 'mdi-alarm', 'red', st.late ? '<span class="down">Need follow up</span>' : 'On schedule'),
+            kpi('Progress', st.progress + '%', 'mdi-chart-donut', 'purple', st.daysLeft < 0 ? 'Project ended' : st.daysLeft + ' days left')
+        ], 'col-xl col-md-4 col-sm-6') +
+        '<div class="card card-body"><nav><div class="nav nav-tabs" id="nav-tab" role="tablist">' +
+        '<a class="nav-item nav-link active" id="nav-detail-tab" data-toggle="tab" href="#nav-detail" role="tab" aria-selected="true">Project Detail</a>' +
+        '<a class="nav-item nav-link" id="nav-site-tab" data-toggle="tab" href="#nav-site" role="tab" aria-selected="false">Site List<span class="count">' + siteList.length + '</span></a>' +
+        '<a class="nav-item nav-link" id="nav-template-tab" data-toggle="tab" href="#nav-template" role="tab" aria-selected="false">Template<span class="count">' + templateList.length + '</span></a>' +
+        '<div class="col px-0 float-right navbar-table" id="projectDetailSection">' +
+        '<button class="btn btn-primary mdi mdi-square-edit-outline btn-sm float-right" id="editProjectBtn"> Edit Project </button>' +
+        '<div id="updateSection" style="display: none;" class="float-right"><button class="btn btn-light btn-sm" id="cancelEdit">Cancel</button> <button class="btn btn-primary btn-sm mdi mdi-content-save" id="updateInfo"> Save &amp; Update</button></div></div>' +
+        '<div class="col px-0 float-right navbar-table" id="siteListSection" style="display: none;">' +
+        '<button class="btn btn-primary btn-sm mdi mdi-plus-circle float-right" id="addNewSite"> Add New Site </button>' +
+        '<div class="col-4 float-right mx-2"><input type="file" class="custom-file-input" id="site_import" accept=".csv,.xls,.xlsx"><label class="custom-file-label mdi mdi-file-document" for="site_import">&nbsp;Import File</label></div>' +
+        '<div class="float-right">' + searchBox('site-filter', 'Search site...') + '</div></div>' +
+        '<div class="col px-0 float-right navbar-table" id="templateSection" style="display: none;">' +
+        '<a href="#/project/' + id + '/create/template" class="btn btn-primary btn-sm mdi mdi-plus-circle float-right">&nbsp;Add New Template</a></div>' +
+        '</div></nav>' +
+        '<div class="tab-content" id="nav-tabContent">' +
+        '<div class="tab-pane fade show active" id="nav-detail" role="tabpanel"><div id="detail-section-disabled">' + detail + '</div><div id="detail-section"></div></div>' +
+        '<div class="tab-pane fade" id="nav-site" role="tabpanel">' + sites + '</div>' +
+        '<div class="tab-pane fade" id="nav-template" role="tabpanel">' + templates + '</div>' +
+        '</div></div><input type="hidden" id="project_id" value="' + id + '">';
+
+    function editForm() {
+        var resourceList = DB.users.filter(function (u) { return u.role_id === 2 || u.role_id === 6; });
+        return '<form id="form-info"><input type="hidden" name="id" id="id" value="' + id + '"><div class="row"><div class="col-lg-7"><div class="card"><div class="card-body">' +
+            '<div class="section-label">Edit Project Information</div>' +
+            '<div class="row"><div class="col"><div class="form-group">' + fLabel('name', 'Project Name*', l) + fInput('text', 'name', p.name, c, 'required') + '</div></div></div>' +
+            '<div class="row"><div class="col"><div class="form-group">' + fLabel('pm_id', 'Project Manager*', l) + fSelect('pm_id', makeOptions(usersByRole(1)), p.pm_id, c, 'required') + '</div></div>' +
+            '<div class="col"><div class="form-group">' + fLabel('customer_id', 'Customer*', l) + fSelect('customer_id', makeOptions(usersByRole(3)), p.customer_id, c, 'required') + '</div></div></div>' +
+            '<div class="row"><div class="col"><div class="form-group">' + fLabel('scope', 'Scope*', l) + fInput('text', 'scope', p.scope, c, 'required') + '</div></div>' +
+            '<div class="col"><div class="form-group">' + fLabel('status', 'Status*', l) + fSelect('status', statusOptions(), p.status, c) + '</div></div></div>' +
+            '<div class="row"><div class="col"><div class="form-group">' + fLabel('start_date', 'Start Date*', l) + fInput('date', 'start_date', p.start_date, c, 'required') + '</div></div>' +
+            '<div class="col"><div class="form-group">' + fLabel('end_date', 'End Date*', l) + fInput('date', 'end_date', p.end_date, c, 'required') + '</div></div></div>' +
+            '<div class="row"><div class="col">' + dis('site_list', 'Site List', siteList.length) + '</div><div class="col">' + dis('list_template', 'List Template', templateList.length) + '</div></div>' +
+            '</div></div></div><div class="col-lg-5"><div class="card"><div class="card-header pb-2"><h6 class="ss-card-title"><span class="mdi mdi-account-group"></span>Resource project</h6><p class="ss-card-sub">Select minimal 1 person</p></div>' +
+            '<div class="card-body p-0 scroll-y" style="max-height:480px"><table class="table table-sm" id="table-resource-edit"><thead><tr><th><input type="checkbox" class="role-check"></th><th>Name</th><th>Role</th><th>Workload</th></tr></thead><tbody>' +
+            resourceRows(resourceList, 'resource[]', p.resource) + '</tbody></table></div></div></div></div></form>';
+    }
+
+    return {
+        layout: 'top', navTitle: 'Project', breadcrumb: [['Project', '#/project'], [p.name, null]], back: { text: 'Project', href: '#/project' },
+        html: html, init: function () {
+            $('#nav-detail-tab').on('click', function () { $('.navbar-table').hide(); $('#projectDetailSection').show(); });
+            $('#nav-site-tab').on('click', function () { $('.navbar-table').hide(); $('#siteListSection').show(); });
+            $('#nav-template-tab').on('click', function () { $('.navbar-table').hide(); $('#templateSection').show(); });
+            if (sessionStorage.getItem('ss-tab')) { $('#' + sessionStorage.getItem('ss-tab')).tab('show').trigger('click'); sessionStorage.removeItem('ss-tab'); }
+            $('#site-filter').on('keyup search', function () {
+                var v = $(this).val().toLowerCase();
+                $('#siteTable tbody tr').each(function () { $(this).toggle($(this).text().toLowerCase().indexOf(v) > -1); });
+            });
+
+            $('#addNewSite').on('click', function () { go('/project/' + id + '/addSite'); });
+            $('#site_import').on('change', function () {
+                var file = this.files[0]; if (!file) return;
+                importSites(file, id, function (n) { sessionStorage.setItem('ss-tab', 'nav-site-tab'); swalSuccess(n + ' site(s) imported!'); reload(); });
+            });
+            $('.deleteSite').on('click', function () {
+                var sid = Number($(this).data('id'));
+                confirmDelete('Are you sure to delete this site?', function () {
+                    DB.sites = DB.sites.filter(function (s) { return s.id !== sid; }); save();
+                    sessionStorage.setItem('ss-tab', 'nav-site-tab'); swalSuccess('Site has been deleted!'); reload();
+                });
+            });
+
+            $('#editProjectBtn').on('click', function (e) {
+                e.preventDefault();
+                $('#editProjectBtn').hide(); $('#updateSection').show();
+                $('#detail-section').html(editForm()); $('#detail-section-disabled').hide();
+                $('#table-resource-edit thead :checkbox').on('change', function () { $('#table-resource-edit tbody :checkbox').prop('checked', this.checked); });
+            });
+            $('#cancelEdit').on('click', function (e) {
+                e.preventDefault();
+                $('#detail-section-disabled').show(); $('#detail-section').html(''); $('#updateSection').hide(); $('#editProjectBtn').show();
+            });
+            $('#updateInfo').on('click', function (e) {
+                e.preventDefault();
+                var errorMessage = [];
+                var okInput = $('#form-info input:not(:checkbox):not(:disabled)').filter(function () { return $.trim($(this).val()).length === 0; }).length === 0;
+                var okSelect = $('#form-info select').filter(function () { return $.trim($(this).val()).length === 0; }).length === 0;
+                var res = $('#form-info tbody :checkbox:checked').map(function () { return Number(this.value); }).get();
+                if (!okInput || !okSelect) errorMessage.push('Complete build form');
+                if (res.length < 1) errorMessage.push('Select minimal 1 person');
+                if (errorMessage.length) return errorSwal(errorMessage);
+                var f = $('#form-info');
+                $.extend(p, {
+                    name: f.find('#name').val(), pm_id: Number(f.find('#pm_id').val()), customer_id: Number(f.find('#customer_id').val()),
+                    scope: f.find('#scope').val(), status: f.find('#status').val(), start_date: f.find('#start_date').val(), end_date: f.find('#end_date').val(), resource: res
+                });
+                save(); swalSuccess('Project has been updated!'); reload();
+            });
+        }
+    };
+}
+
+/* =====================================================================
+ *  PAGE: Site create / edit
+ * ===================================================================== */
+function pageSiteForm(projectID, siteID) {
+    var p = project(projectID);
+    if (!p) { go('/project'); return null; }
+    var s = siteID ? byId(DB.sites, siteID) : null;
+    if (siteID && !s) { go('/project/info/' + projectID); return null; }
+    var v = s || { region: p.region !== '-' ? p.region : '' }, c = 'form-control form-control-sm', l = 'control-label';
+    function txt(name, label, val, ph) { return '<div class="form-group">' + fLabel(name, label, l) + fInput('text', name, val, c, 'required placeholder="' + (ph || '') + '"') + '</div>'; }
+    var html =
+        pageHead(s ? 'Edit Site' : 'Add New Site', 'Project: ' + esc(p.name)) +
+        '<form id="formSite" method="POST"><div class="row ss-row"><div class="col-lg-8"><div class="card">' + cardHead(s ? 'Edit Site *' : 'Add New Site *', 'All fields are required', '', 'mdi-radio-tower') + '<div class="card-body">' +
+        '<div class="section-label">Identity</div>' +
+        '<div class="row"><div class="col-md-8">' + txt('name', 'Site Name', v.name, 'e.g. Kebayoran Lama') + '</div><div class="col-md-4">' + txt('site_id', 'Site ID', v.site_id, 'e.g. JKT010') + '</div></div>' +
+        '<div class="row"><div class="col">' + txt('tower_owner', 'Tower Owner', v.tower_owner, 'e.g. PT Menara Prima') + '</div></div>' +
+        '<div class="section-label mt-2">Location</div>' +
+        '<div class="row"><div class="col">' + txt('latitude', 'Latitude', v.latitude, '-6.2420') + '</div><div class="col">' + txt('longitude', 'Longitude', v.longitude, '106.7826') + '</div></div>' +
+        '<div class="row"><div class="col">' + txt('region', 'Region', v.region, 'e.g. Jabodetabek') + '</div><div class="col">' + txt('city', 'City', v.city, 'e.g. Jakarta Selatan') + '</div></div>' +
+        '<div class="row"><div class="col"><div class="form-group mb-0">' + fLabel('address', 'Address', l) +
+        '<textarea class="' + c + '" rows="2" cols="40" style="resize:none;" required name="address" id="address" placeholder="Street, number, district">' + esc(v.address) + '</textarea></div></div></div>' +
+        '</div></div></div>' +
+        '<div class="col-lg-4"><div class="card">' + cardHead('Guideline', '', '', 'mdi-lightbulb-on-outline') + '<div class="card-body small">' +
+        '<div class="kv"><span>Coordinate format</span><b>Decimal degree</b></div><div class="kv"><span>Latitude range</span><b>-11 to 6</b></div><div class="kv"><span>Longitude range</span><b>95 to 141</b></div>' +
+        '<div class="kv"><span>Site ID</span><b>Unique, e.g. JKT001</b></div><p class="text-muted-2 mt-3 mb-0">Coordinates are shown on the dashboard Geo Distribution chart and attached to every survey report.</p>' +
+        '</div></div></div></div>' +
+        '<div class="action-bar pt-0"><a href="#/project/info/' + projectID + '" class="btn btn-light">Back</a><button class="btn btn-primary mdi mdi-content-save"> Submit</button></div>' +
+        '<input type="hidden" name="project_id" value="' + projectID + '"></form>';
+    return {
+        layout: 'top', navTitle: 'Project',
+        breadcrumb: [['Project', '#/project'], [p.name, '#/project/info/' + projectID], [s ? 'Edit Site' : 'Add New Site', null]],
+        back: { text: 'Project', href: '#/project' }, html: html, init: function () {
+            $('#formSite').on('submit', function (e) {
+                e.preventDefault();
+                var data = { project_id: projectID };
+                ['name', 'site_id', 'tower_owner', 'longitude', 'latitude', 'region', 'city', 'address'].forEach(function (k) { data[k] = $('#' + k).val(); });
+                if (s) $.extend(s, data); else { data.id = nextId(DB.sites); DB.sites.push(data); }
+                save(); sessionStorage.setItem('ss-tab', 'nav-site-tab');
+                swalSuccess(s ? 'Site has been updated!' : 'Site has been saved!');
+                go('/project/info/' + projectID);
+            });
+        }
+    };
+}
+
+/* =====================================================================
+ *  PAGE: Template create / edit (formBuilder)
+ * ===================================================================== */
+function formBuilderOptions(top) {
+    return {
+        defaultFields: [], showActionButtons: false, sortableControls: true,
+        stickyControls: { enable: true, offset: { top: top, right: top === 5 ? 41 : 20, left: 'auto' } },
+        disabledFields: [], disabledAttrs: ['access'],
+        typeUserEvents: {
+            header: {
+                onadd: function (fld) {
+                    $('.subtype-wrap').hide();
+                    $('.className-wrap', fld).find('label').html('Column');
+                    $('.className-wrap', fld).find('input').attr('placeholder', '');
+                }
+            }
+        }
+    };
+}
+function readFormData(fb) { try { return JSON.parse(fb.formData); } catch (e) { return []; } }
+function templateTips() {
+    return '<div class="card mb-3"><div class="card-body py-2 small d-flex flex-wrap align-items-center text-muted-2">' +
+        '<span class="mdi mdi-information-outline text-primary mr-2" style="font-size:18px"></span>' +
+        'Drag fields from the right panel. Use <b class="mx-1">Header</b> to start a new report section and fill its <b class="mx-1">Column</b> with 1–4 to set the layout. ' +
+        '<b class="mx-1">File Upload</b> fields become photo evidence in the report.</div></div>';
+}
+
+function pageTemplateCreate(projectID) {
+    var p = project(projectID);
+    if (!p) { go('/project'); return null; }
+    var html = pageHead('Create Template', 'Form template for the field team &middot; ' + esc(p.name), '<a href="#/project/info/' + projectID + '" class="btn btn-light btn-sm mdi mdi-arrow-left back-tpl"> Back to Project</a>') +
+        templateTips() +
+        '<div class="card card-body"><div class="form-group"><label class="control-label">Templete Name</label>' +
+        '<input type="text" id="name" class="form-control form-control-sm" placeholder="e.g. Site Survey Form" required/></div>' +
+        '<div id="form-builder" style="background-color: #eeeeee; padding:5px; border-radius:8px"></div>' +
+        '<div class="action-bar"><button class="btn btn-light" id="cancelTemplate">Cancel</button><button class="btn btn-primary mdi mdi-content-save" id="submitTemplate"> Submit</button></div></div>';
+    return {
+        layout: 'side', side: 'project', navTitle: 'Project', navTrail: 'Template Builder', html: html, init: function () {
+            var fb = $('#form-builder').formBuilder(formBuilderOptions(5));
+            $('.back-tpl').on('click', function () { sessionStorage.setItem('ss-tab', 'nav-template-tab'); });
+            $('#cancelTemplate').on('click', function () { sessionStorage.setItem('ss-tab', 'nav-template-tab'); go('/project/info/' + projectID); });
+            $('#submitTemplate').on('click', function () {
+                if (!$.trim($('#name').val())) return swal('Template name is required', '', 'warning');
+                DB.templates.push({ id: nextId(DB.templates), project_id: projectID, name: $('#name').val(), json: readFormData(fb), created_at: stamp(), updated_at: stamp() });
+                save(); sessionStorage.setItem('ss-tab', 'nav-template-tab'); swalSuccess('Template has been saved!');
+                go('/project/info/' + projectID);
+            });
+        }
+    };
+}
+
+function pageTemplateEdit(id) {
+    var t = byId(DB.templates, id);
+    if (!t || !project(t.project_id)) { go('/project'); return null; }
+    var ti = templateInfo(t), used = DB.tasks.filter(function (x) { return x.project_template_id === t.id; }).length;
+    var html = pageHead('Edit Template', esc(project(t.project_id).name) + ' &middot; ' + ti.sections + ' sections &middot; ' + ti.fields + ' fields &middot; used by ' + used + ' tasks',
+            '<a href="#/project/info/' + t.project_id + '" class="btn btn-light btn-sm mdi mdi-arrow-left back-tpl"> Back to Project</a>') +
+        templateTips() +
+        '<div class="card"><div class=" card-body"><div class="form-group"><label class="control-label">Templete Name</label><input type="text" id="name" class="form-control form-control-sm" placeholder="Templete Name"/></div>' +
+        '<div style="background-color: #eeeeee; padding:5px; border-radius:8px"><div id="form-builder"></div></div></div>' +
+        '<div class="card-footer"><div class="action-bar pt-0"><a href="#/project/info/' + t.project_id + '" class="btn btn-light back-tpl" id="linkBack">Cancel</a>' +
+        '<button class="btn btn-primary mdi mdi-content-save" id="submitTemplate"> Submit</button></div></div></div><input type="hidden" id="templateID" value="' + id + '">';
+    return {
+        layout: 'side', side: 'project', navTitle: 'Project', navTrail: 'Template Builder', html: html, init: function () {
+            $('#name').val(t.name);
+            var fb = $('#form-builder').formBuilder(formBuilderOptions(20));
+            var ready = fb.promise || Promise.resolve(fb);
+            ready.then(function () { fb.actions.setData(JSON.stringify(t.json || [])); });
+            $('.back-tpl').on('click', function () { sessionStorage.setItem('ss-tab', 'nav-template-tab'); });
+            $('#submitTemplate').on('click', function () {
+                t.name = $('#name').val(); t.json = readFormData(fb); t.updated_at = stamp(); save();
+                sessionStorage.setItem('ss-tab', 'nav-template-tab'); swalSuccess('Template has been updated!');
+                go('/project/info/' + t.project_id);
+            });
+        }
+    };
+}
+
+/* =====================================================================
+ *  PAGE: Task
+ * ===================================================================== */
+function taskSummaryKpi(tasks) {
+    var c = function (fn) { return tasks.filter(fn).length; };
+    return kpiRow([
+        kpi('Total Task', tasks.length, 'mdi-clipboard-text', 'blue', uniq(tasks.map(function (t) { return t.pic_id; })).length + ' engineers'),
+        kpi('Open', c(function (t) { return /^(open|re-open|reopen)$/i.test(t.status); }), 'mdi-clipboard-outline', 'orange', 'Waiting to start'),
+        kpi('On Progress', c(function (t) { return t.status === 'On Progress'; }), 'mdi-progress-clock', 'cyan', 'In the field now'),
+        kpi('Finished', c(isFinished), 'mdi-check-circle', 'green', pct(c(isFinished), tasks.length) + '% of total'),
+        kpi('Late', c(isLate), 'mdi-alarm', 'red', c(isLate) ? '<span class="down">Past end date</span>' : 'On schedule')
+    ], 'col-xl col-md-4 col-sm-6');
+}
+
+function pageTaskIndex() {
+    var html = pageHead('Task', 'Select a project to view and assign survey tasks', searchBox('project-filter', 'Search project...')) +
+        taskSummaryKpi(DB.tasks) +
+        '<div class="card table-card">' + cardHead('List Project', 'Task overview per project', '', 'mdi-format-list-bulleted') + '<div class="card-body table-responsive">' +
+        projectTable(function (p) {
+            return '<a class="btn btn-soft-primary btn-sm mdi mdi-information-outline" href="#/task/listtask/' + p.id + '">&nbsp;View Task</a> ' + deleteBtn('deleteProject', p.id, 'Delete project');
+        }) + '</div></div>';
+    return { layout: 'side', side: 'task', navTitle: 'Task', navTrail: 'List Project', html: html, init: function () { dataTable('#dataTables', '#project-filter', { columnDefs: [{ orderable: false, targets: -1 }] }); bindProjectDelete(); } };
+}
+
+function pageTaskList(projectID) {
+    var p = project(projectID);
+    if (!p) { go('/task'); return null; }
+    var tasks = tasksOf(projectID);
+    var html = pageHead('List Task', esc(p.name) + ' &nbsp;' + badge(p.status),
+            searchBox('task-filter', 'Search task...') + '<a href="#/task/create/' + projectID + '" class="btn btn-primary btn-sm mdi mdi-plus-circle"> Add new Task</a>') +
+        taskSummaryKpi(tasks) +
+        '<div class="card table-card"><div class="card-body table-responsive"><table class="table table-sm" id="dataTables"><thead><tr>' +
+        '<th>ID</th><th>Task Name</th><th>Site Name</th><th>RNPO</th><th>PIC</th><th>Schedule</th><th>Status</th><th>Action</th></tr></thead><tbody>' +
+        tasks.map(function (t) {
+            var site = byId(DB.sites, t.site_id) || {}, tpl = byId(DB.templates, t.project_template_id) || {};
+            return '<tr><td><span class="id-chip">TSK-' + pad(t.id) + '</span></td><td><span class="cell-title">' + esc(t.name) + '</span><span class="cell-sub"><span class="mdi mdi-file-document-box-outline"></span> ' + esc(tpl.name) + '</span></td>' +
+                '<td>' + esc(site.name) + '<span class="cell-sub">' + esc(site.site_id) + ' &middot; ' + esc(site.city) + '</span></td><td>' + userCell(user(t.rnpo_id), undefined, 'avatar-sm') + '</td>' +
+                '<td>' + userCell(user(t.pic_id), 'Rigger', 'avatar-sm') + '</td><td data-order="' + t.end_date + '"><span class="cell-title text-nowrap" style="font-weight:500">' + DMY(t.start_date) + ' &rarr; ' + DMY(t.end_date) + '</span>' + dueInfo(t) + '</td>' +
+                '<td>' + badge(isLate(t) ? 'Late' : t.status) + '</td>' +
+                '<td class="text-nowrap"><a class="btn-icon btn-soft-primary mdi mdi-eye" href="#/report/preview/' + t.id + '" title="Preview report"></a>' + deleteBtn('deleteTask', t.id, 'Delete task') + '</td></tr>';
+        }).join('') + '</tbody></table></div></div>';
+    return {
+        layout: 'top', navTitle: 'Task', breadcrumb: [['Task', '#/task'], [p.name, null], ['List Task', null]], back: { text: 'Task', href: '#/task' },
+        html: html, init: function () {
+            dataTable('#dataTables', '#task-filter', { order: [[5, 'asc']], columnDefs: [{ orderable: false, targets: -1 }] });
+            $('#dataTables').on('click', '.deleteTask', function (e) {
+                e.preventDefault(); var tid = Number($(this).data('id'));
+                confirmDelete('Are you sure to delete this task?', function () {
+                    DB.tasks = DB.tasks.filter(function (t) { return t.id !== tid; }); save(); swalSuccess('Task has been deleted!'); reload();
+                });
+            });
+        }
+    };
+}
+
+function pageTaskCreate(projectID) {
+    var p = project(projectID);
+    if (!p) { go('/task'); return null; }
+    var res = projectResources(projectID);
+    var riggerList = res.filter(function (u) { return u.role_id === 2; });
+    var rnpoList = res.filter(function (u) { return u.role_id === 6; });
+    var siteList = sitesOf(projectID), templateList = templatesOf(projectID);
+    var c = 'form-control form-control-sm';
+    var statusOpt = [['', '-- Select --'], ['Open', 'Open'], ['Done', 'Done'], ['On Progress', 'On Progress'], ['Reopen', 'Reopen'], ['Completed', 'Completed'], ['Finished', 'Finished']];
+    var html =
+        pageHead('Add New Task', 'Assign survey task to riggers &middot; ' + esc(p.name), '<a href="#/task/listtask/' + projectID + '" class="btn btn-light btn-sm mdi mdi-arrow-left"> Back to List Task</a>') +
+        '<form id="formTask" method="POST" autocomplete="off" onsubmit="return false"><div class="row ss-row">' +
+        '<div class="col-lg-6"><div class="card h-100">' + cardHead('Add New Task *', 'One task is created for every selected rigger', '', 'mdi-clipboard-plus') + '<div class="card-body">' +
+        '<div class="section-label">Task</div>' +
+        '<div class="row"><div class="col">' + field('name', 'Task Name*', fInput('text', 'name', null, c, 'placeholder="e.g. Survey Kebayoran Lama"')) + '</div></div>' +
+        '<div class="row"><div class="col">' + field('site_id', 'Site Name*', fSelect('site_id', [['', '-- Select --']].concat(siteList.map(function (s) { return [s.id, s.site_id + ' · ' + s.name + ' (' + s.city + ')']; })), null, c)) + '</div></div>' +
+        '<div class="row"><div class="col">' + field('project_template_id', 'Select Template*', fSelect('project_template_id', makeOptions(templateList), null, c)) + '</div>' +
+        '<div class="col">' + field('rnpo_id', 'RNPO*', fSelect('rnpo_id', makeOptions(rnpoList), null, c)) + '</div></div>' +
+        '<div class="section-label mt-2">Schedule</div>' +
+        '<div class="row"><div class="col">' + field('start_date', 'Start Date*', fInput('date', 'start_date', today(), c)) + '</div>' +
+        '<div class="col">' + field('end_date', 'End Date*', fInput('date', 'end_date', addDays(7), c)) + '</div></div>' +
+        '<div class="row"><div class="col">' + field('status', 'Status*', fSelect('status', statusOpt, 'Open', c)) + '</div></div>' +
+        (templateList.length ? '' : '<div class="alert alert-warning small mb-0"><span class="mdi mdi-alert"></span> This project has no template yet. <a href="#/project/' + projectID + '/create/template">Create a template</a> first.</div>') +
+        '</div></div></div>' +
+        '<div class="col-lg-6"><div class="card h-100">' + cardHead('Resource *', 'Riggers assigned to this project', '<span class="tag" id="resourceCount">0 selected</span>', 'mdi-worker') +
+        '<div class="card-body p-0"><div class="p-3 border-bottom">' + fInput('text', 'searchResource', null, c, 'placeholder="Search name..."') + '</div>' +
+        '<div class="scroll-y" style="height: 400px;"><table class="table table-sm" id="table-resource"><thead><tr><th style="width:36px"><input type="checkbox" class="role-check"></th><th>Name</th><th>Role</th><th>Workload</th></tr></thead><tbody>' +
+        resourceRows(riggerList, 'riggerCheck[]') + '</tbody></table>' + (riggerList.length ? '' : emptyState('No rigger assigned to this project', 'mdi-account-off')) + '</div></div></div></div>' +
+        '</div><input type="hidden" name="project_id" id="project_id" value="' + projectID + '">' +
+        '<div class="action-bar pt-0"><a href="#/task/listtask/' + projectID + '" class="btn btn-light">Back</a><button class="btn-primary btn mdi mdi-check" id="submitTask" type="button"> Submit</button></div></form>';
+    return {
+        layout: 'side', side: 'task', navTitle: 'Task', navTrail: 'Add New Task', html: html, init: function () {
+            bindSearchResource();
+            $('#site_id').on('change', function () {
+                var s = byId(DB.sites, $(this).val()), tpl = byId(DB.templates, $('#project_template_id').val());
+                if (s && !$('#name').val()) $('#name').val(((tpl && TPL_PREFIX[tpl.kind]) || 'Survey') + ' ' + s.name);
+            });
+            $('#submitTask').on('click', function (e) {
+                e.preventDefault();
+                var errorMessage = [];
+                var okInput = $('#formTask input').filter(function () { return this.id !== 'searchResource' && $.trim($(this).val()).length === 0; }).length === 0;
+                var okSelect = $('#formTask select').filter(function () { return $.trim($(this).val()).length === 0; }).length === 0;
+                var riggers = $('input[name="riggerCheck[]"]:checked').map(function () { return Number(this.value); }).get();
+                if (!okInput || !okSelect) errorMessage.push('Complete build form');
+                if (riggers.length < 1) errorMessage.push('Select minimal 1 rigger');
+                if (errorMessage.length) return errorSwal(errorMessage);
+                riggers.forEach(function (rid) {
+                    DB.tasks.push({
+                        id: nextId(DB.tasks), project_id: projectID, name: $('#name').val(), site_id: Number($('#site_id').val()),
+                        project_template_id: Number($('#project_template_id').val()), rnpo_id: Number($('#rnpo_id').val()),
+                        start_date: $('#start_date').val(), end_date: $('#end_date').val(), pic_id: rid, status: $('#status').val(), finished_at: null, values: {}
+                    });
+                });
+                save(); swalSuccess(riggers.length + ' task(s) have been saved!'); go('/task/listtask/' + projectID);
+            });
+        }
+    };
+}
+
+/* =====================================================================
+ *  PAGE: Report
+ * ===================================================================== */
+function pageReportIndex() {
+    var finished = DB.tasks.filter(isFinished);
+    var html = pageHead('Report', 'Survey reports submitted by field engineers, grouped by project', searchBox('project-filter', 'Search project...')) +
+        kpiRow([
+            kpi('Report Submitted', finished.length, 'mdi-file-check', 'green', 'of ' + DB.tasks.length + ' tasks'),
+            kpi('Waiting Report', DB.tasks.length - finished.length, 'mdi-file-find', 'orange', 'Task not finished yet'),
+            kpi('Photo Evidence', sum(finished.map(function (t) { return Object.keys(t.values || {}).filter(function (k) { return /^photo_/.test(k); }).length; })), 'mdi-camera', 'blue', 'Images attached'),
+            kpi('Submitted This Week', finished.filter(function (t) { return t.finished_at && dayDiff(t.finished_at, today()) < 7; }).length, 'mdi-calendar-check', 'purple', 'Last 7 days')
+        ], 'col-lg-3 col-sm-6') +
+        '<div class="card table-card">' + cardHead('List Project', 'Open a project to browse its reports', '', 'mdi-format-list-bulleted') + '<div class="card-body table-responsive">' +
+        projectTable(function (p) {
+            return '<a class="btn btn-soft-primary btn-sm mdi mdi-information-outline" href="#/report/listreport/' + p.id + '">&nbsp;Report</a> ' + deleteBtn('deleteProject', p.id, 'Delete project');
+        }) + '</div></div>';
+    return { layout: 'side', side: 'report', navTitle: 'Report', navTrail: 'List Project', html: html, init: function () { dataTable('#dataTables', '#project-filter', { columnDefs: [{ orderable: false, targets: -1 }] }); bindProjectDelete(); } };
+}
+
+function pageReportList(projectID) {
+    var p = project(projectID);
+    if (!p) { go('/report'); return null; }
+    var tasks = tasksOf(projectID), finished = tasks.filter(isFinished);
+    var html = pageHead('List Report', esc(p.name) + ' &middot; ' + finished.length + ' of ' + tasks.length + ' reports submitted', searchBox('task-filter', 'Search report...')) +
+        kpiRow([
+            kpi('Total Report', tasks.length, 'mdi-file-document', 'blue', 'One per task'),
+            kpi('Submitted', finished.length, 'mdi-file-check', 'green', pct(finished.length, tasks.length) + '% complete'),
+            kpi('In Progress', tasks.filter(function (t) { return t.status === 'On Progress'; }).length, 'mdi-file-find', 'cyan', 'Partially filled'),
+            kpi('Not Started', tasks.filter(function (t) { return !isFinished(t) && t.status !== 'On Progress'; }).length, 'mdi-file-outline', 'gray', 'Waiting for rigger')
+        ], 'col-lg-3 col-sm-6') +
+        '<div class="card table-card"><div class="card-body table-responsive"><table class="table table-striped table-sm" id="dataTables"><thead><tr>' +
+        '<th>ID</th><th>PIC</th><th>Task Name</th><th>Template Name</th><th style="width:140px">Form Filled</th><th>Submitted</th><th>Status</th><th>Action</th></tr></thead><tbody>' +
+        tasks.map(function (t) {
+            var tpl = byId(DB.templates, t.project_template_id) || {}, fc = filledCount(t), site = byId(DB.sites, t.site_id) || {};
+            return '<tr><td><span class="id-chip">RPT-' + pad(t.id) + '</span></td><td>' + userCell(user(t.pic_id), 'Rigger', 'avatar-sm') + '</td>' +
+                '<td><span class="cell-title">' + esc(t.name) + '</span><span class="cell-sub">' + esc(site.site_id) + ' &middot; ' + esc(site.city) + '</span></td><td>' + esc(tpl.name) + '</td>' +
+                '<td data-order="' + fc.filled + '">' + progress(pct(fc.filled, fc.total)) + '<span class="cell-sub">' + fc.filled + ' / ' + fc.total + ' fields</span></td>' +
+                '<td data-order="' + (t.submitted_at || '') + '">' + (t.submitted_at ? niceDate(t.submitted_at) + '<span class="cell-sub">' + t.submitted_at.substr(11) + ' WIB</span>' : '<span class="text-muted-2">-</span>') + '</td>' +
+                '<td>' + badge(t.status) + '</td><td><a href="#/report/preview/' + t.id + '" class="btn btn-soft-primary btn-sm mdi mdi-eye">&nbsp;Preview</a></td></tr>';
+        }).join('') + '</tbody></table></div></div>';
+    return {
+        layout: 'top', navTitle: 'Task', breadcrumb: [['Report', '#/report'], [p.name, null], ['List Report', null]], back: { text: 'Report', href: '#/report' },
+        html: html, init: function () { dataTable('#dataTables', '#task-filter', { order: [[5, 'desc']], columnDefs: [{ orderable: false, targets: -1 }] }); }
+    };
+}
+
+function pageReportPreview(taskID) {
+    var t = byId(DB.tasks, taskID);
+    if (!t || !project(t.project_id)) { go('/report'); return null; }
+    var p = project(t.project_id), site = byId(DB.sites, t.site_id) || {}, tpl = byId(DB.templates, t.project_template_id) || { json: [] }, fc = filledCount(t);
+    var groups = [], cur = null;
+    (tpl.json || []).forEach(function (f) {
+        if (f.type === 'header' || !cur) {
+            cur = { header: f.type === 'header' ? f.label : 'General', column: Math.min(4, parseInt(f.className, 10) || 1), attribute: [] };
+            groups.push(cur);
+            if (f.type === 'header') return;
+        }
+        cur.attribute.push(f);
+    });
+    var body = groups.map(function (g, gi) {
+        var col = 100 / g.column;
+        return '<div class="card report-section mb-3"><div class="card-header d-flex justify-content-between align-items-center"><h6 class="ss-card-title"><span class="mdi mdi-numeric-' + (gi + 1) + '-box"></span>' +
+            esc(String(g.header).replace(/<[^>]*>/g, '')) + '</h6><span class="badge-col">' + g.attribute.length + ' fields</span></div><div class="card-body"><div class="row">' +
+            g.attribute.map(function (v) {
+                var isi = t.values ? t.values[v.name] : null, inner = '';
+                if (['date', 'textarea', 'number', 'select', 'text'].indexOf(v.type) > -1) {
+                    inner = '<label class="control-label">' + esc(v.label) + '</label>' + (v.type === 'textarea'
+                        ? '<textarea name="' + esc(v.name) + '" class="form-control form-control-sm" rows="2" readonly placeholder="Not filled yet">' + esc(isi) + '</textarea>'
+                        : '<input type="text" name="' + esc(v.name) + '" value="' + esc(isi) + '" class="form-control form-control-sm" readonly placeholder="Not filled yet">');
+                } else if (v.type === 'file') {
+                    inner = '<div class="photo-frame">' + (isi ? '<img src="' + esc(isi) + '">' : '<div class="photo-empty"><span class="mdi mdi-camera-off"></span>No Data</div>') +
+                        '<div class="cap"><b>' + esc(v.label) + '</b><span>' + (isi ? '<span class="mdi mdi-crosshairs-gps"></span> ' + esc(site.latitude) + ', ' + esc(site.longitude) : 'Waiting upload') + '</span></div></div>';
+                } else {
+                    inner = '<label class="control-label">' + esc(v.label) + '</label><input type="text" class="form-control form-control-sm" readonly value="' + esc(isi) + '">';
+                }
+                return '<div style="width: ' + col + '%; min-height: 1px; padding-right: 15px; padding-left: 15px;"><div class="form-group">' + inner + '</div></div>';
+            }).join('') + '</div></div></div>';
+    }).join('') || emptyState('Template has no field', 'mdi-file-document-box-outline');
+    var meta = [['Project', esc(p.name)], ['Site', esc(site.site_id) + ' · ' + esc(site.name)], ['Coordinate', '<span class="mono">' + esc(site.latitude) + ', ' + esc(site.longitude) + '</span>'],
+        ['City / Region', esc(site.city) + ' · ' + esc(site.region)], ['PIC (Rigger)', esc(user(t.pic_id).name)], ['RNPO', esc(user(t.rnpo_id).name)],
+        ['Template', esc(tpl.name || '-')], ['Schedule', niceDate(t.start_date) + ' → ' + niceDate(t.end_date)], ['Submitted', t.submitted_at ? niceDate(t.submitted_at) + ' ' + t.submitted_at.substr(11) : 'Not yet']];
+    var html =
+        pageHead(esc(t.name) + badge(t.status), '<span class="id-chip">RPT-' + pad(t.id) + '</span> &nbsp;' + fc.filled + ' of ' + fc.total + ' fields filled',
+            '<button class="btn btn-light btn-sm mdi mdi-printer no-print" id="reportPrint"> Print</button>' +
+            (isFinished(t) ? '' : '<button class="btn btn-sm btn-primary mdi mdi-check no-print" id="reportDone"> Done</button>')) +
+        '<div class="card mb-3"><div class="card-body"><div class="row align-items-center"><div class="col-lg-9"><div class="meta-grid">' +
+        meta.map(function (m) { return '<div class="meta-item"><span>' + m[0] + '</span><b>' + m[1] + '</b></div>'; }).join('') +
+        '</div></div><div class="col-lg-3 text-center border-left"><div class="kpi-label mb-1">Completeness</div><div class="kpi-value mb-2">' + pct(fc.filled, fc.total) + '%</div>' + progress(pct(fc.filled, fc.total)) + '</div></div></div></div>' +
+        body;
+    return {
+        layout: 'top', navTitle: 'Project', breadcrumb: [['Report', '#/report'], [p.name, '#/report/listreport/' + t.project_id], ['Preview', null]], back: { text: 'Report', href: '#/report/listreport/' + t.project_id },
+        html: html, init: function () {
+            $('#reportPrint').on('click', function () { window.print(); });
+            $('#reportDone').on('click', function () {
+                t.status = 'Done'; t.finished_at = today(); t.submitted_at = stamp().substr(0, 16); save(); swalSuccess('Task has been marked as Done!'); reload();
+            });
+        }
+    };
+}
+
+/* =====================================================================
+ *  PAGE: Configurations (User / Role / Role Access)
+ * ===================================================================== */
+function pageUser() {
+    var c = 'form-control form-control-sm', l = 'control-label';
+    var roleOptionList = makeOptions(DB.roles);
+    var active = DB.users.filter(function (u) { return String(u.status) === '1'; }).length;
+    var userTable = '<table class="table table-sm table-striped" id="dataTables"><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Application</th><th>Status</th><th>Last Login</th><th>Created</th><th>Action</th></tr></thead><tbody>' +
+        DB.users.map(function (u) {
+            var web = String(u.application) === '1';
+            return '<tr><td><span class="id-chip">USR-' + pad(u.id) + '</span></td><td>' + userCell(u, esc(u.email)) + '</td><td>' + esc(role(u.role_id).name) + '</td>' +
+                '<td><span class="tag"><span class="mdi ' + (web ? 'mdi-monitor' : 'mdi-cellphone') + '"></span>' + (web ? 'Web Application' : 'Mobile Application') + '</span></td>' +
+                '<td>' + badge(String(u.status) === '1' ? 'Active' : 'Deactive') + '</td>' +
+                '<td data-order="' + (u.last_login || '') + '">' + (u.last_login ? relTime(u.last_login) + '<span class="cell-sub">' + u.last_login.substr(0, 16) + '</span>' : '-') + '</td>' +
+                '<td>' + niceDate(u.created_at) + '</td><td class="text-nowrap">' +
+                '<button type="button" class="btn-icon btn-soft-primary mdi mdi-square-edit-outline userEditBtn" data-id="' + u.id + '" title="Edit user"></button>' + deleteBtn('deleteUser', u.id, 'Delete user') + '</td></tr>';
+        }).join('') + '</tbody></table>';
+    var roleTable = '<table class="table table-sm table-striped" id="dataTablesRole"><thead><tr><th>ID</th><th>Role Name</th><th>Users</th><th>Module Access</th><th>Created</th><th>Last Modified</th><th>Action</th></tr></thead><tbody>' +
+        DB.roles.map(function (r) {
+            var n = DB.users.filter(function (u) { return u.role_id === r.id; }).length, m = (DB.roleResources[r.id] || []).length;
+            return '<tr><td><span class="id-chip">ROL-' + pad(r.id) + '</span></td><td><span class="cell-title">' + esc(r.name) + '</span><span class="cell-sub">' + esc(r.description) + '</span></td>' +
+                '<td>' + n + ' users</td><td style="width:160px">' + progress(pct(m, DB.resources.length)) + '<span class="cell-sub">' + m + ' / ' + DB.resources.length + ' modules</span></td>' +
+                '<td>' + niceDate(r.created_at) + '</td><td>' + niceDate(r.updated_at) + '</td><td class="text-nowrap">' +
+                '<button type="button" class="btn-icon btn-soft-primary mdi mdi-square-edit-outline roleEditBtn" data-id="' + r.id + '" title="Edit role"></button>' + deleteBtn('deleteRole', r.id, 'Delete role') + '</td></tr>';
+        }).join('') + '</tbody></table>';
+    var icons = { Project: 'mdi-google-analytics', Task: 'mdi-library-books', Site: 'mdi-radio-tower', Report: 'mdi-buffer' };
+    var accessTable = '<div class="scroll-y" style="max-height:520px"><table class="table table-sm" id="accessTable"><thead><tr><th>Parent Name</th><th>Module Name</th><th style="width:90px">Status</th></tr></thead><tbody>' +
+        DB.resources.map(function (r) {
+            var parent = !r.parent_name;
+            return '<tr class="' + (parent ? 'module-parent' : '') + '"><td>' + (parent ? '<span class="mdi ' + (icons[r.module_name] || 'mdi-folder') + ' text-primary"></span> ' + esc(r.module_name) : '<span class="text-muted-2 pl-4">' + esc(r.parent_name) + '</span>') + '</td>' +
+                '<td>' + (parent ? '<span class="cell-sub">Module access</span>' : esc(r.module_name)) + '</td><td><input name="resourceRole" type="checkbox" class="role-check" value="' + r.id + '" disabled></td></tr>';
+        }).join('') + '</tbody></table></div>';
+    var userForm =
+        '<div class="row"><div class="col-6"><div class="form-group">' + fLabel('name', 'Name*', l) + fInput('text', 'name', null, c) + '<span id="usernameError" class="errorInputModal"></span></div></div>' +
+        '<div class="col-6"><div class="form-group">' + fLabel('email', 'Email*', l) + fInput('text', 'email', null, c) + '<span id="useremailError" class="errorInputModal"></span></div></div></div>' +
+        '<div class="row"><div class="col-6"><div class="form-group">' + fLabel('password', 'Password*', l) + fInput('password', 'password', null, c) + '<span id="userpasswordError" class="errorInputModal"></span></div></div>' +
+        '<div class="col-6"><div class="form-group">' + fLabel('role_id', 'Role*', l) + fSelect('role_id', roleOptionList, null, c) + '<span id="userrole_idError" class="errorInputModal"></span></div></div></div>' +
+        '<div class="row"><div class="col-6"><div class="form-group">' + fLabel('application', 'Application*', l) + fSelect('application', [['', '-- Select --'], ['1', 'Web Application'], ['0', 'Mobile Application']], null, c) + '<span id="userapplicationError" class="errorInputModal"></span></div></div>' +
+        '<div class="col-6"><div class="form-group">' + fLabel('status', 'Status*', l) + fSelect('status', [['', '-- Select -- '], ['1', 'Active'], ['0', 'Deactive']], null, c) + '<span id="userstatusError" class="errorInputModal"></span></div></div></div>' +
+        '<div class="row"><div class="col-6"><div class="form-group mb-0">' + fLabel('phone', 'Phone', l) + fInput('text', 'phone', null, c, 'placeholder="08xx-xxxx-xxxx"') + '</div></div></div>';
+    var roleForm =
+        '<div class="form-group">' + fLabel('name', 'Role Name*', l) + '<input class="' + c + '" id="roleName" name="name" type="text"><span id="rolenameError" class="errorInputModal"></span></div>' +
+        '<div class="form-group mb-0">' + fLabel('description', 'Description', l) + fInput('text', 'description', null, c) + '<span id="roledescError" class="errorInputModal"></span></div>';
+    function modal(id, formId, body) {
+        return '<div class="modal fade" tabindex="-1" role="dialog" id="' + id + 'Modal"><div class="modal-dialog modal-dialog-centered" role="document"><div class="modal-content">' +
+            '<div class="modal-header"><h5 class="modal-title" id="' + id + 'ModalTitle"></h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>' +
+            '<div class="modal-body"><form id="' + formId + '" data-function="create" onsubmit="return false">' + body + '</form></div>' +
+            '<div class="modal-footer"><button class="btn btn-light" data-dismiss="modal">Cancel</button><button class="btn btn-primary" id="' + id + 'BtnModal">Submit</button></div></div></div></div>';
+    }
+    var html =
+        pageHead('Configurations', 'Manage users, roles and module access permission') +
+        kpiRow([
+            kpi('Total User', DB.users.length, 'mdi-account-multiple', 'blue', active + ' active'),
+            kpi('Web Users', DB.users.filter(function (u) { return String(u.application) === '1'; }).length, 'mdi-monitor', 'cyan', 'Dashboard access'),
+            kpi('Mobile Users', DB.users.filter(function (u) { return String(u.application) !== '1'; }).length, 'mdi-cellphone', 'purple', 'Field app access'),
+            kpi('Roles', DB.roles.length, 'mdi-account-key', 'green', DB.resources.length + ' modules')
+        ], 'col-lg-3 col-sm-6') +
+        '<div class="card card-body"><nav><div class="row mx-0 align-items-center">' +
+        '<div class="nav nav-tabs col pl-0" id="nav-tab" role="tablist">' +
+        '<a class="nav-item nav-link active" id="nav-user-tab" data-toggle="tab" href="#nav-user" role="tab" aria-selected="true">User<span class="count">' + DB.users.length + '</span></a>' +
+        '<a class="nav-item nav-link" id="nav-role-tab" data-toggle="tab" href="#nav-role" role="tab" aria-selected="false">Role<span class="count">' + DB.roles.length + '</span></a>' +
+        '<a class="nav-item nav-link" id="nav-userRole-tab" data-toggle="tab" href="#nav-userRole" role="tab" aria-selected="false">Role Access</a></div>' +
+        '<div class="col-auto navbar-table pr-0 page-actions" id="userNavbar">' + searchBox('user-filter', 'Search user...') +
+        '<button class="btn btn-sm btn-primary addUserBtn mdi mdi-plus-circle" data-modal="user"> Add New User</button></div>' +
+        '<div class="col-auto navbar-table pr-0 page-actions" id="roleNavbar" hidden>' + searchBox('role-filter', 'Search role...') +
+        '<button class="btn btn-sm btn-primary addRoleBtn mdi mdi-plus-circle" data-modal="user"> Add New Role</button></div>' +
+        '<div class="col-4 navbar-table pr-0" id="userRoleNavbar" hidden>' + fSelect('userRole', [['', '-- Select Role --']].concat(DB.roles.map(function (r) { return [r.id, r.name]; })), null, c).replace('id="userRole"', 'id="userRoleOption"') + '</div>' +
+        '</div></nav>' +
+        '<div class="tab-content" id="nav-tabContent">' +
+        '<div class="tab-pane fade show active" id="nav-user" role="tabpanel"><div class="card table-card"><div class="card-body table-responsive">' + userTable + '</div></div></div>' +
+        '<div class="tab-pane fade" id="nav-role" role="tabpanel"><div class="card table-card"><div class="card-body table-responsive">' + roleTable + '</div></div></div>' +
+        '<div class="tab-pane fade" id="nav-userRole" role="tabpanel"><div class="alert alert-info small py-2" id="accessHint"><span class="mdi mdi-information-outline"></span> Select a role on the top right to view and change its module access. Changes are saved automatically.</div>' +
+        '<div class="card table-card"><div class="card-body">' + accessTable + '</div></div></div>' +
+        '</div></div>' + modal('user', 'formUser', userForm) + modal('role', 'formRole', roleForm);
+
+    return {
+        layout: 'side', side: 'configuration', navTitle: 'Configurations', navTrail: 'User &amp; Role Management', html: html, init: function () {
+            dataTable('#dataTables', '#user-filter', { columnDefs: [{ orderable: false, targets: -1 }] });
+            dataTable('#dataTablesRole', '#role-filter', { columnDefs: [{ orderable: false, targets: -1 }] });
+            function showTab(nav) { $('.navbar-table').attr('hidden', 'hidden'); $('#' + nav).removeAttr('hidden'); }
+            $('#nav-user-tab').on('click', function () { showTab('userNavbar'); });
+            $('#nav-role-tab').on('click', function () { showTab('roleNavbar'); });
+            $('#nav-userRole-tab').on('click', function () { showTab('userRoleNavbar'); });
+            var tab = sessionStorage.getItem('ss-tab');
+            if (tab) { $('#' + tab).tab('show').trigger('click'); sessionStorage.removeItem('ss-tab'); }
+
+            function clearErrorModal() { setTimeout(function () { $('.errorInputModal').html(''); }, 3000); }
+            $('#userModal').on('hidden.bs.modal', function () { $('#formUser')[0].reset(); $('.errorInputModal').html(''); });
+
+            function validateUser(id) {
+                var err = {}, email = $.trim($('#email').val()), pass = $('#password').val();
+                if (!$.trim($('#name').val())) err.name = 'The name field is required.';
+                if (!email) err.email = 'The email field is required.';
+                else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) err.email = 'The email must be a valid email address.';
+                else if (DB.users.some(function (u) { return u.email.toLowerCase() === email.toLowerCase() && u.id !== id; })) err.email = 'The email has already been taken.';
+                if (!id && !pass) err.password = 'The password field is required.';
+                else if (pass && pass.length < 6) err.password = 'The password must be at least 6 characters.';
+                if (!$('#role_id').val()) err.role_id = 'The role id field is required.';
+                if (!$('#application').val()) err.application = 'The application field is required.';
+                if (!$('#status').val()) err.status = 'The status field is required.';
+                $.each(err, function (k, m) { $('#user' + k + 'Error').html(m); });
+                if (!$.isEmptyObject(err)) { clearErrorModal(); return false; }
+                return true;
+            }
+            function userData() {
+                return { name: $('#name').val(), email: $.trim($('#email').val()), role_id: Number($('#role_id').val()), application: Number($('#application').val()), status: Number($('#status').val()), phone: $('#phone').val() };
+            }
+
+            $('.addUserBtn').on('click', function (e) {
+                e.preventDefault();
+                $('#userModal').modal('show'); $('#userModalTitle').html('Add New User'); $('#userBtnModal').text('Create');
+                $('#userBtnModal').off('click').on('click', function (e) {
+                    e.preventDefault();
+                    if (!validateUser(null)) return;
+                    var u = $.extend(userData(), { id: nextId(DB.users), password: $('#password').val(), created_at: stamp(), updated_at: stamp(), last_login: null });
+                    DB.users.push(u); save(); $('#userModal').modal('hide'); swalSuccess('User has been saved!'); reload();
+                });
+            });
+            $('#dataTables').on('click', '.userEditBtn', function () {
+                var u = byId(DB.users, $(this).data('id'));
+                $('#userModal').modal('show');
+                $('#name').val(u.name); $('#email').val(u.email); $('#role_id').val(u.role_id); $('#application').val(String(u.application)); $('#status').val(String(u.status)); $('#phone').val(u.phone || '');
+                $('#userModalTitle').html('Edit User'); $('#userBtnModal').text('Update');
+                $('#userBtnModal').off('click').on('click', function (e) {
+                    e.preventDefault();
+                    if (!validateUser(u.id)) return;
+                    $.extend(u, userData(), { updated_at: stamp() });
+                    if ($('#password').val()) u.password = $('#password').val();
+                    save(); $('#userModal').modal('hide'); swalSuccess('User has been updated!'); reload();
+                });
+            });
+            $('#dataTables').on('click', '.deleteUser', function (e) {
+                e.preventDefault(); var id = Number($(this).data('id'));
+                confirmDelete('Are you sure to delete this user?', function () {
+                    if (currentUser() && currentUser().id === id) return swal('You cannot delete your own account', '', 'warning');
+                    DB.users = DB.users.filter(function (u) { return u.id !== id; }); save(); swalSuccess('User has been deleted!'); reload();
+                });
+            });
+
+            $('.addRoleBtn').on('click', function (e) {
+                e.preventDefault();
+                $('#formRole')[0].reset();
+                $('#roleModal').modal('show'); $('#roleModalTitle').html('Add New Role'); $('#roleBtnModal').text('Create');
+                $('#roleBtnModal').off('click').on('click', function (e) {
+                    e.preventDefault();
+                    if (!$.trim($('#roleName').val())) { $('#rolenameError').html('The role name field is required.'); return clearErrorModal(); }
+                    DB.roles.push({ id: nextId(DB.roles), name: $('#roleName').val(), description: $('#description').val(), created_at: stamp(), updated_at: stamp() });
+                    save(); $('#roleModal').modal('hide'); sessionStorage.setItem('ss-tab', 'nav-role-tab'); swalSuccess('Role has been saved!'); reload();
+                });
+            });
+            $('#dataTablesRole').on('click', '.roleEditBtn', function () {
+                var r = byId(DB.roles, $(this).data('id'));
+                $('#roleModal').modal('show'); $('#roleName').val(r.name); $('#description').val(r.description);
+                $('#roleModalTitle').html('Edit Role'); $('#roleBtnModal').text('Update');
+                $('#roleBtnModal').off('click').on('click', function (e) {
+                    e.preventDefault();
+                    if (!$.trim($('#roleName').val())) { $('#rolenameError').html('The name field is required.'); return clearErrorModal(); }
+                    r.name = $('#roleName').val(); r.description = $('#description').val(); r.updated_at = stamp();
+                    save(); $('#roleModal').modal('hide'); sessionStorage.setItem('ss-tab', 'nav-role-tab'); swalSuccess('Role has been updated!'); reload();
+                });
+            });
+            $('#dataTablesRole').on('click', '.deleteRole', function (e) {
+                e.preventDefault(); var id = Number($(this).data('id'));
+                confirmDelete('Are you sure to delete this role?', function () {
+                    DB.roles = DB.roles.filter(function (r) { return r.id !== id; }); delete DB.roleResources[id];
+                    save(); sessionStorage.setItem('ss-tab', 'nav-role-tab'); swalSuccess('Role has been deleted!'); reload();
+                });
+            });
+
+            $('#userRoleOption').on('change', function () {
+                var rid = $(this).val();
+                $('[name="resourceRole"]').prop('checked', false).prop('disabled', !rid);
+                (DB.roleResources[rid] || []).forEach(function (x) { $('[name="resourceRole"][value="' + x + '"]').prop('checked', true); });
+                $('#accessHint').html(rid ? '<span class="mdi mdi-security"></span> Editing access for <b>' + esc(role(rid).name) + '</b> &middot; ' + (DB.roleResources[rid] || []).length + ' modules enabled. Changes are saved automatically.'
+                    : '<span class="mdi mdi-information-outline"></span> Select a role on the top right to view and change its module access.');
+            });
+            $('[name="resourceRole"]').on('change', function () {
+                var rid = $('#userRoleOption').val();
+                if (!rid) { this.checked = false; return swal('Please select role first', '', 'warning'); }
+                var list = DB.roleResources[rid] || (DB.roleResources[rid] = []), val = Number(this.value);
+                if (this.checked) { if (list.indexOf(val) < 0) list.push(val); } else { DB.roleResources[rid] = list.filter(function (x) { return x !== val; }); }
+                save();
+            });
+        }
+    };
+}
+
+/* =====================================================================
+ *  PAGE: Profile
+ * ===================================================================== */
+function pageProfile() {
+    var me = currentUser();
+    var all = me.role_id === 4 || me.role_id === 5;
+    var mine = DB.projects.filter(function (p) { return all || p.pm_id === me.id || p.customer_id === me.id || p.resource.indexOf(me.id) > -1; });
+    var myTasks = all ? DB.tasks : DB.tasks.filter(function (t) { return t.pic_id === me.id || t.rnpo_id === me.id || (project(t.project_id) || {}).pm_id === me.id; });
+    var acts = myTasks.filter(function (t) { return t.submitted_at; }).sort(function (a, b) { return a.submitted_at < b.submitted_at ? 1 : -1; }).slice(0, 5).map(function (t) {
+        return '<li><span class="tl-dot" style="background:' + (STATUS_COLOR[t.status] || '#0B9CF0') + '"></span><b>' + esc(user(t.pic_id).name) + '</b> submitted <a href="#/report/preview/' + t.id + '">' + esc(t.name) + '</a><small>' + relDay(t.finished_at) + ' &middot; ' + t.submitted_at.substr(11) + '</small></li>';
+    }).join('');
+    var html =
+        '<div class="row ss-row">' +
+        '<div class="col-lg-4"><div class="card mb-3"><div class="card-body text-center pt-4">' + avatar(me.name, 'avatar-lg') +
+        '<h5 class="mt-3 mb-1 font-weight-600" style="color:#1f2d3d">' + esc(me.name) + '</h5><div class="mb-2">' + badge(String(me.status) === '1' ? 'Active' : 'Deactive') + ' <span class="tag">' + esc(role(me.role_id).name) + '</span></div>' +
+        '<div class="text-left mt-3"><div class="kv"><span>Email</span><b>' + esc(me.email) + '</b></div><div class="kv"><span>Phone</span><b>' + esc(me.phone || '-') + '</b></div>' +
+        '<div class="kv"><span>Application</span><b>' + (String(me.application) === '1' ? 'Web Application' : 'Mobile Application') + '</b></div>' +
+        '<div class="kv"><span>Member Since</span><b>' + niceDate(me.created_at) + '</b></div><div class="kv"><span>Last Login</span><b>' + (me.last_login ? relTime(me.last_login) : '-') + '</b></div></div>' +
+        '</div></div>' +
+        '<div class="card"><div class="card-header"><h6 class="ss-card-title"><span class="mdi mdi-account-edit"></span>Profile Info</h6></div><div class="card-body"><form onsubmit="return false">' +
+        '<div class="form-group"><label class="control-label" for="user">User Name</label><input type="text" class="form-control form-control-sm" id="user" placeholder="User Name" value="' + esc(me.name) + '"></div>' +
+        '<div class="form-group"><label class="control-label" for="email">Email</label><input type="email" class="form-control form-control-sm" id="email" placeholder="name@example.com" value="' + esc(me.email) + '"></div>' +
+        '<div class="form-group mb-0"><label class="control-label" for="role">Position (Role)</label><input type="text" class="form-control form-control-sm" id="role" placeholder="Position" value="' + esc(role(me.role_id).name) + '" disabled></div>' +
+        '</form></div><div class="card-footer d-flex justify-content-between align-items-center"><a class="btn btn-link btn-sm text-danger logout-link px-0 mdi mdi-logout" href="#"> Logout</a>' +
+        '<div><button class="btn btn-light btn-sm" id="changePassBtn">Change Password</button> <button class="btn btn-primary btn-sm" id="saveProfileBtn">Save</button></div></div></div></div>' +
+        '<div class="col-lg-8">' +
+        kpiRow([
+            kpi('My Project', mine.length, 'mdi-briefcase', 'blue', mine.filter(function (p) { return p.status === 'Open' || p.status === 'Re-Open'; }).length + ' active'),
+            kpi('Related Task', myTasks.length, 'mdi-clipboard-text', 'cyan', myTasks.filter(isOnGoing).length + ' on going'),
+            kpi('Finished', myTasks.filter(isFinished).length, 'mdi-check-circle', 'green', pct(myTasks.filter(isFinished).length, myTasks.length) + '% done')
+        ], 'col-md-4') +
+        '<div class="card mb-3">' + cardHead('My Project', 'Projects you manage or are assigned to', '<a href="#/project" class="small">View all</a>', 'mdi-briefcase') +
+        '<div class="card-body py-1 scroll-y" style="max-height:330px">' +
+        (mine.length ? mine.map(function (p) {
+            var st = projectStats(p);
+            return '<div class="list-row"><div class="kpi-icon ic-blue" style="width:38px;height:38px;font-size:18px"><span class="mdi mdi-google-analytics"></span></div><div class="min-w-0 flex-grow-1 mr-3">' +
+                '<a href="#/project/info/' + p.id + '" class="d-block text-truncate font-weight-600" style="color:#1f2d3d;font-size:.82rem">' + esc(p.name) + '</a>' +
+                '<small class="text-muted-2">' + esc(p.scope) + ' &middot; ' + st.done + '/' + st.tasks + ' tasks &middot; ' + (st.daysLeft < 0 ? 'ended' : st.daysLeft + ' days left') + '</small>' + progress(st.progress) + '</div>' + badge(p.status) + '</div>';
+        }).join('') : emptyState('No project yet', 'mdi-briefcase-outline')) + '</div></div>' +
+        '<div class="card">' + cardHead('Recent Activity', 'Latest reports related to you', '', 'mdi-history') + '<div class="card-body">' +
+        (acts ? '<ul class="timeline">' + acts + '</ul>' : emptyState('No activity yet', 'mdi-history')) + '</div></div>' +
+        '</div></div>';
+    return {
+        layout: 'top', navTitle: 'Profile', breadcrumb: [['Profile', '#/profile']], back: { text: 'Menu', href: '#/dashboard' },
+        html: html, init: function () {
+            $('#changePassBtn').on('click', function () { sessionStorage.setItem('ss-reset-user', me.id); go('/user/changePassword'); });
+            $('#saveProfileBtn').on('click', function () {
+                var name = $.trim($('#user').val()), email = $.trim($('#email').val());
+                if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return swal('Please fill a valid name and email', '', 'warning');
+                if (DB.users.some(function (u) { return u.email.toLowerCase() === email.toLowerCase() && u.id !== me.id; })) return swal('The email has already been taken.', '', 'warning');
+                me.name = name; me.email = email; me.updated_at = stamp(); save(); swalSuccess('Profile has been updated!'); reload();
+            });
+        }
+    };
+}
+
+/* =====================================================================
+ *  PAGE: Notifications
+ * ===================================================================== */
+function pageNotif() {
+    var groups = { Today: [], Yesterday: [], Earlier: [] };
+    DB.notifications.forEach(function (n) {
+        var d = dayDiff(n.time.substr(0, 10), today());
+        groups[d <= 0 ? 'Today' : d === 1 ? 'Yesterday' : 'Earlier'].push(n);
+    });
+    var unread = DB.notifications.filter(function (n) { return !n.read; }).length;
+    var body = Object.keys(groups).filter(function (k) { return groups[k].length; }).map(function (k) {
+        return '<div class="row text-muted mx-0 mt-3 mb-2 small"><div class="col text-left px-0 font-weight-600">' + k + '</div><div class="col text-right px-0">' +
+            (k === 'Today' ? longDate(today()) : k === 'Yesterday' ? longDate(addDays(-1)) : '') + '</div></div>' +
+            groups[k].map(function (n) {
+                return '<div class="list-row px-3 rounded mb-2" style="background:' + (n.read ? '#fafbfd' : '#f0f8ff') + ';border:1px solid #e7edf3">' + notifIcon(n.type) +
+                    '<div class="min-w-0 flex-grow-1"><span class="notif-title">' + esc(n.title) + (n.read ? '' : ' <span class="badge-status st-open ml-1">New</span>') + '</span><div class="small">' + esc(n.message) + '</div><span class="notif-time"><span class="mdi mdi-clock-outline"></span> ' + relTime(n.time) + ' &middot; ' + n.time.substr(11, 5) + '</span></div>' +
+                    '<div class="text-nowrap ml-3"><a class="btn btn-soft-primary btn-sm" href="#' + n.link + '">View Detail</a> ' + deleteBtn('deleteNotif', n.id, 'Delete') + '</div></div>';
+            }).join('');
+    }).join('') || emptyState('You are all caught up. No notifications.', 'mdi-bell-outline');
+    var html = pageHead('Notifications', DB.notifications.length + ' notifications &middot; ' + unread + ' unread',
+            (DB.notifications.length ? '<button class="btn btn-light btn-sm mdi mdi-delete-sweep" id="clearNotif"> Clear All</button>' : '')) +
+        '<div class="card"><div class="card-body pt-1">' + body + '</div></div>';
+    DB.notifications.forEach(function (n) { n.read = true; }); save();
+    return {
+        layout: 'top', navTitle: 'Notifications', breadcrumb: [['Notifications', '#/notifications']], back: { text: 'Menu', href: '#/dashboard' },
+        html: html, init: function () {
+            $('.deleteNotif').on('click', function (e) {
+                e.preventDefault(); var id = Number($(this).data('id'));
+                DB.notifications = DB.notifications.filter(function (n) { return n.id !== id; }); save(); reload();
+            });
+            $('#clearNotif').on('click', function () {
+                confirmDelete('Clear all notifications?', function () { DB.notifications = []; save(); reload(); });
+            });
+        }
+    };
+}
+
+/* =====================================================================
+ *  Global handlers
+ * ===================================================================== */
+$(document).on('click', 'a[href="#"]', function (e) { e.preventDefault(); });
+$(document).on('click', '.toggle-password', function () {
+    $(this).toggleClass('mdi-eye mdi-eye-off');
+    var input = $($(this).attr('toggle'));
+    input.attr('type', input.attr('type') === 'password' ? 'text' : 'password');
+});
+$(document).on('click', '.logout-link', function (e) {
+    e.preventDefault(); localStorage.removeItem(SESSION_KEY); go('/login');
+});
+$(document).on('click', '.notif-link', function (e) {
+    e.preventDefault();
+    var n = byId(DB.notifications, $(this).data('id'));
+    if (n) { n.read = true; save(); go(n.link); }
+});
+
+// open index.html?reset to restore the dummy data
+if (/[?&]reset\b/.test(location.search)) {
+    localStorage.removeItem(STORE_KEY); localStorage.removeItem(SESSION_KEY);
+    location.replace(location.pathname + '#/login');
+    return;
+}
+
+$(window).on('hashchange', router);
+$(router);
+
+})(jQuery);
+</script>
+</body>
+</html>

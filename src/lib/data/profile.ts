@@ -40,10 +40,12 @@ export const profile: Profile = {
 			type: 'Full-time',
 			scope: 'Leading design across the LMS, Borrower Portal and Lender Portal',
 			summary:
-				'Shipping design systems and prototypes straight into the repo with AI tools, giving stakeholders an early view of design intent.',
+				'Designing the KlikA2C lending marketplace as one product across the Lender Portal, Borrower Portal and Back Office, and shipping design systems and prototypes straight into the repo with AI tools so stakeholders see design intent early.',
 			highlights: [
-				'Cut design handoff from days to hours',
+				'Unified 3 portals and 4 loan products (invoice, purchase order, employee loan and EWA) under one design language',
+				'Designed the back office: 4 core modules plus 10 supporting ones, from leads and funding to workflow configuration',
 				'Replaced manual review with back-office tooling for 30+ ops staff',
+				'Cut design handoff from days to hours',
 				'Initiated EWA and Employee Loan products from concept to launch'
 			]
 		},
@@ -55,10 +57,12 @@ export const profile: Profile = {
 			type: 'Full-time',
 			scope: 'Led design across FAT, PRF, CRM, FDS, CMS and the company profile',
 			summary:
-				'Specialised in internal tools, replacing manual processes with centralised systems across 6 products.',
+				'Specialised in internal tools, replacing manual processes with centralised systems across 6 products, from enterprise payments and CRM to farmer support.',
 			highlights: [
-				'Moved the product team from execution to strategy',
-				'Made cross-stakeholder work visible',
+				'Cut payment reconciliation lead time from 203h to 18.91h (−90% against a −50% target), and receipts from 7 manual steps to 3',
+				'Lifted field-visit success from 20.4% to 30% and doubled campaign-driven app visits through a CRM used by 800+ staff',
+				'Turned the FAQ into level-0 support as monthly complaints grew from 31 to 671, reaching 71.16% on-time resolution',
+				'Moved the product team from execution to strategy, making cross-stakeholder work visible',
 				'Helped design ops build OneFish, a design system run as a product'
 			]
 		},
@@ -70,9 +74,11 @@ export const profile: Profile = {
 			type: 'Full-time',
 			scope: 'Led design across Modal Rakyat, Fazz Agen and Master Agen',
 			summary:
-				'Discovery and product design across P2P lending and bookkeeping, including the Fazz super-app rebrand.',
+				'Drove discovery and product design for P2P lending, bookkeeping and digital-product sales across Fazz Agen and Modal Rakyat, working with product and engineering and grounding decisions in surveys, interviews and usability tests; contributed to the Fazz super-app rebrand.',
 			highlights: [
-				'Designed scalable experiences that turned casual users into power users',
+				'Ran four research studies with 1,800+ agents and lenders, from debt reports to package selection',
+				'Redesigned the Catat Utang debt report around the 79.5% of agents who preferred a table, reaching 100% task completion in testing',
+				'Simplified a catalogue of 170 data and pulsa packages after 51.4% of low raters found it too complex',
 				'Worked with product and engineering on metrics, roadmap priorities and team culture'
 			]
 		},
@@ -82,12 +88,14 @@ export const profile: Profile = {
 			period: 'Oct 2018 - Oct 2021',
 			location: 'Indonesia',
 			type: 'Full-time',
-			scope: 'Led design across the Warung Pintar app and the Renceng design system',
+			scope: 'Led design across the Warung Pintar app, Grosir Pintar and the Renceng design system',
 			summary:
-				'Built the design team and Renceng, a design system covering customer-facing and internal products on mobile and web.',
+				'Built the design team and Renceng, a design system covering customer-facing and internal products on mobile and web, and drove research-driven work on the ordering, wholesale and retail apps warung owners use every day.',
 			highlights: [
-				'Grew the design team from zero to 12+ designers in three years',
-				'Mentored designers through their individual development plans'
+				'Grew the design team from zero to 12+ designers in three years, mentoring each through an individual development plan',
+				'Raised the ordering flow’s usability score from 74 to 91 and halved the time to add a product, from 8.1s to 4.1s',
+				'Launched Grosir Pintar with 11 wholesalers serving 146 retailers, delivering Rp 170.6 jt in GMV',
+				'Led persona research with 49 in-depth interviews and ~25.7k mitra segmented by wallet share'
 			]
 		},
 		{
@@ -96,9 +104,16 @@ export const profile: Profile = {
 			period: 'May 2017 - Oct 2018',
 			location: 'Indonesia',
 			type: 'Full-time',
-			scope: 'Designed and coded CRM and Telkomsel dashboard tools',
-			summary: 'Took designs through to front-end code, and to back-end work when needed.',
-			highlights: ['Presented working builds to clients through demos and site visits']
+			scope: 'Designed and coded network and field tools for Telkomsel and the Indonesian Navy',
+			summary:
+				'Took products from design to front-end code, and to back-end work when needed: capacity, complaint and speed-test dashboards for Telkomsel, a command system for the Indonesian Navy, and Immobi’s own data, survey and reporting tools.',
+			highlights: [
+				'Built 7 products for Telkomsel, the Indonesian Navy and Immobi, from design through front-end code',
+				'Artemis: capacity forecasting across 43,500+ BTS and eNodeB sites and 284 core network elements, in 3 modules behind one login',
+				'Customer Complaint Management: 8 weekly KPIs drilled down through 5 levels, from nationwide to city, across 11 regions',
+				'SIMAL: one command system for 6 naval bases, 136 personnel, 42 remotely controlled rooms and 8 tracked vessels',
+				'Presented working builds to clients through demos and site visits'
+			]
 		},
 		{
 			role: 'Founder',
@@ -107,8 +122,14 @@ export const profile: Profile = {
 			location: 'Remote',
 			type: 'Side hustle',
 			scope: 'Design & development studio',
-			summary: 'Running a design and development studio for 10+ clients.',
-			highlights: ['Leading scope, contracts and small teams end to end']
+			summary:
+				'Founded and run a design and development studio delivering websites, internal tools and data dashboards for 10+ clients across government, cultural institutions, legal, fintech and B2B.',
+			highlights: [
+				'Government and cultural platforms for Ibu Kota Nusantara, Kemendikbud and Museum Kebangkitan Nasional, from a secure data room to an online exhibition',
+				'Business systems: a timesheet app for Jardin Legal with 5 firm modules and 6 billing views, a bulk SMS platform across 4 mobile operators, a catalogue and CMS for 3 partner brands, and a security company’s website and back office',
+				'Product sites and prototypes: Kee Platforms’ AI-native lending site presenting 4 products, and a SparQ prototype covering 13 product areas in 368 KB, with no servers needed to demo',
+				'Own each engagement end to end, from scoping, proposals and contracts to design, development and handover, in collaboration with designers and developers'
+			]
 		}
 	],
 	education: [
@@ -150,7 +171,7 @@ export const profile: Profile = {
 			from: 'Nikel',
 			logos: [companies.nikel.logo],
 			year: 'Since 2025',
-			stat: { value: 'Hours', label: 'not days' },
+			stat: { value: 'Hours', label: 'from design to handoff' },
 			visual: { src: '/images/recognition/handoff-flow.svg' }
 		},
 		{

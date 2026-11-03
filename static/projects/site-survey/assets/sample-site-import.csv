@@ -1,0 +1,4 @@
+site_id,site_name,longitude,latitude,address,region,city,tower_owner
+DPK101,Margonda Raya,106.8317,-6.3735,Jl. Margonda Raya No. 100,Jabodetabek,Depok,PT Menara Prima
+DPK102,Cinere,106.7832,-6.3360,Jl. Cinere Raya No. 12,Jabodetabek,Depok,PT Infra Nusantara
+BKS201,Summarecon Bekasi,107.0004,-6.2253,Jl. Boulevard Ahmad Yani,Jabodetabek,Bekasi,PT Tower Jaya

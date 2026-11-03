@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Parsing Data Immobi</title>
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/mdb.min.css" rel="stylesheet">
+    <link href="assets/css/parsing.css" rel="stylesheet">
+    <link rel="icon" href="assets/img/ico-parsing.png" sizes="16x16" type="image/png">
+    <style>
+        /* =====================================================================
+           DESIGN TOKENS
+           ===================================================================== */
+        :root {
+            --indigo: #3f51b5; --indigo-d: #303f9f; --indigo-m: #7986cb; --indigo-l: #e8eaf6;
+            --ink: #263238; --ink2: #546e7a; --muted: #90a4ae; --line: #e6e9f0; --bg: #f4f6fb;
+            --ok: #2e7d32; --ok-bg: #e8f5e9; --warn: #a15c00; --warn-bg: #fff3e0;
+            --bad: #c62828; --bad-bg: #fdecea; --run: #1565c0; --run-bg: #e3f2fd;
+            --mute-bg: #eef1f5; --radius: 8px;
+            --mono: Consolas, "SFMono-Regular", Menlo, "Courier New", monospace;
+        }
+        html, body { background: var(--bg); color: var(--ink); font-size: 14px; }
+        li { float: none; color: inherit; }            /* neutralise legacy li rule */
+        .data-bg { opacity: .10; }
+        .mono { font-family: var(--mono); }
+        .page { display: none; }
+        .page.show-page { display: block; }
+        a { color: var(--indigo); }
+
+        /* Buttons: one consistent look */
+        .btn { box-shadow: none !important; border-radius: 6px; text-transform: none; font-weight: 500;
+               letter-spacing: 0; padding: 8px 16px; font-size: 13px; margin: 0; }
+        .btn.btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn-indigo { background-color: var(--indigo) !important; }
+        .btn-indigo:hover { background-color: var(--indigo-d) !important; }
+        .btn-light-outline { background: #fff !important; color: var(--ink2) !important; border: 1px solid var(--line); }
+        .btn-light-outline:hover { border-color: var(--indigo); color: var(--indigo) !important; }
+        .btn-light-outline i.fa { color: inherit; }
+        .btn i.fa { margin-right: 6px; }
+
+        /* Plain (non-MDB) inputs: one consistent 38px field everywhere */
+        .wz-form input.form-control, .wz-form select.form-control, .wz-form textarea.form-control, .search-box input.form-control {
+            height: 38px !important; padding: 6px 12px !important; margin: 0 !important; border: 1px solid var(--line) !important;
+            border-radius: 6px !important; background: #fff !important; box-shadow: none !important; box-sizing: border-box;
+            font-size: 13px; color: var(--ink); }
+        .wz-form textarea.form-control { height: auto !important; padding: 8px 12px !important; line-height: 1.5; }
+        .search-box input.form-control { padding-left: 34px !important; }
+        .wz-form .form-control:focus, .search-box input.form-control:focus { border-color: var(--indigo) !important;
+            box-shadow: 0 0 0 3px rgba(63,81,181,.12) !important; }
+        .wz-form .form-control.is-bad { border-color: var(--bad) !important; }
+        .wz-form .form-group { margin-bottom: 16px; }
+        .data-table .num, .data-table td.nowrap { white-space: nowrap; }
+
+        /* =====================================================================
+           SIDEBAR (original structure, refined)
+           ===================================================================== */
+        .sidebar-left { background: #fff; border-right: 1px solid var(--line); font-family: inherit; }
+        .sidebar-left a.company-logo { height: 64px; line-height: 64px; border-bottom: 0; font-size: 22px; }
+        .sidebar-left .sidebar-links { padding-top: 8px; }
+        .sidebar-left .sidebar-links a.link-grey { background: transparent; color: #607d8b; padding: 12px 0;
+            margin: 0 0 2px; border-left: 3px solid transparent; font-size: 10px; font-weight: 600; }
+        .sidebar-left .sidebar-links a i.fa { font-size: 20px; margin-bottom: 6px; }
+        .sidebar-left .sidebar-links a.link-grey:hover { background: var(--bg); color: var(--indigo); }
+        .sidebar-left .sidebar-links a.selected { background: var(--indigo-l); color: var(--indigo);
+            border-left-color: var(--indigo); font-size: 10px; }
+        .sidebar-left a.link-logout { position: absolute; bottom: 8px; left: 0; width: 100%; margin: 0; background: transparent;
+            color: #607d8b; padding: 12px 0; font-size: 10px; font-weight: 600; }
+        .sidebar-left a.link-logout i.fa { display: block; font-size: 20px; margin-bottom: 6px; }
+        .sidebar-left a.link-logout:hover { background: var(--bad-bg); color: var(--bad); }
+
+        /* =====================================================================
+           APP SHELL
+           ===================================================================== */
+        .app-main { margin-left: 70px; min-height: 100vh; position: relative; }
+        .topbar { height: 64px; background: #fff; border-bottom: 1px solid var(--line); display: flex;
+            align-items: center; justify-content: space-between; padding: 0 28px; position: sticky; top: 0; z-index: 60; }
+        .topbar h1 { font-size: 20px; font-weight: 700; margin: 0; color: var(--ink); line-height: 1.2; }
+        .topbar .crumb { font-size: 12px; color: var(--muted); }
+        .topbar-right { display: flex; align-items: center; gap: 20px; }
+        .sys-pill { font-size: 12px; padding: 4px 12px; border-radius: 14px; background: var(--ok-bg); color: var(--ok); font-weight: 500; }
+        .sys-pill .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); margin-right: 6px;
+            box-shadow: 0 0 0 3px rgba(46,125,50,.15); }
+        .topbar .clock { font-size: 12px; color: var(--ink2); text-align: right; line-height: 1.3; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding-left: 20px; border-left: 1px solid var(--line); }
+        .user-chip .name { font-size: 13px; font-weight: 600; line-height: 1.2; }
+        .user-chip .role { font-size: 11px; color: var(--muted); }
+        .page-body { padding: 24px 28px 40px; }
+
+        /* =====================================================================
+           PANELS / KPI
+           ===================================================================== */
+        .panel { background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+            box-shadow: 0 1px 2px rgba(16,24,40,.04); margin-bottom: 24px; }
+        .panel-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px;
+            border-bottom: 1px solid var(--line); gap: 12px; flex-wrap: wrap; }
+        .panel-title { font-size: 15px; font-weight: 600; margin: 0; color: var(--ink); }
+        .panel-sub { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
+        .panel-body { padding: 20px; }
+        .panel-foot { padding: 12px 20px; border-top: 1px solid var(--line); display: flex;
+            justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .range-info { font-size: 12px; color: var(--muted); }
+
+        .kpi { display: flex; align-items: center; gap: 16px; padding: 18px 20px; }
+        .kpi-icon { width: 46px; height: 46px; flex: 0 0 46px; border-radius: 10px; background: var(--indigo-l);
+            color: var(--indigo); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .kpi-icon.ok { background: var(--ok-bg); color: var(--ok); }
+        .kpi-icon.warn { background: var(--warn-bg); color: var(--warn); }
+        .kpi-icon.bad { background: var(--bad-bg); color: var(--bad); }
+        .kpi-label { font-size: 11px; color: var(--ink2); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+        .kpi-value { font-size: 24px; font-weight: 700; line-height: 1.25; color: var(--ink); }
+        .kpi-value small { font-size: 14px; color: var(--muted); font-weight: 500; }
+        .kpi-meta { font-size: 12px; color: var(--muted); }
+        .delta-up { color: var(--ok); font-weight: 600; }
+        .delta-down { color: var(--bad); font-weight: 600; }
+
+        /* =====================================================================
+           FILTERS
+           ===================================================================== */
+        .filter-group-title { font-size: 11px; font-weight: 700; color: var(--indigo); letter-spacing: .6px;
+            text-transform: uppercase; margin: 0 0 8px; }
+        .filter-group + .filter-group { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+        .filter-list { padding: 0; margin: 0; }
+        .filter-list a { display: flex; justify-content: space-between; align-items: center; padding: 7px 10px;
+            border-radius: 6px; color: var(--ink2); font-size: 13px; text-decoration: none; }
+        .filter-list a:hover { background: var(--bg); color: var(--ink); }
+        .filter-list a.active { background: var(--indigo-l); color: var(--indigo); font-weight: 600; }
+        .filter-list a i.fa { width: 18px; color: var(--muted); }
+        .filter-list a.active i.fa { color: var(--indigo); }
+        .count { font-size: 11px; background: var(--mute-bg); color: var(--ink2); border-radius: 10px; padding: 1px 8px; font-weight: 600; }
+        body.filters-collapsed .filter-col { display: none; }
+        body.filters-collapsed .content-col { flex: 0 0 100%; max-width: 100%; }
+
+        /* =====================================================================
+           TOOLBAR / TABLE
+           ===================================================================== */
+        .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; width: 100%; }
+        .search-box { position: relative; flex: 1; min-width: 220px; }
+        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+        .search-box input { padding-left: 34px; height: 38px; border: 1px solid var(--line); border-radius: 6px;
+            font-size: 13px; box-shadow: none; }
+        .search-box input:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(63,81,181,.12); }
+        .search-box .counter { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); padding: 0;
+            font-size: 12px; color: var(--muted); }
+        .bulk-bar { display: none; align-items: center; gap: 10px; font-size: 13px; color: var(--ink2); }
+        .bulk-bar.show { display: flex; }
+
+        .data-table { width: 100%; margin: 0; font-size: 13px; }
+        /* Keep wide result grids inside their panel and let the grid scroll as a unit. */
+        .table-responsive { width: 100%; min-width: 0; overflow-x: auto; overflow-y: hidden; }
+        .data-table.results { table-layout: auto; }
+        #page-connection .data-table.results { min-width: 940px; }
+        #page-source .data-table.results { min-width: 1080px; }
+        .data-table thead th { background: #f7f8fc; color: var(--ink2); font-size: 11px; text-transform: uppercase;
+            letter-spacing: .5px; font-weight: 600; padding: 11px 14px; border-bottom: 1px solid var(--line);
+            border-top: 0; white-space: nowrap; }
+        .data-table td, .data-table tbody th { padding: 12px 14px; vertical-align: middle; border-top: 1px solid var(--line); }
+        .data-table tbody tr:first-child td, .data-table tbody tr:first-child th { border-top: 0; }
+        /* align first/last columns with the 20px panel padding */
+        .data-table thead th:first-child, .data-table td:first-child, .data-table tbody th:first-child { padding-left: 20px; }
+        .data-table thead th:last-child, .data-table td:last-child, .data-table tbody th:last-child { padding-right: 20px; }
+        .data-table.compact td, .data-table.compact tbody th { padding-top: 10px; padding-bottom: 10px; }
+        .panel > .table-responsive:last-child .data-table tbody tr:last-child td,
+        .panel > .table-responsive:last-child .data-table tbody tr:last-child th { border-bottom: 0; }
+        .data-table tbody tr:hover { background: #fafbff; }
+        .data-table tbody tr.clickable { cursor: pointer; }
+        .data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+        .data-table .w-check { width: 40px; }
+        .data-table input[type=checkbox] { width: 15px; height: 15px; vertical-align: middle; cursor: pointer; }
+        .cell-title { font-weight: 600; color: var(--ink); }
+        .cell-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+        .empty-row { text-align: center; color: var(--muted); padding: 40px 0 !important; }
+        .empty-row i.fa { font-size: 28px; display: block; margin-bottom: 8px; }
+
+        .tag { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 12px; font-size: 12px;
+            background: var(--mute-bg); color: var(--ink2); font-weight: 500; white-space: nowrap; }
+        .status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 3px 10px;
+            border-radius: 12px; white-space: nowrap; }
+        .status.ok { background: var(--ok-bg); color: var(--ok); }
+        .status.warn { background: var(--warn-bg); color: var(--warn); }
+        .status.bad { background: var(--bad-bg); color: var(--bad); }
+        .status.run { background: var(--run-bg); color: var(--run); }
+        .status.mute { background: var(--mute-bg); color: var(--ink2); }
+
+        .actions-cell { white-space: nowrap; text-align: right; }
+        .act { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--line); background: #fff; color: var(--ink2);
+            display: inline-flex; align-items: center; justify-content: center; margin-left: 4px; cursor: pointer; padding: 0; font-size: 13px; }
+        .act:hover { border-color: var(--indigo); color: var(--indigo); }
+        .act.danger:hover { border-color: var(--bad); color: var(--bad); }
+        .act:focus { outline: none; box-shadow: 0 0 0 3px rgba(63,81,181,.15); }
+
+        .minibar { height: 6px; background: #eceff4; border-radius: 3px; width: 72px; display: inline-block;
+            vertical-align: middle; overflow: hidden; margin-right: 8px; }
+        .minibar > span { display: block; height: 100%; background: var(--indigo); border-radius: 3px; }
+        .avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--indigo-l); color: var(--indigo); font-size: 11px;
+            font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 30px; }
+        .avatar.lg { width: 36px; height: 36px; flex-basis: 36px; font-size: 13px; }
+        .owner { display: flex; align-items: center; gap: 8px; }
+
+        .pagination { margin: 0; }
+        .pagination .page-item .page-link { border: 0; border-radius: 6px !important; margin: 0 2px; font-size: 13px;
+            color: var(--ink2); cursor: pointer; padding: 6px 11px; }
+        .pagination .page-item.active .page-link { background: var(--indigo); color: #fff; box-shadow: none; }
+        .pagination .page-item.disabled .page-link { color: #c5cbd3; cursor: default; }
+        .pagination .page-item .page-link:hover { background: var(--bg); }
+        .pagination .page-item.active .page-link:hover { background: var(--indigo); }
+
+        /* Pills (status filter in toolbars) */
+        .pill-group { display: inline-flex; background: var(--mute-bg); border-radius: 8px; padding: 3px; gap: 2px; }
+        .pill-group a { font-size: 12px; padding: 6px 12px; border-radius: 6px; color: var(--ink2); text-decoration: none;
+            font-weight: 500; white-space: nowrap; }
+        .pill-group a.active { background: #fff; color: var(--indigo); box-shadow: 0 1px 2px rgba(0,0,0,.08); font-weight: 600; }
+        .pill-group a .count { background: transparent; padding: 0 0 0 4px; }
+
+        /* =====================================================================
+           DASHBOARD BITS
+           ===================================================================== */
+        /* Consistent 24px grid: same horizontal gutter as the vertical gap between panels */
+        .page-body .row { margin-left: -12px; margin-right: -12px; }
+        .page-body .row > [class*="col"] { padding-left: 12px; padding-right: 12px; }
+        /* Equal-height rows: panels in the same row stretch to the tallest one */
+        .row.eq > [class*="col"] { display: flex; flex-direction: column; }
+        .row.eq > [class*="col"] > .panel { flex: 1 1 auto; display: flex; flex-direction: column; }
+        .row.eq > [class*="col"] > .panel.kpi { flex-direction: row; }
+        .panel > .grow { flex: 1 1 auto; }
+        /* tables inside a stretched panel spread their rows to fill it (no empty band at the bottom) */
+        .panel > .table-responsive.grow { display: flex; }
+        .panel > .table-responsive.grow > .data-table { height: 100%; }
+        .panel > .table-responsive.grow > .data-table thead tr { height: 40px; }
+        .chart-body .chart-wrap { flex: 1 1 auto; min-height: 260px; }
+        .panel .panel-head .btn { flex-shrink: 0; }
+
+        .chart-body { display: flex; flex-direction: column; padding: 16px 20px 12px; }
+        .chart-wrap { position: relative; }
+        .chart-wrap svg { width: 100%; height: auto; display: block; }
+        .chart-body .chart-wrap svg { position: absolute; top: 0; left: 0; }
+        .hbars { display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
+        .hbars .hbar-row { margin-bottom: 0; }
+        .health-list .meta { display: flex; align-items: center; gap: 12px; }
+        .health-list .lat { font-family: var(--mono); font-size: 12px; color: var(--ink2); min-width: 56px; text-align: right; }
+        .health-list .when { text-align: right; font-size: 13px; font-weight: 600; color: var(--ink); }
+        .health-list .when small { display: block; font-weight: 400; color: var(--muted); font-size: 11px; }
+        .chart-tip { position: absolute; pointer-events: none; background: var(--ink); color: #fff; font-size: 12px;
+            padding: 6px 10px; border-radius: 6px; display: none; white-space: nowrap; transform: translate(-50%, -110%); z-index: 5; }
+        .chart-tip b { display: block; font-size: 13px; }
+        .health-list, .feed { padding: 0; margin: 0; }
+        .health-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px;
+            border-top: 1px solid var(--line); font-size: 13px; }
+        .health-list li:first-child { border-top: 0; }
+        .feed li { display: flex; gap: 12px; padding: 12px 20px; border-top: 1px solid var(--line); font-size: 13px; }
+        .feed li:first-child { border-top: 0; }
+        .feed .ficon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            flex: 0 0 30px; font-size: 13px; }
+        .feed .ftime { font-size: 11px; color: var(--muted); }
+        .hbar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 13px; }
+        .hbar-row .lbl { width: 170px; flex: 0 0 170px; overflow: hidden; color: var(--ink2); }
+        .hbar-row .lbl > div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .hbar-row .lbl .cell-title { font-weight: 500; }
+        .hbar-row .track { flex: 1; height: 10px; background: #eceff4; border-radius: 5px; overflow: hidden; }
+        .hbar-row .track > span { display: block; height: 100%; background: var(--indigo); border-radius: 0 5px 5px 0; }
+        .hbar-row .val { width: 70px; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+
+        /* =====================================================================
+           JOB DETAIL
+           ===================================================================== */
+        .summary-grid { display: grid; grid-template-columns: repeat(6, 1fr); border-top: 1px solid var(--line); }
+        .summary-grid > div { padding: 14px 20px; border-left: 1px solid var(--line); }
+        .summary-grid > div:first-child { border-left: 0; }
+        .summary-grid .k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; margin-bottom: 4px; }
+        .summary-grid .v { font-size: 14px; font-weight: 600; color: var(--ink); }
+        @media (max-width: 1199px) { .summary-grid { grid-template-columns: repeat(3, 1fr); } }
+        .tabs-line { display: flex; gap: 4px; border-bottom: 1px solid var(--line); padding: 0 20px; }
+        .tabs-line a { padding: 12px 14px; font-size: 13px; color: var(--ink2); font-weight: 500; border-bottom: 2px solid transparent;
+            margin-bottom: -1px; text-decoration: none; }
+        .tabs-line a:hover { color: var(--indigo); }
+        .tabs-line a.active { color: var(--indigo); border-bottom-color: var(--indigo); font-weight: 600; }
+        .tree { padding: 0; margin: 0; }
+        .tree li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px dashed var(--line); font-size: 13px; }
+        .tree li:first-child { border-top: 0; }
+        .tree .branch { color: #b0bec5; font-family: var(--mono); }
+        .console { background: #1e2330; color: #c9d1e3; font-family: var(--mono); font-size: 12px; border-radius: 6px;
+            padding: 14px 16px; max-height: 280px; overflow: auto; line-height: 1.7; margin: 0; white-space: pre-wrap; }
+        .console .t { color: #6b7590; } .lv-info { color: #82aaff; } .lv-warn { color: #ffcb6b; }
+        .lv-err { color: #ff6e7a; } .lv-ok { color: #a5d6a7; }
+
+        /* =====================================================================
+           WIZARD
+           ===================================================================== */
+        .stepper { display: flex; padding: 24px 20px 20px; border-bottom: 1px solid var(--line); background: #fafbfe;
+            border-radius: var(--radius) var(--radius) 0 0; }
+        .stepper .st { flex: 1; text-align: center; position: relative; cursor: pointer; }
+        .stepper .st:not(:last-child):after { content: ""; position: absolute; top: 18px; left: calc(50% + 26px);
+            right: calc(-50% + 26px); height: 2px; background: #d7dce5; }
+        .stepper .st.done:not(:last-child):after { background: var(--indigo); }
+        .stepper .bubble { width: 36px; height: 36px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center;
+            justify-content: center; font-weight: 700; background: #fff; border: 2px solid #d7dce5; color: var(--muted); }
+        .stepper .st.current .bubble { background: var(--indigo); border-color: var(--indigo); color: #fff;
+            box-shadow: 0 0 0 4px rgba(63,81,181,.15); }
+        .stepper .st.done .bubble { background: var(--indigo-l); border-color: var(--indigo); color: var(--indigo); }
+        .stepper .st.locked { cursor: not-allowed; }
+        .stepper .lbl { font-size: 13px; font-weight: 600; color: var(--ink2); }
+        .stepper .st.current .lbl { color: var(--indigo); }
+        .stepper .desc { font-size: 11px; color: var(--muted); }
+        .wz-step { display: none; }
+        .wz-step.on { display: block; }
+        .wz-step h3 { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+        .wz-step .lead-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+        .field-label { font-size: 12px; font-weight: 600; color: var(--ink2); margin-bottom: 6px; display: block; }
+        .wz-form .form-control:not(.md-input) { border: 1px solid var(--line); border-radius: 6px; font-size: 13px; height: 38px; box-shadow: none; }
+        .wz-form select.form-control { height: 38px !important; }
+        .wz-form textarea.form-control { height: auto; font-family: var(--mono); font-size: 12px; }
+        .wz-form .form-control:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(63,81,181,.12); }
+        .wz-form .is-bad { border-color: var(--bad) !important; }
+        .wz-form .err { font-size: 11px; color: var(--bad); display: none; margin-top: 4px; }
+        .wz-form .has-error .err { display: block; }
+        .wz-nav { display: flex; justify-content: space-between; border-top: 1px solid var(--line); padding: 16px 20px; }
+        .kv { display: flex; justify-content: space-between; padding: 9px 0; border-top: 1px solid var(--line); font-size: 13px; gap: 12px; }
+        .kv:first-child { border-top: 0; }
+        .kv .k { color: var(--muted); white-space: nowrap; }
+        .kv .v { font-weight: 600; color: var(--ink); text-align: right; word-break: break-all; }
+        .mini-stats { display: flex; gap: 12px; margin-bottom: 16px; }
+        .mini-stats > div { flex: 1; background: var(--bg); border-radius: 6px; padding: 12px 14px; }
+        .mini-stats .k { font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 600; letter-spacing: .4px; }
+        .mini-stats .v { font-size: 18px; font-weight: 700; }
+        .tip { display: flex; gap: 10px; font-size: 12px; color: var(--ink2); margin-bottom: 10px; }
+        .tip i.fa { color: var(--indigo); margin-top: 2px; }
+
+        /* =====================================================================
+           MODALS / FORMS / TOASTS
+           ===================================================================== */
+        .modal-content { border-radius: var(--radius); overflow: hidden; }
+        .modal-notify.modal-info .modal-header, .modal-notify.modal-danger .modal-header { padding: 16px 20px; }
+        .modal-notify.modal-info .modal-header { background: var(--indigo); }
+        .modal-header .modal-title { font-size: 16px; font-weight: 600; }
+        .modal-body { padding: 20px 24px; }
+        .modal-footer { padding: 14px 24px; border-top: 1px solid var(--line); }
+        .modal .form-row-gap { margin-bottom: 14px; }
+
+        #toast-stack { position: fixed; top: 76px; right: 24px; z-index: 2000; width: 320px; }
+        .toast-item { background: #fff; border-left: 4px solid var(--ok); box-shadow: 0 8px 24px rgba(16,24,40,.14);
+            padding: 12px 16px; border-radius: 6px; margin-bottom: 10px; font-size: 13px; display: flex; gap: 10px; }
+        .toast-item i.fa { font-size: 16px; margin-top: 1px; }
+        .toast-item.ok { border-color: var(--ok); } .toast-item.ok i.fa { color: var(--ok); }
+        .toast-item.bad { border-color: var(--bad); } .toast-item.bad i.fa { color: var(--bad); }
+        .toast-item.run { border-color: var(--run); } .toast-item.run i.fa { color: var(--run); }
+        .toast-item .tt { font-weight: 600; }
+        .toast-item .td { color: var(--ink2); font-size: 12px; }
+
+        /* =====================================================================
+           LOGIN
+           ===================================================================== */
+        .login-wrap { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+        .login-card { width: 100%; max-width: 900px; display: flex; border-radius: 12px; overflow: hidden; background: #fff;
+            box-shadow: 0 20px 50px rgba(16,24,40,.12); }
+        .login-brand { flex: 1; background: linear-gradient(145deg, #3f51b5 0%, #283593 100%); color: #fff; padding: 40px;
+            display: flex; flex-direction: column; justify-content: space-between; }
+        .login-brand .logo { width: 48px; height: 48px; border-radius: 12px; background: #fff; display: flex; align-items: center; justify-content: center; }
+        .login-brand .logo img { width: 28px; }
+        .login-brand h2 { font-size: 24px; font-weight: 700; margin: 20px 0 8px; }
+        .login-brand p { font-size: 13px; opacity: .85; margin: 0; }
+        .login-brand ul { padding: 0; margin: 28px 0 0; }
+        .login-brand li { display: flex; gap: 12px; margin-bottom: 16px; font-size: 13px; }
+        .login-brand li i.fa { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,.14); display: flex;
+            align-items: center; justify-content: center; flex: 0 0 32px; }
+        .login-brand li b { display: block; }
+        .login-brand li span { opacity: .8; font-size: 12px; }
+        .login-brand .ver { font-size: 11px; opacity: .7; }
+        .login-form { flex: 1; padding: 48px 44px; }
+        .login-form h3 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .login-form .sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+        .login-form .md-form { margin-bottom: 28px; }
+        .demo-box { background: var(--indigo-l); color: var(--indigo-d); font-size: 12px; border-radius: 6px; padding: 10px 12px; margin-top: 20px; }
+        @media (max-width: 767px) { .login-brand { display: none; } .login-form { padding: 32px 24px; } }
+    </style>
+</head>
+
+<body>
+<div class="data-bg"></div>
+<div class="modal-loading"></div>
+<div id="toast-stack"></div>
+
+<!-- ############################################ LOGIN ############################################ -->
+<section class="page" id="page-login">
+    <div class="login-wrap">
+        <div class="login-card animated fadeIn">
+            <div class="login-brand">
+                <div>
+                    <div class="logo"><img src="assets/img/ico-parsing.png" alt="logo"></div>
+                    <h2>Parsing Data Immobi</h2>
+                    <p>Data ingestion &amp; parsing platform for property listings, agents and market data.</p>
+                    <ul>
+                        <li><i class="fa fa-plug"></i><div><b>Unified connections</b><span>FTP, SFTP, HTTP APIs and SQL databases in one place</span></div></li>
+                        <li><i class="fa fa-cogs"></i><div><b>Automated pipelines</b><span>Scheduled extract → parse → transform → load jobs</span></div></li>
+                        <li><i class="fa fa-line-chart"></i><div><b>Real-time monitoring</b><span>Run history, task duration, Gantt timeline and logs</span></div></li>
+                    </ul>
+                </div>
+                <div class="ver">v2.4.0 &middot; Region ap-southeast-3 (Jakarta)</div>
+            </div>
+            <div class="login-form">
+                <h3>Welcome back</h3>
+                <div class="sub">Sign in to your workspace to continue</div>
+                <form id="login-form" novalidate>
+                    <div class="alert alert-danger py-2" id="login-error" style="display:none;"></div>
+                    <div class="md-form">
+                        <i class="fa fa-envelope prefix grey-text"></i>
+                        <input type="email" id="login-email" class="form-control" value="admin@immobi.co.id">
+                        <label for="login-email" class="active">Email</label>
+                    </div>
+                    <div class="md-form">
+                        <i class="fa fa-lock prefix grey-text"></i>
+                        <input type="password" id="login-password" class="form-control" value="admin123">
+                        <label for="login-password" class="active">Password</label>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4" style="font-size:13px;">
+                        <label class="mb-0" style="cursor:pointer;"><input type="checkbox" checked style="vertical-align:middle;"> Remember me</label>
+                        <a href="#" onclick="return false;">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-indigo btn-lg" style="width:100%; padding:12px;"><i class="fa fa-sign-in"></i>Login</button>
+                    <div class="demo-box"><i class="fa fa-info-circle"></i>&nbsp; Demo account is prefilled &mdash; just click <b>Login</b>.</div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ############################################ APP ############################################ -->
+<div id="app" style="display:none;">
+    <aside class="sidebar-left">
+        <a class="company-logo" href="#" data-toggle="offcanvas" title="Toggle filters"><i class="fa fa-bars"></i></a>
+        <div class="sidebar-links">
+            <a class="link-grey" href="#dashboard" data-page="dashboard"><i class="fa fa-tachometer"></i>Dashboard</a>
+            <a class="link-grey" href="#connection" data-page="connection"><i class="fa fa-cogs"></i>Connection</a>
+            <a class="link-grey" href="#source" data-page="source"><i class="fa fa-tasks"></i>Data Source</a>
+            <a class="link-grey" href="#jobs" data-page="jobs"><i class="fa fa-keyboard-o"></i>Jobs</a>
+            <a class="link-grey" href="#wizard" data-page="wizard"><i class="fa fa-magic"></i>Wizard</a>
+        </div>
+        <a class="link-grey link-logout" href="#" id="btn-logout"><i class="fa fa-sign-out"></i>Logout</a>
+    </aside>
+
+    <main class="app-main">
+        <header class="topbar">
+            <div>
+                <div class="crumb" id="page-crumb">Parsing Data Immobi</div>
+                <h1 id="page-title">Dashboard</h1>
+            </div>
+            <div class="topbar-right">
+                <span class="sys-pill"><span class="dot"></span>All systems operational</span>
+                <div class="clock"><div id="clock-date">-</div><div id="clock-time" class="mono">-</div></div>
+                <div class="user-chip">
+                    <span class="avatar lg">AD</span>
+                    <div><div class="name">Admin Immobi</div><div class="role">Data Engineer</div></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ======================================= DASHBOARD ======================================= -->
+        <section class="page page-body" id="page-dashboard">
+            <div class="row eq" id="dash-kpis"></div>
+
+            <!-- Row 2: trend + health (equal height) -->
+            <div class="row eq">
+                <div class="col-xl-8">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div><h5 class="panel-title">Records ingested &middot; last 14 days</h5>
+                                <p class="panel-sub">Total rows loaded into the warehouse per day, all data sources</p></div>
+                            <span class="tag"><i class="fa fa-calendar"></i><span id="chart-range"></span></span>
+                        </div>
+                        <div class="panel-body grow chart-body"><div class="chart-wrap" id="ingest-chart"><div class="chart-tip"></div></div></div>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div><h5 class="panel-title">Connection health</h5><p class="panel-sub">Latest heartbeat, issues first</p></div>
+                            <a href="#connection" class="btn btn-sm btn-light-outline">View all</a>
+                        </div>
+                        <ul class="health-list grow" id="dash-health"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3: runs + activity (equal height) -->
+            <div class="row eq">
+                <div class="col-xl-8">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div><h5 class="panel-title">Recent job runs</h5><p class="panel-sub">Click a run to open the job detail</p></div>
+                            <a href="#jobs" class="btn btn-sm btn-light-outline">All jobs</a>
+                        </div>
+                        <div class="table-responsive grow">
+                            <table class="table data-table compact">
+                                <thead><tr><th>Job</th><th>Data Source</th><th>Status</th><th class="num">Records</th><th class="num">Duration</th><th class="text-right">Started</th></tr></thead>
+                                <tbody id="dash-runs"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="panel">
+                        <div class="panel-head"><div><h5 class="panel-title">Activity</h5><p class="panel-sub">Latest events across the workspace</p></div></div>
+                        <ul class="feed grow" id="dash-feed"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 4: volume + upcoming (equal height) -->
+            <div class="row eq">
+                <div class="col-xl-6">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div><h5 class="panel-title">Records by data source</h5><p class="panel-sub">Total rows currently stored, top 7</p></div>
+                            <a href="#source" class="btn btn-sm btn-light-outline">All sources</a>
+                        </div>
+                        <div class="panel-body grow hbars" id="dash-sources"></div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div><h5 class="panel-title">Upcoming runs</h5><p class="panel-sub">Next scheduled executions</p></div>
+                            <a href="#jobs" class="btn btn-sm btn-light-outline">Schedule</a>
+                        </div>
+                        <ul class="health-list grow" id="dash-upcoming"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================= CONNECTION ======================================= -->
+        <section class="page page-body" id="page-connection">
+            <div class="row eq kpi-row"></div>
+            <div class="row">
+                <div class="col-lg-3 col-xl-2 filter-col">
+                    <div class="panel"><div class="panel-body">
+                        <div class="filter-group"><div class="filter-group-title">Order by</div><ul class="filter-list order-list"></ul></div>
+                        <div class="filter-group"><div class="filter-group-title">Filter by type</div><ul class="filter-list filter-type"></ul></div>
+                        <div class="filter-group"><div class="filter-group-title">Status</div><ul class="filter-list filter-status"></ul></div>
+                    </div></div>
+                </div>
+                <div class="col-lg-9 col-xl-10 content-col">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div><h5 class="panel-title">Connections</h5><p class="panel-sub">Credentials and endpoints used by data sources</p></div>
+                        </div>
+                        <div class="panel-head" style="border-bottom:1px solid var(--line);">
+                            <div class="toolbar">
+                                <div class="search-box"><i class="fa fa-search"></i><input class="search form-control" placeholder="Search name, host, user…"><span class="counter"></span></div>
+                                <div class="bulk-bar"><span class="bulk-count"></span><button class="btn btn-sm btn-light-outline bulk-delete"><i class="fa fa-trash"></i>Delete selected</button></div>
+                                <button class="btn btn-indigo btn-add"><i class="fa fa-plus-circle"></i>Add New</button>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table data-table results connection-results">
+                                <thead><tr>
+                                    <th class="w-check"><input type="checkbox" class="checkall"></th>
+                                    <th>No</th><th>Name / Endpoint</th><th>Connection Type</th><th>User</th><th>Status</th>
+                                    <th class="num">Latency</th><th>Last Checked</th><th class="text-right">Action</th>
+                                </tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="panel-foot"><span class="range-info"></span><ul class="pagination pager"></ul></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================= DATA SOURCE ======================================= -->
+        <section class="page page-body" id="page-source">
+            <div class="row eq kpi-row"></div>
+            <div class="row">
+                <div class="col-lg-3 col-xl-2 filter-col">
+                    <div class="panel"><div class="panel-body">
+                        <div class="filter-group"><div class="filter-group-title">Order by</div><ul class="filter-list order-list"></ul></div>
+                        <div class="filter-group"><div class="filter-group-title">Filter by type</div><ul class="filter-list filter-type"></ul></div>
+                        <div class="filter-group"><div class="filter-group-title">Status</div><ul class="filter-list filter-status"></ul></div>
+                    </div></div>
+                </div>
+                <div class="col-lg-9 col-xl-10 content-col">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div><h5 class="panel-title">Data Sources</h5><p class="panel-sub">Files, feeds and tables ingested on a schedule</p></div>
+                        </div>
+                        <div class="panel-head">
+                            <div class="toolbar">
+                                <div class="search-box"><i class="fa fa-search"></i><input class="search form-control" placeholder="Search name, connection, format…"><span class="counter"></span></div>
+                                <div class="bulk-bar"><span class="bulk-count"></span><button class="btn btn-sm btn-light-outline bulk-delete"><i class="fa fa-trash"></i>Delete selected</button></div>
+                                <a href="#wizard" class="btn btn-indigo"><i class="fa fa-plus-circle"></i>Add New</a>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table data-table results source-results">
+                                <thead><tr>
+                                    <th class="w-check"><input type="checkbox" class="checkall"></th>
+                                    <th>No</th><th>Name</th><th>Connection</th><th>Format</th><th class="num">Records</th>
+                                    <th class="num">Size</th><th>Schedule</th><th>Status</th><th>Last Run</th><th class="text-right">Action</th>
+                                </tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="panel-foot"><span class="range-info"></span><ul class="pagination pager"></ul></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================= JOBS ======================================= -->
+        <section class="page page-body" id="page-jobs">
+            <div id="jobs-list">
+                <div class="row eq kpi-row"></div>
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><h5 class="panel-title">Jobs</h5><p class="panel-sub">Scheduled pipelines &mdash; click a row to see tasks, timeline and logs</p></div>
+                    </div>
+                    <div class="panel-head">
+                        <div class="toolbar">
+                            <div class="search-box"><i class="fa fa-search"></i><input class="search form-control" placeholder="Search job, source, owner…"><span class="counter"></span></div>
+                            <div class="pill-group status-pills"></div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table data-table results">
+                            <thead><tr>
+                                <th>No</th><th>Name</th><th>Description</th><th>Schedule</th><th>Owner</th><th>Last Run</th>
+                                <th>Success Rate</th><th class="num">Avg Duration</th><th>Next Run</th>
+                            </tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="panel-foot"><span class="range-info"></span><ul class="pagination pager"></ul></div>
+                </div>
+            </div>
+
+            <div id="jobs-detail" style="display:none;">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="d-flex align-items-center" style="gap:14px;">
+                            <div class="kpi-icon"><i class="fa fa-sitemap"></i></div>
+                            <div>
+                                <h5 class="panel-title">Jobs <span class="grey-text font-weight-normal" id="job-crumb">/Jakarta</span></h5>
+                                <p class="panel-sub" id="job-desc"></p>
+                            </div>
+                        </div>
+                        <div class="d-flex" style="gap:8px;">
+                            <button class="btn btn-light-outline" id="job-back"><i class="fa fa-arrow-circle-left"></i>Back</button>
+                            <button class="btn btn-indigo" id="job-run"><i class="fa fa-play"></i>Run Now</button>
+                        </div>
+                    </div>
+                    <div class="summary-grid" id="job-summary"></div>
+                </div>
+                <div class="panel">
+                    <div class="tabs-line detail-tabs">
+                        <a href="#" data-view="tree"><i class="fa fa-sitemap"></i>&nbsp; Tree View</a>
+                        <a href="#" data-view="duration"><i class="fa fa-bar-chart"></i>&nbsp; Task Duration</a>
+                        <a href="#" data-view="gantt"><i class="fa fa-align-left"></i>&nbsp; Gantt</a>
+                        <a href="#" data-view="details"><i class="fa fa-list"></i>&nbsp; Details</a>
+                    </div>
+                    <div id="job-view"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================= WIZARD ======================================= -->
+        <section class="page page-body" id="page-wizard">
+            <div class="row">
+                <div class="col-xl-8">
+                    <div class="panel">
+                        <div class="stepper" id="stepper"></div>
+                        <form id="wizard-form" class="wz-form" novalidate>
+                            <div class="panel-body">
+                                <!-- STEP 1 -->
+                                <div class="wz-step" data-step="0">
+                                    <h3>Create Data Source</h3>
+                                    <div class="lead-sub">Give the data source a clear name and describe what it contains.</div>
+                                    <div class="row">
+                                        <div class="col-md-8 form-group">
+                                            <label class="field-label" for="wz-name">Name *</label>
+                                            <input type="text" id="wz-name" class="form-control" data-required="1" value="Jakarta Rental Listings">
+                                            <div class="err">Name is required</div>
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <label class="field-label" for="wz-type">Type *</label>
+                                            <select class="form-control conn-type-select" id="wz-type" data-required="1"></select>
+                                            <div class="err">Select a type</div>
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <label class="field-label" for="wz-desc">Description</label>
+                                            <textarea id="wz-desc" rows="3" class="form-control" style="font-family:inherit;font-size:13px;">Daily export of rental property listings (apartments, houses, kost) for the Jakarta metro area, delivered by partner agencies.</textarea>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="field-label" for="wz-owner">Owner</label>
+                                            <select class="form-control" id="wz-owner"></select>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="field-label" for="wz-tags">Tags</label>
+                                            <input type="text" id="wz-tags" class="form-control" value="rental, jakarta, listing">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- STEP 2 -->
+                                <div class="wz-step" data-step="1">
+                                    <h3>Define Connection</h3>
+                                    <div class="lead-sub">Pick an existing connection and tell us where the files live.</div>
+                                    <div class="row">
+                                        <div class="col-md-4 form-group">
+                                            <label class="field-label" for="wz-conn-type">Connection Type</label>
+                                            <select class="form-control conn-type-select" id="wz-conn-type"></select>
+                                        </div>
+                                        <div class="col-md-8 form-group">
+                                            <label class="field-label" for="wz-conn">Connection Name *</label>
+                                            <select class="form-control" id="wz-conn" data-required="1"></select>
+                                            <div class="err">Select a connection</div>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="field-label" for="wz-path">Path *</label>
+                                            <input type="text" id="wz-path" class="form-control mono" data-required="1" value="/exports/rental/">
+                                            <div class="err">Path is required</div>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="field-label" for="wz-file">File Name Pattern *</label>
+                                            <input type="text" id="wz-file" class="form-control mono" data-required="1" value="rental_*.csv">
+                                            <div class="err">File pattern is required</div>
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <label class="field-label" for="wz-extra">Extra Configuration</label>
+                                            <textarea id="wz-extra" rows="4" class="form-control">passive_mode=true
+timeout=30
+retry=3
+archive_after_read=true</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- STEP 3 -->
+                                <div class="wz-step" data-step="2">
+                                    <h3>Create Profile</h3>
+                                    <div class="lead-sub">Describe the file format so the parser can read it correctly.</div>
+                                    <div class="row">
+                                        <div class="col-md-4 form-group">
+                                            <label class="field-label" for="wz-format">Datasource Format</label>
+                                            <select class="form-control" id="wz-format">
+                                                <option>CSV</option><option>JSON</option><option>XML</option><option>XLSX</option><option>Parquet</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <label class="field-label" for="wz-profile">Profile Name *</label>
+                                            <input type="text" id="wz-profile" class="form-control mono" data-required="1" value="rental_listing_v1">
+                                            <div class="err">Profile name is required</div>
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <label class="field-label" for="wz-delim">Delimiter *</label>
+                                            <input type="text" id="wz-delim" class="form-control mono" data-required="1" value=",">
+                                            <div class="err">Delimiter is required</div>
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <label class="field-label" for="wz-encoding">Encoding</label>
+                                            <select class="form-control" id="wz-encoding"><option>UTF-8</option><option>ISO-8859-1</option><option>UTF-16</option></select>
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <label class="field-label" for="wz-schedule">Schedule</label>
+                                            <select class="form-control" id="wz-schedule">
+                                                <option value="Daily 02:00">Daily 02:00</option><option value="Hourly">Hourly</option>
+                                                <option value="Every 15 min">Every 15 min</option><option value="Weekly (Mon)">Weekly (Mon)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <label class="field-label" for="wz-header">Header Row</label>
+                                            <select class="form-control" id="wz-header"><option>Yes, first row</option><option>No header</option></select>
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <label class="field-label" for="wz-extra2">Extra Configuration</label>
+                                            <textarea id="wz-extra2" rows="3" class="form-control">quote_char="
+skip_blank_lines=true
+date_format=yyyy-MM-dd HH:mm:ss</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- STEP 4 -->
+                                <div class="wz-step" data-step="3">
+                                    <h3>Metadata Profiling</h3>
+                                    <div class="lead-sub">We sampled the latest file. Review the detected schema before submitting.</div>
+                                    <div class="mini-stats">
+                                        <div><div class="k">Columns</div><div class="v">8</div></div>
+                                        <div><div class="k">Rows sampled</div><div class="v">10,000</div></div>
+                                        <div><div class="k">Quality score</div><div class="v" style="color:var(--ok);">97.4%</div></div>
+                                        <div><div class="k">File size</div><div class="v">4.8 MB</div></div>
+                                    </div>
+                                    <div class="table-responsive" style="border:1px solid var(--line); border-radius:6px;">
+                                        <table class="table data-table">
+                                            <thead><tr><th>No</th><th>Column</th><th>Data Type</th><th>Nullable</th><th class="num">Distinct</th><th class="num">Null %</th><th>Sample</th></tr></thead>
+                                            <tbody id="wz-meta"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wz-nav">
+                                <button class="btn btn-light-outline" type="button" id="wz-prev"><i class="fa fa-arrow-left"></i>Previous</button>
+                                <div>
+                                    <button class="btn btn-indigo" type="button" id="wz-next">Next<i class="fa fa-arrow-right" style="margin:0 0 0 6px;"></i></button>
+                                    <button class="btn btn-indigo" type="submit" id="wz-submit"><i class="fa fa-check"></i>Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="panel">
+                        <div class="panel-head"><div><h5 class="panel-title">Summary</h5><p class="panel-sub">Updates live as you fill the form</p></div></div>
+                        <div class="panel-body" id="wz-summary"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-head"><div><h5 class="panel-title">Tips</h5></div></div>
+                        <div class="panel-body">
+                            <div class="tip"><i class="fa fa-lightbulb-o"></i><div>Use wildcards like <span class="mono">rental_*.csv</span> to pick up daily files automatically.</div></div>
+                            <div class="tip"><i class="fa fa-shield"></i><div>Credentials are taken from the selected connection &mdash; nothing is stored in the data source.</div></div>
+                            <div class="tip"><i class="fa fa-clock-o"></i><div>A job is created automatically with the schedule you choose in step 3.</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- ############################################ MODALS ############################################ -->
+<!-- Add / Edit Connection -->
+<div class="modal fade" id="modal-conn" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title white-text" id="conn-heading">Form Connection</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="white-text">&times;</span></button>
+            </div>
+            <form id="form-conn" class="wz-form" novalidate>
+                <div class="modal-body">
+                    <input type="hidden" id="conn-id">
+                    <div class="row">
+                        <div class="col-md-8 form-group">
+                            <label class="field-label" for="conn-name">Name *</label>
+                            <input type="text" id="conn-name" class="form-control" placeholder="e.g. FTP Jakarta">
+                            <div class="err">Name is required</div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label class="field-label" for="conn-type">Type *</label>
+                            <select class="form-control conn-type-select" id="conn-type"></select>
+                            <div class="err">Select a type</div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="field-label" for="conn-host">Host *</label>
+                            <input type="text" id="conn-host" class="form-control mono" placeholder="10.10.1.11 or api.example.com">
+                            <div class="err">Host is required</div>
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label class="field-label" for="conn-port">Port</label>
+                            <input type="number" min="0" step="1" id="conn-port" class="form-control mono">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label class="field-label" for="conn-protocol">Protocol</label>
+                            <input type="text" id="conn-protocol" class="form-control mono">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="field-label" for="conn-username">User</label>
+                            <input type="text" id="conn-username" class="form-control mono">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="field-label" for="conn-password">Password</label>
+                            <input type="password" id="conn-password" class="form-control">
+                        </div>
+                        <div class="col-md-12 form-group mb-0">
+                            <label class="field-label" for="conn-desc">Description</label>
+                            <input type="text" id="conn-desc" class="form-control" placeholder="What is this connection used for?">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-light-outline" id="conn-test"><i class="fa fa-plug"></i>Test Connection</button>
+                    <div>
+                        <button type="button" class="btn btn-light-outline" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-indigo" id="conn-save"><i class="fa fa-save"></i>Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Data Source -->
+<div class="modal fade" id="modal-src" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title white-text">Edit Data Source</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="white-text">&times;</span></button>
+            </div>
+            <form id="form-src" class="wz-form" novalidate>
+                <div class="modal-body">
+                    <input type="hidden" id="src-id">
+                    <div class="row">
+                        <div class="col-md-8 form-group">
+                            <label class="field-label" for="src-name">Name *</label>
+                            <input type="text" id="src-name" class="form-control">
+                            <div class="err">Name is required</div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label class="field-label" for="src-status">Status</label>
+                            <select class="form-control" id="src-status"><option value="active">Active</option><option value="paused">Paused</option><option value="error">Error</option></select>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label class="field-label" for="src-desc">Description</label>
+                            <input type="text" id="src-desc" class="form-control">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="field-label" for="src-conn">Connection</label>
+                            <select class="form-control" id="src-conn"></select>
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label class="field-label" for="src-format">Format</label>
+                            <select class="form-control" id="src-format"><option>CSV</option><option>JSON</option><option>XML</option><option>XLSX</option><option>Parquet</option><option>Table</option></select>
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label class="field-label" for="src-schedule">Schedule</label>
+                            <select class="form-control" id="src-schedule"><option>Daily 02:00</option><option>Hourly</option><option>Every 15 min</option><option>Weekly (Mon)</option></select>
+                        </div>
+                        <div class="col-md-6 form-group mb-0">
+                            <label class="field-label" for="src-path">Path</label>
+                            <input type="text" id="src-path" class="form-control mono">
+                        </div>
+                        <div class="col-md-6 form-group mb-0">
+                            <label class="field-label" for="src-file">File / Table</label>
+                            <input type="text" id="src-file" class="form-control mono">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-outline" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-indigo"><i class="fa fa-edit"></i>Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm delete (shared) -->
+<div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-notify modal-danger">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title white-text" id="delete-heading">Delete</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true" class="white-text">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex" style="gap:14px;">
+                    <div class="kpi-icon bad"><i class="fa fa-trash"></i></div>
+                    <div><div style="font-weight:600;" id="delete-msg"></div>
+                        <div class="kpi-meta mt-1">This action cannot be undone.</div></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-outline" data-dismiss="modal">No, keep it</button>
+                <button type="button" class="btn btn-danger" id="delete-yes"><i class="fa fa-trash"></i>Yes, delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="assets/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="assets/js/popper.min.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="assets/js/mdb.min.js"></script>
+
+<script>
+/* ==========================================================================
+   SAMPLE DATA (replaces automation.conn_type / v_connections / sources / jobs)
+   Times are "minutes ago" / "minutes from now" so the demo always looks live.
+   ========================================================================== */
+var TYPES = [
+    { name: 'FTP',  icon: 'fa-folder-open', port: 21,   protocol: 'ftp'   },
+    { name: 'SFTP', icon: 'fa-lock',        port: 22,   protocol: 'sftp'  },
+    { name: 'HTTP', icon: 'fa-globe',       port: 443,  protocol: 'https' },
+    { name: 'SQL',  icon: 'fa-database',    port: 5432, protocol: 'tcp'   }
+];
+var OWNERS = ['Aditya Pratama', 'Budi Santoso', 'Citra Lestari', 'Dewi Anggraini', 'Eko Wijaya', 'Fajar Nugroho'];
+
+var DB = {
+    connections: [
+        { id: 1,  name: 'FTP Jakarta',        type: 'FTP',  host: '10.10.1.11',         port: 21,   protocol: 'ftp',   username: 'ftpjkt',    password: 'secret', status: 'online',   latency: 38,  checked: 2,   desc: 'Partner agency drop-zone, Jakarta' },
+        { id: 2,  name: 'FTP Surabaya',       type: 'FTP',  host: '10.10.1.12',         port: 21,   protocol: 'ftp',   username: 'ftpsby',    password: 'secret', status: 'online',   latency: 52,  checked: 3,   desc: 'Partner agency drop-zone, Surabaya' },
+        { id: 3,  name: 'SFTP Bandung',       type: 'SFTP', host: 'sftp-bdg.immobi.id', port: 22,   protocol: 'sftp',  username: 'bdg_ingest',password: 'secret', status: 'online',   latency: 61,  checked: 1,   desc: 'Agent roster exports' },
+        { id: 4,  name: 'SFTP Medan',         type: 'SFTP', host: 'sftp-mdn.immobi.id', port: 22,   protocol: 'sftp',  username: 'mdn_ingest',password: 'secret', status: 'degraded', latency: 412, checked: 4,   desc: 'Slow link, under ISP investigation' },
+        { id: 5,  name: 'Property API',       type: 'HTTP', host: 'api.immobi.co.id',   port: 443,  protocol: 'https', username: 'svc_parser',password: 'secret', status: 'online',   latency: 124, checked: 1,   desc: 'Internal listing & price REST API' },
+        { id: 6,  name: 'Listing Feed',       type: 'HTTP', host: 'feed.immobi.co.id',  port: 443,  protocol: 'https', username: 'feed_ro',   password: 'secret', status: 'online',   latency: 97,  checked: 2,   desc: 'XML feed from portal partners' },
+        { id: 7,  name: 'Postgres Warehouse', type: 'SQL',  host: 'dwh.internal',       port: 5432, protocol: 'tcp',   username: 'etl_writer',password: 'secret', status: 'online',   latency: 9,   checked: 1,   desc: 'Target warehouse (automation schema)' },
+        { id: 8,  name: 'MySQL Legacy',       type: 'SQL',  host: '10.10.3.32',         port: 3306, protocol: 'tcp',   username: 'legacy_ro', password: 'secret', status: 'offline',  latency: 0,   checked: 6,   desc: 'Old CRM database - scheduled for retirement' },
+        { id: 9,  name: 'FTP Bali',           type: 'FTP',  host: '10.10.1.13',         port: 21,   protocol: 'ftp',   username: 'ftpbali',   password: 'secret', status: 'online',   latency: 74,  checked: 5,   desc: 'Villa & holiday rental partners' },
+        { id: 10, name: 'Agent Portal API',   type: 'HTTP', host: 'agent.immobi.co.id', port: 443,  protocol: 'https', username: 'svc_agent', password: 'secret', status: 'online',   latency: 143, checked: 2,   desc: 'Leads submitted through agent portal' },
+        { id: 11, name: 'SQL Server CRM',     type: 'SQL',  host: 'crm-db.internal',    port: 1433, protocol: 'tcp',   username: 'crm_reader',password: 'secret', status: 'online',   latency: 18,  checked: 1,   desc: 'Customer & contact master data' },
+        { id: 12, name: 'SFTP Makassar',      type: 'SFTP', host: 'sftp-mks.immobi.id', port: 22,   protocol: 'sftp',  username: 'mks_ingest',password: 'secret', status: 'online',   latency: 88,  checked: 3,   desc: 'Sulawesi partner exports' }
+    ],
+    sources: [
+        { id: 1, name: 'Jakarta Listings',   desc: 'Sale & rent listings from Jakarta agencies',  connId: 1,  type: 'FTP',  format: 'CSV',     records: 1284310, sizeMB: 612,  schedule: 'Daily 02:00',  status: 'active', lastRun: 38,   owner: 'Aditya Pratama', path: '/exports/listing/', file: 'listing_*.csv' },
+        { id: 2, name: 'Surabaya Listings',  desc: 'Sale & rent listings from Surabaya agencies', connId: 2,  type: 'FTP',  format: 'CSV',     records: 642890,  sizeMB: 301,  schedule: 'Daily 02:00',  status: 'active', lastRun: 41,   owner: 'Budi Santoso',   path: '/exports/listing/', file: 'sby_*.csv' },
+        { id: 3, name: 'Bandung Agents',     desc: 'Agent roster & license status',               connId: 3,  type: 'SFTP', format: 'XLSX',    records: 18420,   sizeMB: 12,   schedule: 'Weekly (Mon)', status: 'active', lastRun: 2880, owner: 'Citra Lestari',  path: '/out/agents/',      file: 'agents_*.xlsx' },
+        { id: 4, name: 'Property Prices',    desc: 'Price index per district from internal API',  connId: 5,  type: 'HTTP', format: 'JSON',    records: 356200,  sizeMB: 148,  schedule: 'Hourly',       status: 'active', lastRun: 12,   owner: 'Aditya Pratama', path: '/v2/prices',        file: 'page=*' },
+        { id: 5, name: 'Warehouse Facts',    desc: 'Aggregated transaction facts',                connId: 7,  type: 'SQL',  format: 'Table',   records: 4820550, sizeMB: 2380, schedule: 'Daily 02:00',  status: 'active', lastRun: 55,   owner: 'Dewi Anggraini', path: 'automation',        file: 'fact_transaction' },
+        { id: 6, name: 'Legacy Customers',   desc: 'Customer records from old CRM',               connId: 8,  type: 'SQL',  format: 'Table',   records: 210400,  sizeMB: 96,   schedule: 'Daily 02:00',  status: 'error',  lastRun: 1440, owner: 'Eko Wijaya',     path: 'crm_old',           file: 'customers' },
+        { id: 7, name: 'Bali Villas Feed',   desc: 'Holiday villa availability & rates',          connId: 9,  type: 'FTP',  format: 'XML',     records: 48730,   sizeMB: 64,   schedule: 'Every 15 min', status: 'active', lastRun: 6,    owner: 'Fajar Nugroho',  path: '/feed/villas/',     file: 'villas.xml' },
+        { id: 8, name: 'Agent Leads',        desc: 'Buyer leads captured in agent portal',        connId: 10, type: 'HTTP', format: 'JSON',    records: 92310,   sizeMB: 41,   schedule: 'Hourly',       status: 'active', lastRun: 18,   owner: 'Budi Santoso',   path: '/api/leads',        file: 'since=last_run' },
+        { id: 9, name: 'CRM Contacts',       desc: 'Contact master from SQL Server CRM',          connId: 11, type: 'SQL',  format: 'Table',   records: 731020,  sizeMB: 288,  schedule: 'Daily 02:00',  status: 'paused', lastRun: 4320, owner: 'Dewi Anggraini', path: 'dbo',               file: 'contacts' },
+        { id: 10, name: 'Medan Listings',    desc: 'Sale listings from Medan agencies',           connId: 4,  type: 'SFTP', format: 'CSV',     records: 154880,  sizeMB: 73,   schedule: 'Daily 02:00',  status: 'active', lastRun: 63,   owner: 'Citra Lestari',  path: '/out/listing/',     file: 'mdn_*.csv' }
+    ],
+    jobs: [
+        { id: 1,  name: 'Jakarta',    sourceId: 1,  desc: 'Ingest Jakarta listings',          cron: '0 22 * * *',   schedule: 'Daily 10:00 PM',  owner: 'Aditya Pratama', status: 'success', success: 98.6, lastRun: 38,   nextRun: 540, avgDur: 1254, records: 48210 },
+        { id: 2,  name: 'Surabaya',   sourceId: 2,  desc: 'Ingest Surabaya listings',         cron: '0 23 * * *',   schedule: 'Daily 11:00 PM',  owner: 'Budi Santoso',   status: 'running', success: 97.1, lastRun: 4,    nextRun: 600, avgDur: 912,  records: 21380 },
+        { id: 3,  name: 'Bandung',    sourceId: 3,  desc: 'Refresh agent roster',             cron: '0 1 * * 1',    schedule: 'Weekly Mon 01:00',owner: 'Citra Lestari',  status: 'success', success: 100,  lastRun: 2880, nextRun: 7200,avgDur: 186,  records: 18420 },
+        { id: 4,  name: 'Medan',      sourceId: 10, desc: 'Ingest Medan listings (slow link)',cron: '30 2 * * *',   schedule: 'Daily 02:30 AM',  owner: 'Dewi Anggraini', status: 'failed',  success: 82.4, lastRun: 63,   nextRun: 780, avgDur: 2140, records: 0 },
+        { id: 5,  name: 'Bali',       sourceId: 7,  desc: 'Villa availability sync',          cron: '*/15 * * * *', schedule: 'Every 15 min',    owner: 'Eko Wijaya',     status: 'success', success: 99.3, lastRun: 6,    nextRun: 9,   avgDur: 74,   records: 312 },
+        { id: 6,  name: 'Makassar',   sourceId: 1,  desc: 'Sulawesi partner exports',         cron: '15 4 * * *',   schedule: 'Daily 04:15 AM',  owner: 'Fajar Nugroho',  status: 'paused',  success: 94.0, lastRun: 4320, nextRun: 0,   avgDur: 402,  records: 6230 },
+        { id: 7,  name: 'Price Index',sourceId: 4,  desc: 'Hourly district price index',      cron: '5 * * * *',    schedule: 'Hourly at :05',   owner: 'Aditya Pratama', status: 'success', success: 99.8, lastRun: 12,   nextRun: 48,  avgDur: 96,   records: 2140 },
+        { id: 8,  name: 'Warehouse',  sourceId: 5,  desc: 'Build transaction facts',          cron: '0 3 * * *',    schedule: 'Daily 03:00 AM',  owner: 'Dewi Anggraini', status: 'success', success: 96.2, lastRun: 55,   nextRun: 660, avgDur: 3280, records: 126400 },
+        { id: 9,  name: 'Legacy CRM', sourceId: 6,  desc: 'Migrate legacy customers',         cron: '0 2 * * *',    schedule: 'Daily 02:00 AM',  owner: 'Eko Wijaya',     status: 'failed',  success: 61.5, lastRun: 1440, nextRun: 720, avgDur: 640,  records: 0 },
+        { id: 10, name: 'Agent Leads',sourceId: 8,  desc: 'Pull new buyer leads',             cron: '0 * * * *',    schedule: 'Hourly',          owner: 'Budi Santoso',   status: 'success', success: 99.1, lastRun: 18,   nextRun: 42,  avgDur: 58,   records: 184 },
+        { id: 11, name: 'CRM Contacts',sourceId: 9, desc: 'Sync CRM contact master',          cron: '30 1 * * *',   schedule: 'Daily 01:30 AM',  owner: 'Citra Lestari',  status: 'paused',  success: 95.7, lastRun: 4320, nextRun: 0,   avgDur: 820,  records: 0 }
+    ],
+    ingest: [82140, 91320, 88410, 104230, 97120, 76340, 69210, 110480, 121060, 115390, 98720, 124300, 131870, 128430],
+    feed: [
+        { icon: 'fa-check',       cls: 'ok',   text: '<b>Bali</b> job finished &middot; 312 records', min: 6 },
+        { icon: 'fa-refresh',     cls: 'run',  text: '<b>Surabaya</b> job started by scheduler', min: 4 },
+        { icon: 'fa-exclamation', cls: 'warn', text: '<b>SFTP Medan</b> latency above 400 ms', min: 9 },
+        { icon: 'fa-times',       cls: 'bad',  text: '<b>Medan</b> job failed at <span class="mono">transform</span> step', min: 63 },
+        { icon: 'fa-pencil',      cls: 'mute', text: '<b>Citra Lestari</b> updated <b>Bandung Agents</b> profile', min: 95 },
+        { icon: 'fa-plus',        cls: 'mute', text: '<b>Aditya Pratama</b> added connection <b>Property API</b>', min: 240 },
+        { icon: 'fa-times',       cls: 'bad',  text: '<b>MySQL Legacy</b> connection refused', min: 360 }
+    ]
+};
+var nextId = { connections: 100, sources: 100, jobs: 100 };
+var PAGE_SIZE = 8;
+
+/* ==========================================================================
+   HELPERS
+   ========================================================================== */
+function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+}
+function fmtNum(n) { return Number(n || 0).toLocaleString('en-US'); }
+function fmtK(v) { return v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? Math.round(v / 1e3) + 'k' : String(v); }
+function fmtSize(mb) { return mb >= 1024 ? (mb / 1024).toFixed(1) + ' GB' : mb + ' MB'; }
+function fmtDur(sec) {
+    sec = Math.round(sec || 0);
+    if (sec < 60) return sec + 's';
+    var m = Math.floor(sec / 60), s = sec % 60;
+    if (m < 60) return m + 'm ' + (s < 10 ? '0' : '') + s + 's';
+    return Math.floor(m / 60) + 'h ' + (m % 60) + 'm';
+}
+function ago(min) {
+    if (min == null) return 'Never';
+    if (min < 1) return 'just now';
+    if (min < 60) return min + ' min ago';
+    if (min < 1440) return Math.floor(min / 60) + ' h ago';
+    return Math.floor(min / 1440) + ' d ago';
+}
+function inMin(min) {
+    if (!min) return '—';
+    if (min < 60) return 'in ' + min + ' min';
+    if (min < 1440) return 'in ' + Math.floor(min / 60) + ' h ' + (min % 60 ? (min % 60) + ' m' : '');
+    return 'in ' + Math.floor(min / 1440) + ' d';
+}
+function stamp(minAgo) {
+    var d = new Date(Date.now() - minAgo * 60000);
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) + ' ' + d.toTimeString().slice(0, 5);
+}
+function initials(name) { return name.split(' ').map(function (p) { return p[0]; }).join('').slice(0, 2).toUpperCase(); }
+function typeOf(name) { return TYPES.filter(function (t) { return t.name === name; })[0] || { icon: 'fa-plug' }; }
+function typeChip(t) { return '<span class="tag"><i class="fa ' + typeOf(t).icon + '"></i>' + esc(t) + '</span>'; }
+function connById(id) { return DB.connections.filter(function (c) { return c.id === id; })[0]; }
+function sourceById(id) { return DB.sources.filter(function (s) { return s.id === id; })[0]; }
+function owner(name) { return '<span class="owner"><span class="avatar">' + initials(name) + '</span>' + esc(name) + '</span>'; }
+
+var STATUS = {
+    online:   { cls: 'ok',   icon: 'fa-check-circle',        label: 'Online' },
+    degraded: { cls: 'warn', icon: 'fa-exclamation-triangle', label: 'Degraded' },
+    offline:  { cls: 'bad',  icon: 'fa-times-circle',         label: 'Offline' },
+    active:   { cls: 'ok',   icon: 'fa-check-circle',         label: 'Active' },
+    paused:   { cls: 'mute', icon: 'fa-pause-circle',         label: 'Paused' },
+    error:    { cls: 'bad',  icon: 'fa-times-circle',         label: 'Error' },
+    success:  { cls: 'ok',   icon: 'fa-check-circle',         label: 'Success' },
+    running:  { cls: 'run',  icon: 'fa-refresh fa-spin',      label: 'Running' },
+    failed:   { cls: 'bad',  icon: 'fa-times-circle',         label: 'Failed' },
+    queued:   { cls: 'mute', icon: 'fa-clock-o',              label: 'Queued' },
+    skipped:  { cls: 'mute', icon: 'fa-minus-circle',         label: 'Skipped' }
+};
+function badge(s) { var x = STATUS[s] || STATUS.queued; return '<span class="status ' + x.cls + '"><i class="fa ' + x.icon + '"></i>' + x.label + '</span>'; }
+
+function toast(title, detail, kind) {
+    var icon = kind === 'bad' ? 'fa-times-circle' : kind === 'run' ? 'fa-refresh fa-spin' : 'fa-check-circle';
+    var $t = $('<div class="toast-item animated fadeInRight ' + (kind || 'ok') + '"><i class="fa ' + icon + '"></i><div><div class="tt">' +
+        esc(title) + '</div>' + (detail ? '<div class="td">' + esc(detail) + '</div>' : '') + '</div></div>');
+    $('#toast-stack').append($t);
+    setTimeout(function () { $t.fadeOut(300, function () { $t.remove(); }); }, 3500);
+}
+function fakeAjax(cb, ms) {
+    $('body').addClass('loading');
+    setTimeout(function () { $('body').removeClass('loading'); cb(); }, ms || 350);
+}
+function initTips($root) {
+    $root.find('[data-toggle=tooltip]').tooltip('dispose').tooltip({ container: 'body' });
+}
+function hideTips() { $('.tooltip').remove(); }
+function kpi(icon, cls, label, value, meta) {
+    return '<div class="col-md-6 col-xl-3"><div class="panel kpi"><div class="kpi-icon ' + cls + '"><i class="fa ' + icon + '"></i></div>' +
+        '<div><div class="kpi-label">' + label + '</div><div class="kpi-value">' + value + '</div><div class="kpi-meta">' + meta + '</div></div></div></div>';
+}
+function renderPager($ul, total, current, onGo) {
+    var pages = Math.max(1, Math.ceil(total / PAGE_SIZE)), h = '';
+    h += '<li class="page-item' + (current <= 1 ? ' disabled' : '') + '"><a class="page-link" data-p="' + (current - 1) + '">Previous</a></li>';
+    for (var i = 1; i <= pages; i++) h += '<li class="page-item' + (i === current ? ' active' : '') + '"><a class="page-link" data-p="' + i + '">' + i + '</a></li>';
+    h += '<li class="page-item' + (current >= pages ? ' disabled' : '') + '"><a class="page-link" data-p="' + (current + 1) + '">Next</a></li>';
+    $ul.html(h);
+    $ul.find('a.page-link').on('click', function (e) {
+        e.preventDefault();
+        var p = parseInt($(this).data('p'), 10);
+        if (!$(this).parent().hasClass('disabled') && p >= 1 && p <= pages) onGo(p);
+    });
+}
+function fillTypeSelects() {
+    var opts = '<option value="">- Select -</option>';
+    TYPES.forEach(function (t) { opts += '<option value="' + t.name + '">' + t.name + '</option>'; });
+    $('.conn-type-select').html(opts);
+    $('#wz-owner').html(OWNERS.map(function (o) { return '<option>' + o + '</option>'; }).join(''));
+}
+
+/* Confirm modal */
+var Confirm = {
+    cb: null,
+    open: function (title, msg, cb) {
+        this.cb = cb;
+        $('#delete-heading').text(title);
+        $('#delete-msg').html(msg);
+        $('#modal-delete').modal('show');
+    }
+};
+$('#delete-yes').on('click', function () { $('#modal-delete').modal('hide'); if (Confirm.cb) Confirm.cb(); });
+
+/* ==========================================================================
+   GENERIC LIST VIEW  (search, filters, order, paging, selection)
+   ========================================================================== */
+function ListView(o) {
+    var s = this;
+    s.o = o; s.$ = o.$root; s.page = 1; s.q = ''; s.type = 'All'; s.status = 'All'; s.order = 'recent'; s.sel = {};
+
+    s.filtered = function () {
+        var words = s.q.toLowerCase().split(' ').filter(Boolean);
+        return o.data().filter(function (r) {
+            if (s.type !== 'All' && r.type !== s.type) return false;
+            if (s.status !== 'All' && r.status !== s.status) return false;
+            if (words.length) {
+                var t = o.text(r).toLowerCase();
+                return words.every(function (w) { return t.indexOf(w) >= 0; });
+            }
+            return true;
+        }).sort(o.sorters[s.order] || o.sorters.recent);
+    };
+
+    s.render = function () {
+        hideTips();
+        var list = s.filtered(), total = list.length, pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        if (s.page > pages) s.page = pages;
+        var start = (s.page - 1) * PAGE_SIZE, rows = list.slice(start, start + PAGE_SIZE);
+        var h = rows.map(function (r, i) { return o.row(r, start + i + 1, !!s.sel[r.id]); }).join('');
+        if (!total) h = '<tr><td colspan="' + o.cols + '" class="empty-row"><i class="fa fa-search"></i>No result<div class="kpi-meta">Try another keyword or clear the filters</div></td></tr>';
+        s.$.find('.results tbody').html(h);
+        s.$.find('.range-info').text(total ? 'Showing ' + (start + 1) + '–' + (start + rows.length) + ' of ' + total + ' ' + o.noun : 'No ' + o.noun + ' found');
+        s.$.find('.counter').text(s.q ? total + ' item' + (total === 1 ? '' : 's') : '');
+        renderPager(s.$.find('.pager'), total, s.page, function (p) { s.page = p; s.render(); });
+        s.renderFilters(); s.updateSel();
+        if (o.kpis) s.$.find('.kpi-row').html(o.kpis());
+        initTips(s.$);
+    };
+
+    s.renderFilters = function () {
+        var all = o.data();
+        function count(fn) { return all.filter(fn).length; }
+        if (o.orders) {
+            s.$.find('.order-list').html(o.orders.map(function (x) {
+                return '<li><a href="#" class="' + (s.order === x[0] ? 'active' : '') + '" data-order="' + x[0] + '"><span><i class="fa ' + x[2] + '"></i>' + x[1] + '</span></a></li>';
+            }).join(''));
+        }
+        var th = '<li><a href="#" class="' + (s.type === 'All' ? 'active' : '') + '" data-type="All"><span><i class="fa fa-th-large"></i>All</span><span class="count">' + all.length + '</span></a></li>';
+        TYPES.forEach(function (t) {
+            th += '<li><a href="#" class="' + (s.type === t.name ? 'active' : '') + '" data-type="' + t.name + '"><span><i class="fa ' + t.icon + '"></i>' + t.name + '</span><span class="count">' + count(function (r) { return r.type === t.name; }) + '</span></a></li>';
+        });
+        s.$.find('.filter-type').html(th);
+        if (o.statuses) {
+            var sh = '<li><a href="#" class="' + (s.status === 'All' ? 'active' : '') + '" data-status="All"><span><i class="fa fa-circle-o"></i>All</span><span class="count">' + all.length + '</span></a></li>';
+            o.statuses.forEach(function (st) {
+                sh += '<li><a href="#" class="' + (s.status === st ? 'active' : '') + '" data-status="' + st + '"><span><i class="fa ' + STATUS[st].icon.replace(' fa-spin', '') + '"></i>' + STATUS[st].label + '</span><span class="count">' + count(function (r) { return r.status === st; }) + '</span></a></li>';
+            });
+            s.$.find('.filter-status').html(sh);
+            var ph = '<a href="#" class="' + (s.status === 'All' ? 'active' : '') + '" data-status="All">All<span class="count">' + all.length + '</span></a>';
+            o.statuses.forEach(function (st) {
+                ph += '<a href="#" class="' + (s.status === st ? 'active' : '') + '" data-status="' + st + '">' + STATUS[st].label + '<span class="count">' + count(function (r) { return r.status === st; }) + '</span></a>';
+            });
+            s.$.find('.status-pills').html(ph);
+        }
+    };
+
+    s.updateSel = function () {
+        var ids = Object.keys(s.sel), $rows = s.$.find('.row-check');
+        s.$.find('.bulk-bar').toggleClass('show', ids.length > 0);
+        s.$.find('.bulk-count').text(ids.length + ' selected');
+        s.$.find('.checkall').prop('checked', $rows.length > 0 && $rows.filter(':checked').length === $rows.length);
+    };
+
+    s.find = function (id) { return o.data().filter(function (r) { return r.id === id; })[0]; };
+
+    s.$.on('input', '.search', function () { s.q = $(this).val(); s.page = 1; s.render(); });
+    s.$.on('click', '[data-type]', function (e) { e.preventDefault(); s.type = $(this).data('type'); s.page = 1; s.render(); });
+    s.$.on('click', '[data-status]', function (e) { e.preventDefault(); s.status = $(this).data('status'); s.page = 1; s.render(); });
+    s.$.on('click', '[data-order]', function (e) { e.preventDefault(); s.order = $(this).data('order'); s.page = 1; s.render(); });
+    s.$.on('click', '.checkall', function () {
+        var on = $(this).is(':checked');
+        s.$.find('.row-check').each(function () { var id = $(this).data('id'); $(this).prop('checked', on); if (on) s.sel[id] = 1; else delete s.sel[id]; });
+        s.updateSel();
+    });
+    s.$.on('click', '.row-check', function (e) {
+        e.stopPropagation();
+        var id = $(this).data('id'); if ($(this).is(':checked')) s.sel[id] = 1; else delete s.sel[id];
+        s.updateSel();
+    });
+    s.$.on('click', '.bulk-delete', function () {
+        var ids = Object.keys(s.sel).map(Number);
+        Confirm.open('Delete ' + o.label, 'Delete <b>' + ids.length + '</b> selected ' + o.noun + '?', function () {
+            DB[o.key] = DB[o.key].filter(function (r) { return ids.indexOf(r.id) < 0; });
+            s.sel = {}; s.render();
+            toast(ids.length + ' ' + o.noun + ' deleted', 'Removed from workspace');
+        });
+    });
+    s.$.on('click', '.act-delete', function (e) {
+        e.preventDefault(); hideTips();
+        var r = s.find(parseInt($(this).data('id'), 10)); if (!r) return;
+        Confirm.open('Delete ' + o.label, 'Delete <b>' + esc(r.name) + '</b>?', function () {
+            DB[o.key] = DB[o.key].filter(function (x) { return x.id !== r.id; });
+            delete s.sel[r.id]; s.render();
+            toast(o.label + ' deleted', r.name);
+        });
+    });
+}
+function actBtn(cls, icon, title, id) {
+    return '<button class="act ' + cls + '" data-id="' + id + '" data-toggle="tooltip" data-placement="top" title="' + title + '"><i class="fa ' + icon + '"></i></button>';
+}
+
+/* ==========================================================================
+   CONNECTION PAGE
+   ========================================================================== */
+var ConnectionPage = new ListView({
+    $root: $('#page-connection'), key: 'connections', label: 'Connection', noun: 'connections', cols: 9,
+    data: function () { return DB.connections; },
+    text: function (r) { return [r.name, r.type, r.host, r.port, r.protocol, r.username, r.desc, r.status].join(' '); },
+    statuses: ['online', 'degraded', 'offline'],
+    orders: [['recent', 'Most Recent', 'fa-clock-o'], ['name', 'Name (A–Z)', 'fa-sort-alpha-asc'], ['type', 'Type', 'fa-tags'], ['latency', 'Latency', 'fa-tachometer']],
+    sorters: {
+        recent: function (a, b) { return b.id - a.id; },
+        name: function (a, b) { return a.name.localeCompare(b.name); },
+        type: function (a, b) { return a.type.localeCompare(b.type) || a.name.localeCompare(b.name); },
+        latency: function (a, b) { return (a.status === 'offline') - (b.status === 'offline') || a.latency - b.latency; }
+    },
+    row: function (d, no, sel) {
+        var lat = d.status === 'offline' ? '<span class="grey-text">—</span>' :
+            '<span class="mono" style="color:' + (d.latency > 300 ? 'var(--warn)' : 'inherit') + '">' + d.latency + ' ms</span>';
+        return '<tr>' +
+            '<td><input type="checkbox" class="row-check" data-id="' + d.id + '"' + (sel ? ' checked' : '') + '></td>' +
+            '<th scope="row" class="grey-text">' + no + '</th>' +
+            '<td><div class="cell-title">' + esc(d.name) + '</div><div class="cell-sub mono">' + esc(d.protocol) + '://' + esc(d.host) + ':' + esc(d.port) + '</div></td>' +
+            '<td>' + typeChip(d.type) + '</td>' +
+            '<td class="mono">' + esc(d.username || '—') + '</td>' +
+            '<td>' + badge(d.status) + '</td>' +
+            '<td class="num">' + lat + '</td>' +
+            '<td class="grey-text nowrap">' + ago(d.checked) + '</td>' +
+            '<td class="actions-cell">' + actBtn('act-test', 'fa-plug', 'Test connection', d.id) + actBtn('act-edit', 'fa-edit', 'Edit', d.id) + actBtn('danger act-delete', 'fa-trash', 'Delete', d.id) + '</td></tr>';
+    },
+    kpis: function () {
+        var c = DB.connections, on = c.filter(function (x) { return x.status === 'online'; }).length;
+        var issues = c.length - on;
+        var live = c.filter(function (x) { return x.status !== 'offline'; });
+        var avg = live.length ? Math.round(live.reduce(function (a, x) { return a + x.latency; }, 0) / live.length) : 0;
+        return kpi('fa-plug', '', 'Total connections', c.length, TYPES.length + ' connection types') +
+            kpi('fa-check-circle', 'ok', 'Online', on + ' <small>/ ' + c.length + '</small>', Math.round(on / Math.max(1, c.length) * 100) + '% availability') +
+            kpi('fa-exclamation-triangle', issues ? 'warn' : 'ok', 'Needs attention', issues, 'Degraded or offline') +
+            kpi('fa-tachometer', '', 'Avg latency', avg + ' <small>ms</small>', 'Across reachable hosts');
+    }
+});
+
+var ConnForm = {
+    open: function (d) {
+        var $f = $('#form-conn');
+        $f[0].reset(); $f.find('.has-error').removeClass('has-error'); $f.find('.is-bad').removeClass('is-bad');
+        $('#conn-heading').text(d ? 'Edit Connection' : 'Form Connection');
+        $('#conn-id').val(d ? d.id : '');
+        if (d) {
+            $('#conn-name').val(d.name); $('#conn-type').val(d.type); $('#conn-host').val(d.host); $('#conn-port').val(d.port);
+            $('#conn-protocol').val(d.protocol); $('#conn-username').val(d.username); $('#conn-password').val(d.password); $('#conn-desc').val(d.desc);
+        }
+        $('#modal-conn').modal('show');
+    },
+    read: function () {
+        return { name: $.trim($('#conn-name').val()), type: $('#conn-type').val(), host: $.trim($('#conn-host').val()),
+            port: $('#conn-port').val(), protocol: $('#conn-protocol').val(), username: $('#conn-username').val(),
+            password: $('#conn-password').val(), desc: $('#conn-desc').val() };
+    }
+};
+function validate($form, ids) {
+    var ok = true;
+    ids.forEach(function (id) {
+        var $i = $('#' + id), bad = !$.trim($i.val());
+        $i.toggleClass('is-bad', bad).closest('.form-group').toggleClass('has-error', bad);
+        if (bad) ok = false;
+    });
+    return ok;
+}
+$('#conn-type').on('change', function () {
+    var t = typeOf($(this).val());
+    if (t.port && !$('#conn-id').val()) { $('#conn-port').val(t.port); $('#conn-protocol').val(t.protocol); }
+});
+$('#page-connection').on('click', '.btn-add', function () { ConnForm.open(null); });
+$('#page-connection').on('click', '.act-edit', function () {
+    hideTips();
+    var d = ConnectionPage.find(parseInt($(this).data('id'), 10));
+    fakeAjax(function () { ConnForm.open(d); });
+});
+function testConnection(d, $btn) {
+    var html = $btn.html();
+    $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>' + ($btn.hasClass('act') ? '' : 'Testing…'));
+    setTimeout(function () {
+        $btn.prop('disabled', false).html(html);
+        if (d.status === 'offline') { toast('Connection failed', d.name + ' · connection refused (' + d.host + ':' + d.port + ')', 'bad'); return; }
+        d.latency = Math.max(5, Math.round((d.latency || 80) * (0.85 + Math.random() * 0.3)));
+        d.checked = 0;
+        toast('Connection successful', d.name + ' · responded in ' + d.latency + ' ms');
+        if (location.hash === '#connection') ConnectionPage.render();
+    }, 900);
+}
+$('#page-connection').on('click', '.act-test', function () {
+    hideTips();
+    testConnection(ConnectionPage.find(parseInt($(this).data('id'), 10)), $(this));
+});
+$('#conn-test').on('click', function () {
+    if (!validate($('#form-conn'), ['conn-host'])) return;
+    var v = ConnForm.read(), existing = connById(parseInt($('#conn-id').val(), 10));
+    testConnection(existing ? $.extend({}, existing, v) : $.extend({ status: 'online', latency: 60 }, v), $(this));
+});
+$('#form-conn').on('submit', function (e) {
+    e.preventDefault();
+    if (!validate($(this), ['conn-name', 'conn-type', 'conn-host'])) return;
+    var v = ConnForm.read(), id = parseInt($('#conn-id').val(), 10);
+    if (id) {
+        $.extend(connById(id), v);
+        toast('Connection updated successfully', v.name);
+    } else {
+        DB.connections.push($.extend({ id: ++nextId.connections, status: 'online', latency: 40 + Math.round(Math.random() * 80), checked: 0 }, v));
+        ConnectionPage.page = 1; ConnectionPage.order = 'recent'; ConnectionPage.type = 'All'; ConnectionPage.status = 'All';
+        toast('Connection created successfully', v.name);
+    }
+    $('#modal-conn').modal('hide');
+    ConnectionPage.render();
+});
+
+/* ==========================================================================
+   DATA SOURCE PAGE
+   ========================================================================== */
+var SourcePage = new ListView({
+    $root: $('#page-source'), key: 'sources', label: 'Data Source', noun: 'data sources', cols: 11,
+    data: function () { return DB.sources; },
+    text: function (r) { var c = connById(r.connId) || {}; return [r.name, r.desc, r.type, r.format, c.name, r.schedule, r.owner, r.status].join(' '); },
+    statuses: ['active', 'paused', 'error'],
+    orders: [['recent', 'Most Recent', 'fa-clock-o'], ['name', 'Name (A–Z)', 'fa-sort-alpha-asc'], ['type', 'Type', 'fa-tags'], ['records', 'Records', 'fa-sort-amount-desc']],
+    sorters: {
+        recent: function (a, b) { return b.id - a.id; },
+        name: function (a, b) { return a.name.localeCompare(b.name); },
+        type: function (a, b) { return a.type.localeCompare(b.type) || a.name.localeCompare(b.name); },
+        records: function (a, b) { return b.records - a.records; }
+    },
+    row: function (d, no, sel) {
+        var c = connById(d.connId);
+        return '<tr>' +
+            '<td><input type="checkbox" class="row-check" data-id="' + d.id + '"' + (sel ? ' checked' : '') + '></td>' +
+            '<th scope="row" class="grey-text">' + no + '</th>' +
+            '<td><div class="cell-title">' + esc(d.name) + '</div><div class="cell-sub">' + esc(d.desc) + '</div></td>' +
+            '<td class="nowrap"><div>' + typeChip(d.type) + '</div><div class="cell-sub">' + esc(c ? c.name : 'Deleted connection') + '</div></td>' +
+            '<td><span class="tag mono">' + esc(d.format) + '</span></td>' +
+            '<td class="num mono">' + fmtNum(d.records) + '</td>' +
+            '<td class="num mono">' + fmtSize(d.sizeMB) + '</td>' +
+            '<td class="nowrap"><i class="fa fa-clock-o grey-text"></i> ' + esc(d.schedule) + '</td>' +
+            '<td>' + badge(d.status) + '</td>' +
+            '<td class="grey-text nowrap">' + ago(d.lastRun) + '</td>' +
+            '<td class="actions-cell">' + actBtn('act-run', 'fa-play', 'Run ingestion now', d.id) + actBtn('act-edit', 'fa-edit', 'Edit', d.id) + actBtn('danger act-delete', 'fa-trash', 'Delete', d.id) + '</td></tr>';
+    },
+    kpis: function () {
+        var s = DB.sources, act = s.filter(function (x) { return x.status === 'active'; }).length;
+        var rec = s.reduce(function (a, x) { return a + x.records; }, 0), size = s.reduce(function (a, x) { return a + x.sizeMB; }, 0);
+        var err = s.filter(function (x) { return x.status === 'error'; }).length;
+        return kpi('fa-tasks', '', 'Data sources', s.length, act + ' active · ' + (s.length - act) + ' inactive') +
+            kpi('fa-database', '', 'Total records', fmtK(rec), fmtNum(rec) + ' rows') +
+            kpi('fa-hdd-o', '', 'Storage used', fmtSize(size), 'Raw + staging') +
+            kpi(err ? 'fa-times-circle' : 'fa-check-circle', err ? 'bad' : 'ok', 'Errors', err, err ? 'Check failing sources' : 'All sources healthy');
+    }
+});
+$('#page-source').on('click', '.act-run', function () {
+    hideTips();
+    var d = SourcePage.find(parseInt($(this).data('id'), 10)), $b = $(this);
+    if (d.status === 'paused') { toast('Data source is paused', 'Set status to Active before running', 'bad'); return; }
+    toast('Ingestion started', d.name, 'run');
+    $b.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+    setTimeout(function () {
+        var add = 200 + Math.round(Math.random() * 4000);
+        d.records += add; d.lastRun = 0; d.status = 'active';
+        toast('Ingestion finished', d.name + ' · +' + fmtNum(add) + ' records');
+        if (location.hash === '#source') SourcePage.render();
+    }, 1800);
+});
+$('#page-source').on('click', '.act-edit', function () {
+    hideTips();
+    var d = SourcePage.find(parseInt($(this).data('id'), 10));
+    fakeAjax(function () {
+        $('#src-conn').html(DB.connections.map(function (c) { return '<option value="' + c.id + '">' + esc(c.name) + ' (' + c.type + ')</option>'; }).join(''));
+        $('#src-id').val(d.id); $('#src-name').val(d.name); $('#src-desc').val(d.desc); $('#src-status').val(d.status);
+        $('#src-conn').val(d.connId); $('#src-format').val(d.format); $('#src-schedule').val(d.schedule);
+        $('#src-path').val(d.path); $('#src-file').val(d.file);
+        $('#form-src .has-error').removeClass('has-error'); $('#form-src .is-bad').removeClass('is-bad');
+        $('#modal-src').modal('show');
+    });
+});
+$('#form-src').on('submit', function (e) {
+    e.preventDefault();
+    if (!validate($(this), ['src-name'])) return;
+    var d = SourcePage.find(parseInt($('#src-id').val(), 10)), c = connById(parseInt($('#src-conn').val(), 10));
+    $.extend(d, { name: $.trim($('#src-name').val()), desc: $('#src-desc').val(), status: $('#src-status').val(),
+        connId: c ? c.id : d.connId, type: c ? c.type : d.type, format: $('#src-format').val(), schedule: $('#src-schedule').val(),
+        path: $('#src-path').val(), file: $('#src-file').val() });
+    $('#modal-src').modal('hide');
+    SourcePage.render();
+    toast('Data Source updated successfully', d.name);
+});
+
+/* ==========================================================================
+   JOBS PAGE
+   ========================================================================== */
+var JobsPage = new ListView({
+    $root: $('#jobs-list'), key: 'jobs', label: 'Job', noun: 'jobs', cols: 9,
+    data: function () { return DB.jobs; },
+    text: function (r) { var s = sourceById(r.sourceId) || {}; return [r.name, r.desc, s.name, r.schedule, r.cron, r.owner, r.status].join(' '); },
+    statuses: ['success', 'running', 'failed', 'paused'],
+    sorters: { recent: function (a, b) { return a.id - b.id; } },
+    row: function (j, no) {
+        var s = sourceById(j.sourceId);
+        return '<tr class="clickable" data-id="' + j.id + '">' +
+            '<th scope="row" class="grey-text">' + no + '</th>' +
+            '<td><div class="cell-title">' + esc(j.name) + '</div><div class="cell-sub">' + esc(s ? s.name : '—') + '</div></td>' +
+            '<td>' + esc(j.desc) + '</td>' +
+            '<td><div>' + esc(j.schedule) + '</div><div class="cell-sub mono">' + esc(j.cron) + '</div></td>' +
+            '<td>' + owner(j.owner) + '</td>' +
+            '<td><div>' + badge(j.status) + '</div><div class="cell-sub">' + ago(j.lastRun) + '</div></td>' +
+            '<td style="white-space:nowrap;"><span class="minibar"><span style="width:' + j.success + '%"></span></span><span class="mono">' + j.success.toFixed(1) + '%</span></td>' +
+            '<td class="num mono">' + fmtDur(j.avgDur) + '</td>' +
+            '<td class="grey-text">' + (j.status === 'paused' ? 'Paused' : inMin(j.nextRun)) + '</td></tr>';
+    },
+    kpis: function () {
+        var j = DB.jobs, run = j.filter(function (x) { return x.status === 'running'; }).length;
+        var fail = j.filter(function (x) { return x.status === 'failed'; }).length;
+        var rate = j.reduce(function (a, x) { return a + x.success; }, 0) / Math.max(1, j.length);
+        var next = j.filter(function (x) { return x.nextRun; }).sort(function (a, b) { return a.nextRun - b.nextRun; })[0];
+        return kpi('fa-keyboard-o', '', 'Total jobs', j.length, run + ' running now') +
+            kpi('fa-check-circle', 'ok', 'Success rate', rate.toFixed(1) + '<small>%</small>', 'Average, last 30 days') +
+            kpi('fa-times-circle', fail ? 'bad' : 'ok', 'Failed', fail, 'Last run failed') +
+            kpi('fa-clock-o', '', 'Next run', next ? esc(next.name) : '—', next ? inMin(next.nextRun) : 'Nothing scheduled');
+    }
+});
+$('#jobs-list').on('click', 'tr.clickable', function () { JobDetail.open(JobsPage.find(parseInt($(this).data('id'), 10))); });
+
+var JobDetail = {
+    job: null, view: 'tree',
+    tasks: function (j) {
+        var base = j.name.toLowerCase().replace(/\s+/g, '_'), t = 0;
+        var defs = [['extract', 'Download files from source', 0.22], ['validate', 'Validate file structure & schema', 0.08],
+            ['parse', 'Parse records into staging', 0.34], ['transform', 'Apply cleansing & transformation rules', 0.24], ['load', 'Load into data warehouse', 0.12]];
+        return defs.map(function (d, i) {
+            var st = 'success';
+            if (j.status === 'failed') st = i < 3 ? 'success' : i === 3 ? 'failed' : 'skipped';
+            if (j.status === 'running') st = i < 2 ? 'success' : i === 2 ? 'running' : 'queued';
+            var dur = Math.max(2, Math.round(j.avgDur * d[2]));
+            var o = { name: d[0] + '_' + base, desc: d[1], dur: dur, start: t, status: st,
+                records: st === 'success' || st === 'running' ? Math.round((j.records || 1000) * (i === 1 ? 1.02 : 1)) : 0 };
+            t += dur; return o;
+        });
+    },
+    history: function (j) {
+        var out = [], every = j.cron.indexOf('*/15') === 0 ? 15 : j.cron.split(' ')[1] === '*' ? 60 : j.cron.split(' ')[4] !== '*' ? 10080 : 1440;
+        for (var i = 0; i < 8; i++) {
+            var st = i === 0 ? j.status : ((i * 37 + j.id * 11) % 100 < j.success ? 'success' : 'failed');
+            if (st === 'paused') st = 'success';
+            out.push({ run: 'run_' + (2400 + j.id * 31 - i), st: st, started: j.lastRun + i * every,
+                dur: Math.round(j.avgDur * (0.85 + ((i * 7 + j.id) % 10) / 30)), rec: st === 'failed' ? 0 : Math.round((j.records || 900) * (0.9 + (i % 4) / 20)) });
+        }
+        return out;
+    },
+    open: function (j) {
+        this.job = j; this.view = 'tree';
+        $('#jobs-list').hide(); $('#jobs-detail').show();
+        this.render();
+        $('html, body').scrollTop(0);
+    },
+    close: function () { $('#jobs-detail').hide(); $('#jobs-list').show(); },
+    render: function () {
+        var j = this.job, s = sourceById(j.sourceId);
+        $('#job-crumb').text('/' + j.name);
+        $('#job-desc').html(esc(j.desc) + ' &middot; source <b>' + esc(s ? s.name : '—') + '</b>');
+        $('#job-run').prop('disabled', j.status === 'running' || j.status === 'paused');
+        $('#job-summary').html(
+            '<div><div class="k">Last run</div><div class="v">' + badge(j.status) + '</div></div>' +
+            '<div><div class="k">Schedule</div><div class="v">' + esc(j.schedule) + '</div><div class="cell-sub mono">' + esc(j.cron) + '</div></div>' +
+            '<div><div class="k">Owner</div><div class="v">' + owner(j.owner) + '</div></div>' +
+            '<div><div class="k">Avg duration</div><div class="v mono">' + fmtDur(j.avgDur) + '</div></div>' +
+            '<div><div class="k">Success rate</div><div class="v"><span class="minibar"><span style="width:' + j.success + '%"></span></span>' + j.success.toFixed(1) + '%</div></div>' +
+            '<div><div class="k">Next run</div><div class="v">' + (j.status === 'paused' ? 'Paused' : inMin(j.nextRun)) + '</div><div class="cell-sub">' + (j.nextRun ? stamp(-j.nextRun) : '') + '</div></div>');
+        $('.detail-tabs a').removeClass('active').filter('[data-view="' + this.view + '"]').addClass('active');
+        $('#job-view').html(this['view_' + this.view](j, this.tasks(j)));
+    },
+    view_tree: function (j, tasks) {
+        var h = '<div class="panel-body"><ul class="tree">';
+        h += '<li><i class="fa fa-sitemap" style="color:var(--indigo)"></i><b>dag_' + esc(j.name.toLowerCase().replace(/\s+/g, '_')) + '</b><span class="cell-sub">' + tasks.length + ' tasks</span></li>';
+        tasks.forEach(function (t, i) {
+            h += '<li><span class="branch">' + new Array(i + 1).join('&nbsp;&nbsp;&nbsp;') + (i === tasks.length - 1 ? '└──' : '├──') + '</span>' +
+                '<span class="mono" style="min-width:220px;">' + esc(t.name) + '</span>' + badge(t.status) +
+                '<span class="cell-sub ml-auto">' + esc(t.desc) + '</span></li>';
+        });
+        return h + '</ul></div>';
+    },
+    view_duration: function (j, tasks) {
+        var max = Math.max.apply(null, tasks.map(function (t) { return t.dur; }));
+        var h = '<div class="panel-body"><p class="panel-sub mb-3">Average duration per task over the last 30 runs</p>';
+        tasks.forEach(function (t) {
+            h += '<div class="hbar-row"><span class="lbl mono" title="' + esc(t.name) + '">' + esc(t.name) + '</span><span class="track"><span style="width:' +
+                (t.dur / max * 100) + '%"></span></span><span class="val mono">' + fmtDur(t.dur) + '</span></div>';
+        });
+        return h + '</div>';
+    },
+    view_gantt: function (j, tasks) {
+        var total = tasks.reduce(function (a, t) { return a + t.dur; }, 0), W = 1250, L = 200, R = 20, rowH = 36, H = tasks.length * rowH + 40, iw = W - L - R;
+        var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Gantt timeline">';
+        for (var k = 0; k <= 5; k++) {
+            var x = L + iw * k / 5;
+            svg += '<line x1="' + x + '" x2="' + x + '" y1="10" y2="' + (H - 24) + '" stroke="#eceff4"/>' +
+                '<text x="' + x + '" y="' + (H - 8) + '" font-size="11" fill="#90a4ae" text-anchor="middle">' + fmtDur(total * k / 5) + '</text>';
+        }
+        tasks.forEach(function (t, i) {
+            var y = 14 + i * rowH, x = L + iw * t.start / total, w = Math.max(3, iw * t.dur / total);
+            var fill = t.status === 'failed' ? '#c62828' : (t.status === 'skipped' || t.status === 'queued') ? '#cfd8dc' : '#3f51b5';
+            svg += '<text x="' + (L - 12) + '" y="' + (y + 15) + '" font-size="12" fill="#546e7a" text-anchor="end" font-family="Consolas, monospace">' + esc(t.name) + '</text>' +
+                '<rect x="' + x + '" y="' + (y + 2) + '" width="' + w + '" height="18" rx="4" fill="' + fill + '"><title>' + esc(t.name) + ' · ' + fmtDur(t.dur) + ' · ' + STATUS[t.status].label + '</title></rect>';
+        });
+        svg += '</svg>';
+        return '<div class="panel-body"><p class="panel-sub mb-3">Latest run timeline &middot; started ' + stamp(j.lastRun) + ' &middot; total ' + fmtDur(total) +
+            ' &nbsp; <span class="tag"><span style="width:10px;height:10px;background:#3f51b5;border-radius:2px;display:inline-block"></span>Completed</span>' +
+            ' <span class="tag"><span style="width:10px;height:10px;background:#c62828;border-radius:2px;display:inline-block"></span>Failed</span>' +
+            ' <span class="tag"><span style="width:10px;height:10px;background:#cfd8dc;border-radius:2px;display:inline-block"></span>Skipped / queued</span></p>' +
+            '<div class="chart-wrap">' + svg + '</div></div>';
+    },
+    view_details: function (j, tasks) {
+        var h = '<div class="table-responsive"><table class="table data-table"><thead><tr><th>No</th><th>Task</th><th>Description</th><th>Status</th><th class="num">Records</th><th class="num">Duration</th><th>Owner</th></tr></thead><tbody>';
+        tasks.forEach(function (t, i) {
+            h += '<tr><th scope="row" class="grey-text">' + (i + 1) + '</th><td class="mono">' + esc(t.name) + '</td><td>' + esc(t.desc) + '</td><td>' + badge(t.status) +
+                '</td><td class="num mono">' + (t.records ? fmtNum(t.records) : '—') + '</td><td class="num mono">' + fmtDur(t.dur) + '</td><td>' + owner(j.owner) + '</td></tr>';
+        });
+        h += '</tbody></table></div>';
+        h += '<div class="row no-gutters" style="border-top:1px solid var(--line);"><div class="col-lg-6" style="border-right:1px solid var(--line);">' +
+            '<div class="panel-head"><div><h5 class="panel-title">Run history</h5><p class="panel-sub">Last 8 executions</p></div></div>' +
+            '<div class="table-responsive"><table class="table data-table"><thead><tr><th>Run ID</th><th>Started</th><th>Status</th><th class="num">Records</th><th class="num">Duration</th></tr></thead><tbody>';
+        this.history(j).forEach(function (r) {
+            h += '<tr><td class="mono">' + r.run + '</td><td>' + stamp(r.started) + '</td><td>' + badge(r.st) + '</td><td class="num mono">' + (r.rec ? fmtNum(r.rec) : '—') + '</td><td class="num mono">' + fmtDur(r.dur) + '</td></tr>';
+        });
+        h += '</tbody></table></div></div><div class="col-lg-6"><div class="panel-head"><div><h5 class="panel-title">Log output</h5><p class="panel-sub">Latest run</p></div></div><div class="panel-body"><pre class="console">';
+        var tm = j.lastRun;
+        function line(lv, cls, msg) { var d = new Date(Date.now() - tm * 60000); tm = Math.max(0, tm - 0.4);
+            return '<span class="t">' + d.toTimeString().slice(0, 8) + '</span> <span class="' + cls + '">' + lv + '</span> ' + msg + '\n'; }
+        h += line('INFO ', 'lv-info', 'Starting dag_' + esc(j.name.toLowerCase().replace(/\s+/g, '_')) + ' (trigger=scheduler)');
+        tasks.forEach(function (t) {
+            if (t.status === 'skipped' || t.status === 'queued') { h += line('SKIP ', 'lv-warn', esc(t.name) + ' ' + t.status); return; }
+            h += line('INFO ', 'lv-info', esc(t.name) + ' started');
+            if (t.status === 'failed') { h += line('ERROR', 'lv-err', esc(t.name) + ': ValueError: invalid price format at row 18,422 ("Rp 1.2 M")'); return; }
+            if (t.status === 'running') { h += line('INFO ', 'lv-info', esc(t.name) + ' processing… ' + fmtNum(Math.round(t.records * 0.6)) + ' rows'); return; }
+            h += line('OK   ', 'lv-ok', esc(t.name) + ' finished in ' + fmtDur(t.dur) + ' · ' + fmtNum(t.records) + ' rows');
+        });
+        h += j.status === 'failed' ? line('ERROR', 'lv-err', 'Run failed · 1 task failed, ' + tasks.filter(function (t) { return t.status === 'skipped'; }).length + ' skipped')
+            : j.status === 'running' ? line('INFO ', 'lv-info', 'Run in progress…') : line('OK   ', 'lv-ok', 'Run succeeded · ' + fmtNum(j.records) + ' records loaded');
+        return h + '</pre></div></div></div>';
+    }
+};
+$('.detail-tabs').on('click', 'a', function (e) { e.preventDefault(); JobDetail.view = $(this).data('view'); JobDetail.render(); });
+$('#job-back').on('click', function () { JobDetail.close(); JobsPage.render(); });
+$('#job-run').on('click', function () {
+    var j = JobDetail.job;
+    j.status = 'running'; j.lastRun = 0;
+    toast('Job triggered', j.name + ' queued by Admin Immobi', 'run');
+    JobDetail.render();
+    setTimeout(function () {
+        j.status = 'success'; j.records = 1000 + Math.round(Math.random() * 20000);
+        toast('Job succeeded', j.name + ' · ' + fmtNum(j.records) + ' records loaded');
+        if ($('#jobs-detail').is(':visible') && JobDetail.job === j) JobDetail.render();
+    }, 3000);
+});
+
+/* ==========================================================================
+   DASHBOARD
+   ========================================================================== */
+function niceStep(x) { var p = Math.pow(10, Math.floor(Math.log(x) / Math.LN10)), n = x / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p; }
+function dayLabel(offset) { var d = new Date(Date.now() - offset * 86400000); return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }); }
+
+function barChart($el, values) {
+    // Drawn at real pixel size (no scaling) so text stays 11-12px at any width
+    $el.find('svg').remove();   // measure the empty container, then fill it exactly
+    var W = Math.max(360, Math.floor($el.width())), H = Math.max(260, Math.floor($el.height())), pl = 44, pr = 4, pt = 24, pb = 30, iw = W - pl - pr, ih = H - pt - pb;
+    var max = Math.max.apply(null, values), step = niceStep(max / 4), top = Math.ceil(max / step) * step;
+    var n = values.length, bw = iw / n, barW = Math.max(12, Math.min(36, bw * 0.62)), r = 4;
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Records ingested per day">';
+    for (var v = 0; v <= top; v += step) {
+        var gy = pt + ih - v / top * ih;
+        svg += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + gy + '" y2="' + gy + '" stroke="' + (v === 0 ? '#cfd8dc' : '#eef1f5') + '"/>' +
+            '<text x="' + (pl - 8) + '" y="' + (gy + 4) + '" font-size="11" fill="#90a4ae" text-anchor="end">' + fmtK(v) + '</text>';
+    }
+    values.forEach(function (val, i) {
+        var x = pl + i * bw + (bw - barW) / 2, h = val / top * ih, y = pt + ih - h, base = pt + ih, last = i === n - 1;
+        var d = 'M' + x + ',' + base + ' V' + (y + r) + ' Q' + x + ',' + y + ' ' + (x + r) + ',' + y + ' H' + (x + barW - r) +
+            ' Q' + (x + barW) + ',' + y + ' ' + (x + barW) + ',' + (y + r) + ' V' + base + ' Z';
+        svg += '<path d="' + d + '" fill="' + (last ? '#3f51b5' : '#9fa8da') + '" class="bar" data-i="' + i + '"/>';
+        if (last) svg += '<text x="' + (x + barW / 2) + '" y="' + (y - 8) + '" font-size="12" font-weight="700" fill="#263238" text-anchor="middle">' + fmtK(val) + '</text>';
+        if (i % 2 === (n - 1) % 2) svg += '<text x="' + (x + barW / 2) + '" y="' + (H - 8) + '" font-size="11" fill="#90a4ae" text-anchor="middle">' + (last ? 'Today' : dayLabel(n - 1 - i)) + '</text>';
+        svg += '<rect x="' + (pl + i * bw) + '" y="' + pt + '" width="' + bw + '" height="' + ih + '" fill="transparent" class="hit" data-i="' + i + '"/>';
+    });
+    svg += '</svg>';
+    $el.find('svg').remove();
+    $el.append(svg);
+    var $tip = $el.find('.chart-tip');
+    $el.find('.hit').on('mousemove', function (e) {
+        var i = +$(this).data('i'), off = $el.offset(), prev = values[i - 1];
+        var delta = prev ? ((values[i] - prev) / prev * 100) : 0;
+        $el.find('.bar').attr('opacity', 1).filter('[data-i="' + i + '"]').attr('opacity', .8);
+        $tip.html('<span>' + (i === n - 1 ? 'Today' : dayLabel(n - 1 - i)) + '</span><b>' + fmtNum(values[i]) + ' records</b>' +
+            (prev ? '<span class="' + (delta >= 0 ? 'lv-ok' : 'lv-err') + '">' + (delta >= 0 ? '▲ ' : '▼ ') + Math.abs(delta).toFixed(1) + '% vs prev day</span>' : ''))
+            .css({ left: e.pageX - off.left, top: e.pageY - off.top }).show();
+    }).on('mouseleave', function () { $tip.hide(); $el.find('.bar').attr('opacity', 1); });
+}
+
+var Dashboard = {
+    render: function () {
+        var v = DB.ingest, today = v[v.length - 1], yday = v[v.length - 2], d = (today - yday) / yday * 100;
+        var on = DB.connections.filter(function (c) { return c.status === 'online'; }).length;
+        var act = DB.sources.filter(function (s) { return s.status === 'active'; }).length;
+        var rate = DB.jobs.reduce(function (a, x) { return a + x.success; }, 0) / Math.max(1, DB.jobs.length);
+        var fail = DB.jobs.filter(function (x) { return x.status === 'failed'; }).length;
+        $('#dash-kpis').html(
+            kpi('fa-download', '', 'Records ingested today', fmtNum(today), '<span class="' + (d >= 0 ? 'delta-up' : 'delta-down') + '">' + (d >= 0 ? '▲ ' : '▼ ') + Math.abs(d).toFixed(1) + '%</span> vs yesterday') +
+            kpi('fa-plug', on === DB.connections.length ? 'ok' : 'warn', 'Connections online', on + ' <small>/ ' + DB.connections.length + '</small>', (DB.connections.length - on) + ' need attention') +
+            kpi('fa-tasks', '', 'Active data sources', act + ' <small>/ ' + DB.sources.length + '</small>', fmtK(DB.sources.reduce(function (a, s) { return a + s.records; }, 0)) + ' records stored') +
+            kpi('fa-check-circle', fail ? 'warn' : 'ok', 'Job success rate', rate.toFixed(1) + '<small>%</small>', fail + ' failed on last run'));
+        $('#chart-range').text(dayLabel(13) + ' – ' + dayLabel(0));
+
+        var order = { offline: 0, degraded: 1, online: 2 };
+        $('#dash-health').html(DB.connections.slice().sort(function (a, b) { return order[a.status] - order[b.status] || b.latency - a.latency; }).slice(0, 6).map(function (c) {
+            return '<li><div style="min-width:0;"><div class="cell-title">' + esc(c.name) + '</div><div class="cell-sub mono">' + esc(c.host) + '</div></div>' +
+                '<div class="meta"><span class="lat">' + (c.status === 'offline' ? '—' : c.latency + ' ms') + '</span>' + badge(c.status) + '</div></li>';
+        }).join(''));
+
+        $('#dash-runs').html(DB.jobs.slice().sort(function (a, b) { return a.lastRun - b.lastRun; }).slice(0, 7).map(function (j) {
+            var s = sourceById(j.sourceId);
+            return '<tr class="clickable" data-job="' + j.id + '"><td class="cell-title">' + esc(j.name) + '</td><td>' + esc(s ? s.name : '—') + '</td><td>' + badge(j.status) +
+                '</td><td class="num mono">' + (j.records ? fmtNum(j.records) : '—') + '</td><td class="num mono">' + fmtDur(j.avgDur) + '</td><td class="grey-text nowrap text-right">' + ago(j.lastRun) + '</td></tr>';
+        }).join(''));
+
+        $('#dash-upcoming').html(DB.jobs.filter(function (j) { return j.nextRun && j.status !== 'paused'; })
+            .sort(function (a, b) { return a.nextRun - b.nextRun; }).slice(0, 6).map(function (j) {
+                return '<li class="clickable" data-job="' + j.id + '" style="cursor:pointer;"><div class="owner" style="min-width:0;"><span class="avatar">' + initials(j.owner) + '</span>' +
+                    '<div><div class="cell-title">' + esc(j.name) + '</div><div class="cell-sub">' + esc(j.schedule) + ' &middot; <span class="mono">' + esc(j.cron) + '</span></div></div></div>' +
+                    '<div class="when">' + inMin(j.nextRun) + '<small>' + stamp(-j.nextRun) + '</small></div></li>';
+            }).join(''));
+
+        var src = DB.sources.slice().sort(function (a, b) { return b.records - a.records; }).slice(0, 7), mx = src.length ? src[0].records : 1;
+        $('#dash-sources').html(src.map(function (s) {
+            return '<div class="hbar-row"><div class="lbl"><div class="cell-title" title="' + esc(s.name) + '">' + esc(s.name) + '</div>' +
+                '<div class="cell-sub">' + esc(s.type) + ' &middot; ' + esc(s.format) + ' &middot; ' + fmtSize(s.sizeMB) + '</div></div>' +
+                '<span class="track"><span style="width:' + (s.records / mx * 100) + '%"></span></span><span class="val mono">' + fmtK(s.records) + '</span></div>';
+        }).join(''));
+
+        $('#dash-feed').html(DB.feed.slice().sort(function (a, b) { return a.min - b.min; }).map(function (f) {
+            return '<li><span class="ficon status ' + f.cls + '" style="padding:0;"><i class="fa ' + f.icon + '"></i></span><div><div>' + f.text + '</div><div class="ftime">' + ago(f.min) + '</div></div></li>';
+        }).join(''));
+
+        // chart last: its panel height is set by the tallest panel in the row
+        barChart($('#ingest-chart'), v);
+    }
+};
+$('#dash-runs, #dash-upcoming').on('click', '[data-job]', function () {
+    var j = JobsPage.find(parseInt($(this).data('job'), 10));
+    JobDetail.pending = j;
+    location.hash = '#jobs';
+});
+/* Redraw the chart at the new width when the window is resized */
+var resizeTimer;
+$(window).on('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+        if ($('#page-dashboard').hasClass('show-page')) barChart($('#ingest-chart'), DB.ingest);
+    }, 150);
+});
+
+/* ==========================================================================
+   WIZARD
+   ========================================================================== */
+var Wizard = {
+    cur: 0, maxReached: 0,
+    steps: [['Create Data Source', 'Name & type'], ['Define Connection', 'Where data lives'], ['Create Profile', 'File format'], ['Metadata Profiling', 'Review schema']],
+    defaults: {},
+    init: function () {
+        $('#wizard-form').find('input,select,textarea').each(function () { if (this.id) Wizard.defaults[this.id] = $(this).val(); });
+        $('#stepper').on('click', '.st', function () { var i = +$(this).data('i'); if (i <= Wizard.maxReached) Wizard.go(i); });
+        $('#wz-next').on('click', function () { if (Wizard.check()) Wizard.go(Wizard.cur + 1); });
+        $('#wz-prev').on('click', function () { Wizard.go(Wizard.cur - 1); });
+        $('#wz-conn-type').on('change', function () { Wizard.fillConnections(); Wizard.summary(); });
+        $('#wz-type').on('change', function () { $('#wz-conn-type').val($(this).val()); Wizard.fillConnections(); });
+        $('#wizard-form').on('input change', 'input,select,textarea', function () {
+            $(this).removeClass('is-bad').closest('.form-group').removeClass('has-error');
+            Wizard.summary();
+        });
+        $('#wizard-form').on('submit', function (e) {
+            e.preventDefault();
+            var conn = connById(parseInt($('#wz-conn').val(), 10)) || {};
+            var name = $.trim($('#wz-name').val());
+            fakeAjax(function () {
+                var src = { id: ++nextId.sources, name: name, desc: $.trim($('#wz-desc').val()), connId: conn.id, type: $('#wz-type').val() || conn.type,
+                    format: $('#wz-format').val(), records: 10000, sizeMB: 5, schedule: $('#wz-schedule').val(), status: 'active', lastRun: 0,
+                    owner: $('#wz-owner').val(), path: $('#wz-path').val(), file: $('#wz-file').val() };
+                DB.sources.push(src);
+                DB.jobs.push({ id: ++nextId.jobs, name: name, sourceId: src.id, desc: 'Ingest ' + name, cron: '0 2 * * *', schedule: src.schedule,
+                    owner: src.owner, status: 'success', success: 100, lastRun: 0, nextRun: 600, avgDur: 120, records: 10000 });
+                DB.feed.push({ icon: 'fa-plus', cls: 'mute', text: '<b>Admin Immobi</b> created data source <b>' + esc(name) + '</b>', min: 0 });
+                SourcePage.page = 1; SourcePage.order = 'recent'; SourcePage.type = 'All'; SourcePage.status = 'All'; SourcePage.q = '';
+                location.hash = '#source';
+                toast('Data Source created successfully', name + ' · job scheduled ' + src.schedule);
+            }, 600);
+        });
+    },
+    reset: function () {
+        $.each(Wizard.defaults, function (id, val) { $('#' + id).val(val); });
+        $('#wz-type').val('FTP'); $('#wz-conn-type').val('FTP');
+        Wizard.fillConnections(); $('#wz-conn').val('1');
+        $('#wizard-form .is-bad').removeClass('is-bad'); $('#wizard-form .has-error').removeClass('has-error');
+        Wizard.maxReached = 0; Wizard.go(0);
+    },
+    check: function () {
+        var ok = true;
+        $('.wz-step[data-step="' + Wizard.cur + '"] [data-required]').each(function () {
+            var bad = !$.trim($(this).val());
+            $(this).toggleClass('is-bad', bad).closest('.form-group').toggleClass('has-error', bad);
+            if (bad) ok = false;
+        });
+        return ok;
+    },
+    go: function (i) {
+        if (i < 0 || i > 3) return;
+        Wizard.cur = i; Wizard.maxReached = Math.max(Wizard.maxReached, i);
+        $('.wz-step').removeClass('on').filter('[data-step="' + i + '"]').addClass('on animated fadeIn');
+        $('#stepper').html(Wizard.steps.map(function (s, k) {
+            var cls = k === i ? 'current' : k < i || k <= Wizard.maxReached ? 'done' : 'locked';
+            return '<div class="st ' + cls + '" data-i="' + k + '"><div class="bubble">' + (k < i ? '<i class="fa fa-check"></i>' : k + 1) + '</div><div class="lbl">' + s[0] + '</div><div class="desc">' + s[1] + '</div></div>';
+        }).join(''));
+        $('#wz-prev').css('visibility', i === 0 ? 'hidden' : 'visible');
+        $('#wz-next').toggle(i < 3); $('#wz-submit').toggle(i === 3);
+        if (i === 3) Wizard.renderMeta();
+        Wizard.summary();
+    },
+    fillConnections: function () {
+        var t = $('#wz-conn-type').val(), h = '<option value="">- Select -</option>';
+        DB.connections.forEach(function (c) {
+            if (!t || c.type === t) h += '<option value="' + c.id + '">' + esc(c.name) + ' — ' + esc(c.host) + (c.status !== 'online' ? ' (' + c.status + ')' : '') + '</option>';
+        });
+        $('#wz-conn').html(h);
+    },
+    summary: function () {
+        var c = connById(parseInt($('#wz-conn').val(), 10));
+        var rows = [['Name', $('#wz-name').val()], ['Type', $('#wz-type').val()], ['Owner', $('#wz-owner').val()],
+            ['Connection', c ? c.name : ''], ['Endpoint', c ? c.protocol + '://' + c.host + ':' + c.port : ''],
+            ['Location', ($('#wz-path').val() || '') + ($('#wz-file').val() || '')], ['Format', $('#wz-format').val() + ' · "' + $('#wz-delim').val() + '" · ' + $('#wz-encoding').val()],
+            ['Profile', $('#wz-profile').val()], ['Schedule', $('#wz-schedule').val()]];
+        $('#wz-summary').html('<div class="mb-3"><span class="kpi-meta">Step ' + (Wizard.cur + 1) + ' of 4</span><div class="minibar" style="width:100%;height:6px;margin-top:6px;"><span style="width:' + ((Wizard.cur + 1) * 25) + '%"></span></div></div>' +
+            rows.map(function (r) { return '<div class="kv"><span class="k">' + r[0] + '</span><span class="v' + (/Endpoint|Location|Profile/.test(r[0]) ? ' mono' : '') + '">' + (r[1] ? esc(r[1]) : '<span class="grey-text">—</span>') + '</span></div>'; }).join(''));
+    },
+    renderMeta: function () {
+        var cols = [['listing_id', 'BIGINT', 'NO', '9,982', '0.0', '1002931'], ['title', 'VARCHAR(255)', 'NO', '9,410', '0.0', 'Apartemen 2BR Kemang'],
+            ['city', 'VARCHAR(100)', 'NO', '14', '0.0', 'Jakarta Selatan'], ['district', 'VARCHAR(100)', 'YES', '212', '1.2', 'Kemang'],
+            ['price_idr', 'DECIMAL(18,2)', 'YES', '3,871', '0.4', '8,500,000'], ['bedrooms', 'SMALLINT', 'YES', '7', '2.8', '2'],
+            ['land_m2', 'DECIMAL(10,2)', 'YES', '1,204', '6.1', '72.00'], ['listed_at', 'TIMESTAMP', 'NO', '9,990', '0.0', '2026-10-31 08:12:44']];
+        $('#wz-meta').html(cols.map(function (c, i) {
+            var n = parseFloat(c[4]);
+            return '<tr><th scope="row" class="grey-text">' + (i + 1) + '</th><td class="mono cell-title">' + c[0] + '</td><td><span class="tag mono">' + c[1] + '</span></td><td>' + c[2] +
+                '</td><td class="num mono">' + c[3] + '</td><td class="num mono" style="color:' + (n > 5 ? 'var(--warn)' : 'inherit') + '">' + c[4] + '%</td><td class="mono grey-text">' + esc(c[5]) + '</td></tr>';
+        }).join(''));
+    }
+};
+
+/* ==========================================================================
+   ROUTER + AUTH
+   ========================================================================== */
+var PAGES = {
+    dashboard:  ['Dashboard', 'Overview'],
+    connection: ['Connection', 'Configuration'],
+    source:     ['Data Source', 'Configuration'],
+    jobs:       ['Jobs', 'Orchestration'],
+    wizard:     ['Data Source / Add New', 'Wizard']
+};
+function isLoggedIn() { return sessionStorage.getItem('parsing_auth') === '1'; }
+
+function route() {
+    hideTips();
+    $('.modal').modal('hide');
+    var name = (location.hash || '').replace('#', '');
+    if (!isLoggedIn()) {
+        $('#app').hide();
+        $('.page').removeClass('show-page');
+        $('#page-login').addClass('show-page');
+        return;
+    }
+    if (!PAGES[name]) { location.replace('#dashboard'); return; }
+    $('#page-login').removeClass('show-page');
+    $('#app').show();
+    $('#app .page').removeClass('show-page');
+    $('#page-' + name).addClass('show-page');
+    $('.sidebar-links > a').removeClass('selected').filter('[data-page="' + name + '"]').addClass('selected');
+    $('#page-title').text(PAGES[name][0]);
+    $('#page-crumb').text('Parsing Data Immobi / ' + PAGES[name][1]);
+    $(window).scrollTop(0);
+
+    if (name === 'dashboard') Dashboard.render();
+    if (name === 'connection') ConnectionPage.render();
+    if (name === 'source') { SourcePage.$.find('.search').val(SourcePage.q); SourcePage.render(); }
+    if (name === 'jobs') {
+        JobDetail.close(); JobsPage.render();
+        if (JobDetail.pending) { JobDetail.open(JobDetail.pending); JobDetail.pending = null; }
+    }
+    if (name === 'wizard') Wizard.reset();
+}
+
+$('#login-form').on('submit', function (e) {
+    e.preventDefault();
+    var email = $.trim($('#login-email').val()), pass = $('#login-password').val();
+    if (!email || !pass) { $('#login-error').text('Please fill in email and password.').show(); return; }
+    $('#login-error').hide();
+    fakeAjax(function () {
+        sessionStorage.setItem('parsing_auth', '1');
+        if (location.hash === '#dashboard') route(); else location.hash = '#dashboard';
+        toast('Welcome back, Admin Immobi', 'Signed in to workspace Immobi Production');
+    }, 500);
+});
+$('#btn-logout').on('click', function (e) {
+    e.preventDefault();
+    sessionStorage.removeItem('parsing_auth');
+    location.hash = '';
+    route();
+});
+
+/* Hamburger: collapse / expand filter panels (replaces original offcanvas) */
+$('[data-toggle=offcanvas]').click(function (e) { e.preventDefault(); $('body').toggleClass('filters-collapsed'); });
+
+function tick() {
+    var d = new Date();
+    $('#clock-date').text(d.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }));
+    $('#clock-time').text(d.toTimeString().slice(0, 8) + ' WIB');
+}
+
+$(function () {
+    fillTypeSelects();
+    Wizard.init();
+    tick(); setInterval(tick, 1000);
+    $(window).on('hashchange', route);
+    route();
+});
+</script>
+</body>
+</html>

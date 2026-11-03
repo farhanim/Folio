@@ -1,0 +1,2547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+  <meta name="description" content="Navy - One Management System">
+  <title>Navy</title>
+  <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+
+  <!-- Vuetify 0.17.4 (same build the original Nuxt app used) -->
+  <link rel="stylesheet" href="assets/css/vuetify.min.css">
+
+  <style>
+  /* ==========================================================
+     Fonts (local copies)
+     ========================================================== */
+  @font-face { font-family: 'Material Icons'; font-style: normal; font-weight: 400;
+    src: local('Material Icons'), local('MaterialIcons-Regular'), url(assets/fonts/MaterialIcons-Regular.woff2) format('woff2'); }
+  @font-face { font-family: 'Montserrat'; font-style: normal; font-weight: 400 500;
+    src: url(assets/fonts/Montserrat-latin.woff2) format('woff2'); }
+  @font-face {src:url("assets/fonts/Roboto-Thin.woff2") format("woff2"); font-family: 'Roboto'; font-weight: 100; }
+  @font-face {src:url("assets/fonts/Roboto-Light.woff2") format("woff2"); font-family: 'Roboto'; font-weight: 300; }
+  @font-face {src:url("assets/fonts/Roboto-Regular.woff2") format("woff2"); font-family: 'Roboto'; font-weight: 400; }
+  @font-face {src:url("assets/fonts/Roboto-Medium.woff2") format("woff2"); font-family: 'Roboto'; font-weight: 500; }
+  @font-face {src:url("assets/fonts/Roboto-Bold.woff2") format("woff2"); font-family: 'Roboto'; font-weight: 700; }
+
+  .material-icons {
+    font-family: 'Material Icons'; font-weight: normal; font-style: normal; font-size: 24px; line-height: 1;
+    letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal;
+    direction: ltr; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased;
+  }
+
+  /* ==========================================================
+     Original styles: resources/assets/css/app.styl + main.css
+     ========================================================== */
+  html, body { background-color: #fff; color: #2e2f30; letter-spacing: 0.5px; font-family: "Source Sans Pro", Arial, sans-serif; height: 100vh; margin: 0; }
+  .vertical-center { min-height: 100%; min-height: 100vh; display: flex; align-items: center; }
+  a, a:hover, a:focus, a:visited { color: #744d82; text-decoration: none; }
+  .page-enter-active, .page-leave-active { transition: opacity .35s }
+  .page-enter, .page-leave-active { opacity: 0 }
+  .radius-8{ border-radius:8px; }
+  .montserrat{ font-family: 'Montserrat', sans-serif; font-weight: 500; }
+  .color-fff{ color:#fff; }
+  .enter{ border-radius: 18px; border:1px solid #ccc; padding: 8px 24px; font-family: 'Montserrat', sans-serif; color: #333; }
+  .bg-module{ min-height: 100vh; background: url(assets/img/bg.webp) no-repeat center top #141e82; background-size: cover; }
+  .navy-header { background: #0D47A1!important; z-index: 1000; position: relative; color:#fff; }
+  #myVideo {
+    width: 500px; position: absolute; right: 0; top:-131px; opacity: 1; left: -50px; z-index: 0;
+    box-shadow: inset -92px 0px 134px -9px rgba(13,72,161,1);
+  }
+  .video-bg{ width: 300px; height: 60px; z-index: 3; top: 0; position: absolute; left: 160px; box-shadow: inset -200px 0px 188px -110px rgba(13,72,161,1) }
+  .navy-ico-title{ position: relative; z-index: 2; }
+  .navy-sub-header{ background: #0D47A1!important; z-index: 990; position: relative; height: 47px; }
+  .toolbar__content{ border-bottom: 1px solid #1565C0!important; padding: 10px 0px; height: 61px!important; padding-left: 3rem; padding-right: 3rem; }
+  .normal{ font-weight: 400; }
+  .menu__content.menuable__content__active UL{ padding-top:0px; padding-bottom: 0px; background:#fff!important; }
+  .menu__content.menuable__content__active ul li a{ font-size: 14px; }
+  .navy-sub-header .tabs__wrapper--scrollable { margin:0px 2rem!important; }
+  .navy-sub-header .tabs__li a{ color:#fff!important; font-size:12px; }
+  .navy-content-wrap .content{ padding: 0px!important; }
+  .card{ box-shadow: none; border:1px solid #efefef; border-radius: 4px; }
+  .title{ color: #283593; line-height: 120%!important; }
+  .color-1{ color:#283593!important; }
+  p{ word-wrap: break-word; }
+  .scrollbar-ripe-malinka::-webkit-scrollbar-track { box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1); background-color: #fff; border-radius: 10px; }
+  .scrollbar-ripe-malinka::-webkit-scrollbar { width: 12px; background-color: #fff; }
+  .scrollbar-ripe-malinka::-webkit-scrollbar-thumb { border-radius: 10px; box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1); background-image: linear-gradient(120deg, #E8EAF6 0%, #E3F2FD 100%); }
+  .thin::-webkit-scrollbar { width: 6px; }
+  p.navy-quote{ font-size: 20px; color: #000; font-style: italic; font-family: serif, times new roman; }
+  .btn-blank{ background: #fff; color: #000!important; border:1px solid #E0E0E0; }
+
+  /* ==========================================================
+     Design system (consistent spacing / size / components)
+     ========================================================== */
+  :root { --navy:#0D47A1; --blue:#1d90fb; --ink:#1f2a44; --muted:#7a869a; --line:#e6eaf2; --soft:#f4f6fb; }
+  #appnavy.application.theme--light { background: var(--soft); font-family: 'Roboto', sans-serif; letter-spacing: .2px; }
+  #appnavy a { text-decoration: none; }
+  .page { padding: 28px 32px 48px; max-width: 1680px; margin: 0 auto; }
+  .page-header { display: flex; align-items: flex-end; flex-wrap: wrap; margin-bottom: 22px; }
+  .page-header__crumbs { font-size: 12px; color: var(--muted); margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; }
+  .page-header__crumbs .material-icons { font-size: 14px; margin: 0 4px; }
+  .page-header__title { font-size: 22px; font-weight: 500; color: var(--ink); margin: 0; line-height: 1.3; }
+  .page-header__sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .page-header__actions { margin-left: auto; display: flex; align-items: center; flex-wrap: wrap; }
+  .page-header__actions > * { margin-left: 10px; margin-top: 8px; }
+
+  .grid { display: flex; flex-wrap: wrap; margin: -8px; }
+  .grid + .grid { margin-top: 8px; }
+  .gcol { padding: 8px; width: 100%; display: flex; }
+  .gcol > * { flex: 1; min-width: 0; }
+  @media (min-width: 600px) { .sm-6 { width: 50%; } .sm-4 { width: 33.3333%; } }
+  @media (min-width: 960px) {
+    .md-2 { width: 16.6666%; } .md-3 { width: 25%; } .md-4 { width: 33.3333%; } .md-5 { width: 41.6666%; }
+    .md-6 { width: 50%; } .md-7 { width: 58.3333%; } .md-8 { width: 66.6666%; } .md-9 { width: 75%; }
+  }
+  @media (min-width: 1264px) { .lg-2 { width: 16.6666%; } .lg-3 { width: 25%; } .lg-4 { width: 33.3333%; } }
+
+  /* stat card */
+  .stat { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+  .stat__icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 14px; flex: none; }
+  .stat__icon .material-icons { font-size: 24px; }
+  .stat__body { min-width: 0; }
+  .stat__label { font-size: 11px; letter-spacing: .7px; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  .stat__value { font-size: 24px; font-weight: 500; color: var(--ink); line-height: 1.25; white-space: nowrap; }
+  .stat__value small { font-size: 13px; color: var(--muted); font-weight: 400; margin-left: 3px; }
+  .stat__sub { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat__sub.up { color: #2e9e5b; } .stat__sub.down { color: #e04848; }
+
+  /* panel */
+  .panel { background: #fff; border: 1px solid var(--line); border-radius: 10px; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+  .panel__head { display: flex; align-items: center; padding: 14px 18px; border-bottom: 1px solid #eef1f6; min-height: 58px; }
+  .panel__head .material-icons.ph-icon { color: var(--blue); font-size: 20px; margin-right: 10px; }
+  .panel__title { font-size: 14.5px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+  .panel__sub { font-size: 12px; color: var(--muted); }
+  .panel__actions { margin-left: auto; display: flex; align-items: center; }
+  .panel__body { padding: 16px 18px; flex: 1; min-height: 0; }
+  .panel__body.flush { padding: 0; }
+  .panel__foot { border-top: 1px solid #eef1f6; padding: 10px 18px; font-size: 12px; color: var(--muted); display: flex; align-items: center; }
+
+  /* status chips */
+  .chip-s { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 12px; font-size: 11.5px; font-weight: 500; white-space: nowrap; line-height: 18px; }
+  .chip-s:before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; margin-right: 6px; }
+  .chip-s.cs-green { color: #2e9e5b; background: #e6f6ec; } .chip-s.cs-orange { color: #e07b00; background: #fff2e0; }
+  .chip-s.cs-blue { color: #1c6fd1; background: #e5f0fd; } .chip-s.cs-red { color: #e04848; background: #fdeaea; }
+  .chip-s.cs-grey { color: #6b7688; background: #eef1f5; } .chip-s.cs-purple { color: #7e57c2; background: #f0eafa; }
+  .chip-s.cs-amber { color: #b88600; background: #fff7d6; } .chip-s.cs-teal { color: #00897b; background: #e0f4f1; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 4px; background: var(--soft); border: 1px solid var(--line); font-size: 11px; color: #4a5568; white-space: nowrap; }
+
+  /* tables */
+  .ntable { width: 100%; border-collapse: collapse; }
+  .ntable th { text-align: left; font-size: 11px; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); font-weight: 500;
+    padding: 10px 14px; background: #fafbfd; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .ntable td { padding: 11px 14px; border-bottom: 1px solid #f0f2f7; font-size: 13.5px; color: #2d3748; vertical-align: middle; }
+  .ntable tbody tr { transition: background .15s; }
+  .ntable tbody tr:hover { background: #f7f9fd; }
+  .ntable tbody tr.clickable { cursor: pointer; }
+  .ntable .muted { color: var(--muted); font-size: 12px; }
+  .person { display: flex; align-items: center; min-width: 0; }
+  .person img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; margin-right: 12px; flex: none; background: #eef1f5; }
+  .person__name { font-weight: 500; color: var(--ink); font-size: 13.5px; white-space: nowrap; }
+  .person__meta { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .table-wrap { overflow-x: auto; }
+  .nowrap { white-space: nowrap; }
+  .desc-cell { max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .empty { padding: 40px 16px; text-align: center; color: var(--muted); font-size: 13px; }
+  .empty .material-icons { font-size: 40px; color: #c5ccd8; display: block; margin: 0 auto 8px; }
+
+  /* filters */
+  .search { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 0 10px; height: 38px; min-width: 240px; }
+  .search .material-icons { font-size: 20px; color: var(--muted); margin-right: 6px; }
+  .search input { border: 0; outline: none; flex: 1; font-size: 13.5px; background: transparent; color: var(--ink); font-family: inherit; }
+  .nselect { height: 38px; border: 1px solid var(--line); border-radius: 8px; padding: 0 10px; font-size: 13.5px; background: #fff; color: var(--ink); outline: none; font-family: inherit; }
+  .seg { display: inline-flex; background: var(--soft); border: 1px solid var(--line); border-radius: 8px; padding: 3px; }
+  .seg button { border: 0; background: transparent; padding: 6px 12px; font-size: 12.5px; color: #4a5568; border-radius: 6px; cursor: pointer; font-family: inherit; outline: none; white-space: nowrap; }
+  .seg button.on { background: #fff; color: var(--navy); font-weight: 500; box-shadow: 0 1px 2px rgba(16,24,40,.08); }
+  .seg button .cnt { margin-left: 6px; font-size: 11px; color: var(--muted); }
+  .nbtn { display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--line); background: #fff;
+    color: var(--ink) !important; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; outline: none; white-space: nowrap; }
+  .nbtn .material-icons { font-size: 18px; margin-right: 6px; }
+  .nbtn:hover { background: var(--soft); }
+  .nbtn.primary { background: var(--navy); border-color: var(--navy); color: #fff !important; }
+  .nbtn.primary:hover { background: #0b3d8c; }
+  .nbtn.sm { height: 30px; padding: 0 10px; font-size: 12px; }
+  .pager { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; font-size: 12.5px; color: var(--muted); border-top: 1px solid #eef1f6; }
+  .pager__btns { display: flex; }
+  .pager__btns button { min-width: 32px; height: 32px; margin-left: 4px; border: 1px solid var(--line); background: #fff; border-radius: 6px; cursor: pointer;
+    font-size: 12.5px; color: #4a5568; font-family: inherit; outline: none; }
+  .pager__btns button.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .pager__btns button:disabled { opacity: .45; cursor: default; }
+
+  /* list rows (attendance / calls / frequents) */
+  .lrow { display: flex; align-items: center; padding: 10px 18px; border-bottom: 1px solid #f0f2f7; transition: background .15s; }
+  .lrow:last-child { border-bottom: 0; }
+  .lrow.clickable { cursor: pointer; }
+  .lrow.clickable:hover { background: #f7f9fd; }
+  .lrow.active { background: #eef5ff; box-shadow: inset 3px 0 0 var(--blue); }
+  .lrow img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; margin-right: 12px; flex: none; }
+  .lrow__main { flex: 1; min-width: 0; }
+  .lrow__title { font-size: 13.5px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lrow__sub { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lrow__side { text-align: right; margin-left: 10px; flex: none; }
+  .lrow__time { font-size: 12px; color: var(--muted); }
+  .scroll-list { overflow-y: auto; }
+
+  /* key-value list */
+  .kv { display: flex; padding: 9px 0; border-bottom: 1px dashed #edf0f5; font-size: 13px; }
+  .kv:last-child { border-bottom: 0; }
+  .kv__k { color: var(--muted); width: 42%; flex: none; display: flex; align-items: center; }
+  .kv__k .material-icons { font-size: 16px; margin-right: 8px; color: #a0aabb; }
+  .kv__v { color: var(--ink); font-weight: 500; min-width: 0; word-break: break-word; }
+
+  /* progress bars */
+  .pbar { margin-bottom: 16px; }
+  .pbar:last-child { margin-bottom: 0; }
+  .pbar__top { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 6px; color: #4a5568; }
+  .pbar__top b { color: var(--ink); font-weight: 500; }
+  .pbar__track { height: 8px; background: #eef1f6; border-radius: 4px; overflow: hidden; }
+  .pbar__fill { height: 100%; border-radius: 4px; transition: width .6s; }
+
+  /* toolbar user area */
+  .hdr-user { display: flex; align-items: center; }
+  .hdr-clock { font-size: 12px; opacity: .85; margin-right: 18px; display: flex; align-items: center; white-space: nowrap; }
+  .hdr-clock .material-icons { font-size: 16px; margin-right: 6px; }
+  .hdr-user img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,.35); }
+  .hdr-user__name { margin-left: 10px; line-height: 1.2; text-align: left; }
+  .hdr-user__name b { display: block; font-size: 13px; font-weight: 500; }
+  .hdr-user__name span { font-size: 11px; opacity: .75; }
+  @media (max-width: 900px) { .hdr-clock { display: none; } }
+
+  /* branch card */
+  .bcard { background: #fff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; transition: box-shadow .2s, transform .2s; color: inherit !important; }
+  .bcard:hover { box-shadow: 0 10px 24px rgba(16,24,40,.10); transform: translateY(-2px); }
+  .bcard__img { height: 170px; background-size: cover; background-position: center; position: relative; }
+  .bcard__img:after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(13,71,161,0) 40%, rgba(13,30,70,.75)); }
+  .bcard__badge { position: absolute; top: 12px; left: 12px; z-index: 1; background: rgba(255,255,255,.92); color: var(--navy); font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 12px; letter-spacing: .5px; }
+  .bcard__status { position: absolute; top: 12px; right: 12px; z-index: 1; }
+  .bcard__type { position: absolute; left: 16px; bottom: 12px; z-index: 1; color: #fff; font-size: 12px; opacity: .95; display: flex; align-items: center; }
+  .bcard__type .material-icons { font-size: 16px; margin-right: 5px; }
+  .bcard__body { padding: 16px 18px 6px; flex: 1; }
+  .bcard__name { font-size: 16px; font-weight: 500; color: #283593; margin-bottom: 6px; }
+  .bcard__addr { font-size: 12.5px; color: var(--muted); display: flex; align-items: flex-start; min-height: 36px; }
+  .bcard__addr .material-icons { font-size: 16px; margin-right: 6px; margin-top: 1px; color: #a0aabb; }
+  .bcard__cmd { font-size: 12.5px; color: #4a5568; margin-top: 8px; display: flex; align-items: center; }
+  .bcard__cmd .material-icons { font-size: 16px; margin-right: 6px; color: #a0aabb; }
+  .bcard__stats { display: flex; border-top: 1px solid #eef1f6; margin-top: 12px; }
+  .bcard__stats > div { flex: 1; text-align: center; padding: 12px 6px; }
+  .bcard__stats > div + div { border-left: 1px solid #eef1f6; }
+  .bcard__stats b { display: block; font-size: 17px; font-weight: 500; color: var(--ink); }
+  .bcard__stats span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+
+  /* employee card */
+  .ecard { background: #fff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; transition: box-shadow .2s, transform .2s; color: inherit !important; }
+  .ecard:hover { box-shadow: 0 10px 24px rgba(16,24,40,.10); transform: translateY(-2px); }
+  .ecard__top { padding: 22px 16px 14px; text-align: center; background: linear-gradient(180deg, #f2f6ff, #fff); position: relative; }
+  .ecard__top img { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(16,24,40,.15); }
+  .ecard__status { position: absolute; top: 12px; right: 12px; }
+  .ecard__name { font-size: 15px; font-weight: 500; color: #283593; margin-top: 10px; }
+  .ecard__rank { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .ecard__div { margin-top: 8px; }
+  .ecard__info { padding: 4px 16px 10px; flex: 1; }
+  .ecard__line { display: flex; align-items: center; font-size: 12.5px; color: #4a5568; padding: 6px 0; border-bottom: 1px dashed #edf0f5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ecard__line:last-child { border-bottom: 0; }
+  .ecard__line .material-icons { font-size: 16px; color: #3f51b5; margin-right: 10px; }
+  .ecard__foot { display: flex; border-top: 1px solid #eef1f6; }
+  .ecard__foot > div { flex: 1; text-align: center; padding: 10px 4px; }
+  .ecard__foot > div + div { border-left: 1px solid #eef1f6; }
+  .ecard__foot b { display: block; font-size: 15px; font-weight: 500; color: var(--ink); }
+  .ecard__foot span { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+
+  /* profile card (detail) */
+  .profile__top { text-align: center; padding: 24px 18px 18px; background: linear-gradient(160deg, #0D47A1, #1d6fd8); color: #fff; }
+  .profile__top img { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,.7); }
+  .profile__name { font-size: 17px; font-weight: 500; margin-top: 10px; }
+  .profile__rank { font-size: 12.5px; opacity: .85; }
+  .profile__body { padding: 8px 18px 14px; }
+
+  /* call info strip over map */
+  .callinfo { display: flex; align-items: center; flex-wrap: wrap; padding: 12px 18px; border-bottom: 1px solid #eef1f6; background: #fafbfd; }
+  .callinfo__party { display: flex; align-items: center; min-width: 0; }
+  .callinfo__party img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 10px; }
+  .callinfo__arrow { margin: 0 14px; color: var(--muted); }
+  .callinfo__meta { margin-left: auto; display: flex; flex-wrap: wrap; }
+  .callinfo__meta > div { margin-left: 22px; font-size: 12px; color: var(--muted); }
+  .callinfo__meta b { display: block; color: var(--ink); font-size: 13.5px; font-weight: 500; }
+
+  /* remote: rooms + cctv */
+  .room { display: flex; align-items: center; padding: 10px 18px; border-bottom: 1px solid #f0f2f7; }
+  .room:last-child { border-bottom: 0; }
+  .room__name { flex: 1; min-width: 0; }
+  .room__name b { display: block; font-size: 13.5px; font-weight: 500; color: var(--ink); }
+  .room__name span { font-size: 12px; color: var(--muted); }
+  .room__sw { display: flex; }
+  .dev { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 52px; margin-left: 6px; border-radius: 8px;
+    border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 10.5px; color: var(--muted); user-select: none; outline: none; font-family: inherit; }
+  .dev .material-icons { font-size: 19px; margin-bottom: 2px; }
+  .dev.on { background: #eaf2ff; border-color: #b9d3fb; color: var(--navy); }
+  .cctv { position: relative; background: #000; border-radius: 8px; overflow: hidden; height: 190px; }
+  .cctv video, .cctv iframe { width: 100%; height: 100%; object-fit: cover; display: block; border: 0; filter: saturate(.7) contrast(1.05); }
+  .cctv__ovl { position: absolute; inset: 0; pointer-events: none; padding: 8px 10px; color: #fff; font: 500 11px 'Roboto Mono', Consolas, monospace;
+    background: linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,.45)); display: flex; flex-direction: column; justify-content: space-between; }
+  .cctv__row { display: flex; justify-content: space-between; align-items: center; }
+  .rec { display: inline-flex; align-items: center; } .rec:before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #ff3b30; margin-right: 6px; animation: blink 1.2s infinite; }
+  .cctv.off { display: flex; align-items: center; justify-content: center; color: #8a94a6; font-size: 12px; background: #11151c; }
+  @keyframes blink { 50% { opacity: .2; } }
+  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2ecc71; margin-right: 6px; box-shadow: 0 0 0 3px rgba(46,204,113,.2); }
+
+  /* home */
+  .home { display: flex; flex-direction: column; font-family: 'Roboto', sans-serif; }
+  .home__bar { display: flex; align-items: center; padding: 18px 40px; }
+  .home__bar img.logo-s { height: 40px; }
+  .home__user { margin-left: auto; display: flex; align-items: center; color: #fff; }
+  .home__user .hdr-clock { color: #fff; }
+  .home__logout { margin-left: 18px; color: #fff !important; border: 1px solid rgba(255,255,255,.4); border-radius: 18px; padding: 6px 14px; font-size: 12.5px; display: flex; align-items: center; }
+  .home__logout .material-icons { font-size: 16px; margin-right: 6px; }
+  .home__logout:hover { background: rgba(255,255,255,.12); }
+  .home__hero { text-align: center; padding: 34px 20px 10px; }
+  .home__hero p { color: rgba(255,255,255,.8); font-size: 15px; margin-top: 12px; }
+  .home__cards { display: flex; flex-wrap: wrap; justify-content: center; padding: 20px 24px; }
+  .home__cards > div { width: 100%; max-width: 360px; padding: 14px; }
+  .mcard { background: #fff; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; height: 100%; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
+  .mcard__top { text-align: center; padding: 28px 22px 8px; }
+  .mcard__top img { width: 76px; height: 76px; }
+  .mcard__title { font-size: 18px; color: #1f2a44; margin-top: 12px; }
+  .mcard__text { font-size: 13px; color: #5b6678; line-height: 1.6; padding: 6px 24px 0; text-align: center; flex: 1; }
+  .mcard__stats { display: flex; margin: 18px 22px 0; border: 1px solid #eef1f6; border-radius: 8px; }
+  .mcard__stats > div { flex: 1; text-align: center; padding: 10px 4px; }
+  .mcard__stats > div + div { border-left: 1px solid #eef1f6; }
+  .mcard__stats b { display: block; font-size: 17px; color: #0D47A1; font-weight: 500; }
+  .mcard__stats span { font-size: 10.5px; color: #7a869a; text-transform: uppercase; letter-spacing: .5px; }
+  .mcard__foot { text-align: center; padding: 20px 0 24px; }
+  .home__status { margin-top: auto; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; padding: 18px 24px 26px; color: rgba(255,255,255,.85); font-size: 12px; }
+  .home__status > span { margin: 4px 14px; display: flex; align-items: center; }
+
+  /* fleet map */
+  .fleet-top { position: absolute; top: 16px; left: 16px; right: 16px; z-index: 5; display: flex; align-items: flex-start; pointer-events: none; }
+  .fleet-top > * { pointer-events: auto; }
+  .fleet-title { background: rgba(255,255,255,.96); border-radius: 10px; padding: 10px 16px 10px 10px; display: flex; align-items: center; box-shadow: 0 4px 16px rgba(16,24,40,.15); }
+  .fleet-title a { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--ink) !important; margin-right: 10px; }
+  .fleet-title a:hover { background: var(--soft); }
+  .fleet-stats { margin-left: 12px; display: flex; }
+  .fleet-stats > div { background: rgba(255,255,255,.96); border-radius: 10px; padding: 8px 14px; margin-left: 8px; box-shadow: 0 4px 16px rgba(16,24,40,.15); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  .fleet-stats b { display: block; font-size: 17px; color: var(--ink); text-transform: none; letter-spacing: 0; font-weight: 500; }
+  .fleet-panel { position: absolute; left: 16px; bottom: 16px; width: 880px; max-width: calc(100% - 90px); z-index: 6; background: rgba(33,33,33,.93); border-radius: 10px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.3); }
+  .fleet-panel__bar { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px 6px 14px; color: rgba(255,255,255,.8); font-size: 12px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .fleet-panel__bar button { background: transparent; border: 0; color: #fff; cursor: pointer; display: flex; outline: none; }
+  .fleet-drawer-body { max-height: 250px; overflow-y: auto; }
+  .fleet-show { position: absolute; left: 16px; bottom: 16px; z-index: 6; display: flex; align-items: center; background: rgba(33,33,33,.93); color: #fff; border: 0; border-radius: 20px; padding: 8px 16px 8px 12px; cursor: pointer; font-size: 13px; font-family: inherit; box-shadow: 0 4px 12px rgba(0,0,0,.3); outline: none; }
+  .fleet-show .material-icons { font-size: 18px; margin-right: 6px; }
+  .fleet-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .fleet-table th { text-align: left; color: rgba(255,255,255,.55); font-weight: 500; text-transform: uppercase; font-size: 10.5px; letter-spacing: .6px; padding: 6px 12px; position: sticky; top: 0; background: #2b2b2b; }
+  .fleet-table td { padding: 6px 12px; color: #fff; border-top: 1px solid rgba(255,255,255,.07); white-space: nowrap; }
+  .fleet-table tr { cursor: pointer; }
+  .fleet-table tr:hover td, .fleet-table tr.sel td { background: rgba(29,144,251,.25); }
+
+  /* ==========================================================
+     Login page (Bootstrap 4 + MDB 4.4.3 look, lg- prefix)
+     ========================================================== */
+  .login-page.vertical-center { background: url(assets/img/bg.webp) no-repeat center center fixed; background-size: cover; font-family: 'Roboto', sans-serif; }
+  .login-page *, .login-page *:before, .login-page *:after { box-sizing: border-box; }
+  .lg-container-fluid { width: 100%; padding-right: 15px; padding-left: 15px; margin-right: auto; margin-left: auto; }
+  .lg-row { display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; justify-content: center; }
+  .lg-col { position: relative; width: 100%; padding-right: 15px; padding-left: 15px; }
+  @media (min-width: 768px) { .lg-col { flex: 0 0 33.333333%; max-width: 33.333333%; } }
+  .lg-card { position: relative; display: flex; flex-direction: column; min-width: 0; word-wrap: break-word; background-clip: border-box;
+    border: 0; border-radius: .3rem; font-weight: 400; padding: 3rem !important;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+    background-color: rgba(0,0,0, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .lg-md-form { position: relative; margin-bottom: 1.5rem; }
+  .lg-md-form input.login-form {
+    display: block; width: 100%; font-size: 1rem; line-height: 1.5; color: #495057; background-color: transparent; background-image: none;
+    border: none; border-bottom: 1px solid #bdbdbd; border-radius: 2px; outline: none; height: 2.1rem; box-shadow: none; box-sizing: content-box;
+    transition: all 0.3s; padding: 3px 0px; margin-top: 6px; text-indent: 8px; font-family: inherit;
+  }
+  .lg-md-form input.login-form:focus { border-bottom: 1px solid #4285F4; box-shadow: 0 1px 0 0 #4285F4; }
+  .lg-md-form input.login-form::placeholder { color: #6c757d; }
+  .lg-text-center { text-align: center; }
+  .lg-btn { display: block; width: 100%; font-weight: 400; text-align: center; white-space: normal; vertical-align: middle; user-select: none;
+    font-size: 0.8rem; line-height: 1.5; padding: 0.85rem 2.13rem; margin: inherit; border-radius: 2px; border: 0; transition: .2s ease-out;
+    text-transform: uppercase; word-wrap: break-word; cursor: pointer; color: #fff; background-color: #4285F4; font-family: inherit;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12); }
+  .lg-btn:hover { background-color: #5a95f5; box-shadow: 0 5px 11px 0 rgba(0,0,0,.18), 0 4px 15px 0 rgba(0,0,0,.15); }
+  .lg-btn:active, .lg-btn:focus { background-color: #0d5bdd; outline: 0; }
+  .lg-alert { position: relative; padding: 0.75rem 1.25rem; padding-right: 4rem; margin-bottom: 1rem; border: 1px solid #f5c6cb; border-radius: 0.25rem;
+    color: #721c24; background-color: #f8d7da; font-size: 1rem; }
+  .lg-alert .lg-close { position: absolute; top: 0; right: 0; padding: 0.75rem 1.25rem; color: inherit; background: transparent; border: 0;
+    font-size: 1.5rem; font-weight: 700; line-height: 1; opacity: .5; cursor: pointer; }
+  .lg-hint { color: rgba(255,255,255,.55); font-size: 12px; margin-top: 14px; text-align: center; }
+
+  /* ==========================================================
+     Notification modal (Bootstrap modal look inside v-dialog)
+     ========================================================== */
+  .navy-modal { background: #fff; border-radius: 10px; font-family: 'Roboto', sans-serif; }
+  .navy-modal .nm-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #e9ecef; }
+  .navy-modal .nm-title { margin: 0; line-height: 1.5; font-size: 18px; font-weight: 500; color: #000; }
+  .navy-modal .nm-close { padding: 0 .5rem; margin: -.25rem -.25rem -.25rem auto; background: transparent; border: 0; font-size: 1.5rem; font-weight: 700; line-height: 1; color: #000; opacity: .5; cursor: pointer; }
+  .navy-modal .nm-body { padding: 18px 22px; }
+  .navy-modal .nm-profile { display: flex; align-items: center; }
+  .navy-modal .nm-profile img { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,.15); margin-right: 16px; }
+  .navy-modal .nm-name { margin: 0; font-size: 17px; color: #000; font-weight: 500; }
+  .navy-modal .nm-meta { margin: 0; color: #666; font-size: 12.5px; }
+  .navy-modal .nm-meta .material-icons { font-size: 14px; vertical-align: middle; margin-right: 3px; color: #555; }
+  .navy-modal hr { border: 0; border-top: 1px solid rgba(0,0,0,.08); margin: 14px 0; }
+  .navy-modal .nm-dates { display: flex; align-items: center; margin-bottom: .5rem; }
+  .navy-modal .nm-date { flex: 1; border: 1px solid #dee2e6; border-radius: 6px; padding: .5rem 1rem; text-align: center; font-size: 13px; }
+  .navy-modal .nm-to { width: 50px; text-align: center; font-size: 13px; color: #666; }
+  .navy-modal label { display: block; margin-bottom: .5rem; color: #333; }
+  .navy-modal textarea { display: block; width: 100%; padding: .5rem .75rem; font-size: 14px; line-height: 1.5; color: #495057; background: #fff;
+    border: 1px solid #ced4da; border-radius: 6px; resize: vertical; font-family: inherit; outline: none; }
+  .navy-modal textarea:focus { border-color: #80bdff; box-shadow: 0 0 0 .2rem rgba(0,123,255,.2); }
+  .navy-modal .nm-footer { display: flex; justify-content: flex-end; padding: 14px 20px; border-top: 1px solid #e9ecef; }
+  .navy-modal .nm-btn { font-size: 12.5px; padding: 10px 22px; margin-left: 8px; border-radius: 6px; border: 0; text-transform: uppercase; cursor: pointer; font-family: inherit; font-weight: 500; letter-spacing: .5px; }
+  .navy-modal .nm-btn.btn-blank { background: #fff; color: #000; border: 1px solid #E0E0E0; }
+  .navy-modal .nm-btn.nm-danger { background: #e53945; color: #fff; }
+  .navy-modal .nm-btn.nm-success { background: #00a54a; color: #fff; }
+  .nm-action { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid #dee2e6; border-radius: 8px; margin-left: 6px; cursor: pointer; background: #fff; }
+  .nm-action .material-icons { font-size: 18px; }
+  .nm-action.text-danger .material-icons { color: #e53945; }
+  .nm-action.text-success .material-icons { color: #00a54a; }
+  .nm-action:hover { background: var(--soft); }
+
+  /* ==========================================================
+     Map (replaces vue2-google-maps, no API key needed)
+     ========================================================== */
+  .navy-map { position: relative; z-index: 0; overflow: hidden; background: #b5badb; cursor: grab; user-select: none; touch-action: none; }
+  .navy-map.dragging { cursor: grabbing; }
+  .navy-map__tiles img { position: absolute; width: 256px; height: 256px; max-width: none;
+    filter: grayscale(.45) sepia(.3) hue-rotate(195deg) saturate(1.5) brightness(.93); pointer-events: none; }
+  .navy-map svg.navy-map__curve { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
+  .navy-map__pin { position: absolute; cursor: pointer; transform: translate(-50%, -100%); }
+  .navy-map__pin svg { display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+  .navy-map__pin .lbl { position: absolute; left: 0; right: 0; top: 4px; text-align: center; font: 500 11px Roboto, Arial, sans-serif; color: #fff; }
+  .navy-map__pin.icon img { width: 25px; height: 25px; display: block; }
+  .navy-map__pin.icon .lbl { top: auto; bottom: -14px; font-size: 11px; color: #000; }
+  .navy-map__pin .tip { position: absolute; bottom: 100%; left: 50%; transform: translate(-50%, -4px); background: #1f2a44; color: #fff; font: 500 11px Roboto, sans-serif;
+    padding: 3px 8px; border-radius: 4px; white-space: nowrap; display: none; }
+  .navy-map__pin:hover .tip, .navy-map__pin.sel .tip { display: block; }
+  .navy-map__zoom { position: absolute; right: 10px; bottom: 30px; display: flex; flex-direction: column; background: #fff; border-radius: 4px; box-shadow: rgba(0,0,0,.3) 0 1px 4px -1px; }
+  .navy-map__zoom button { width: 36px; height: 36px; border: 0; background: #fff; font-size: 20px; color: #666; cursor: pointer; outline: none; }
+  .navy-map__zoom button + button { border-top: 1px solid #e6e6e6; }
+  .navy-map__attr { position: absolute; right: 0; bottom: 0; background: rgba(255,255,255,.7); font: 10px Roboto, Arial, sans-serif; padding: 1px 5px; color: #333; }
+  .navy-map__attr a { color: #333 !important; }
+  .navy-map__legend { position: absolute; left: 10px; bottom: 10px; background: rgba(255,255,255,.95); border-radius: 6px; padding: 6px 10px; font: 11.5px Roboto, sans-serif; color: #4a5568; box-shadow: rgba(0,0,0,.2) 0 1px 4px; }
+
+  .nuxt-progress { position: fixed; top: 0; left: 0; height: 2px; width: 0; transition: width .2s, opacity .4s; opacity: 1; background-color: #744d82; z-index: 999999; }
+  .highcharts-tooltip span { font-family: Roboto, sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- ============================================================
+       LAYOUTS
+       ============================================================ -->
+  <script type="text/x-template" id="tpl-layout-blank">
+    <v-app id="appnavy">
+      <v-content>
+        <page-view/>
+      </v-content>
+    </v-app>
+  </script>
+
+  <script type="text/x-template" id="tpl-layout-default">
+    <v-app id="appnavy">
+      <v-tabs>
+        <v-toolbar class="white--text navy-header" app fixed dense>
+          <v-toolbar-title class="montserrat ml-0 navy-ico-title"><small><title-toolbar/></small></v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-title class="normal"><user-toolbar/></v-toolbar-title>
+          <v-menu :nudge-width="100" left bottom>
+            <v-toolbar-side-icon slot="activator" class="white--text"></v-toolbar-side-icon>
+            <v-list class="grey lighten-3">
+              <v-list-tile><router-link to="/">Home</router-link></v-list-tile>
+              <v-list-tile><router-link to="/logout">Logout</router-link></v-list-tile>
+            </v-list>
+          </v-menu>
+          <menu-toolbar slot="extension" class="navy-sub-header white--text"/>
+          <video autoplay muted loop playsinline id="myVideo"><source src="assets/video/wata3.mp4" type="video/mp4"></video>
+          <div class="video-bg"></div>
+          <div class="video-bg"></div>
+        </v-toolbar>
+        <v-tabs-items>
+          <v-content class="navy-content-wrap">
+            <page-view/>
+          </v-content>
+        </v-tabs-items>
+      </v-tabs>
+    </v-app>
+  </script>
+
+  <script type="text/x-template" id="tpl-layout-title">
+    <v-app id="appnavy">
+      <v-toolbar class="white--text navy-header" app fixed dense>
+        <v-toolbar-title class="montserrat ml-0 navy-ico-title"><small><title-toolbar/></small></v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-title class="normal"><user-toolbar/></v-toolbar-title>
+        <v-menu :nudge-width="100" left bottom>
+          <v-toolbar-side-icon slot="activator" class="white--text"></v-toolbar-side-icon>
+          <v-list class="grey lighten-3">
+            <v-list-tile><router-link to="/">Home</router-link></v-list-tile>
+            <v-list-tile><router-link to="/logout">Logout</router-link></v-list-tile>
+          </v-list>
+        </v-menu>
+        <video autoplay muted loop playsinline id="myVideo"><source src="assets/video/wata3.mp4" type="video/mp4"></video>
+        <div class="video-bg"></div>
+        <div class="video-bg"></div>
+      </v-toolbar>
+      <v-content class="navy-content-wrap">
+        <page-view/>
+      </v-content>
+    </v-app>
+  </script>
+
+  <!-- ============================================================
+       SHARED COMPONENTS
+       ============================================================ -->
+  <script type="text/x-template" id="tpl-user-toolbar">
+    <div class="hdr-user">
+      <div class="hdr-clock"><i class="material-icons">schedule</i>{{ now | dateformatter('ddd, DD MMM YYYY · HH:mm') }}</div>
+      <img :src="$avatar(id)" alt=".">
+      <div class="hdr-user__name"><b>Hi, {{ name }}</b><span>{{ role }}</span></div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="tpl-menu-toolbar">
+    <v-tabs-bar class="indigo">
+      <v-tabs-slider color="yellow"></v-tabs-slider>
+      <v-tabs-item v-for="(item, index) in items" :key="index" :to="item.to" :exact="item.exact">{{ item.title }}
+        <v-badge class="pl-1" v-if="item.count" color="red">
+          <span slot="badge">{{ item.count }}</span>
+        </v-badge>
+      </v-tabs-item>
+    </v-tabs-bar>
+  </script>
+
+  <script type="text/x-template" id="tpl-page-header">
+    <div class="page-header">
+      <div>
+        <div class="page-header__crumbs" v-if="crumbs && crumbs.length">
+          <template v-for="(c, i) in crumbs">
+            <i class="material-icons" v-if="i" :key="'i' + i">chevron_right</i>
+            <router-link v-if="c.to" :to="c.to" :key="'c' + i">{{ c.text }}</router-link>
+            <span v-else :key="'c' + i">{{ c.text || c }}</span>
+          </template>
+        </div>
+        <h1 class="page-header__title">{{ title }}</h1>
+        <div class="page-header__sub" v-if="subtitle">{{ subtitle }}</div>
+      </div>
+      <div class="page-header__actions"><slot></slot></div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="tpl-stat-card">
+    <div class="stat">
+      <div class="stat__icon" :style="{ background: color + '1a', color: color }"><i class="material-icons">{{ icon }}</i></div>
+      <div class="stat__body">
+        <div class="stat__label">{{ label }}</div>
+        <div class="stat__value">{{ value }}<small v-if="unit">{{ unit }}</small></div>
+        <div class="stat__sub" :class="trend" v-if="sub">{{ sub }}</div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="tpl-panel">
+    <div class="panel">
+      <div class="panel__head" v-if="title">
+        <i class="material-icons ph-icon" v-if="icon">{{ icon }}</i>
+        <div>
+          <div class="panel__title">{{ title }}</div>
+          <div class="panel__sub" v-if="subtitle">{{ subtitle }}</div>
+        </div>
+        <div class="panel__actions"><slot name="actions"></slot></div>
+      </div>
+      <div class="panel__body" :class="{ flush: flush }" :style="bodyStyle"><slot></slot></div>
+      <div class="panel__foot" v-if="$slots.foot"><slot name="foot"></slot></div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="tpl-pager">
+    <div class="pager" v-if="total > perPage">
+      <span>Showing {{ from }}–{{ to }} of {{ total }}</span>
+      <div class="pager__btns">
+        <button type="button" :disabled="value <= 1" @click="$emit('input', value - 1)">‹</button>
+        <button type="button" v-for="p in pages" :key="p" :class="{ on: p === value }" @click="$emit('input', p)">{{ p }}</button>
+        <button type="button" :disabled="value >= last" @click="$emit('input', value + 1)">›</button>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="tpl-menu-card">
+    <div class="mcard">
+      <div class="mcard__top">
+        <img :src="'assets/' + data.icon" alt="">
+        <div class="mcard__title montserrat"><b>{{ data.title }}</b></div>
+      </div>
+      <p class="mcard__text">{{ data.text }}</p>
+      <div class="mcard__stats">
+        <div v-for="s in data.stats" :key="s.label"><b>{{ s.value }}</b><span>{{ s.label }}</span></div>
+      </div>
+      <div class="mcard__foot">
+        <span @click="set(data)"><router-link :to="'/' + data.id" class="enter montserrat">enter</router-link></span>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="tpl-branch-card">
+    <router-link :to="to" class="bcard">
+      <div class="bcard__img" :style="{ backgroundImage: 'url(assets/img/branches/' + data.id + '.jpg)' }">
+        <span class="bcard__badge">{{ data.code }}</span>
+        <span class="bcard__status chip-s cs-green">Online</span>
+        <span class="bcard__type"><i class="material-icons">domain</i>{{ data.type }}</span>
+      </div>
+      <div class="bcard__body">
+        <div class="bcard__name">{{ data.name }}</div>
+        <div class="bcard__addr"><i class="material-icons">place</i>{{ data.address }}</div>
+        <div class="bcard__cmd"><i class="material-icons">assignment_ind</i>{{ data.commander }}</div>
+      </div>
+      <div class="bcard__stats">
+        <div v-for="s in stats" :key="s.label"><b>{{ s.value }}</b><span>{{ s.label }}</span></div>
+      </div>
+    </router-link>
+  </script>
+
+  <script type="text/x-template" id="tpl-employee-card">
+    <router-link :to="to" class="ecard">
+      <div class="ecard__top">
+        <span class="ecard__status"><status-chip :status="data.today"/></span>
+        <img :src="$avatar(data.id)" alt=".">
+        <div class="ecard__name">{{ data.fullname }}</div>
+        <div class="ecard__rank">{{ data.rank }} · {{ data.position }}</div>
+        <div class="ecard__div"><span class="tag">{{ data.division }}</span></div>
+      </div>
+      <div class="ecard__info">
+        <div class="ecard__line"><i class="material-icons">phone</i>{{ data.phone }}</div>
+        <div class="ecard__line"><i class="material-icons">mail</i>{{ data.email }}</div>
+        <div class="ecard__line"><i class="material-icons">smartphone</i>{{ data.device }}</div>
+      </div>
+      <div class="ecard__foot">
+        <div><b>{{ data.callsToday }}</b><span>Calls today</span></div>
+        <div><b>{{ data.minutesToday }}</b><span>Minutes</span></div>
+        <div><b>{{ data.lastSeen }}</b><span>Last seen</span></div>
+      </div>
+    </router-link>
+  </script>
+
+  <!-- Map component: same API idea as <gmap-map>/<gmap-marker> -->
+  <script type="text/x-template" id="tpl-navy-map">
+    <div class="navy-map" :class="{ dragging: !!drag }" @mousedown="down" @touchstart="down" @wheel.prevent="wheel" @dblclick="zoomBy(1)">
+      <div class="navy-map__tiles">
+        <img v-for="t in tiles" :key="t.key" :src="t.url" :style="{ left: t.left + 'px', top: t.top + 'px' }" alt="" draggable="false" @error="$event.target.style.visibility='hidden'">
+      </div>
+      <svg class="navy-map__curve" v-if="curvePath" :width="w" :height="h">
+        <path :d="curvePath" fill="none" stroke="#0D47A1" stroke-width="2.5" stroke-dasharray="6 5"></path>
+      </svg>
+      <div v-for="(p, i) in pins" :key="'p' + i" class="navy-map__pin" :class="{ icon: !!p.icon, sel: p.m.selected }"
+           :style="{ left: p.left + 'px', top: p.top + 'px', zIndex: p.m.selected ? 50 : 10 + i }" @mousedown.stop @touchstart.stop @click.stop="clickPin(p)">
+        <div class="tip" v-if="p.m.title">{{ p.m.title }}</div>
+        <template v-if="p.icon">
+          <img :src="p.icon" alt="">
+          <div class="lbl">{{ p.label }}</div>
+        </template>
+        <template v-else>
+          <svg width="24" height="38" viewBox="0 0 22 40"><path d="M11 0C4.9 0 0 4.9 0 11c0 8.3 11 29 11 29s11-20.7 11-29C22 4.9 17.1 0 11 0z" :fill="p.m.color || '#EA4335'" stroke="rgba(0,0,0,.25)" stroke-width="1"/></svg>
+          <div class="lbl">{{ p.label }}</div>
+        </template>
+      </div>
+      <div class="navy-map__legend" v-if="$slots.legend"><slot name="legend"></slot></div>
+      <div class="navy-map__zoom" @mousedown.stop @touchstart.stop>
+        <button type="button" @click="zoomBy(1)" title="Zoom in">+</button>
+        <button type="button" @click="zoomBy(-1)" title="Zoom out">&minus;</button>
+      </div>
+      <div class="navy-map__attr">&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</div>
+    </div>
+  </script>
+
+  <!-- ============================================================
+       PAGES
+       ============================================================ -->
+  <script type="text/x-template" id="tpl-page-login">
+    <div class="vertical-center login-page">
+      <div class="lg-container-fluid">
+        <div class="lg-row">
+          <div class="lg-col">
+            <div class="lg-card">
+              <div class="card-text">
+                <center><img src="assets/img/logo-simal.webp" alt="Angkatan Laut" width="230px"></center>
+                <br>
+                <div class="lg-alert" v-if="error">
+                  {{ error }}
+                  <button type="button" class="lg-close" @click="error = null" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <form role="form" @submit.prevent="login">
+                  <div class="lg-md-form"><input type="text" v-model="username" name="username" class="login-form" placeholder="Username" autofocus></div>
+                  <div class="lg-md-form"><input type="password" v-model="password" name="password" class="login-form" placeholder="Password"></div>
+                  <div class="lg-text-center"><button type="submit" class="lg-btn">Login</button></div>
+                </form>
+                <div class="lg-hint">Demo account: admin / secret</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <!-- Home -->
+  <script type="text/x-template" id="tpl-page-index">
+    <div class="bg-module home">
+      <div class="home__bar">
+        <img class="logo-s" src="assets/img/logo-simal.webp" alt="SIMAL">
+        <div class="home__user">
+          <user-toolbar/>
+          <router-link to="/logout" class="home__logout"><i class="material-icons">exit_to_app</i>Logout</router-link>
+        </div>
+      </div>
+      <div class="home__hero">
+        <h1 class="montserrat color-fff" style="font-size:2.5rem; line-height:1.25;"><b>One Management System<br>for all you need</b></h1>
+        <p>Integrated command, personnel monitoring and remote facility control for {{ totals.branches }} branches and {{ totals.personnel }} personnel.</p>
+      </div>
+      <div class="home__cards">
+        <div v-for="(item, index) in items" :key="index"><menu-card :data="item"/></div>
+      </div>
+      <div class="home__status">
+        <span><i class="live-dot"></i>Call Identifier · Online</span>
+        <span><i class="live-dot"></i>Personnel Monitoring · Online</span>
+        <span><i class="live-dot"></i>Remote Base · Online</span>
+        <span>Last sync {{ now | dateformatter('HH:mm:ss') }}</span>
+        <span>SIMAL v1.0.0</span>
+      </div>
+    </div>
+  </script>
+
+  <!-- Branch list (identifier / monitor / remote) -->
+  <script type="text/x-template" id="tpl-page-branches">
+    <div class="page">
+      <page-header :title="module.title" :crumbs="[{ text: 'Home', to: '/' }, module.title]" :subtitle="module.subtitle">
+        <div class="search"><i class="material-icons">search</i><input v-model="q" placeholder="Search branch, city or code…"></div>
+      </page-header>
+
+      <div class="grid">
+        <div class="gcol sm-6 md-3" v-for="s in stats" :key="s.label">
+          <stat-card :icon="s.icon" :color="s.color" :label="s.label" :value="s.value" :unit="s.unit" :sub="s.sub" :trend="s.trend"/>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:16px">
+        <div class="gcol sm-6 md-4" v-for="item in filtered" :key="item.id">
+          <branch-card :data="item" :to="link(item)" :stats="cardStats(item)"/>
+        </div>
+      </div>
+      <div class="panel empty" v-if="!filtered.length" style="margin-top:16px"><i class="material-icons">search</i>No branch matches “{{ q }}”.</div>
+    </div>
+  </script>
+
+  <!-- Identifier: employees grid -->
+  <script type="text/x-template" id="tpl-page-identifier-employees">
+    <div class="page">
+      <page-header :title="branch.name + ' Personnel'" :crumbs="[{ text: 'Smart Call Identifier', to: '/identifier' }, branch.name, 'Employees']"
+                   :subtitle="items.length + ' personnel · select a person to trace their calls'">
+        <div class="search"><i class="material-icons">search</i><input v-model="q" placeholder="Search name, NRP or phone…"></div>
+        <select class="nselect" v-model="division">
+          <option value="">All divisions</option>
+          <option v-for="d in divisions" :key="d" :value="d">{{ d }}</option>
+        </select>
+      </page-header>
+
+      <div class="grid">
+        <div class="gcol sm-6 md-4 lg-3" v-for="item in filtered" :key="item.id">
+          <employee-card :data="item" :to="$route.path + '/' + item.id"/>
+        </div>
+      </div>
+      <div class="panel empty" v-if="!filtered.length"><i class="material-icons">person_outline</i>No personnel found.</div>
+    </div>
+  </script>
+
+  <!-- Identifier: branch call log -->
+  <script type="text/x-template" id="tpl-page-identifier-calls">
+    <div class="page">
+      <page-header :title="branch.name + ' Call Log'" :crumbs="[{ text: 'Smart Call Identifier', to: '/identifier' }, branch.name, 'Call Log']"
+                   :subtitle="'All identified calls today · ' + today">
+        <div class="search"><i class="material-icons">search</i><input v-model="q" placeholder="Search caller, receiver or number…"></div>
+      </page-header>
+
+      <div class="grid">
+        <div class="gcol sm-6 md-2" v-for="s in stats" :key="s.label" style="flex:1 1 0">
+          <stat-card :icon="s.icon" :color="s.color" :label="s.label" :value="s.value" :unit="s.unit" :sub="s.sub"/>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <div class="gcol md-8">
+          <panel title="Identified calls" icon="list" :subtitle="filtered.length + ' records'" flush>
+            <div class="seg" slot="actions">
+              <button type="button" v-for="t in types" :key="t.v" :class="{ on: type === t.v }" @click="type = t.v; page = 1">{{ t.t }}</button>
+            </div>
+            <div class="table-wrap">
+              <table class="ntable">
+                <thead><tr><th>Time</th><th>Personnel</th><th>Type</th><th>Other party</th><th>Duration</th><th>Distance</th></tr></thead>
+                <tbody>
+                  <tr v-for="c in paged" :key="c.id" class="clickable" @click="$router.push('/identifier/' + $route.params.branch + '/employees/' + c.user_id)">
+                    <td><b>{{ c.date_time | dateformatter('HH:mm') }}</b></td>
+                    <td><div class="person"><img :src="$avatar(c.user_id)"><div><div class="person__name">{{ c.user_name }}</div><div class="person__meta">{{ c.user_msisdn }}</div></div></div></td>
+                    <td><status-chip :status="callType(c.call_type)"/></td>
+                    <td><div class="person"><img :src="$avatar(c.party_id)"><div><div class="person__name">{{ c.party_firstname }} {{ c.party_lastname }}</div><div class="person__meta">{{ c.party_msisdn }}</div></div></div></td>
+                    <td>{{ c.seconds | duration }}</td>
+                    <td class="muted">{{ c.distance }} km</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="empty" v-if="!filtered.length"><i class="material-icons">phone_missed</i>No calls found.</div>
+            </div>
+            <pager :total="filtered.length" :per-page="perPage" v-model="page"/>
+          </panel>
+        </div>
+        <div class="gcol md-4" style="flex-direction:column">
+          <panel title="Calls by hour" icon="insert_chart" subtitle="Today" style="margin-bottom:16px; flex:none">
+            <vue-highcharts :options="hourChart" style="height:230px"></vue-highcharts>
+          </panel>
+          <panel title="Most active personnel" icon="trending_up" subtitle="By number of calls today" flush style="flex:1">
+            <div class="lrow clickable" v-for="p in topCallers" :key="p.id" @click="$router.push('/identifier/' + $route.params.branch + '/employees/' + p.id)">
+              <img :src="$avatar(p.id)">
+              <div class="lrow__main"><div class="lrow__title">{{ p.name }}</div><div class="lrow__sub">{{ p.division }}</div></div>
+              <div class="lrow__side"><b>{{ p.count }}</b> <span class="lrow__time">calls</span></div>
+            </div>
+          </panel>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <!-- Employee detail (identifier + monitor) -->
+  <script type="text/x-template" id="tpl-page-employee-detail">
+    <div class="page">
+      <page-header :title="employee.fullname" :crumbs="crumbs" :subtitle="employee.rank + ' · ' + employee.position + ' · NRP ' + employee.nrp">
+        <status-chip :status="employee.today"/>
+        <a class="nbtn" @click="$router.go(-1)"><i class="material-icons">arrow_back</i>Back</a>
+      </page-header>
+
+      <div class="grid">
+        <div class="gcol sm-6 md-3"><stat-card icon="call" color="#1d90fb" label="Total calls" :value="calls.length" sub="Last 5 days"/></div>
+        <div class="gcol sm-6 md-3"><stat-card icon="call_received" color="#e04848" label="Incoming" :value="summary[2]" unit="min" :sub="counts[2] + ' calls'"/></div>
+        <div class="gcol sm-6 md-3"><stat-card icon="call_made" color="#2e9e5b" label="Outgoing" :value="summary[1]" unit="min" :sub="counts[1] + ' calls'"/></div>
+        <div class="gcol sm-6 md-3"><stat-card icon="call_missed" color="#e07b00" label="Missed" :value="summary[3]" unit="time(s)" :sub="missedRate + '% of all calls'"/></div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <!-- Profile -->
+        <div class="gcol md-3">
+          <div class="panel">
+            <div class="profile__top">
+              <img :src="$avatar(employee.id)" alt=".">
+              <div class="profile__name">{{ employee.fullname }}</div>
+              <div class="profile__rank">{{ employee.rank }} · {{ employee.position }}</div>
+            </div>
+            <div class="profile__body">
+              <div class="kv"><div class="kv__k"><i class="material-icons">assignment_ind</i>NRP</div><div class="kv__v">{{ employee.nrp }}</div></div>
+              <div class="kv"><div class="kv__k"><i class="material-icons">group_work</i>Division</div><div class="kv__v">{{ employee.division }}</div></div>
+              <div class="kv"><div class="kv__k"><i class="material-icons">domain</i>Branch</div><div class="kv__v">{{ branch.name }}</div></div>
+              <div class="kv"><div class="kv__k"><i class="material-icons">phone</i>Mobile</div><div class="kv__v">{{ employee.phone }}</div></div>
+              <div class="kv"><div class="kv__k"><i class="material-icons">mail</i>Email</div><div class="kv__v">{{ employee.email }}</div></div>
+              <div class="kv"><div class="kv__k"><i class="material-icons">smartphone</i>Device</div><div class="kv__v">{{ employee.device }}</div></div>
+              <div class="kv"><div class="kv__k"><i class="material-icons">memory</i>IMEI</div><div class="kv__v">{{ employee.imei }}</div></div>
+              <div class="kv"><div class="kv__k"><i class="material-icons">event</i>Joined</div><div class="kv__v">{{ employee.joined | dateformatter('DD MMM YYYY') }}</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="gcol md-6">
+          <panel title="Call Summary" icon="show_chart" subtitle="Monthly call duration (minutes) · last 12 months">
+            <div class="seg" slot="actions">
+              <button type="button" :class="{ on: chartMode === 'area' }" @click="chartMode = 'area'">Area</button>
+              <button type="button" :class="{ on: chartMode === 'column' }" @click="chartMode = 'column'">Column</button>
+            </div>
+            <vue-highcharts :options="summaryMonthly" style="height: 470px"></vue-highcharts>
+          </panel>
+        </div>
+
+        <!-- Frequent -->
+        <div class="gcol md-3">
+          <panel title="Most Frequently Calls" icon="star_border" subtitle="Top contacts by number of calls" flush>
+            <div class="lrow" v-for="(item, index) in frequents" :key="'f' + index">
+              <img :src="$avatar(item.party_id)" alt=".">
+              <div class="lrow__main">
+                <div class="lrow__title">{{ item.party_firstname }} {{ item.party_lastname }}</div>
+                <div class="lrow__sub">{{ item.party_msisdn }}</div>
+              </div>
+              <div class="lrow__side">
+                <div><b>{{ item.counts }}</b> <span class="lrow__time">times</span></div>
+                <div class="lrow__time">{{ item.minutes }} min</div>
+              </div>
+            </div>
+          </panel>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <!-- Calls -->
+        <div class="gcol md-4">
+          <panel title="Call History" icon="history" :subtitle="calls.length + ' calls · scroll to load more'" flush>
+            <div class="scroll-list scrollbar-ripe-malinka thin" id="scroll-target" style="height: 540px" v-scroll="{ target: '#scroll-target', callback: onScroll }">
+              <div v-for="item in shown" :key="item.id" class="lrow clickable" :class="{ active: current && current.id === item.id }" @click="setCall(item)">
+                <img :src="$avatar(item.party_id)" alt=".">
+                <div class="lrow__main">
+                  <div class="lrow__title">{{ item.party_firstname }} {{ item.party_lastname }}</div>
+                  <div class="lrow__sub">{{ item.party_msisdn }} · {{ item.seconds | duration }}</div>
+                </div>
+                <div class="lrow__side">
+                  <div class="lrow__time">{{ item.date_time | dateformatter('DD MMM, h:mm A') }}</div>
+                  <status-chip :status="callType(item.call_type)"/>
+                </div>
+              </div>
+            </div>
+          </panel>
+        </div>
+
+        <!-- Map -->
+        <div class="gcol md-8">
+          <panel title="Call Location" icon="map" subtitle="Location of both parties at the time of the call" flush>
+            <div class="callinfo" v-if="current">
+              <div class="callinfo__party"><img :src="$avatar(employee.id)"><div><b>{{ employee.fullname }}</b><div class="panel__sub">{{ employee.phone }}</div></div></div>
+              <i class="material-icons callinfo__arrow">{{ current.call_type === 2 ? 'arrow_back' : 'arrow_forward' }}</i>
+              <div class="callinfo__party"><img :src="$avatar(current.party_id)"><div><b>{{ current.party_firstname }} {{ current.party_lastname }}</b><div class="panel__sub">{{ current.party_msisdn }}</div></div></div>
+              <div class="callinfo__meta">
+                <div>Type<b>{{ callType(current.call_type) }}</b></div>
+                <div>Duration<b>{{ current.seconds | duration }}</b></div>
+                <div>Time<b>{{ current.date_time | dateformatter('DD MMM, HH:mm') }}</b></div>
+                <div>Distance<b>{{ current.distance }} km</b></div>
+              </div>
+            </div>
+            <navy-map :markers="markers" :zoom="7" curve style="height: 470px">
+              <div slot="legend"><b>1</b> {{ employee.firstname }} &nbsp;·&nbsp; <b>2</b> {{ current ? current.party_firstname : '' }}</div>
+            </navy-map>
+          </panel>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <!-- Monitor: dashboard -->
+  <script type="text/x-template" id="tpl-page-monitor-dashboard">
+    <div class="page">
+      <page-header :title="branch.name + ' Dashboard'" :crumbs="[{ text: 'Smart Personal Monitoring', to: '/monitor' }, branch.name, 'Dashboard']"
+                   :subtitle="dayName + ', ' + dayDate + ' · shift starts 07:30'">
+        <div style="width:220px">
+          <v-menu lazy :close-on-content-click="false" v-model="menu" transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+            <v-text-field slot="activator" label="Date" v-model="date" prepend-icon="event" readonly hide-details></v-text-field>
+            <v-date-picker v-model="date" no-title scrollable actions>
+              <template scope="props">
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn flat color="primary" @click="props.cancel(); menu = false">Cancel</v-btn>
+                  <v-btn flat color="primary" @click="props.save(); menu = false">OK</v-btn>
+                </v-card-actions>
+              </template>
+            </v-date-picker>
+          </v-menu>
+        </div>
+      </page-header>
+
+      <div class="grid">
+        <div class="gcol sm-4 md-2"><stat-card icon="verified_user" color="#2e9e5b" label="Present" :value="stats.attendance" :sub="stats.late + ' late check-in'"/></div>
+        <div class="gcol sm-4 md-2"><stat-card icon="pie_chart" color="#1d90fb" label="Attendance" :value="stats.percentage" unit="%" :sub="trendText" :trend="stats.delta >= 0 ? 'up' : 'down'"/></div>
+        <div class="gcol sm-4 md-2"><stat-card icon="group" color="#3f51b5" label="Personnel" :value="stats.total" :sub="divisionCount + ' divisions'"/></div>
+        <div class="gcol sm-4 md-2"><stat-card icon="local_hospital" color="#e07b00" label="Sick" :value="stats.sick" sub="Medical report"/></div>
+        <div class="gcol sm-4 md-2"><stat-card icon="beach_access" color="#7e57c2" label="Leave" :value="stats.leave" sub="Approved leave"/></div>
+        <div class="gcol sm-4 md-2"><stat-card icon="person_outline" color="#e04848" label="Absent" :value="stats.absent" sub="Without notice"/></div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <div class="gcol md-4">
+          <panel title="Latest Attendance" icon="access_time" :subtitle="attendees.length + ' records · newest first'" flush>
+            <div class="scroll-list scrollbar-ripe-malinka thin" id="scroll-target" style="height: 330px">
+              <div class="lrow" v-for="(item, index) in attendees" :key="'a' + index">
+                <img :src="$avatar(item.id)" alt=".">
+                <div class="lrow__main">
+                  <div class="lrow__title">{{ item.firstname }} {{ item.lastname }}</div>
+                  <div class="lrow__sub">{{ item.division }}</div>
+                </div>
+                <div class="lrow__side">
+                  <status-chip :status="item.late ? 'Late' : item.status"/>
+                  <div class="lrow__time" style="margin-top:3px">{{ item.date_time | dateformatter }}</div>
+                </div>
+              </div>
+            </div>
+          </panel>
+        </div>
+        <div class="gcol md-8">
+          <panel title="Trend Attendance" icon="show_chart" subtitle="Check-ins per hour and personnel on site">
+            <vue-highcharts :options="chartTrend" style="height: 300px"></vue-highcharts>
+          </panel>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <div class="gcol md-4">
+          <panel title="Check-in Time Distribution" icon="pie_chart" subtitle="Share of present personnel by arrival time">
+            <vue-highcharts :options="chartPie" style="height: 280px"></vue-highcharts>
+          </panel>
+        </div>
+        <div class="gcol md-4">
+          <panel title="Weekly Attendance Rate" icon="insert_chart" subtitle="Last 7 days (%)">
+            <vue-highcharts :options="chartWeek" style="height: 280px"></vue-highcharts>
+          </panel>
+        </div>
+        <div class="gcol md-4">
+          <panel title="Attendance by Division" icon="group_work" subtitle="Present / total personnel">
+            <div class="pbar" v-for="d in divisions" :key="d.name">
+              <div class="pbar__top"><span>{{ d.name }}</span><b>{{ d.present }}/{{ d.total }} · {{ d.pct }}%</b></div>
+              <div class="pbar__track"><div class="pbar__fill" :style="{ width: d.pct + '%', background: d.color }"></div></div>
+            </div>
+          </panel>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <div class="gcol">
+          <panel title="Check-in Locations" icon="my_location" :subtitle="markers.length + ' check-ins around ' + branch.name" flush>
+            <navy-map :markers="markers" :zoom="13" style="height: 440px">
+              <div slot="legend"><span style="color:#2e9e5b">●</span> On time &nbsp; <span style="color:#e07b00">●</span> Late &nbsp; <span style="color:#7e57c2">●</span> Sick / Leave</div>
+            </navy-map>
+          </panel>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <!-- Monitor: employees table -->
+  <script type="text/x-template" id="tpl-page-monitor-employees">
+    <div class="page">
+      <page-header :title="branch.name + ' Employee'" :crumbs="[{ text: 'Smart Personal Monitoring', to: '/monitor' }, branch.name, 'Employees']"
+                   :subtitle="items.length + ' personnel · status for ' + today"/>
+
+      <div class="grid">
+        <div class="gcol sm-6 md-3" v-for="s in statusStats" :key="s.label">
+          <stat-card :icon="s.icon" :color="s.color" :label="s.label" :value="s.value" :sub="s.sub"/>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <div class="gcol">
+          <panel title="Personnel Directory" icon="people" :subtitle="filtered.length + ' of ' + items.length + ' personnel'" flush>
+            <div slot="actions" style="display:flex; align-items:center; flex-wrap:wrap">
+              <div class="search" style="margin-right:10px"><i class="material-icons">search</i><input v-model="q" placeholder="Search name, NRP, email…"></div>
+              <select class="nselect" v-model="division" style="margin-right:10px">
+                <option value="">All divisions</option>
+                <option v-for="d in divisionList" :key="d" :value="d">{{ d }}</option>
+              </select>
+              <div class="seg">
+                <button type="button" v-for="s in statuses" :key="s" :class="{ on: status === s }" @click="status = s; page = 1">{{ s }}</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="ntable">
+                <thead><tr><th>Personnel</th><th>NRP</th><th>Division / Position</th><th>Contact</th><th>Today</th><th>Check-in</th><th></th></tr></thead>
+                <tbody>
+                  <tr v-for="item in paged" :key="item.id">
+                    <td><div class="person"><img :src="$avatar(item.id)"><div><div class="person__name">{{ item.fullname }}</div><div class="person__meta">{{ item.rank }}</div></div></div></td>
+                    <td class="muted">{{ item.nrp }}</td>
+                    <td><div>{{ item.division }}</div><div class="muted">{{ item.position }}</div></td>
+                    <td><div>{{ item.phone }}</div><div class="muted">{{ item.email }}</div></td>
+                    <td><status-chip :status="item.today"/></td>
+                    <td>{{ item.checkin | dateformatter('HH:mm') }}<span v-if="!item.checkin" class="muted">—</span></td>
+                    <td class="text-right"><router-link :to="'/monitor/' + $route.params.branch + '/employees/' + item.id" class="nbtn sm">Detail</router-link></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="empty" v-if="!filtered.length"><i class="material-icons">person_outline</i>No personnel match the filter.</div>
+            </div>
+            <pager :total="filtered.length" :per-page="perPage" v-model="page"/>
+          </panel>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <!-- Monitor: notifications -->
+  <script type="text/x-template" id="tpl-page-monitor-notifications">
+    <div class="page">
+      <page-header :title="branch.name + ' Notification'" :crumbs="[{ text: 'Smart Personal Monitoring', to: '/monitor' }, branch.name, 'Notifications']"
+                   subtitle="Sick, leave, permit and duty travel requests waiting for approval"/>
+
+      <div class="grid">
+        <div class="gcol sm-6 md-3"><stat-card icon="notifications_active" color="#e04848" label="Pending" :value="items.length" sub="Waiting for decision"/></div>
+        <div class="gcol sm-6 md-3"><stat-card icon="local_hospital" color="#e07b00" label="Sick" :value="countOf('Sick')" sub="Pending sick reports"/></div>
+        <div class="gcol sm-6 md-3"><stat-card icon="beach_access" color="#7e57c2" label="Leave / Permit" :value="countOf('Leave') + countOf('Permit')" sub="Pending requests"/></div>
+        <div class="gcol sm-6 md-3"><stat-card icon="assignment_turned_in" color="#2e9e5b" label="Resolved" :value="history.length" :sub="approvedCount + ' approved · ' + (history.length - approvedCount) + ' rejected'"/></div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <div class="gcol">
+          <panel title="Pending Requests" icon="inbox" :subtitle="filtered.length + ' request(s)'" flush>
+            <div class="seg" slot="actions">
+              <button type="button" v-for="c in categories" :key="c" :class="{ on: cat === c }" @click="cat = c">{{ c }}<span class="cnt">{{ c === 'All' ? items.length : countOf(c) }}</span></button>
+            </div>
+            <div class="table-wrap">
+              <table class="ntable">
+                <thead><tr><th>Personnel</th><th>Division</th><th>Submitted</th><th>Number</th><th>Category</th><th>Period</th><th>Description</th><th></th></tr></thead>
+                <tbody>
+                  <tr v-for="item in filtered" :key="item.id">
+                    <td><div class="person"><img :src="$avatar(item.user_id)"><div><div class="person__name">{{ item.name }}</div><div class="person__meta">{{ item.rank }}</div></div></div></td>
+                    <td>{{ item.division }}</td>
+                    <td><div>{{ item.date_time | dateformatter('DD MMM YYYY') }}</div><div class="muted">{{ item.date_time | dateformatter('HH:mm') }} · {{ item.date_time | fromnow }}</div></td>
+                    <td class="nowrap">{{ item.msisdn }}</td>
+                    <td><status-chip :status="item.category"/></td>
+                    <td class="nowrap"><div>{{ item.from | dateformatter('DD MMM') }} – {{ item.to | dateformatter('DD MMM') }}</div><div class="muted">{{ item.days }} day(s)</div></td>
+                    <td><div class="desc-cell" :title="item.description">{{ item.description }}</div><div class="muted" v-if="item.attachment"><i class="material-icons" style="font-size:13px;vertical-align:middle">attach_file</i> {{ item.attachment }}</div></td>
+                    <td class="text-right" style="white-space:nowrap">
+                      <a class="nm-action text-danger" title="Reject" @click.prevent="open({ mode: 'reject', item: item })"><i class="material-icons">close</i></a>
+                      <a class="nm-action text-success" title="Approve" @click.prevent="open({ mode: 'approve', item: item })"><i class="material-icons">check</i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="empty" v-if="!filtered.length"><i class="material-icons">done_all</i>No pending request. All caught up!</div>
+            </div>
+          </panel>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <div class="gcol">
+          <panel title="Recent Decisions" icon="history" subtitle="Requests resolved in the last days" flush>
+            <div class="table-wrap">
+              <table class="ntable">
+                <thead><tr><th>Personnel</th><th>Category</th><th>Period</th><th>Decision</th><th>Decided by</th><th>Decided at</th><th>Note</th></tr></thead>
+                <tbody>
+                  <tr v-for="h in history" :key="h.id">
+                    <td><div class="person"><img :src="$avatar(h.user_id)"><div><div class="person__name">{{ h.name }}</div><div class="person__meta">{{ h.division }}</div></div></div></td>
+                    <td><status-chip :status="h.category"/></td>
+                    <td>{{ h.from | dateformatter('DD MMM') }} – {{ h.to | dateformatter('DD MMM') }}</td>
+                    <td><status-chip :status="h.decision"/></td>
+                    <td>{{ h.decided_by }}</td>
+                    <td class="muted">{{ h.decided_at | dateformatter('DD MMM YYYY, HH:mm') }}</td>
+                    <td><div class="desc-cell">{{ h.note || '—' }}</div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </panel>
+        </div>
+      </div>
+
+      <v-dialog v-model="dialog" max-width="520px">
+        <div class="navy-modal" v-if="selected">
+          <div class="nm-header">
+            <h5 class="nm-title">{{ selected.firstname }} {{ selected.category }} {{ mode === 'reject' ? 'Rejection' : 'Approval' }}</h5>
+            <button type="button" class="nm-close" aria-label="Close" @click="dialog = false"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="nm-body">
+            <div class="nm-profile">
+              <img :src="$avatar(selected.user_id)">
+              <div>
+                <h5 class="nm-name">{{ selected.name }}</h5>
+                <p class="nm-meta">{{ selected.rank }} · {{ selected.division }}</p>
+                <p class="nm-meta">
+                  <span class="mr-2"><i class="material-icons">phone</i>{{ selected.msisdn }}</span>
+                  <span><i class="material-icons">email</i>{{ selected.email }}</span>
+                </p>
+              </div>
+            </div>
+            <hr>
+            <p class="mb-1" style="font-size:12.5px;color:#555">On <b>{{ selected.date_time | dateformatter('dddd, DD MMM YYYY') }}</b> {{ selected.firstname }} said:</p>
+            <p class="navy-quote">“{{ selected.description }}”</p>
+            <p class="mb-2" style="font-size:12.5px;color:#555">Proposed date</p>
+            <div class="nm-dates">
+              <div class="nm-date"><b>{{ selected.from | dateformatter('DD MMMM YYYY') | upper }}</b></div>
+              <div class="nm-to">to</div>
+              <div class="nm-date"><b>{{ selected.to | dateformatter('DD MMMM YYYY') | upper }}</b></div>
+            </div>
+            <p v-if="selected.attachment" style="font-size:12.5px;color:#555;margin:8px 0 0"><i class="material-icons" style="font-size:15px;vertical-align:middle">attach_file</i> {{ selected.attachment }}</p>
+            <hr>
+            <form @submit.prevent>
+              <label style="font-size:12.5px">{{ mode === 'reject' ? 'Rejection excuse' : 'Send message to ' + selected.firstname }}</label>
+              <textarea rows="3" v-model="message" :placeholder="mode === 'reject' ? 'Explain why the request is rejected…' : 'Optional message…'"></textarea>
+            </form>
+          </div>
+          <div class="nm-footer">
+            <button type="button" class="nm-btn btn-blank" @click="dialog = false">Cancel</button>
+            <button type="button" class="nm-btn" :class="mode === 'reject' ? 'nm-danger' : 'nm-success'" @click="confirm">{{ mode === 'reject' ? 'Reject' : 'Approve' }}</button>
+          </div>
+        </div>
+      </v-dialog>
+
+      <v-snackbar :timeout="3000" bottom right v-model="snackbar" :color="snackColor">
+        {{ snackText }}
+        <v-btn flat dark @click.native="snackbar = false">Close</v-btn>
+      </v-snackbar>
+    </div>
+  </script>
+
+  <!-- Remote: dashboard -->
+  <script type="text/x-template" id="tpl-page-remote-dashboard">
+    <div class="page">
+      <page-header :title="branch.name + ' Dashboard'" :crumbs="[{ text: 'Smart Remote Base', to: '/remote' }, branch.name, 'Dashboard']"
+                   :subtitle="'Facility control · ' + rooms.length + ' rooms · ' + cameras.length + ' cameras'">
+        <span class="chip-s cs-green">Live · synced {{ now | dateformatter('HH:mm:ss') }}</span>
+        <a class="nbtn" @click="allOff"><i class="material-icons">power_settings_new</i>All off</a>
+        <a class="nbtn primary" @click="allOn"><i class="material-icons">flash_on</i>All on</a>
+      </page-header>
+
+      <div class="grid">
+        <div class="gcol sm-6 md-3"><stat-card icon="flash_on" color="#e07b00" label="Power Consumption" :value="(power / 1000).toFixed(2)" unit="kW" :sub="'≈ ' + Math.round(power * 24 / 1000) + ' kWh / day at this rate'"/></div>
+        <div class="gcol sm-6 md-3"><stat-card icon="ac_unit" color="#1d90fb" label="Room Temperature" :value="avgTemp" unit="°C" :sub="acOn + ' of ' + rooms.length + ' AC units running'"/></div>
+        <div class="gcol sm-6 md-3"><stat-card icon="opacity" color="#00897b" label="Humidity" :value="avgHum" unit="%" sub="Comfort range 40–60%"/></div>
+        <div class="gcol sm-6 md-3"><stat-card icon="devices" color="#3f51b5" label="Devices On" :value="devicesOn" :unit="'/ ' + devicesTotal" :sub="'Sensors online ' + sensorsOnline + '/' + sensorsOnline"/></div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <div class="gcol md-5">
+          <panel title="Room Control" icon="tune" subtitle="Tap a device to switch it on / off" flush>
+            <div class="room" v-for="r in rooms" :key="r.name">
+              <div class="room__name"><b>{{ r.name }}</b><span>{{ r.temp }}°C · {{ r.hum }}% · {{ roomPower(r) }} W</span></div>
+              <div class="room__sw">
+                <button type="button" class="dev" :class="{ on: r.light }" @click="r.light = !r.light"><i class="material-icons">lightbulb_outline</i>Light</button>
+                <button type="button" class="dev" :class="{ on: r.ac }" @click="r.ac = !r.ac"><i class="material-icons">ac_unit</i>AC</button>
+                <button type="button" class="dev" :class="{ on: r.elec }" @click="r.elec = !r.elec"><i class="material-icons">power</i>Electronic</button>
+              </div>
+            </div>
+          </panel>
+        </div>
+        <div class="gcol md-7">
+          <panel title="Energy Usage" icon="show_chart" subtitle="Hourly consumption (kW) · today vs yesterday">
+            <vue-highcharts :options="energyChart" style="height: 380px"></vue-highcharts>
+          </panel>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <div class="gcol md-8">
+          <panel title="CCTV Monitoring" icon="videocam" :subtitle="cameras.length + ' cameras · ' + camerasOnline + ' online'">
+            <div class="grid">
+              <div class="gcol sm-6 md-4" v-for="cam in cameras" :key="cam.id">
+                <div class="cctv off" v-if="!cam.online"><div style="text-align:center"><i class="material-icons" style="font-size:30px">videocam_off</i><div>{{ cam.id }} · {{ cam.name }} — signal lost</div></div></div>
+                <div class="cctv" v-else>
+                  <iframe v-if="!isFile" allow="autoplay; encrypted-media" src="https://www.youtube.com/embed/GNyW9j9MsQI?autoplay=1&mute=1&controls=0"></iframe>
+                  <video v-else autoplay muted loop playsinline><source src="assets/video/wata3.mp4" type="video/mp4"></video>
+                  <div class="cctv__ovl">
+                    <div class="cctv__row"><span>{{ cam.id }} · {{ cam.name }}</span><span class="rec">REC</span></div>
+                    <div class="cctv__row"><span>{{ now | dateformatter('DD/MM/YYYY HH:mm:ss') }}</span><span>{{ cam.res }}</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </panel>
+        </div>
+        <div class="gcol md-4">
+          <panel title="Remote Access" icon="vpn_key" :subtitle="accessOn + ' of ' + attendees.length + ' personnel allowed'" flush>
+            <div class="scroll-list scrollbar-ripe-malinka thin" id="scroll-target" style="max-height: 470px">
+              <div class="lrow" v-for="(item, index) in attendees" :key="'r' + index">
+                <img :src="$avatar(item.id)" alt=".">
+                <div class="lrow__main">
+                  <div class="lrow__title">{{ item.firstname }} {{ item.lastname }}</div>
+                  <div class="lrow__sub">{{ item.position }} · <span :style="{ color: item.status === 'Check In' ? '#2e9e5b' : '#7a869a' }">{{ item.status === 'Check In' ? 'On site' : item.status }}</span></div>
+                </div>
+                <div class="lrow__side">
+                  <v-switch v-model="item.remote" color="indigo" hide-details></v-switch>
+                </div>
+              </div>
+            </div>
+          </panel>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <!-- Remote: fleet map (pages/remote/map.vue) -->
+  <script type="text/x-template" id="tpl-page-remote-map">
+    <v-layout style="width:100%; height:100vh; position:relative;">
+      <navy-map :markers="markers" :zoom="5" :center="center" style="width:100%; height:100vh;" @marker-click="select"></navy-map>
+
+      <div class="fleet-top">
+        <div class="fleet-title">
+          <router-link to="/remote" title="Back"><i class="material-icons">arrow_back</i></router-link>
+          <div><div class="panel__title">Fleet Tracking</div><div class="panel__sub">Live AIS positions · updated {{ now | dateformatter('HH:mm:ss') }}</div></div>
+        </div>
+        <div class="fleet-stats">
+          <div><b>{{ vessels.length }}</b>Vessels</div>
+          <div><b>{{ countStatus('Patrol') }}</b>On patrol</div>
+          <div><b>{{ countStatus('Transit') }}</b>In transit</div>
+          <div><b>{{ countStatus('Docked') + countStatus('Anchored') }}</b>In port</div>
+        </div>
+      </div>
+
+      <div class="fleet-panel" v-if="drawer">
+        <div class="fleet-panel__bar"><span>Vessels · click a row to locate on the map</span><button type="button" @click="drawer = false" title="Hide"><i class="material-icons">expand_more</i></button></div>
+        <div class="fleet-drawer-body">
+          <table class="fleet-table">
+            <thead><tr><th>#</th><th>Vessel</th><th>Type</th><th>Status</th><th>Speed</th><th>Heading</th><th>Position</th><th>Home base</th></tr></thead>
+            <tbody>
+              <tr v-for="(v, i) in vessels" :key="v.id" :class="{ sel: selected === v.id }" @click="select(v)">
+                <td>{{ i + 1 }}</td>
+                <td><b>{{ v.name }}</b></td>
+                <td>{{ v.type }}</td>
+                <td><span :style="{ color: statusColor(v.status) }">● {{ v.status }}</span></td>
+                <td>{{ v.speed.toFixed(1) }} kn</td>
+                <td>{{ Math.round(v.heading) }}°</td>
+                <td>{{ v.lat | coord('lat') }}, {{ v.lng | coord('lng') }}</td>
+                <td>{{ v.base }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <button v-else type="button" class="fleet-show" @click="drawer = true"><i class="material-icons">list</i>Vessels</button>
+    </v-layout>
+  </script>
+
+  <!-- ============================================================
+       Vendor libraries (static copies of the project's own versions)
+       ============================================================ -->
+  <script src="assets/vendor/vue.min.js"></script>
+  <script src="assets/vendor/vuex.min.js"></script>
+  <script src="assets/vendor/vue-router.min.js"></script>
+  <script src="assets/vendor/vuetify.min.js"></script>
+  <script src="assets/vendor/highcharts.js"></script>
+  <script src="assets/vendor/moment.min.js"></script>
+
+  <script>
+  (function () {
+  'use strict'
+
+  /* ==================================================================
+     DUMMY DATABASE  (replaces Adonis API + PostgreSQL + Firebase)
+     ================================================================== */
+  var IMG = 'assets/img/'
+
+  function hash (str) {
+    var h = 2166136261
+    str = String(str)
+    for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) }
+    return h >>> 0
+  }
+  function rng (seed) {
+    var s = (seed >>> 0) || 1
+    return function () { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296 }
+  }
+  function pick (r, arr) { return arr[Math.floor(r() * arr.length)] }
+  function int (r, min, max) { return min + Math.floor(r() * (max - min + 1)) }
+  function km (lat1, lng1, lat2, lng2) {
+    var R = 6371, d = Math.PI / 180, a = Math.sin((lat2 - lat1) * d / 2), b = Math.sin((lng2 - lng1) * d / 2)
+    var x = a * a + Math.cos(lat1 * d) * Math.cos(lat2 * d) * b * b
+    return Math.round(R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x)) * 10) / 10
+  }
+  var TODAY = moment().format('YYYY-MM-DD')
+
+  var ORIGINAL_PHOTOS = ['281474976710658', '281474976710669', '281474976710670', '281474976710671', '281474976715672', '281474976715673']
+  var ORIGINAL_FEMALE = [false, true, false, false, false, false]
+  var MALE_FIRST = ['Bima', 'Dimas', 'Eko', 'Fajar', 'Gilang', 'Hendra', 'Irfan', 'Joko', 'Kurnia', 'Lukman', 'Made', 'Nanda', 'Oki', 'Rizky',
+    'Taufik', 'Yoga', 'Wahyu', 'Agus', 'Bayu', 'Doni', 'Reza', 'Sigit', 'Teguh', 'Andi', 'Rudi', 'Yusuf', 'Hafiz', 'Ilham', 'Galih', 'Surya',
+    'Dedi', 'Fikri', 'Arif', 'Benny', 'Candra', 'Dwi', 'Erwin', 'Ferry', 'Gunawan', 'Haris', 'Indra', 'Johan', 'Ketut', 'Leo', 'Mulyadi']
+  var FEMALE_FIRST = ['Dewi', 'Sari', 'Rina', 'Putri', 'Intan', 'Nadia', 'Ayu', 'Maya', 'Wulan', 'Citra', 'Anisa', 'Fitri', 'Rahma', 'Yuni',
+    'Indah', 'Ratna', 'Siti', 'Nur', 'Dian', 'Mega']
+  var LAST = ['Wibowo', 'Nugroho', 'Santoso', 'Hidayat', 'Kusuma', 'Wijaya', 'Hartono', 'Susanto', 'Setiawan', 'Gunadi', 'Halim', 'Siregar',
+    'Nasution', 'Simanjuntak', 'Lubis', 'Harahap', 'Tanjung', 'Sihombing', 'Purba', 'Ginting', 'Tarigan', 'Manurung', 'Situmorang', 'Hakim',
+    'Rahman', 'Salim', 'Effendi', 'Hasibuan', 'Siagian', 'Sinaga', 'Damanik', 'Pohan', 'Saragih', 'Daulay', 'Ritonga', 'Prasetyo', 'Utomo']
+  var DIVISIONS = ['Human Resource & Development', 'Research Development & Implementation', 'Radio Engineering', 'Communication & Electronics', 'Logistics & Supply']
+  var DIV_COLORS = ['#3cb878', '#1d90fb', '#ffc200', '#F35958', '#7e57c2']
+  var POSITIONS = [
+    ['HR Officer', 'Personnel Administrator', 'Training Coordinator', 'Payroll Staff'],
+    ['Research Engineer', 'Systems Analyst', 'Software Engineer', 'Data Analyst'],
+    ['Radio Operator', 'RF Engineer', 'Signal Technician', 'Radar Technician'],
+    ['Electronics Technician', 'Network Engineer', 'Communications Officer', 'Satellite Operator'],
+    ['Supply Officer', 'Inventory Controller', 'Fleet Logistics Staff', 'Procurement Staff']
+  ]
+  var RANKS = ['Koptu', 'Serda', 'Sertu', 'Serka', 'Serma', 'Pelda', 'Peltu', 'Letda', 'Lettu', 'Kapten', 'Mayor', 'Letkol']
+  var DEVICES = ['Samsung Galaxy S8', 'Samsung Galaxy Note 8', 'iPhone 8', 'iPhone X', 'Xiaomi Mi A1', 'Oppo F5', 'Asus Zenfone 4', 'Vivo V7']
+  var PREFIX = ['812', '813', '821', '852', '857', '877', '881']
+
+  var BRANCHES = [
+    { id: 0, code: 'TIFA-JKT', type: 'Headquarters', name: 'Gedung Tifa', address: 'Jl. Jend. Gatot Subroto Kav. 34, Kuningan Barat, Jakarta Selatan', lat: -6.2297, lng: 106.8270, size: 24 },
+    { id: 1, code: 'MKB-JKU', type: 'Command Center', name: 'Markas Komando Barat', address: 'Jl. Gunung Sahari Raya No. 67, Pademangan, Jakarta Utara', lat: -6.1380, lng: 106.8330, size: 32 },
+    { id: 2, code: 'PSB-SBY', type: 'Naval Base', name: 'Pangkalan Surabaya', address: 'Jl. Perak Barat No. 1, Ujung, Semampir, Surabaya', lat: -7.2050, lng: 112.7340, size: 28 },
+    { id: 3, code: 'PMK-MKS', type: 'Naval Base', name: 'Pangkalan Makassar', address: 'Jl. Yos Sudarso No. 2, Ujung Tanah, Makassar', lat: -5.1150, lng: 119.4100, size: 18 },
+    { id: 4, code: 'PBL-MDN', type: 'Naval Base', name: 'Pangkalan Belawan', address: 'Jl. Raya Pelabuhan No. 5, Belawan, Medan', lat: 3.7840, lng: 98.6950, size: 20 },
+    { id: 5, code: 'PBT-BTG', type: 'Naval Station', name: 'Pangkalan Bitung', address: 'Jl. Sam Ratulangi No. 9, Bitung, Sulawesi Utara', lat: 1.4400, lng: 125.1900, size: 14 }
+  ]
+
+  var EMPLOYEES = []
+  var EMP_BY_ID = {}
+  ;(function seedEmployees () {
+    var r = rng(20171123), used = {}, femalePhoto = 0, malePhoto = 101
+    BRANCHES.forEach(function (b) {
+      for (var i = 0; i < b.size; i++) {
+        var orig = b.id === 0 && i < ORIGINAL_PHOTOS.length
+        var female = orig ? ORIGINAL_FEMALE[i] : r() < 0.28
+        var first, last
+        if (b.id === 0 && i === 0) { first = 'Arief'; last = 'Rahman' }
+        else if (b.id === 0 && i === 1) { first = 'Fakriani'; last = 'Hijriyatau' }
+        else {
+          do { first = pick(r, female ? FEMALE_FIRST : MALE_FIRST); last = pick(r, LAST) } while (used[first + last])
+        }
+        used[first + last] = true
+        var id = orig ? ORIGINAL_PHOTOS[i] : String(281474976720000 + b.id * 100 + i)
+        var photo = orig ? 'users/' + id + '.png'
+          : 'users/' + (female ? (femalePhoto++ % 100) : (malePhoto++ > 200 ? (malePhoto = 102) - 1 : malePhoto - 1)) + '.jpg'
+        var dv = i === 0 ? 0 : (first === 'Fakriani' ? 1 : (i + b.id) % DIVISIONS.length)
+        var rank = i === 0 ? 'Kolonel' : RANKS[Math.min(RANKS.length - 1, Math.floor(Math.pow(r(), 1.6) * RANKS.length))]
+        var phone = first === 'Fakriani' ? '0857 1640 2500' : '0' + pick(r, PREFIX) + ' ' + int(r, 1000, 9999) + ' ' + int(r, 1000, 9999)
+        var e = {
+          id: id, firstname: first, lastname: last, fullname: first + ' ' + last, female: female, photo: photo,
+          email: (first + '.' + last).toLowerCase() + '@immobisp.com', phone: phone,
+          division: DIVISIONS[dv], divisionIndex: dv,
+          position: i === 0 ? 'Commanding Officer' : pick(r, POSITIONS[dv]),
+          rank: rank, nrp: String(int(r, 10000, 99999)) + '/P',
+          device: pick(r, DEVICES), imei: '35' + String(int(r, 1000000, 9999999)) + String(int(r, 100000, 999999)),
+          joined: moment('2004-01-01').add(int(r, 0, 4800), 'days').format(),
+          branch_id: b.id, lat: b.lat + (r() - 0.5) * 0.03, lng: b.lng + (r() - 0.5) * 0.03
+        }
+        if (first === 'Fakriani') e.email = 'fakriani@immobisp.com'
+        EMPLOYEES.push(e)
+        EMP_BY_ID[id] = e
+      }
+      b.commander = EMPLOYEES.filter(function (e) { return e.branch_id === b.id })[0].rank + ' ' + EMPLOYEES.filter(function (e) { return e.branch_id === b.id })[0].fullname
+    })
+  })()
+
+  function branchEmployees (bid) { return EMPLOYEES.filter(function (e) { return String(e.branch_id) === String(bid) }) }
+  function findBranch (bid) { return BRANCHES.filter(function (b) { return String(b.id) === String(bid) })[0] || BRANCHES[0] }
+
+  // --- Calls per employee (deterministic, ~5 days of history)
+  var CALL_CACHE = {}
+  function employeeCalls (uid) {
+    if (CALL_CACHE[uid]) return CALL_CACHE[uid]
+    var me = EMP_BY_ID[uid]; if (!me) return []
+    var r = rng(hash(uid))
+    var mates = branchEmployees(me.branch_id).filter(function (e) { return e.id !== uid })
+    var others = EMPLOYEES.filter(function (e) { return e.branch_id !== me.branch_id })
+    var favs = [pick(r, mates), pick(r, mates), pick(r, others)]
+    var t = moment().startOf('minute').subtract(int(r, 2, 40), 'minutes')
+    var rows = []
+    for (var i = 0; i < 60; i++) {
+      var party = r() < 0.45 ? pick(r, favs) : ((r() < 0.7 && mates.length) ? pick(r, mates) : pick(r, others))
+      var x = r(), type = x < 0.46 ? 1 : (x < 0.9 ? 2 : 3)
+      var c = {
+        id: uid + '-' + i, user_id: uid, user_name: me.fullname, user_msisdn: me.phone,
+        date_time: t.format(), call_type: type, seconds: type === 3 ? 0 : int(r, 15, 1500),
+        party_id: party.id, party_firstname: party.firstname, party_lastname: party.lastname, party_msisdn: party.phone,
+        latitude: me.lat + (r() - 0.5) * 0.05, longitude: me.lng + (r() - 0.5) * 0.05,
+        party_latitude: party.lat + (r() - 0.5) * 0.05, party_longitude: party.lng + (r() - 0.5) * 0.05
+      }
+      c.distance = km(c.latitude, c.longitude, c.party_latitude, c.party_longitude)
+      rows.push(c)
+      t = t.clone().subtract(int(r, 10, 230), 'minutes')
+      var h = t.hours(); if (h < 6) t.subtract(h + 1, 'hours') // quiet at night
+    }
+    return (CALL_CACHE[uid] = rows)
+  }
+  function callsToday (uid) { return employeeCalls(uid).filter(function (c) { return c.date_time.slice(0, 10) === TODAY }) }
+
+  // --- Attendance (deterministic per employee per day)
+  function attendanceOf (e, day) {
+    var r = rng(hash(e.id + day)), x = e.id === ORIGINAL_PHOTOS[0] ? 0 : r()
+    var status = x < 0.82 ? 'Check In' : (x < 0.88 ? 'Sick' : (x < 0.95 ? 'Leave' : 'Absent'))
+    var minutes = int(r, 0, 70) + (r() < 0.22 ? int(r, 30, 110) : 0)   // after 06:30
+    var checkin = moment(day + ' 06:30', 'YYYY-MM-DD HH:mm').add(minutes, 'minutes')
+    var checkout = moment(day + ' 15:30', 'YYYY-MM-DD HH:mm').add(int(r, 0, 180), 'minutes')
+    return { status: status, checkin: checkin, checkout: checkout, late: status === 'Check In' && checkin.isAfter(moment(day + ' 07:30', 'YYYY-MM-DD HH:mm')),
+      lat: e.lat + (r() - 0.5) * 0.008, lng: e.lng + (r() - 0.5) * 0.008, remote: r() < 0.55 }
+  }
+  function attendanceFor (bid, date) {
+    var day = moment(date || undefined).format('YYYY-MM-DD')
+    var isToday = day === TODAY, now = moment()
+    var emps = branchEmployees(bid), rows = [], stats = { attendance: 0, sick: 0, leave: 0, absent: 0, late: 0, total: emps.length }
+    var hourly = [], onsite = [], dist = [0, 0, 0, 0], divs = DIVISIONS.map(function (d, i) { return { name: d, present: 0, total: 0, color: DIV_COLORS[i] } })
+    for (var h = 6; h <= 19; h++) { hourly.push(0); onsite.push(0) }
+    emps.forEach(function (e) {
+      var a = attendanceOf(e, day)
+      divs[e.divisionIndex].total++
+      if (a.status === 'Absent') { stats.absent++; return }
+      if (a.status === 'Sick') stats.sick++
+      if (a.status === 'Leave') stats.leave++
+      var visible = !isToday || a.checkin.isBefore(now)
+      if (a.status === 'Check In') {
+        stats.attendance++; divs[e.divisionIndex].present++
+        if (a.late) stats.late++
+        var hm = a.checkin.hours() * 60 + a.checkin.minutes()
+        dist[hm < 420 ? 0 : hm < 450 ? 1 : hm < 480 ? 2 : 3]++
+        hourly[Math.max(0, a.checkin.hours() - 6)]++
+        for (var k = 0; k < onsite.length; k++) {
+          var hh = moment(day + ' 00:00', 'YYYY-MM-DD HH:mm').add(6 + k, 'hours').add(59, 'minutes')
+          if (a.checkin.isBefore(hh) && a.checkout.isAfter(hh) && (!isToday || hh.isBefore(now) || k === 0)) onsite[k]++
+        }
+      }
+      if (visible) {
+        rows.push({ id: e.id, firstname: e.firstname, lastname: e.lastname, division: e.division, position: e.position, status: a.status, late: a.late,
+          date_time: a.checkin.format(), latitude: a.lat, longitude: a.lng, remote: a.remote })
+      }
+    })
+    rows.sort(function (a, b) { return a.date_time < b.date_time ? 1 : -1 })
+    stats.percentage = stats.total ? Math.round(stats.attendance / stats.total * 100) : 0
+    divs.forEach(function (d) { d.pct = d.total ? Math.round(d.present / d.total * 100) : 0 })
+    return { rows: rows, stats: stats, hourly: hourly, onsite: onsite, dist: dist, divisions: divs.filter(function (d) { return d.total }) }
+  }
+  function weeklyRate (bid, date) {
+    var out = []
+    for (var i = 6; i >= 0; i--) {
+      var d = moment(date).subtract(i, 'days').format('YYYY-MM-DD')
+      var a = attendanceFor(bid, d)
+      out.push({ day: moment(d).format('ddd DD'), pct: a.stats.percentage })
+    }
+    return out
+  }
+  function todayStatus (e) {
+    var a = attendanceOf(e, TODAY)
+    if (a.status === 'Check In') {
+      if (a.checkin.isAfter(moment())) return { status: 'Not yet', checkin: null }
+      return { status: a.late ? 'Late' : 'Present', checkin: a.checkin.format() }
+    }
+    return { status: a.status, checkin: null }
+  }
+
+  // --- Notifications (replaces Firebase 'notification' ref)
+  var NOTIF_CACHE = {}, HISTORY_CACHE = {}
+  var TEXTS = {
+    Sick: ['i feel undescribed  agonizing hurtfull distressing harrowing pain in my stomach, please be kindly to let me rest',
+      'I have a high fever since last night, the doctor told me to rest for two days',
+      'Migraine attack this morning, I can not focus on the screen, please let me rest today',
+      'Doctor diagnosed typhoid fever, I have to be hospitalized for a few days'],
+    Leave: ['I need to rest, please', 'Family event in my hometown, I would like to take annual leave',
+      'My wife is giving birth, I would like to accompany her', 'Annual leave for Eid holiday with family'],
+    Permit: ['I need to take care of my child who is sick at home', 'Renewing my passport at the immigration office this morning',
+      'Attending my sister\'s wedding ceremony'],
+    'Duty Travel': ['Assigned to support the radio maintenance at Pangkalan Surabaya', 'Training on satellite communication in Bandung',
+      'Coordination meeting with Koarmada about logistics planning']
+  }
+  var ATTACH = { Sick: 'Medical certificate.pdf', Leave: null, Permit: null, 'Duty Travel': 'Assignment letter.pdf' }
+  function notifRow (bid, e, i, r, cat, when) {
+    var from = moment(when).add(int(r, 0, 20), 'days').startOf('day')
+    var days = cat === 'Sick' ? int(r, 1, 3) : int(r, 1, 5)
+    return {
+      id: bid + '-' + cat + '-' + i, user_id: e.id, name: e.fullname, firstname: e.firstname, rank: e.rank, division: e.division, email: e.email,
+      msisdn: e.phone, date_time: when.format(), category: cat,
+      description: (cat === 'Sick' && e.firstname === 'Fakriani') ? TEXTS.Sick[0] : pick(r, TEXTS[cat]),
+      from: from.format(), to: from.clone().add(days - 1, 'days').format(), days: days, attachment: ATTACH[cat]
+    }
+  }
+  function notificationsFor (bid) {
+    if (NOTIF_CACHE[bid]) return NOTIF_CACHE[bid]
+    var emps = branchEmployees(bid), r = rng(hash('notif' + bid)), rows = [], cats = ['Sick', 'Leave', 'Permit', 'Sick', 'Duty Travel', 'Leave', 'Permit', 'Sick']
+    for (var i = 0; i < cats.length; i++) {
+      rows.push(notifRow(bid, emps[(i * 3 + 1) % emps.length], i, r, cats[i], moment().subtract(i * 5 + int(r, 1, 4), 'hours')))
+    }
+    return (NOTIF_CACHE[bid] = rows)
+  }
+  function historyFor (bid) {
+    if (HISTORY_CACHE[bid]) return HISTORY_CACHE[bid]
+    var emps = branchEmployees(bid), r = rng(hash('hist' + bid)), rows = [], cats = ['Leave', 'Sick', 'Duty Travel', 'Permit', 'Sick', 'Leave']
+    var cmd = emps[0]
+    for (var i = 0; i < cats.length; i++) {
+      var n = notifRow(bid, emps[(i * 5 + 2) % emps.length], 'h' + i, r, cats[i], moment().subtract(1 + i, 'days').subtract(int(r, 1, 8), 'hours'))
+      n.decision = r() < 0.75 ? 'Approved' : 'Rejected'
+      n.decided_by = cmd.fullname
+      n.decided_at = moment(n.date_time).add(int(r, 1, 6), 'hours').format()
+      n.note = n.decision === 'Approved' ? pick(r, ['Get well soon', 'Approved, please hand over your tasks', '', 'Have a safe trip']) : pick(r, ['Quota exceeded for this period', 'Please submit the medical certificate'])
+      rows.push(n)
+    }
+    return (HISTORY_CACHE[bid] = rows)
+  }
+
+  // --- Remote base: rooms, energy, cameras, fleet
+  var ROOM_NAMES = ['Command Center', 'Server Room', 'Main Lobby', 'Briefing Room', 'Radio Room', 'Barracks A', 'Workshop', 'Armory']
+  var ROOM_CACHE = {}
+  function roomsFor (bid) {
+    if (ROOM_CACHE[bid]) return ROOM_CACHE[bid]
+    var r = rng(hash('rooms' + bid))
+    return (ROOM_CACHE[bid] = ROOM_NAMES.slice(0, 6 + (Number(bid) % 3)).map(function (n) {
+      return { name: n, temp: int(r, 21, 27), hum: int(r, 45, 68), light: r() < 0.75, ac: r() < 0.7, elec: r() < 0.8,
+        lightW: int(r, 3, 8) * 60, acW: int(r, 12, 30) * 100, elecW: int(r, 4, 14) * 100 }
+    }))
+  }
+  function cameras (bid) {
+    var names = ['Main Gate', 'Pier 1', 'Command Center', 'Parking Area', 'Warehouse', 'Perimeter North']
+    var r = rng(hash('cam' + bid))
+    return names.map(function (n, i) { return { id: 'CAM-0' + (i + 1), name: n, online: i !== 4 || r() < 0.3, res: pick(r, ['1080p', '720p']) } })
+  }
+  var FLEET = [
+    { id: 'PV801', name: 'PV-801 Barakuda', type: 'Patrol Vessel', status: 'Patrol', lat: -5.6, lng: 110.4, speed: 14.2, heading: 82, base: 'Gedung Tifa' },
+    { id: 'PV802', name: 'PV-802 Kakap', type: 'Patrol Vessel', status: 'Patrol', lat: 2.6, lng: 101.2, speed: 12.6, heading: 315, base: 'Pangkalan Belawan' },
+    { id: 'FS361', name: 'FS-361 Elang Laut', type: 'Frigate', status: 'Transit', lat: -2.1, lng: 118.2, speed: 18.4, heading: 20, base: 'Pangkalan Makassar' },
+    { id: 'LS511', name: 'LS-511 Pelikan', type: 'Landing Ship', status: 'Transit', lat: -8.3, lng: 116.9, speed: 11.0, heading: 95, base: 'Pangkalan Surabaya' },
+    { id: 'HS931', name: 'HS-931 Camar', type: 'Hydrographic Survey', status: 'Anchored', lat: 3.4, lng: 108.4, speed: 0.4, heading: 180, base: 'Markas Komando Barat' },
+    { id: 'PV803', name: 'PV-803 Tongkol', type: 'Patrol Vessel', status: 'Patrol', lat: 2.9, lng: 123.6, speed: 15.1, heading: 240, base: 'Pangkalan Bitung' },
+    { id: 'TS221', name: 'TS-221 Lumba', type: 'Tug / Support', status: 'Docked', lat: -7.20, lng: 112.73, speed: 0, heading: 0, base: 'Pangkalan Surabaya' },
+    { id: 'SV120', name: 'SV-120 Penyu', type: 'Supply Vessel', status: 'Transit', lat: -6.4, lng: 127.8, speed: 10.5, heading: 120, base: 'Pangkalan Bitung' }
+  ]
+
+  var MENUS = [
+    { id: 'identifier', title: 'Smart Call Identifier', icon: 'img/visat.png',
+      subtitle: 'Choose a branch to trace personnel calls, call logs and call locations',
+      text: 'Identify and trace personnel calls in real time — caller identity, call duration and the location of both parties on the map.',
+      children: [ { id: 'branch', title: 'Branches', url: '/identifier' }, { id: 'employee', title: 'Employees', url: 'employees' }, { id: 'calls', title: 'Call Log', url: 'calls' } ] },
+    { id: 'monitor', title: 'Smart Personal Monitoring', icon: 'img/user.png',
+      subtitle: 'Choose a branch to monitor attendance, personnel status and requests',
+      text: 'Monitor personnel attendance, check-in locations and sick / leave requests across every branch from one dashboard.',
+      children: [ { id: 'branch', title: 'Branches', url: '/monitor' }, { id: 'dashboard', title: 'Dashboard', url: 'dashboard' },
+        { id: 'employee', title: 'Employees', url: 'employees' }, { id: 'notification', title: 'Notifications', url: 'notifications' } ] },
+    { id: 'remote', title: 'Smart Remote Base', icon: 'img/remote.png',
+      subtitle: 'Choose a branch to control facilities, energy and CCTV — or open the fleet map',
+      text: 'Control branch facilities remotely — lighting, air conditioning, power usage and CCTV feeds, plus live fleet positions.',
+      children: [ { id: 'branch', title: 'Branches', url: '/remote' }, { id: 'dashboard', title: 'Dashboard', url: 'dashboard' }, { id: 'fleet', title: 'Fleet Map', url: '/remote/map' } ] }
+  ]
+
+  var USERS = [{ username: 'admin', password: 'secret', id: ORIGINAL_PHOTOS[0], fullname: 'Arief Rahman', role: 'Administrator' }]
+
+  function branchSummary (b) {
+    var emps = branchEmployees(b.id), present = 0, calls = 0
+    emps.forEach(function (e) { var s = todayStatus(e).status; if (s === 'Present' || s === 'Late') present++; calls += callsToday(e.id).length })
+    var rooms = roomsFor(b.id), dev = 0
+    rooms.forEach(function (r) { dev += (r.light ? 1 : 0) + (r.ac ? 1 : 0) + (r.elec ? 1 : 0) })
+    return Object.assign({}, b, { employeesCount: emps.length, present: present, rate: emps.length ? Math.round(present / emps.length * 100) : 0,
+      callsToday: calls, devicesOn: dev, devicesTotal: rooms.length * 3, rooms: rooms.length })
+  }
+
+  /* Mock API: same resources as start/routes.js (async, like axios) */
+  function respond (data) {
+    return new Promise(function (resolve) { setTimeout(function () { resolve(JSON.parse(JSON.stringify(data))) }, 120) })
+  }
+  var api = {
+    menus: function () { return respond(MENUS) },
+    branches: function () { return respond(BRANCHES.map(branchSummary)) },
+    employees: function (bid) {
+      return respond(branchEmployees(bid).map(function (e) {
+        var t = todayStatus(e), ct = callsToday(e.id), last = employeeCalls(e.id)[0]
+        var sec = ct.reduce(function (s, c) { return s + c.seconds }, 0)
+        return Object.assign({}, e, { today: t.status, checkin: t.checkin, callsToday: ct.length, minutesToday: Math.round(sec / 60),
+          lastSeen: last ? moment(last.date_time).format('HH:mm') : '—' })
+      }))
+    },
+    employee: function (uid) {
+      var e = EMP_BY_ID[uid]
+      return respond(e ? Object.assign({}, e, { today: todayStatus(e).status }) : null)
+    },
+    calls: function (uid) { return respond(employeeCalls(uid)) },
+    branchCalls: function (bid) {
+      var all = []
+      branchEmployees(bid).forEach(function (e) { all = all.concat(callsToday(e.id)) })
+      all.sort(function (a, b) { return a.date_time < b.date_time ? 1 : -1 })
+      return respond(all)
+    },
+    monthly: function (uid) {
+      var r = rng(hash('month' + uid)), out = []
+      for (var i = 11; i >= 0; i--) {
+        out.push({ months: moment().startOf('month').subtract(i, 'months').format(), incoming: int(r, 40, 260), outgoing: int(r, 30, 220) })
+      }
+      return respond(out)
+    },
+    attendance: function (bid, date) {
+      var a = attendanceFor(bid, date)
+      a.weekly = weeklyRate(bid, date)
+      var prev = attendanceFor(bid, moment(date).subtract(1, 'days').format('YYYY-MM-DD'))
+      a.stats.delta = a.stats.percentage - prev.stats.percentage
+      return respond(a)
+    },
+    notifications: function (bid) { return respond(notificationsFor(bid)) },
+    history: function (bid) { return respond(historyFor(bid)) },
+    resolve: function (bid, item, decision, note) {
+      NOTIF_CACHE[bid] = (NOTIF_CACHE[bid] || []).filter(function (n) { return n.id !== item.id })
+      var h = Object.assign({}, item, { decision: decision, decided_by: store.getters['authuser/name'], decided_at: moment().format(), note: note })
+      historyFor(bid).unshift(h)
+      return respond(h)
+    },
+    rooms: function (bid) { return respond(roomsFor(bid)) }
+  }
+
+  /* ==================================================================
+     VUEX STORE
+     ================================================================== */
+  var authuser = {
+    namespaced: true,
+    state: function () {
+      var saved = null
+      try { saved = JSON.parse(localStorage.getItem('navy_auth') || 'null') } catch (e) {}
+      return { authUser: saved }
+    },
+    mutations: {
+      SET_USER: function (state, user) {
+        state.authUser = user
+        try { user ? localStorage.setItem('navy_auth', JSON.stringify(user)) : localStorage.removeItem('navy_auth') } catch (e) {}
+      }
+    },
+    getters: {
+      get: function (s) { return s.authUser },
+      logged: function (s) { return !!s.authUser },
+      name: function (s) { if (s.authUser) return s.authUser.fullname },
+      role: function (s) { return (s.authUser && s.authUser.role) || 'Administrator' },
+      id: function (s) { if (s.authUser) return s.authUser.id }
+    },
+    actions: {
+      login: function (ctx, cred) {
+        var u = USERS.filter(function (x) { return x.username === cred.username && x.password === cred.password })[0]
+        if (!u) return Promise.reject(new Error('We cannot find any account with these credentials.'))
+        ctx.commit('SET_USER', { id: u.id, fullname: u.fullname, username: u.username, role: u.role })
+        return Promise.resolve()
+      },
+      logout: function (ctx) { ctx.commit('SET_USER', null) }
+    }
+  }
+
+  var menu = {
+    namespaced: true,
+    state: function () { return { data: MENUS, current: null } },
+    mutations: { set: function (s, d) { s.current = d } },
+    getters: {
+      gets: function (s) { return s.data },
+      title: function (s) { if (s.current) return s.current.title },
+      children: function (s) { if (s.current && s.current.children) return s.current.children }
+    },
+    actions: {
+      ask: function (ctx, params) {
+        var path = (params.name || '').split('-')[0]
+        ctx.commit('set', MENUS.filter(function (n) { return n.id === path })[0])
+      },
+      set: function (ctx, d) { ctx.commit('set', d) }
+    }
+  }
+
+  var notification = {
+    namespaced: true,
+    state: function () { return { data: [], history: [], branch: null } },
+    mutations: {
+      sets: function (s, p) { s.data = p.data; s.branch = p.branch },
+      setHistory: function (s, d) { s.history = d },
+      remove: function (s, id) { s.data = s.data.filter(function (n) { return n.id !== id }) },
+      addHistory: function (s, h) { s.history = [h].concat(s.history) }
+    },
+    getters: { gets: function (s) { return s.data }, history: function (s) { return s.history }, count: function (s) { return s.data.length } },
+    actions: {
+      asks: function (ctx, params) {
+        return Promise.all([api.notifications(params.branch), api.history(params.branch)]).then(function (res) {
+          ctx.commit('sets', { data: res[0], branch: params.branch }); ctx.commit('setHistory', res[1])
+        })
+      },
+      resolve: function (ctx, p) {
+        ctx.commit('remove', p.item.id)
+        return api.resolve(p.branch, p.item, p.decision, p.note).then(function (h) { ctx.commit('addHistory', h) })
+      }
+    }
+  }
+
+  // generic page data (filled by each page's fetch())
+  var view = {
+    namespaced: true,
+    state: function () { return {} },
+    mutations: { set: function (s, p) { Vue.set(s, p.key, p.value) } }
+  }
+
+  var store = new Vuex.Store({ modules: { authuser: authuser, menu: menu, notification: notification, view: view } })
+  function put (key, value) { store.commit('view/set', { key: key, value: value }) }
+
+  /* ==================================================================
+     GLOBAL HELPERS / FILTERS / CHART THEME
+     ================================================================== */
+  Vue.use(Vuetify)
+
+  Vue.prototype.$avatar = function (id) {
+    var e = EMP_BY_ID[id]
+    return e ? IMG + e.photo : IMG + 'user.png'
+  }
+  Vue.filter('dateformatter', function (value, format) { return value ? moment(typeof value === 'number' ? value : String(value)).format(format || 'h:mm A') : '' })
+  Vue.filter('fromnow', function (v) { return v ? moment(v).fromNow() : '' })
+  Vue.filter('upper', function (v) { return String(v || '').toUpperCase() })
+  Vue.filter('duration', function (s) {
+    if (!s) return 'Missed'
+    var m = Math.floor(s / 60), sec = s % 60
+    return m + ':' + (sec < 10 ? '0' : '') + sec
+  })
+  Vue.filter('coord', function (v, axis) {
+    var d = Math.abs(v).toFixed(3)
+    return d + '°' + (axis === 'lat' ? (v < 0 ? 'S' : 'N') : (v < 0 ? 'W' : 'E'))
+  })
+
+  // global clock (header, sync labels)
+  var clock = new Vue({ data: { now: Date.now() } })
+  setInterval(function () { clock.now = Date.now() }, 1000)
+  Vue.mixin({ computed: { now: function () { return clock.now } } })
+
+  Highcharts.setOptions({
+    colors: ['#1d90fb', '#3cb878', '#ffc200', '#F35958', '#7e57c2', '#00897b'],
+    chart: { style: { fontFamily: 'Roboto, sans-serif' }, backgroundColor: 'transparent', spacing: [8, 4, 8, 4] },
+    title: { text: null }, subtitle: { text: null }, credits: { enabled: false },
+    navigation: { buttonOptions: { enabled: false } },
+    legend: { itemStyle: { fontWeight: '500', color: '#4a5568', fontSize: '12px' } },
+    xAxis: { lineColor: '#e6eaf2', tickColor: '#e6eaf2', labels: { style: { color: '#7a869a', fontSize: '11px' } } },
+    yAxis: { gridLineColor: '#eef1f6', labels: { style: { color: '#7a869a', fontSize: '11px' } }, title: { text: null } },
+    tooltip: { backgroundColor: 'rgba(31,42,68,.95)', borderWidth: 0, borderRadius: 6, shadow: false, style: { color: '#fff', fontSize: '12px' } },
+    plotOptions: { series: { animation: { duration: 600 } } }
+  })
+
+  function filterText (q) {
+    q = (q || '').toLowerCase().trim()
+    return function () {
+      if (!q) return true
+      for (var i = 0; i < arguments.length; i++) if (String(arguments[i] || '').toLowerCase().indexOf(q) >= 0) return true
+      return false
+    }
+  }
+  var STATUS_COLORS = {
+    'Present': 'green', 'Check In': 'green', 'On time': 'green', 'Approved': 'green', 'Online': 'green', 'Outgoing': 'green',
+    'Late': 'orange', 'Sick': 'orange', 'Missed': 'orange',
+    'Leave': 'purple', 'Permit': 'blue', 'Duty Travel': 'teal', 'Incoming': 'blue',
+    'Absent': 'red', 'Rejected': 'red', 'Not yet': 'grey', 'Offline': 'grey'
+  }
+
+  /* ---------------- vue2-highcharts replacement ---------------- */
+  Vue.component('vue-highcharts', {
+    props: ['options'],
+    template: '<div class="vue-highcharts"></div>',
+    mounted: function () { this.draw() },
+    watch: { options: { handler: function () { this.draw() }, deep: true } },
+    beforeDestroy: function () { if (this.chart) this.chart.destroy() },
+    methods: {
+      draw: function () {
+        if (this.chart) this.chart.destroy()
+        var o = JSON.parse(JSON.stringify(this.options || {}))
+        o.chart = o.chart || {}
+        if (!o.chart.height) o.chart.height = this.$el.clientHeight || 300
+        this.chart = Highcharts.chart(this.$el, o)
+      }
+    }
+  })
+
+  /* ---------------- Map (replaces vue2-google-maps) ---------------- */
+  var TILE = 256
+  function project (lat, lng, z) {
+    var s = TILE * Math.pow(2, z), sin = Math.sin(lat * Math.PI / 180)
+    sin = Math.min(Math.max(sin, -0.9999), 0.9999)
+    return { x: (lng + 180) / 360 * s, y: (0.5 - Math.log((1 + sin) / (1 - sin)) / (4 * Math.PI)) * s }
+  }
+  function unproject (x, y, z) {
+    var s = TILE * Math.pow(2, z), n = Math.PI - 2 * Math.PI * y / s
+    return { lat: 180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))), lng: x / s * 360 - 180 }
+  }
+  var CURVATURE = 0.2 // how curvy to make the arc (same as original)
+
+  Vue.component('navy-map', {
+    template: '#tpl-navy-map',
+    props: {
+      markers: { type: Array, default: function () { return [] } },
+      center: Object,
+      zoom: { type: Number, default: 7 },
+      curve: Boolean,
+      autofit: { type: Boolean, default: true }
+    },
+    data: function () {
+      return { w: 600, h: 400, c: this.center ? Object.assign({}, this.center) : { lat: -2.5, lng: 118 }, z: this.zoom, drag: null, fitted: false }
+    },
+    computed: {
+      origin: function () { var p = project(this.c.lat, this.c.lng, this.z); return { x: p.x - this.w / 2, y: p.y - this.h / 2 } },
+      tiles: function () {
+        var o = this.origin, n = Math.pow(2, this.z), out = []
+        var x0 = Math.floor(o.x / TILE), x1 = Math.floor((o.x + this.w) / TILE)
+        var y0 = Math.floor(o.y / TILE), y1 = Math.floor((o.y + this.h) / TILE)
+        for (var y = y0; y <= y1; y++) {
+          if (y < 0 || y >= n) continue
+          for (var x = x0; x <= x1; x++) {
+            var xw = ((x % n) + n) % n
+            out.push({ key: this.z + '/' + x + '/' + y, url: 'https://tile.openstreetmap.org/' + this.z + '/' + xw + '/' + y + '.png',
+              left: Math.round(x * TILE - o.x), top: Math.round(y * TILE - o.y) })
+          }
+        }
+        return out
+      },
+      pins: function () {
+        var o = this.origin, z = this.z
+        return this.markers.map(function (m, i) {
+          var p = project(m.position.lat, m.position.lng, z)
+          return { left: p.x - o.x, top: p.y - o.y, label: m.label || String(i + 1), icon: m.icon && m.icon.url, m: m }
+        })
+      },
+      curvePath: function () {
+        if (!this.curve || this.pins.length < 2) return null
+        var p1 = this.pins[0], p2 = this.pins[1]
+        var e = { x: p2.left - p1.left, y: p2.top - p1.top }
+        var m = { x: e.x / 2, y: e.y / 2 }
+        var o = { x: e.y, y: -e.x }
+        var c = { x: m.x + CURVATURE * o.x, y: m.y + CURVATURE * o.y }
+        return 'M ' + p1.left + ',' + p1.top + ' q ' + c.x + ',' + c.y + ' ' + e.x + ',' + e.y
+      },
+      markerKey: function () { return this.markers.map(function (m) { return m.id || (m.position.lat.toFixed(3) + ',' + m.position.lng.toFixed(3)) }).join('|') }
+    },
+    watch: {
+      markerKey: function () { if (this.autofit) this.fitBounds() },
+      center: function (v) { if (v) this.c = Object.assign({}, v) }
+    },
+    mounted: function () {
+      this._resize = this.measure.bind(this)
+      window.addEventListener('resize', this._resize)
+      this.measure()
+      this.fitBounds()
+    },
+    beforeDestroy: function () { window.removeEventListener('resize', this._resize); this.up() },
+    methods: {
+      measure: function () { if (this.$el.clientWidth) { this.w = this.$el.clientWidth; this.h = this.$el.clientHeight || 400 } },
+      fitBounds: function () {
+        var ms = this.markers
+        if (!ms.length) return
+        if (ms.length === 1) { this.c = Object.assign({}, ms[0].position); this.z = 13; return }
+        var lats = ms.map(function (m) { return m.position.lat }), lngs = ms.map(function (m) { return m.position.lng })
+        var maxLat = Math.max.apply(null, lats), minLat = Math.min.apply(null, lats)
+        var maxLng = Math.max.apply(null, lngs), minLng = Math.min.apply(null, lngs)
+        var z = 16, p1, p2
+        for (; z > 2; z--) {
+          p1 = project(maxLat, minLng, z); p2 = project(minLat, maxLng, z)
+          if ((p2.x - p1.x) < this.w - 120 && (p2.y - p1.y) < this.h - 120) break
+        }
+        p1 = project(maxLat, minLng, z); p2 = project(minLat, maxLng, z)
+        this.z = z
+        this.c = unproject((p1.x + p2.x) / 2, (p1.y + p2.y) / 2, z)
+      },
+      zoomBy: function (d) { this.z = Math.min(18, Math.max(2, this.z + d)) },
+      wheel: function (e) {
+        var now = Date.now()
+        if (this._lastWheel && now - this._lastWheel < 250) return
+        this._lastWheel = now
+        this.zoomBy(e.deltaY < 0 ? 1 : -1)
+      },
+      point: function (e) { var t = e.touches ? e.touches[0] : e; return { x: t.clientX, y: t.clientY } },
+      down: function (e) {
+        var pt = this.point(e)
+        this.drag = { x: pt.x, y: pt.y, c: project(this.c.lat, this.c.lng, this.z) }
+        this._move = this.move.bind(this); this._up = this.up.bind(this)
+        document.addEventListener('mousemove', this._move); document.addEventListener('mouseup', this._up)
+        document.addEventListener('touchmove', this._move, { passive: false }); document.addEventListener('touchend', this._up)
+      },
+      move: function (e) {
+        if (!this.drag) return
+        if (e.cancelable) e.preventDefault()
+        var pt = this.point(e)
+        this.c = unproject(this.drag.c.x - (pt.x - this.drag.x), this.drag.c.y - (pt.y - this.drag.y), this.z)
+      },
+      up: function () {
+        this.drag = null
+        if (this._move) {
+          document.removeEventListener('mousemove', this._move); document.removeEventListener('mouseup', this._up)
+          document.removeEventListener('touchmove', this._move); document.removeEventListener('touchend', this._up)
+        }
+      },
+      clickPin: function (p) { this.c = Object.assign({}, p.m.position); this.$emit('marker-click', p.m) }
+    }
+  })
+
+  /* ---------------- Shared components ---------------- */
+  Vue.component('title-toolbar', {
+    template: '<span>{{ title }}</span>',
+    computed: Vuex.mapGetters({ title: 'menu/title' }),
+    beforeCreate: function () { this.$store.dispatch('menu/ask', { name: this.$route.name }) },
+    watch: { '$route.name': function (n) { this.$store.dispatch('menu/ask', { name: n }) } }
+  })
+
+  Vue.component('user-toolbar', {
+    template: '#tpl-user-toolbar',
+    computed: Vuex.mapGetters({ id: 'authuser/id', name: 'authuser/name', role: 'authuser/role' })
+  })
+
+  Vue.component('menu-toolbar', {
+    template: '#tpl-menu-toolbar',
+    computed: {
+      items: function () {
+        var children = this.$store.getters['menu/children']
+        if (!children) return []
+        var module = (this.$route.name || '').split('-')[0]
+        var bid = this.$route.params.branch
+        var getters = this.$store.getters
+        return children.map(function (item) {
+          var abs = item.url.charAt(0) === '/'
+          var n = Object.assign({}, item, { to: abs ? item.url : '/' + module + '/' + bid + '/' + item.url, exact: abs })
+          if (getters[item.id + '/count']) n.count = getters[item.id + '/count']
+          return n
+        })
+      }
+    },
+    created: function () { this.$store.dispatch('menu/ask', { name: this.$route.name }); this.loadNotifications() },
+    watch: { '$route.params.branch': function () { this.loadNotifications() } },
+    methods: {
+      loadNotifications: function () {
+        var bid = this.$route.params.branch
+        if (bid !== undefined && (this.$route.name || '').indexOf('monitor') === 0 && String(this.$store.state.notification.branch) !== String(bid)) {
+          this.$store.dispatch('notification/asks', { branch: bid })
+        }
+      }
+    }
+  })
+
+  Vue.component('page-header', { template: '#tpl-page-header', props: ['title', 'subtitle', 'crumbs'] })
+  Vue.component('stat-card', { template: '#tpl-stat-card', props: ['icon', 'color', 'label', 'value', 'unit', 'sub', 'trend'] })
+  Vue.component('panel', { template: '#tpl-panel', props: ['title', 'subtitle', 'icon', 'flush', 'bodyStyle'] })
+  Vue.component('status-chip', {
+    props: ['status'],
+    template: '<span class="chip-s" :class="color">{{ status }}</span>',
+    computed: { color: function () { return "cs-" + (STATUS_COLORS[this.status] || "grey") } }
+  })
+  Vue.component('pager', {
+    template: '#tpl-pager',
+    props: { total: Number, perPage: Number, value: Number },
+    computed: {
+      last: function () { return Math.max(1, Math.ceil(this.total / this.perPage)) },
+      pages: function () { var a = []; for (var i = 1; i <= this.last; i++) a.push(i); return a },
+      from: function () { return (this.value - 1) * this.perPage + 1 },
+      to: function () { return Math.min(this.total, this.value * this.perPage) }
+    }
+  })
+  Vue.component('menu-card', { template: '#tpl-menu-card', props: ['data'], methods: Vuex.mapActions({ set: 'menu/set' }) })
+  Vue.component('branch-card', { template: '#tpl-branch-card', props: ['data', 'to', 'stats'] })
+  Vue.component('employee-card', { template: '#tpl-employee-card', props: ['data', 'to'] })
+
+  Vue.component('page-view', {
+    template: '<transition name="page" mode="out-in"><router-view :key="$route.fullPath"></router-view></transition>'
+  })
+
+  var branchMixin = { computed: { branch: function () { return findBranch(this.$route.params.branch) } } }
+  function callTypeName (t) { return t === 1 ? 'Outgoing' : (t === 2 ? 'Incoming' : 'Missed') }
+
+  /* ==================================================================
+     PAGES
+     ================================================================== */
+  var LoginPage = {
+    layout: 'blank',
+    template: '#tpl-page-login',
+    data: function () { return { username: 'admin', password: 'secret', error: null } },
+    methods: {
+      login: function () {
+        var vm = this
+        this.$store.dispatch('authuser/login', { username: this.username, password: this.password })
+          .then(function () { vm.$router.push('/') })
+          .catch(function (e) { vm.error = e.message })
+      }
+    }
+  }
+
+  var IndexPage = {
+    layout: 'blank',
+    template: '#tpl-page-index',
+    fetch: function () { return api.branches().then(function (b) { put('branches', b) }) },
+    computed: {
+      totals: function () {
+        var b = this.$store.state.view.branches || [], t = { branches: b.length, personnel: 0, present: 0, calls: 0, rooms: 0 }
+        b.forEach(function (x) { t.personnel += x.employeesCount; t.present += x.present; t.calls += x.callsToday; t.rooms += x.rooms })
+        t.rate = t.personnel ? Math.round(t.present / t.personnel * 100) : 0
+        return t
+      },
+      items: function () {
+        var t = this.totals
+        var stats = {
+          identifier: [{ value: t.branches, label: 'Branches' }, { value: t.calls, label: 'Calls today' }],
+          monitor: [{ value: t.personnel, label: 'Personnel' }, { value: t.rate + '%', label: 'Present today' }],
+          remote: [{ value: t.rooms, label: 'Rooms' }, { value: FLEET.length, label: 'Vessels' }]
+        }
+        return MENUS.map(function (m) { return Object.assign({}, m, { stats: stats[m.id] }) })
+      }
+    }
+  }
+
+  var BranchesPage = {
+    layout: 'titleToolbar',
+    template: '#tpl-page-branches',
+    fetch: function () { return api.branches().then(function (b) { put('branches', b) }) },
+    data: function () { return { q: '' } },
+    computed: {
+      module: function () { return MENUS.filter(function (m) { return m.id === this.$route.name }.bind(this))[0] },
+      items: function () { return this.$store.state.view.branches || [] },
+      filtered: function () {
+        var f = filterText(this.q)
+        return this.items.filter(function (b) { return f(b.name, b.address, b.code, b.type) })
+      },
+      stats: function () {
+        var t = { personnel: 0, present: 0, calls: 0, dev: 0, devT: 0 }
+        this.items.forEach(function (b) { t.personnel += b.employeesCount; t.present += b.present; t.calls += b.callsToday; t.dev += b.devicesOn; t.devT += b.devicesTotal })
+        var common = [
+          { icon: 'domain', color: '#3f51b5', label: 'Branches', value: this.items.length, sub: 'All branches online' },
+          { icon: 'group', color: '#1d90fb', label: 'Personnel', value: t.personnel, sub: 'Registered personnel' }
+        ]
+        var mod = this.$route.name
+        if (mod === 'identifier') {
+          return common.concat([
+            { icon: 'call', color: '#2e9e5b', label: 'Calls today', value: t.calls, sub: 'Identified across branches' },
+            { icon: 'av_timer', color: '#e07b00', label: 'Avg per person', value: (t.calls / Math.max(1, t.personnel)).toFixed(1), unit: 'calls', sub: 'Today' }
+          ])
+        }
+        if (mod === 'monitor') {
+          var rate = Math.round(t.present / Math.max(1, t.personnel) * 100)
+          return common.concat([
+            { icon: 'verified_user', color: '#2e9e5b', label: 'Present today', value: t.present, sub: rate + '% attendance rate', trend: 'up' },
+            { icon: 'notifications_active', color: '#e04848', label: 'Pending requests', value: this.items.length * 8, sub: 'Sick / leave / permit' }
+          ])
+        }
+        return common.concat([
+          { icon: 'devices', color: '#2e9e5b', label: 'Devices on', value: t.dev, unit: '/ ' + t.devT, sub: 'Lights, AC & electronics' },
+          { icon: 'directions_boat', color: '#00897b', label: 'Vessels tracked', value: FLEET.length, sub: 'Open Fleet Map from any branch' }
+        ])
+      }
+    },
+    methods: {
+      link: function (item) {
+        var module = this.$route.name
+        return '/' + module + '/' + item.id + (module === 'identifier' ? '/employees' : '/dashboard')
+      },
+      cardStats: function (b) {
+        var mod = this.$route.name
+        if (mod === 'identifier') return [{ value: b.employeesCount, label: 'Personnel' }, { value: b.callsToday, label: 'Calls today' }, { value: (b.callsToday / b.employeesCount).toFixed(1), label: 'Per person' }]
+        if (mod === 'monitor') return [{ value: b.employeesCount, label: 'Personnel' }, { value: b.present, label: 'Present' }, { value: b.rate + '%', label: 'Rate' }]
+        return [{ value: b.rooms, label: 'Rooms' }, { value: b.devicesOn + '/' + b.devicesTotal, label: 'Devices on' }, { value: 6, label: 'Cameras' }]
+      }
+    }
+  }
+
+  var IdentifierEmployeesPage = {
+    template: '#tpl-page-identifier-employees',
+    mixins: [branchMixin],
+    fetch: function (ctx) { return api.employees(ctx.params.branch).then(function (d) { put('employees', d) }) },
+    data: function () { return { q: '', division: '' } },
+    computed: {
+      items: function () { return this.$store.state.view.employees || [] },
+      divisions: function () { return DIVISIONS },
+      filtered: function () {
+        var f = filterText(this.q), d = this.division
+        return this.items.filter(function (e) { return (!d || e.division === d) && f(e.fullname, e.nrp, e.phone, e.position, e.email) })
+      }
+    }
+  }
+
+  var IdentifierCallsPage = {
+    template: '#tpl-page-identifier-calls',
+    mixins: [branchMixin],
+    fetch: function (ctx) { return api.branchCalls(ctx.params.branch).then(function (d) { put('branchCalls', d) }) },
+    data: function () {
+      return { q: '', type: 0, page: 1, perPage: 12, today: moment().format('dddd, DD MMM YYYY'),
+        types: [{ v: 0, t: 'All' }, { v: 1, t: 'Outgoing' }, { v: 2, t: 'Incoming' }, { v: 3, t: 'Missed' }] }
+    },
+    watch: { q: function () { this.page = 1 } },
+    computed: {
+      items: function () { return this.$store.state.view.branchCalls || [] },
+      filtered: function () {
+        var f = filterText(this.q), t = this.type
+        return this.items.filter(function (c) { return (!t || c.call_type === t) && f(c.user_name, c.party_firstname + ' ' + c.party_lastname, c.party_msisdn, c.user_msisdn) })
+      },
+      paged: function () { return this.filtered.slice((this.page - 1) * this.perPage, this.page * this.perPage) },
+      stats: function () {
+        var c = this.items, n = [0, 0, 0, 0], sec = 0
+        c.forEach(function (x) { n[x.call_type]++; sec += x.seconds })
+        var answered = n[1] + n[2]
+        return [
+          { icon: 'call', color: '#1d90fb', label: 'Calls today', value: c.length, sub: 'Identified calls' },
+          { icon: 'call_received', color: '#1c6fd1', label: 'Incoming', value: n[2], sub: Math.round(n[2] / Math.max(1, c.length) * 100) + '% of calls' },
+          { icon: 'call_made', color: '#2e9e5b', label: 'Outgoing', value: n[1], sub: Math.round(n[1] / Math.max(1, c.length) * 100) + '% of calls' },
+          { icon: 'call_missed', color: '#e07b00', label: 'Missed', value: n[3], sub: Math.round(n[3] / Math.max(1, c.length) * 100) + '% of calls' },
+          { icon: 'av_timer', color: '#7e57c2', label: 'Avg duration', value: Vue.filter('duration')(Math.round(sec / Math.max(1, answered))), sub: Math.round(sec / 60) + ' min in total' }
+        ]
+      },
+      hourChart: function () {
+        var bins = [], cats = []
+        for (var h = 6; h <= 23; h++) { bins.push([0, 0, 0]); cats.push((h < 10 ? '0' : '') + h) }
+        this.items.forEach(function (c) { var h = moment(c.date_time).hours(); if (h >= 6) bins[h - 6][c.call_type - 1]++ })
+        return {
+          chart: { type: 'column', height: 230 },
+          xAxis: { categories: cats },
+          yAxis: { allowDecimals: false },
+          plotOptions: { column: { stacking: 'normal', borderWidth: 0, pointPadding: 0.05, groupPadding: 0.08 } },
+          legend: { itemStyle: { fontSize: '11px' } },
+          series: [
+            { name: 'Outgoing', color: '#3cb878', data: bins.map(function (b) { return b[0] }) },
+            { name: 'Incoming', color: '#1d90fb', data: bins.map(function (b) { return b[1] }) },
+            { name: 'Missed', color: '#ffc200', data: bins.map(function (b) { return b[2] }) }
+          ]
+        }
+      },
+      topCallers: function () {
+        var agg = {}
+        this.items.forEach(function (c) {
+          var e = EMP_BY_ID[c.user_id]
+          if (!agg[c.user_id]) agg[c.user_id] = { id: c.user_id, name: c.user_name, division: e.division, count: 0 }
+          agg[c.user_id].count++
+        })
+        return Object.keys(agg).map(function (k) { return agg[k] }).sort(function (a, b) { return b.count - a.count }).slice(0, 6)
+      }
+    },
+    methods: { callType: callTypeName }
+  }
+
+  function markersForCall (c) {
+    if (!c) return []
+    var iconUrls = [null, IMG + 'outgoing-call2.png', IMG + 'incoming-call2.png', IMG + 'incoming-call2.png']
+    return [
+      { position: { lat: c.latitude, lng: c.longitude }, color: '#0D47A1', title: c.user_name },
+      { position: { lat: c.party_latitude, lng: c.party_longitude }, icon: { url: iconUrls[c.call_type] }, title: c.party_firstname + ' ' + c.party_lastname }
+    ]
+  }
+
+  var EmployeeDetailPage = {
+    template: '#tpl-page-employee-detail',
+    mixins: [branchMixin],
+    fetch: function (ctx) {
+      var uid = ctx.params.employee
+      return Promise.all([api.employee(uid), api.calls(uid), api.monthly(uid)]).then(function (r) {
+        put('employee', r[0]); put('calls', r[1]); put('monthly', r[2])
+      })
+    },
+    data: function () { return { limit: 20, current: null, chartMode: 'area' } },
+    created: function () { this.current = this.calls[0] || null },
+    computed: {
+      employee: function () { return this.$store.state.view.employee || {} },
+      calls: function () { return this.$store.state.view.calls || [] },
+      shown: function () { return this.calls.slice(0, this.limit) },
+      crumbs: function () {
+        var mod = (this.$route.name || '').split('-')[0]
+        var m = MENUS.filter(function (x) { return x.id === mod })[0]
+        return [{ text: m.title, to: '/' + mod }, { text: this.branch.name, to: '/' + mod + '/' + this.branch.id + '/employees' }, 'Employee Detail']
+      },
+      summary: function () {
+        var s = [null, 0, 0, 0]
+        this.calls.forEach(function (c) { s[c.call_type] += c.call_type === 3 ? 1 : c.seconds })
+        return [null, Math.round(s[1] / 60), Math.round(s[2] / 60), s[3]]
+      },
+      counts: function () { var n = [0, 0, 0, 0]; this.calls.forEach(function (c) { n[c.call_type]++ }); return n },
+      missedRate: function () { return Math.round(this.counts[3] / Math.max(1, this.calls.length) * 100) },
+      frequents: function () {
+        var agg = {}
+        this.calls.forEach(function (c) {
+          if (!agg[c.party_id]) agg[c.party_id] = { party_id: c.party_id, party_firstname: c.party_firstname, party_lastname: c.party_lastname, party_msisdn: c.party_msisdn, counts: 0, seconds: 0 }
+          agg[c.party_id].counts++; agg[c.party_id].seconds += c.seconds
+        })
+        return Object.keys(agg).map(function (k) { var a = agg[k]; a.minutes = Math.round(a.seconds / 60); return a })
+          .sort(function (a, b) { return b.counts - a.counts }).slice(0, 5)
+      },
+      summaryMonthly: function () {
+        var m = this.$store.state.view.monthly || []
+        return {
+          chart: { type: this.chartMode, height: 470 },
+          xAxis: { categories: m.map(function (n) { return moment(n.months).format('MMM YY') }) },
+          yAxis: { min: 0 },
+          tooltip: { shared: true, valueSuffix: ' min' },
+          plotOptions: { area: { stacking: 'normal', fillOpacity: 0.35, marker: { radius: 3 } }, column: { stacking: 'normal', borderWidth: 0 } },
+          series: [
+            { name: 'Incoming', color: '#1d90fb', data: m.map(function (n) { return n.incoming }) },
+            { name: 'Outgoing', color: '#3cb878', data: m.map(function (n) { return n.outgoing }) }
+          ]
+        }
+      },
+      markers: function () { return markersForCall(this.current) }
+    },
+    methods: {
+      callType: callTypeName,
+      setCall: function (item) { this.current = item },
+      onScroll: function (e) {
+        var t = e.target
+        if (t.scrollTop + t.clientHeight >= t.scrollHeight - 4 && this.limit < this.calls.length) this.limit += 15
+      }
+    }
+  }
+
+  var MonitorDashboardPage = {
+    template: '#tpl-page-monitor-dashboard',
+    mixins: [branchMixin],
+    fetch: function (ctx) { return api.attendance(ctx.params.branch, TODAY).then(function (d) { put('attendance', d) }) },
+    data: function () { return { date: TODAY, menu: false } },
+    watch: {
+      date: function (d) { api.attendance(this.$route.params.branch, d).then(function (a) { put('attendance', a) }) }
+    },
+    computed: {
+      a: function () { return this.$store.state.view.attendance || { rows: [], stats: {}, hourly: [], onsite: [], dist: [], divisions: [], weekly: [] } },
+      attendees: function () { return this.a.rows },
+      stats: function () { return this.a.stats },
+      divisions: function () { return this.a.divisions },
+      divisionCount: function () { return this.a.divisions.length },
+      trendText: function () { var d = this.stats.delta || 0; return (d >= 0 ? '▲ ' : '▼ ') + Math.abs(d) + ' pts vs previous day' },
+      dayName: function () { return moment(this.date).format('dddd') },
+      dayDate: function () { return moment(this.date).format('DD MMM YYYY') },
+      chartTrend: function () {
+        var cats = []; for (var h = 6; h <= 19; h++) cats.push((h < 10 ? '0' : '') + h + ':00')
+        return {
+          chart: { height: 300 },
+          xAxis: { categories: cats },
+          yAxis: [{ allowDecimals: false, min: 0 }],
+          tooltip: { shared: true },
+          plotOptions: { column: { borderWidth: 0, borderRadius: 2 }, areaspline: { fillOpacity: 0.18, marker: { radius: 3 } } },
+          series: [
+            { type: 'areaspline', name: 'Personnel on site', color: '#1d90fb', data: this.a.onsite },
+            { type: 'column', name: 'Check-ins per hour', color: '#3cb878', data: this.a.hourly }
+          ]
+        }
+      },
+      chartPie: function () {
+        var d = this.a.dist, total = d.reduce(function (s, x) { return s + x }, 0) || 1
+        var names = ['Before 07:00', '07:00 – 07:30', '07:30 – 08:00 (late)', 'After 08:00 (late)']
+        return {
+          chart: { type: 'pie', height: 280 },
+          tooltip: { pointFormat: '<b>{point.y}</b> personnel ({point.percentage:.0f}%)' },
+          plotOptions: { pie: { innerSize: '62%', borderWidth: 2, borderColor: '#fff', showInLegend: true, dataLabels: { enabled: true, format: '{point.percentage:.0f}%', distance: 10, style: { fontWeight: '500', textOutline: 'none' } } } },
+          legend: { layout: 'vertical', align: 'right', verticalAlign: 'middle', itemMarginBottom: 6 },
+          series: [{ name: 'Personnel', colorByPoint: true, colors: ['#0c65e8', '#3cb878', '#ffc200', '#F35958'],
+            data: names.map(function (n, i) { return { name: n, y: d[i] || 0 } }) }],
+          subtitle: { text: '<b style="font-size:20px">' + total + '</b><br><span style="font-size:11px;color:#7a869a">present</span>', floating: true, verticalAlign: 'middle', x: -78, y: 6, useHTML: false }
+        }
+      },
+      chartWeek: function () {
+        var w = this.a.weekly
+        return {
+          chart: { type: 'column', height: 280 },
+          xAxis: { categories: w.map(function (x) { return x.day }) },
+          yAxis: { min: 0, max: 100, labels: { format: '{value}%' }, plotLines: [{ value: 85, color: '#F35958', dashStyle: 'Dash', width: 1, label: { text: 'Target 85%', style: { color: '#F35958', fontSize: '10px' } } }] },
+          legend: { enabled: false },
+          tooltip: { valueSuffix: '%' },
+          plotOptions: { column: { borderWidth: 0, borderRadius: 3, colorByPoint: false, dataLabels: { enabled: true, format: '{y}%', style: { fontSize: '10px', fontWeight: '500', textOutline: 'none', color: '#4a5568' } } } },
+          series: [{ name: 'Attendance', color: '#1d90fb', data: w.map(function (x, i) { return { y: x.pct, color: i === w.length - 1 ? '#0D47A1' : '#90c4fb' } }) }]
+        }
+      },
+      markers: function () {
+        return this.attendees.map(function (a) {
+          return { id: a.id, position: { lat: a.latitude, lng: a.longitude }, label: ' ', title: a.firstname + ' ' + a.lastname + ' · ' + (a.late ? 'Late' : a.status),
+            color: a.status !== 'Check In' ? '#7e57c2' : (a.late ? '#e07b00' : '#2e9e5b') }
+        })
+      }
+    }
+  }
+
+  var MonitorEmployeesPage = {
+    template: '#tpl-page-monitor-employees',
+    mixins: [branchMixin],
+    fetch: function (ctx) { return api.employees(ctx.params.branch).then(function (d) { put('employees', d) }) },
+    data: function () {
+      return { q: '', division: '', status: 'All', page: 1, perPage: 10, today: moment().format('dddd, DD MMM YYYY'),
+        statuses: ['All', 'Present', 'Late', 'Sick', 'Leave', 'Absent'] }
+    },
+    watch: { q: function () { this.page = 1 }, division: function () { this.page = 1 } },
+    computed: {
+      items: function () { return this.$store.state.view.employees || [] },
+      divisionList: function () { return DIVISIONS },
+      filtered: function () {
+        var f = filterText(this.q), d = this.division, s = this.status
+        return this.items.filter(function (e) { return (!d || e.division === d) && (s === 'All' || e.today === s) && f(e.fullname, e.nrp, e.email, e.phone, e.position) })
+      },
+      paged: function () { return this.filtered.slice((this.page - 1) * this.perPage, this.page * this.perPage) },
+      statusStats: function () {
+        var c = {}; this.items.forEach(function (e) { c[e.today] = (c[e.today] || 0) + 1 })
+        var n = this.items.length || 1
+        return [
+          { icon: 'verified_user', color: '#2e9e5b', label: 'Present', value: (c.Present || 0) + (c.Late || 0), sub: (c.Late || 0) + ' arrived late' },
+          { icon: 'local_hospital', color: '#e07b00', label: 'Sick', value: c.Sick || 0, sub: Math.round((c.Sick || 0) / n * 100) + '% of personnel' },
+          { icon: 'beach_access', color: '#7e57c2', label: 'Leave', value: c.Leave || 0, sub: Math.round((c.Leave || 0) / n * 100) + '% of personnel' },
+          { icon: 'person_outline', color: '#e04848', label: 'Absent / not yet', value: (c.Absent || 0) + (c['Not yet'] || 0), sub: (c['Not yet'] || 0) + ' not checked in yet' }
+        ]
+      }
+    }
+  }
+
+  var MonitorNotificationsPage = {
+    template: '#tpl-page-monitor-notifications',
+    mixins: [branchMixin],
+    fetch: function (ctx) { return store.dispatch('notification/asks', { branch: ctx.params.branch }) },
+    data: function () {
+      return { cat: 'All', categories: ['All', 'Sick', 'Leave', 'Permit', 'Duty Travel'],
+        dialog: false, mode: 'approve', selected: null, message: '', snackbar: false, snackText: '', snackColor: 'success' }
+    },
+    computed: {
+      items: function () { return this.$store.getters['notification/gets'] },
+      history: function () { return this.$store.getters['notification/history'] },
+      filtered: function () { var c = this.cat; return this.items.filter(function (n) { return c === 'All' || n.category === c }) },
+      approvedCount: function () { return this.history.filter(function (h) { return h.decision === 'Approved' }).length }
+    },
+    methods: {
+      countOf: function (c) { return this.items.filter(function (n) { return n.category === c }).length },
+      open: function (p) { this.mode = p.mode; this.selected = p.item; this.message = ''; this.dialog = true },
+      confirm: function () {
+        var s = this.selected, rejected = this.mode === 'reject'
+        this.$store.dispatch('notification/resolve', { branch: this.$route.params.branch, item: s, decision: rejected ? 'Rejected' : 'Approved', note: this.message })
+        this.dialog = false
+        this.snackColor = rejected ? 'error' : 'success'
+        this.snackText = s.category + ' request from ' + s.name + (rejected ? ' rejected' : ' approved')
+        this.snackbar = true
+      }
+    }
+  }
+
+  var RemoteDashboardPage = {
+    template: '#tpl-page-remote-dashboard',
+    mixins: [branchMixin],
+    fetch: function (ctx) {
+      return Promise.all([api.attendance(ctx.params.branch, TODAY), api.rooms(ctx.params.branch)]).then(function (r) {
+        put('attendance', r[0]); put('rooms', r[1])
+      })
+    },
+    data: function () {
+      var bid = this.$route.params.branch
+      var emps = branchEmployees(bid)
+      return {
+        isFile: location.protocol === 'file:',
+        rooms: JSON.parse(JSON.stringify(this.$store.state.view.rooms || [])),
+        cameras: cameras(bid),
+        attendees: (this.$store.state.view.attendance ? this.$store.state.view.attendance.rows : []).slice(0, 12).map(function (a) {
+          var e = EMP_BY_ID[a.id]; return Object.assign({}, a, { position: e.position })
+        }),
+        sensorsOnline: 40 + emps.length % 9,
+        jitter: 1
+      }
+    },
+    created: function () {
+      var vm = this
+      this._t = setInterval(function () { vm.jitter = 0.97 + Math.random() * 0.06 }, 3000)
+    },
+    beforeDestroy: function () { clearInterval(this._t) },
+    watch: {
+      rooms: { deep: true, handler: function (v) { ROOM_CACHE[this.$route.params.branch] = JSON.parse(JSON.stringify(v)) } }
+    },
+    computed: {
+      power: function () { var vm = this; return Math.round(this.rooms.reduce(function (s, r) { return s + vm.roomPower(r) }, 0) * this.jitter) },
+      acOn: function () { return this.rooms.filter(function (r) { return r.ac }).length },
+      avgTemp: function () { return (this.rooms.reduce(function (s, r) { return s + (r.ac ? r.temp : r.temp + 4) }, 0) / Math.max(1, this.rooms.length)).toFixed(1) },
+      avgHum: function () { return Math.round(this.rooms.reduce(function (s, r) { return s + r.hum }, 0) / Math.max(1, this.rooms.length)) },
+      devicesOn: function () { return this.rooms.reduce(function (s, r) { return s + (r.light ? 1 : 0) + (r.ac ? 1 : 0) + (r.elec ? 1 : 0) }, 0) },
+      devicesTotal: function () { return this.rooms.length * 3 },
+      camerasOnline: function () { return this.cameras.filter(function (c) { return c.online }).length },
+      accessOn: function () { return this.attendees.filter(function (a) { return a.remote }).length },
+      energyChart: function () {
+        var r = rng(hash('energy' + this.$route.params.branch)), cur = moment().hours(), today = [], yest = [], cats = []
+        var base = this.power / 1000 || 5
+        for (var h = 0; h < 24; h++) {
+          var f = h < 6 ? 0.35 : (h < 8 ? 0.6 : (h < 17 ? 1 : (h < 21 ? 0.7 : 0.45)))
+          cats.push((h < 10 ? '0' : '') + h + ':00')
+          yest.push(Math.round(base * f * (0.9 + r() * 0.2) * 10) / 10)
+          today.push(h <= cur ? Math.round((h === cur ? base : base * f * (0.9 + r() * 0.2)) * 10) / 10 : null)
+        }
+        return {
+          chart: { type: 'areaspline', height: 380 },
+          xAxis: { categories: cats, tickInterval: 2, plotLines: [{ value: cur, color: '#F35958', width: 1, dashStyle: 'Dot', label: { text: 'Now', style: { color: '#F35958', fontSize: '10px' } } }] },
+          yAxis: { min: 0, labels: { format: '{value} kW' } },
+          tooltip: { shared: true, valueSuffix: ' kW' },
+          plotOptions: { areaspline: { fillOpacity: 0.15, marker: { enabled: false } } },
+          series: [
+            { name: 'Today', color: '#1d90fb', data: today },
+            { name: 'Yesterday', color: '#a0aabb', dashStyle: 'Dash', fillOpacity: 0, data: yest }
+          ]
+        }
+      }
+    },
+    methods: {
+      roomPower: function (r) { return (r.light ? r.lightW : 0) + (r.ac ? r.acW : 0) + (r.elec ? r.elecW : 0) },
+      allOff: function () { this.rooms.forEach(function (r) { r.light = r.ac = r.elec = false }) },
+      allOn: function () { this.rooms.forEach(function (r) { r.light = r.ac = r.elec = true }) }
+    }
+  }
+
+  var RemoteMapPage = {
+    layout: 'blank',
+    template: '#tpl-page-remote-map',
+    data: function () {
+      return { vessels: JSON.parse(JSON.stringify(FLEET)), selected: null, center: null, drawer: true, mini: false }
+    },
+    created: function () {
+      var vm = this
+      this._t = setInterval(function () {
+        vm.vessels.forEach(function (v) {
+          if (v.speed < 1) return
+          var d = v.speed * 0.0006, rad = v.heading * Math.PI / 180
+          v.lat += Math.cos(rad) * d; v.lng += Math.sin(rad) * d
+          v.heading = (v.heading + (Math.random() - 0.5) * 4 + 360) % 360
+          v.speed = Math.max(6, Math.min(22, v.speed + (Math.random() - 0.5) * 0.6))
+        })
+      }, 2000)
+    },
+    beforeDestroy: function () { clearInterval(this._t) },
+    computed: {
+      markers: function () {
+        var sel = this.selected, vm = this
+        return this.vessels.map(function (v, i) {
+          return { id: v.id, position: { lat: v.lat, lng: v.lng }, label: String(i + 1), title: v.name + ' · ' + v.status, color: vm.statusColor(v.status), selected: sel === v.id, v: v }
+        })
+      }
+    },
+    methods: {
+      countStatus: function (s) { return this.vessels.filter(function (v) { return v.status === s }).length },
+      statusColor: function (s) { return { Patrol: '#2e9e5b', Transit: '#1d90fb', Anchored: '#e07b00', Docked: '#7a869a' }[s] || '#EA4335' },
+      select: function (v) { var x = v.v || v; this.selected = x.id; this.center = { lat: x.lat, lng: x.lng } }
+    }
+  }
+
+  /* ---------------- Layouts ---------------- */
+  var layouts = {
+    blank: { template: '#tpl-layout-blank' },
+    'default': { template: '#tpl-layout-default' },
+    titleToolbar: { template: '#tpl-layout-title' }
+  }
+
+  /* ==================================================================
+     ROUTER (hash mode so it works when opened directly from disk)
+     ================================================================== */
+  var router = new VueRouter({
+    mode: 'hash',
+    scrollBehavior: function () { return { x: 0, y: 0 } },
+    routes: [
+      { path: '/login', name: 'login', component: LoginPage },
+      { path: '/logout', name: 'logout', beforeEnter: function (to, from, next) { store.dispatch('authuser/logout'); next('/login') } },
+      { path: '/', name: 'index', component: IndexPage },
+      { path: '/identifier', name: 'identifier', component: BranchesPage },
+      { path: '/identifier/:branch/employees', name: 'identifier-branch-employees', component: IdentifierEmployeesPage },
+      { path: '/identifier/:branch/employees/:employee', name: 'identifier-branch-employees-employee', component: EmployeeDetailPage },
+      { path: '/identifier/:branch/calls', name: 'identifier-branch-calls', component: IdentifierCallsPage },
+      { path: '/monitor', name: 'monitor', component: BranchesPage },
+      { path: '/monitor/:branch/dashboard', name: 'monitor-branch-dashboard', component: MonitorDashboardPage },
+      { path: '/monitor/:branch/employees', name: 'monitor-branch-employees', component: MonitorEmployeesPage },
+      { path: '/monitor/:branch/employees/:employee', name: 'monitor-branch-employees-employee', component: EmployeeDetailPage },
+      { path: '/monitor/:branch/notifications', name: 'monitor-branch-notifications', component: MonitorNotificationsPage },
+      { path: '/remote', name: 'remote', component: BranchesPage },
+      { path: '/remote/map', name: 'remote-map', component: RemoteMapPage },
+      { path: '/remote/:branch/dashboard', name: 'remote-branch-dashboard', component: RemoteDashboardPage },
+      { path: '*', redirect: '/' }
+    ]
+  })
+
+  router.beforeEach(function (to, from, next) {
+    var logged = store.getters['authuser/logged']
+    if (to.name === 'logout') return next()
+    if (!logged && to.name !== 'login') return next('/login')
+    if (logged && to.name === 'login') return next('/')
+    next()
+  })
+
+  var loading = new Vue({
+    data: { percent: 0, show: false },
+    methods: {
+      start: function () {
+        var vm = this
+        this.show = true; this.percent = 10
+        clearInterval(this._t)
+        this._t = setInterval(function () { vm.percent = Math.min(90, vm.percent + 15) }, 80)
+      },
+      finish: function () {
+        var vm = this
+        clearInterval(this._t); this.percent = 100
+        setTimeout(function () { vm.show = false; vm.percent = 0 }, 400)
+      }
+    }
+  })
+
+  router.beforeResolve(function (to, from, next) {
+    var comps = router.getMatchedComponents(to)
+    var fetches = comps.filter(function (c) { return typeof c.fetch === 'function' })
+    if (!fetches.length) return next()
+    loading.start()
+    Promise.all(fetches.map(function (c) { return c.fetch({ store: store, params: to.params, route: to }) }))
+      .then(function () { loading.finish(); next() })
+      .catch(function (e) { console.error(e); loading.finish(); next() })
+  })
+
+  new Vue({
+    el: '#app',
+    store: store,
+    router: router,
+    components: layouts,
+    template:
+      '<div id="__nuxt">' +
+        '<div class="nuxt-progress" :style="{ width: loading.percent + \'%\', opacity: loading.show ? 1 : 0 }"></div>' +
+        '<component v-if="layout" :is="layout"></component>' +
+      '</div>',
+    data: { loading: loading },
+    computed: {
+      layout: function () {
+        var m = this.$route.matched[0]
+        if (!m) return null
+        var c = m.components && m.components['default']
+        return (c && c.layout) || 'default'
+      }
+    }
+  })
+  })()
+  </script>
+</body>
+</html>

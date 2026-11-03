@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Web Remote Task</title>
+    <link rel="icon" href="assets/images/favicon.png">
+
+    <!-- Bootstrap -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="assets/css/nprogress.css" rel="stylesheet">
+    <!-- Animate.css (login page) -->
+    <link href="assets/css/animate.min.css" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="assets/css/daterangepicker.css" rel="stylesheet">
+    <!-- Custom Theme Style (Gentelella) -->
+    <link href="assets/css/custom.min.css" rel="stylesheet">
+
+    <style>
+        /* ---------- Design tokens (kept in line with the Gentelella theme) ---------- */
+        /* navy #2A3F54 · text #5A6A7A · muted #8A99A8 · border #E6E9ED · red #ED1C24
+           green #26B99A · amber #F0AD4E · danger #E74C3C · blue #1F6FB2           */
+
+        .rt-view { display: none; }
+        .rt-view.active { display: block; }
+        body.nav-md, body.nav-sm { color: #5A6A7A; }
+        .right_col { padding: 20px 24px 10px !important; }
+        .right_col > .page { clear: both; }
+
+        /* ---------- Page header ---------- */
+        .rt-page-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin: 0 0 20px; }
+        .rt-page-header > div:first-child { flex: 1 1 320px; min-width: 0; text-align: left; }
+        .rt-page-header h3 { margin: 0; padding: 0; font-size: 22px; font-weight: 500; color: #2A3F54; text-transform: none; letter-spacing: normal; text-shadow: none; white-space: normal; }
+        .rt-page-header h3 .fa { color: #ED1C24; margin-right: 6px; }
+        .rt-page-header .sub { color: #8A99A8; font-size: 13px; margin-top: 4px; }
+        .rt-page-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .rt-meta { font-size: 12px; color: #8A99A8; }
+        .rt-meta b { color: #5A6A7A; font-weight: 600; }
+        .rt-live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #26B99A; margin-right: 4px; box-shadow: 0 0 0 3px rgba(38,185,154,.2); }
+
+        /* ---------- Buttons ---------- */
+        .btn-rt { background: #2A3F54; border-color: #2A3F54; color: #fff; }
+        .btn-rt:hover, .btn-rt:focus { background: #1F3042; border-color: #1F3042; color: #fff; }
+        .btn-rt-outline { background: #fff; border-color: #D5DBE1; color: #5A6A7A; }
+        .btn-rt-outline:hover { background: #F2F5F7; color: #2A3F54; border-color: #C5CDD5; box-shadow: none; }
+        .btn .fa { margin-right: 4px; }
+        .btn-group .btn-rt-outline.active { background: #2A3F54; color: #fff; border-color: #2A3F54; box-shadow: none; }
+
+        /* ---------- KPI cards ---------- */
+        .rt-kpis { display: flex; flex-wrap: wrap; margin: 0 -8px 4px; }
+        .rt-kpi { flex: 1 1 150px; margin: 0 8px 16px; background: #fff; border: 1px solid #E6E9ED; border-radius: 4px; padding: 14px 16px; position: relative; min-height: 104px; }
+        .rt-kpi .k { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: uppercase; font-size: 11px; letter-spacing: .5px; color: #8A99A8; font-weight: 600; padding-right: 44px; }
+        .rt-kpi .v { font-size: 26px; font-weight: 600; color: #2A3F54; line-height: 1.2; margin-top: 8px; }
+        .rt-kpi .v small { font-size: 13px; color: #8A99A8; font-weight: 400; margin-left: 3px; }
+        .rt-kpi .f { font-size: 12px; margin-top: 6px; color: #8A99A8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .rt-kpi .ic { position: absolute; right: 14px; top: 14px; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+        .tone-red   { background: #FDECEC; color: #ED1C24; }
+        .tone-blue  { background: #E8F0FB; color: #1F6FB2; }
+        .tone-green { background: #E6F7F3; color: #1E9C81; }
+        .tone-amber { background: #FDF4E6; color: #D48A1A; }
+        .tone-navy  { background: #E9EDF2; color: #2A3F54; }
+        .txt-good { color: #1E9C81 !important; }
+        .txt-warn { color: #D48A1A !important; }
+        .txt-bad  { color: #E74C3C !important; }
+
+        /* ---------- Panels ---------- */
+        .x_panel { border-radius: 4px; border-color: #E6E9ED; padding: 12px 18px 14px; margin-bottom: 20px; }
+        .x_title { border-bottom: 1px solid #EEF1F4; padding: 1px 0 8px; margin-bottom: 12px; }
+        .x_title h2 { font-size: 16px; color: #2A3F54; font-weight: 500; }
+        .x_title h2 small { font-size: 12px; color: #8A99A8; margin-left: 6px; }
+        .x_title h2 .fa { color: #8A99A8; margin-right: 4px; }
+        .panel_toolbox > li { margin-left: 6px; line-height: 30px; }
+        .panel_toolbox > li > a { color: #A9B4BF; }
+
+        /* ---------- Badges / status ---------- */
+        .rt-badge { display: inline-block; padding: 3px 9px; border-radius: 10px; font-size: 11px; font-weight: 600; line-height: 1.4; white-space: nowrap; vertical-align: middle; }
+        .rt-badge .fa { margin-right: 3px; }
+        .rt-badge-4g { background: #FDECEC; color: #ED1C24; }
+        .rt-badge-3g { background: #E8F0FB; color: #1F6FB2; }
+        .rt-badge-success { background: #E6F7F3; color: #1E9C81; }
+        .rt-badge-warning { background: #FDF4E6; color: #D48A1A; }
+        .rt-badge-danger  { background: #FDECEC; color: #E74C3C; }
+        .rt-badge-info    { background: #E8F0FB; color: #1F6FB2; }
+        .rt-badge-muted   { background: #F2F5F7; color: #6B7B8A; }
+        .rt-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+
+        /* ---------- Filter bar ---------- */
+        .rt-filter { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+        .rt-field { display: flex; flex-direction: column; min-width: 140px; }
+        .rt-field.wide { min-width: 220px; }
+        .rt-field label, .rt-label { font-size: 11px; text-transform: uppercase; letter-spacing: .4px; color: #8A99A8; margin-bottom: 4px; font-weight: 600; }
+        .rt-field-group { display: flex; gap: 12px; }
+        .rt-filter .rt-actions { margin-left: auto; display: flex; gap: 8px; }
+        .rt-filter .form-control, .rt-toolbar .form-control { height: 34px; box-shadow: none; border-color: #D5DBE1; }
+
+        /* ---------- Toolbar (tables) ---------- */
+        .rt-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .rt-toolbar .rt-search { position: relative; }
+        .rt-toolbar .rt-search .fa { position: absolute; left: 10px; top: 10px; color: #A9B4BF; }
+        .rt-toolbar .rt-search input { padding-left: 30px; width: 240px; }
+        .rt-toolbar .rt-spacer { flex: 1; }
+        .rt-count { font-size: 12px; color: #8A99A8; }
+
+        /* ---------- Site block + chart cards ---------- */
+        .rt-site .x_title h2 { max-width: 60%; }
+        .rt-site-meta { display: flex; gap: 6px; align-items: center; }
+        .rt-chart-card { border: 1px solid #E6E9ED; border-radius: 4px; background: #fff; margin-bottom: 6px; }
+        .rt-chart-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 10px 12px; border-bottom: 1px solid #F0F2F5; }
+        .rt-chart-title { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #2A3F54; font-size: 13px; }
+        .rt-chart-controls { display: flex; gap: 6px; width: 100%; }
+        .rt-chart-controls .form-control { flex: 1 1 0; width: auto; min-width: 0; height: 28px; padding: 3px 8px; font-size: 12px; box-shadow: none; border-color: #D5DBE1; }
+        .rt-chart { height: 240px; position: relative; }
+        .rt-chart-loading { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: #A9B4BF; font-size: 13px; }
+        .rt-chart-loading .fa { margin-right: 6px; }
+        .rt-stats { display: flex; border-top: 1px solid #F0F2F5; min-height: 50px; }
+        .rt-stat { flex: 1; padding: 8px 12px; border-right: 1px solid #F0F2F5; min-width: 0; }
+        .rt-stat:last-child { border-right: 0; }
+        .rt-stat .k { font-size: 10px; text-transform: uppercase; letter-spacing: .4px; color: #8A99A8; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .rt-stat .v { font-size: 15px; font-weight: 600; color: #2A3F54; white-space: nowrap; }
+        .rt-stat .v small { font-size: 11px; color: #8A99A8; font-weight: 400; }
+        .rt-bar { height: 4px; background: #EEF1F4; border-radius: 2px; margin-top: 5px; overflow: hidden; }
+        .rt-bar > span { display: block; height: 100%; border-radius: 2px; }
+
+        /* ---------- Tables ---------- */
+        .table.jambo_table { margin-bottom: 0; }
+        .table > tbody > tr > td { vertical-align: middle; padding: 10px 8px; }
+        .table > thead > tr > th { padding: 10px 8px; font-weight: 600; font-size: 12px; white-space: nowrap; }
+        .rt-cell-title { font-weight: 600; color: #2A3F54; }
+        .rt-nowrap { white-space: nowrap; }
+        .rt-cell-sub { font-size: 11px; color: #8A99A8; }
+        .rt-mini-progress { width: 110px; }
+        .rt-mini-progress .rt-bar { height: 6px; margin-top: 3px; }
+        .rt-signal { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; vertical-align: middle; margin-right: 6px; }
+        .rt-signal span { width: 4px; background: #D5DBE1; display: block; border-radius: 1px; }
+        .rt-signal span:nth-child(1) { height: 25%; } .rt-signal span:nth-child(2) { height: 50%; }
+        .rt-signal span:nth-child(3) { height: 75%; } .rt-signal span:nth-child(4) { height: 100%; }
+        .rt-signal span.on { background: #26B99A; }
+        .rt-actions-cell { white-space: nowrap; text-align: right; }
+        .rt-actions-cell .btn { margin-left: 4px; margin-bottom: 0; }
+        .rt-empty { padding: 50px 0; color: #A9B4BF; text-align: center; }
+        .rt-empty .fa { font-size: 36px; display: block; margin-bottom: 10px; }
+
+        /* ---------- Lists ---------- */
+        .rt-list { list-style: none; margin: 0; padding: 0; }
+        .rt-list > li { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid #F0F2F5; }
+        .rt-list > li:last-child { border-bottom: 0; }
+        .rt-list .ic { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .rt-list .body { flex: 1; min-width: 0; }
+        .rt-list .t { font-weight: 600; color: #2A3F54; font-size: 13px; }
+        .rt-list .d { font-size: 12px; color: #6B7B8A; margin-top: 2px; }
+        .rt-list .time { font-size: 11px; color: #A9B4BF; white-space: nowrap; }
+        .rt-list li.unread { background: #FBFCFD; }
+        .rt-list li.unread .t:after { content: ''; display: inline-block; width: 7px; height: 7px; background: #ED1C24; border-radius: 50%; margin-left: 6px; vertical-align: middle; }
+        .rt-list.clickable > li { cursor: pointer; padding-left: 8px; padding-right: 8px; }
+        .rt-list.clickable > li:hover { background: #F7F9FA; }
+
+        /* ---------- Info grid (modals / profile) ---------- */
+        .rt-info { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; margin-bottom: 16px; }
+        .rt-info .k { font-size: 11px; text-transform: uppercase; letter-spacing: .4px; color: #8A99A8; font-weight: 600; }
+        .rt-info .v { font-size: 13px; color: #2A3F54; font-weight: 500; word-break: break-word; }
+        .rt-section-title { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: #8A99A8; font-weight: 600; margin: 4px 0 10px; }
+        .modal-header { border-bottom-color: #EEF1F4; }
+        .modal-title { color: #2A3F54; font-weight: 500; }
+        .modal-footer { border-top-color: #EEF1F4; }
+        .modal .form-group label { font-size: 11px; text-transform: uppercase; letter-spacing: .4px; color: #8A99A8; font-weight: 600; }
+
+        /* ---------- Profile ---------- */
+        .rt-profile-card { text-align: center; padding: 10px 0 4px; }
+        .rt-profile-card img { width: 96px; height: 96px; border-radius: 50%; border: 4px solid #F2F5F7; }
+        .rt-profile-card h4 { margin: 12px 0 2px; color: #2A3F54; font-weight: 600; }
+        .rt-profile-stats { display: flex; border-top: 1px solid #F0F2F5; margin-top: 16px; }
+        .rt-profile-stats div { flex: 1; padding: 12px 0 2px; }
+        .rt-profile-stats b { display: block; font-size: 18px; color: #2A3F54; }
+        .rt-profile-stats span { font-size: 11px; color: #8A99A8; text-transform: uppercase; }
+
+        /* ---------- Toast ---------- */
+        #rt-toast { position: fixed; top: 70px; right: 24px; z-index: 2000; }
+        .rt-toast-item { background: #2A3F54; color: #fff; padding: 10px 16px; border-radius: 4px; margin-bottom: 8px; box-shadow: 0 4px 14px rgba(0,0,0,.15); font-size: 13px; min-width: 260px; }
+        .rt-toast-item .fa { margin-right: 6px; color: #26B99A; }
+
+        /* ---------- Navbar notifications ---------- */
+        .msg_list li a .message { white-space: normal; }
+        .msg_list .rt-msg-title { font-weight: 600; }
+
+        /* ---------- Login ---------- */
+        .login_content h1 .fa { color: #ED1C24; }
+        .login-error { display: none; margin-bottom: 15px; text-align: left; }
+        .login-hint { color: #73879C; font-size: 12px; margin-top: 10px; }
+        .login-tagline { color: #8A99A8; font-size: 12px; margin-top: -18px; margin-bottom: 22px; }
+
+        footer { color: #8A99A8; font-size: 12px; }
+
+        @media (max-width: 991px) {
+            .rt-site .x_title h2 { max-width: 100%; float: none; }
+            .rt-site .panel_toolbox { float: none; }
+            .rt-filter .rt-actions { margin-left: 0; }
+            .rt-info { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="login">
+
+<!-- ============================================================ -->
+<!-- LOGIN VIEW                                                   -->
+<!-- ============================================================ -->
+<div id="login-view" class="rt-view">
+    <div class="login_wrapper">
+        <div class="animate form login_form">
+            <section class="login_content">
+                <form id="login-form" autocomplete="off">
+                    <h1>Login Form</h1>
+                    <p class="login-tagline">Remote Network Performance Monitoring</p>
+                    <div class="alert alert-danger login-error" id="login-error">
+                        <i class="fa fa-exclamation-circle"></i> Invalid username or password.
+                    </div>
+                    <div>
+                        <input type="text" class="form-control" id="login-username" placeholder="Username" value="admin" required />
+                    </div>
+                    <div>
+                        <input type="password" class="form-control" id="login-password" placeholder="Password" value="admin123" required />
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-default submit">Log in</button>
+                        <a class="reset_pass" href="javascript:;">Lost your password?</a>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <div class="separator">
+                        <p class="login-hint">Demo account is prefilled &mdash; just click <strong>Log in</strong>.</p>
+                        <div class="clearfix"></div>
+                        <br />
+                        <div>
+                            <h1><i class="fa fa-chevron-circle-right"></i> Remote Task</h1>
+                            <p>&copy;2017 All Rights Reserved. Web Remote Task</p>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- APPLICATION VIEW                                             -->
+<!-- ============================================================ -->
+<div id="app-view" class="rt-view">
+  <div class="container body">
+    <div class="main_container">
+      <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+          <div class="navbar nav_title" style="border: 0;">
+            <a href="#dashboard" class="site_title">
+                <i class="fa  fa-chevron-circle-right"></i>
+                <span> Remote Task</span>
+            </a>
+          </div>
+
+          <div class="clearfix"></div>
+
+          <!-- menu profile quick info -->
+          <div class="profile clearfix">
+            <div class="profile_pic">
+              <img src="assets/images/img.jpg" alt="" class="img-circle profile_img">
+            </div>
+            <div class="profile_info">
+              <span>Welcome,</span>
+              <h2>Administrator</h2>
+            </div>
+          </div>
+          <!-- /menu profile quick info -->
+
+          <br />
+
+          <!-- sidebar menu -->
+          <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+            <div class="menu_section">
+              <h3>General</h3>
+              <ul class="nav side-menu">
+                <li data-page="dashboard"><a href="#dashboard"><i class="fa fa-dashboard"></i> Dashboard </a></li>
+                <li data-page="performance"><a href="#performance"><i class="fa fa-area-chart"></i> Performance </a></li>
+                <li data-page="box"><a href="#box"><i class="fa fa-cube"></i> Box </a></li>
+                <li data-page="task"><a href="#task"><i class="fa fa-signal"></i> Task </a></li>
+              </ul>
+            </div>
+            <div class="menu_section">
+              <h3>System</h3>
+              <ul class="nav side-menu">
+                <li data-page="notifications"><a href="#notifications"><i class="fa fa-bell"></i> Notifications <span class="label label-danger pull-right" id="side-notif-count"></span></a></li>
+                <li data-page="profile"><a href="#profile"><i class="fa fa-user"></i> Profile </a></li>
+              </ul>
+            </div>
+          </div>
+          <!-- /sidebar menu -->
+
+          <!-- menu footer buttons -->
+          <div class="sidebar-footer hidden-small">
+            <a data-toggle="tooltip" data-placement="top" title="Profile" href="#profile"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a>
+            <a data-toggle="tooltip" data-placement="top" title="FullScreen" id="fullscreen-btn"><span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span></a>
+            <a data-toggle="tooltip" data-placement="top" title="Notifications" href="#notifications"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span></a>
+            <a data-toggle="tooltip" data-placement="top" title="Logout" class="logout-link"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
+          </div>
+          <!-- /menu footer buttons -->
+        </div>
+      </div>
+
+      <!-- top navigation -->
+      <div class="top_nav">
+        <div class="nav_menu">
+           <nav>
+              <div class="nav toggle">
+                 <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+              </div>
+              <ul class="nav navbar-nav navbar-right">
+                 <li class="">
+                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <img src="assets/images/img.jpg" alt="">Administrator
+                    <span class="fa fa-angle-down"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-usermenu pull-right">
+                      <li><a href="#profile"><i class="fa fa-user pull-right"></i> Profile</a></li>
+                      <li><a href="#notifications"><i class="fa fa-bell pull-right"></i> Notifications</a></li>
+                      <li><a href="javascript:;" class="logout-link"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                    </ul>
+                 </li>
+                 <li role="presentation" class="dropdown">
+                    <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-envelope-o"></i>
+                    <span class="badge bg-green" id="notif-count">0</span>
+                    </a>
+                    <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu"></ul>
+                 </li>
+              </ul>
+           </nav>
+        </div>
+      </div>
+      <!-- /top navigation -->
+
+      <!-- page content -->
+      <div class="right_col" role="main">
+
+        <!-- ================= PAGE: DASHBOARD ================= -->
+        <div class="page" id="page-dashboard" style="display:none">
+          <div class="rt-page-header">
+            <div>
+              <h3><i class="fa fa-dashboard"></i> Dashboard</h3>
+              <div class="sub">Nationwide network quality overview &middot; SpeedTest &middot; Telkomsel &middot; today</div>
+            </div>
+            <div class="rt-page-actions">
+              <span class="rt-meta"><span class="rt-live"></span> Live &middot; last sync <b class="sync-time"></b></span>
+              <a href="#performance" class="btn btn-rt btn-sm"><i class="fa fa-area-chart"></i> Open Performance</a>
+            </div>
+          </div>
+
+          <div class="rt-kpis" id="dashboard-kpis"></div>
+
+          <div class="row">
+            <div class="col-md-8 col-sm-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2><i class="fa fa-line-chart"></i> 24h Download Trend <small>average of all box sites</small></h2>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content"><div id="dashboard_trend" style="height: 300px;"></div></div>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2><i class="fa fa-bar-chart"></i> Operator Benchmark <small>avg download</small></h2>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content"><div id="dashboard_operator" style="height: 300px;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8 col-sm-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2><i class="fa fa-map-marker"></i> Regional Performance <small>4G &middot; Telkomsel &middot; today</small></h2>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <div class="table-responsive">
+                    <table class="table table-striped jambo_table">
+                      <thead><tr class="headings">
+                        <th>Region</th><th>Box Sites</th><th>Online</th><th>Avg Download</th><th>Avg Upload</th><th>Avg Latency</th><th>Quality Score</th>
+                      </tr></thead>
+                      <tbody id="dashboard-regions"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2><i class="fa fa-bell"></i> Recent Alerts</h2>
+                  <ul class="nav navbar-right panel_toolbox"><li><a href="#notifications" class="rt-meta">View all <i class="fa fa-angle-right"></i></a></li></ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content"><ul class="rt-list clickable" id="dashboard-alerts"></ul></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 col-sm-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2><i class="fa fa-tasks"></i> Latest Tasks</h2>
+                  <ul class="nav navbar-right panel_toolbox"><li><a href="#task" class="rt-meta">View all <i class="fa fa-angle-right"></i></a></li></ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <div class="table-responsive">
+                    <table class="table table-striped jambo_table">
+                      <thead><tr class="headings"><th>Task</th><th>Box</th><th>Test</th><th>Result</th><th>Status</th></tr></thead>
+                      <tbody id="dashboard-tasks"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2><i class="fa fa-heartbeat"></i> Box Health <small>data quota &amp; heartbeat</small></h2>
+                  <ul class="nav navbar-right panel_toolbox"><li><a href="#box" class="rt-meta">View all <i class="fa fa-angle-right"></i></a></li></ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <div class="table-responsive">
+                    <table class="table table-striped jambo_table">
+                      <thead><tr class="headings"><th>Box</th><th>Data Quota</th><th>Battery</th><th>Heartbeat</th><th>Status</th></tr></thead>
+                      <tbody id="dashboard-health"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PAGE: PERFORMANCE ================= -->
+        <div class="page" id="page-performance" style="display:none">
+          <div class="rt-page-header">
+            <div>
+              <h3><i class="fa fa-area-chart"></i> Network Performance</h3>
+              <div class="sub" id="perf-subtitle"></div>
+            </div>
+            <div class="rt-page-actions">
+              <span class="rt-meta"><span class="rt-live"></span> Last sync <b class="sync-time"></b></span>
+              <button type="button" class="btn btn-rt-outline btn-sm" id="perf-refresh"><i class="fa fa-refresh"></i> Refresh</button>
+            </div>
+          </div>
+
+          <!-- Filter Box -->
+          <div class="x_panel">
+            <form class="rt-filter" onsubmit="return false;">
+              <div class="rt-field wide">
+                <label for="regional_filter">View Graph By</label>
+                <select class="form-control" id="regional_filter">
+                  <option value="nationwide">Nationwide</option>
+                </select>
+              </div>
+              <div class="rt-field">
+                <label for="period_filter">Period</label>
+                <select class="form-control" id="period_filter">
+                  <option value="hourly">Hourly</option>
+                  <option value="daily">Daily</option>
+                </select>
+              </div>
+              <div class="rt-field-group" id="daily-filter">
+                <div class="rt-field">
+                  <label for="month_filter">Month</label>
+                  <select class="form-control" id="month_filter">
+                    <option value="01">January</option><option value="02">February</option><option value="03">March</option>
+                    <option value="04">April</option><option value="05">May</option><option value="06">June</option>
+                    <option value="07">July</option><option value="08">August</option><option value="09">September</option>
+                    <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                  </select>
+                </div>
+                <div class="rt-field" style="min-width:100px">
+                  <label for="year_filter">Year</label>
+                  <select id="year_filter" class="form-control"></select>
+                </div>
+              </div>
+              <div class="rt-field-group" id="hourly-filter">
+                <div class="rt-field">
+                  <label for="date_filter">Date</label>
+                  <input type="text" class="form-control" id="date_filter" />
+                </div>
+              </div>
+              <div class="rt-field">
+                <label for="tester_filter">Tester</label>
+                <select class="form-control" id="tester_filter">
+                  <option value="speedtest">SpeedTest</option>
+                  <option value="open_signal">OpenSignal</option>
+                  <option value="itest">iTest</option>
+                  <option value="equalonecrowd">EQualOneCrowd</option>
+                </select>
+              </div>
+              <div class="rt-actions">
+                <button type="button" id="reset_button" class="btn btn-rt-outline"><i class="fa fa-undo"></i> Reset</button>
+                <button type="button" id="filter_button" class="btn btn-rt"><i class="fa fa-filter"></i> Submit</button>
+              </div>
+            </form>
+          </div>
+          <!-- /Filter Box -->
+
+          <div class="rt-kpis" id="perf-kpis"></div>
+          <div id="boxSiteContainer"></div>
+        </div>
+
+        <!-- ================= PAGE: BOX ================= -->
+        <div class="page" id="page-box" style="display:none">
+          <div class="rt-page-header">
+            <div>
+              <h3><i class="fa fa-cube"></i> Box Site</h3>
+              <div class="sub">Registered remote measurement boxes, device health and SIM status</div>
+            </div>
+            <div class="rt-page-actions">
+              <span class="rt-meta"><span class="rt-live"></span> Last heartbeat sync <b class="sync-time"></b></span>
+            </div>
+          </div>
+
+          <div class="rt-kpis" id="box-kpis"></div>
+
+          <div class="x_panel">
+            <div class="x_title">
+              <h2><i class="fa fa-list"></i> Box Inventory</h2>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <div class="rt-toolbar">
+                <div class="rt-search"><i class="fa fa-search"></i><input type="text" class="form-control" id="box-search" placeholder="Search box code, site, IMEI..."></div>
+                <select class="form-control" id="box-region" style="width:220px"><option value="">All regions</option></select>
+                <select class="form-control" id="box-status" style="width:160px">
+                  <option value="">All status</option><option>Online</option><option>Offline</option><option>Data Limited</option>
+                </select>
+                <span class="rt-spacer"></span>
+                <span class="rt-count" id="box-count"></span>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped jambo_table">
+                  <thead>
+                    <tr class="headings">
+                      <th>Box</th><th>Region</th><th>Device</th><th>4G Signal</th>
+                      <th>Data Quota</th><th>Battery</th><th>Uptime 30d</th><th>Heartbeat</th><th>Status</th><th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="box-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PAGE: TASK ================= -->
+        <div class="page" id="page-task" style="display:none">
+          <div class="rt-page-header">
+            <div>
+              <h3><i class="fa fa-signal"></i> Task</h3>
+              <div class="sub">Scheduled remote measurement tasks dispatched to box sites</div>
+            </div>
+            <div class="rt-page-actions">
+              <button type="button" class="btn btn-rt btn-sm" data-toggle="modal" data-target="#taskModal"><i class="fa fa-plus"></i> New Task</button>
+            </div>
+          </div>
+
+          <div class="rt-kpis" id="task-kpis"></div>
+
+          <div class="x_panel">
+            <div class="x_title">
+              <h2><i class="fa fa-tasks"></i> Task Queue <small>today</small></h2>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <div class="rt-toolbar">
+                <div class="btn-group" id="task-status-filter">
+                  <button type="button" class="btn btn-rt-outline btn-sm active" data-status="">All</button>
+                  <button type="button" class="btn btn-rt-outline btn-sm" data-status="Running">Running</button>
+                  <button type="button" class="btn btn-rt-outline btn-sm" data-status="Pending">Pending</button>
+                  <button type="button" class="btn btn-rt-outline btn-sm" data-status="Done">Done</button>
+                  <button type="button" class="btn btn-rt-outline btn-sm" data-status="Failed">Failed</button>
+                </div>
+                <div class="rt-search"><i class="fa fa-search"></i><input type="text" class="form-control" id="task-search" placeholder="Search task, box, tester..."></div>
+                <span class="rt-spacer"></span>
+                <span class="rt-count" id="task-count"></span>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped jambo_table">
+                  <thead>
+                    <tr class="headings">
+                      <th>Task ID</th><th>Box</th><th>Tester</th><th>Network</th><th>Operator</th>
+                      <th>Schedule</th><th>Duration</th><th>Result</th><th>Status</th><th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="task-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PAGE: NOTIFICATIONS ================= -->
+        <div class="page" id="page-notifications" style="display:none">
+          <div class="rt-page-header">
+            <div>
+              <h3><i class="fa fa-bell"></i> Notifications</h3>
+              <div class="sub">Device, data quota, performance and task alerts</div>
+            </div>
+            <div class="rt-page-actions">
+              <button type="button" class="btn btn-rt-outline btn-sm" id="notif-read-all"><i class="fa fa-check"></i> Mark all as read</button>
+            </div>
+          </div>
+
+          <div class="rt-kpis" id="notif-kpis"></div>
+
+          <div class="x_panel">
+            <div class="x_title">
+              <h2><i class="fa fa-inbox"></i> All Notifications</h2>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <div class="rt-toolbar">
+                <div class="btn-group" id="notif-filter">
+                  <button type="button" class="btn btn-rt-outline btn-sm active" data-filter="">All</button>
+                  <button type="button" class="btn btn-rt-outline btn-sm" data-filter="unread">Unread</button>
+                  <button type="button" class="btn btn-rt-outline btn-sm" data-filter="danger">Critical</button>
+                  <button type="button" class="btn btn-rt-outline btn-sm" data-filter="warning">Warning</button>
+                  <button type="button" class="btn btn-rt-outline btn-sm" data-filter="info">Info</button>
+                </div>
+                <span class="rt-spacer"></span>
+                <span class="rt-count" id="notif-list-count"></span>
+              </div>
+              <ul class="rt-list clickable" id="notif-list"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PAGE: PROFILE ================= -->
+        <div class="page" id="page-profile" style="display:none">
+          <div class="rt-page-header">
+            <div>
+              <h3><i class="fa fa-user"></i> Profile</h3>
+              <div class="sub">Account information and recent activity</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 col-sm-12">
+              <div class="x_panel">
+                <div class="x_content">
+                  <div class="rt-profile-card">
+                    <img src="assets/images/img.jpg" alt="">
+                    <h4>Administrator</h4>
+                    <div class="rt-meta">System Administrator &middot; NOC Jakarta</div>
+                    <div style="margin-top:10px"><span class="rt-badge rt-badge-success"><i class="fa fa-shield"></i> Full access</span></div>
+                    <div class="rt-profile-stats" id="profile-stats"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="x_panel">
+                <div class="x_title"><h2><i class="fa fa-vcard"></i> Account</h2><div class="clearfix"></div></div>
+                <div class="x_content">
+                  <div class="rt-info" style="grid-template-columns:1fr">
+                    <div><div class="k">Username</div><div class="v">admin</div></div>
+                    <div><div class="k">Email</div><div class="v">admin@remotetask.local</div></div>
+                    <div><div class="k">Phone</div><div class="v">+62 21 5240 811</div></div>
+                    <div><div class="k">Last login</div><div class="v" id="profile-last-login"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-8 col-sm-12">
+              <div class="x_panel">
+                <div class="x_title"><h2><i class="fa fa-sliders"></i> Preferences</h2><div class="clearfix"></div></div>
+                <div class="x_content">
+                  <form id="profile-form" onsubmit="return false;">
+                    <div class="row">
+                      <div class="col-sm-6 form-group"><label class="rt-label">Full name</label><input class="form-control" value="Administrator"></div>
+                      <div class="col-sm-6 form-group"><label class="rt-label">Email</label><input class="form-control" value="admin@remotetask.local"></div>
+                      <div class="col-sm-6 form-group"><label class="rt-label">Default tester</label>
+                        <select class="form-control"><option>SpeedTest</option><option>OpenSignal</option><option>iTest</option><option>EQualOneCrowd</option></select></div>
+                      <div class="col-sm-6 form-group"><label class="rt-label">Time zone</label>
+                        <select class="form-control"><option>Asia/Jakarta (WIB, UTC+7)</option><option>Asia/Makassar (WITA, UTC+8)</option><option>Asia/Jayapura (WIT, UTC+9)</option></select></div>
+                      <div class="col-sm-6 form-group"><label class="rt-label">Alert email</label>
+                        <select class="form-control"><option>Critical &amp; warning</option><option>Critical only</option><option>Off</option></select></div>
+                      <div class="col-sm-6 form-group"><label class="rt-label">Dashboard refresh</label>
+                        <select class="form-control"><option>Every 5 minutes</option><option>Every 15 minutes</option><option>Manual</option></select></div>
+                    </div>
+                    <button type="button" class="btn btn-rt" id="profile-save"><i class="fa fa-save"></i> Save Changes</button>
+                  </form>
+                </div>
+              </div>
+              <div class="x_panel">
+                <div class="x_title"><h2><i class="fa fa-history"></i> Recent Activity</h2><div class="clearfix"></div></div>
+                <div class="x_content"><ul class="rt-list" id="profile-activity"></ul></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /page content -->
+
+      <footer>
+        <div class="pull-right">Web Remote Task &middot; Network Performance Monitoring &middot; demo data</div>
+        <div class="clearfix"></div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: BOX DETAIL ================= -->
+<div class="modal fade" id="boxModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+        <h4 class="modal-title" id="boxModalTitle"></h4>
+      </div>
+      <div class="modal-body" id="boxModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-rt-outline" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-rt" id="boxModalPerf"><i class="fa fa-area-chart"></i> View Performance</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: NEW TASK ================= -->
+<div class="modal fade" id="taskModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="task-form" onsubmit="return false;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+          <h4 class="modal-title"><i class="fa fa-plus-circle"></i> New Measurement Task</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group"><label>Box Site</label><select class="form-control" id="task-box"></select></div>
+          <div class="row">
+            <div class="col-sm-6 form-group"><label>Tester</label>
+              <select class="form-control" id="task-tester">
+                <option value="speedtest">SpeedTest</option><option value="open_signal">OpenSignal</option>
+                <option value="itest">iTest</option><option value="equalonecrowd">EQualOneCrowd</option>
+              </select></div>
+            <div class="col-sm-6 form-group"><label>Network</label>
+              <select class="form-control" id="task-tech"><option value="4g">4G LTE</option><option value="3g">3G UMTS</option></select></div>
+            <div class="col-sm-6 form-group"><label>Operator</label>
+              <select class="form-control" id="task-operator"><option value="Telkomsel">Telkomsel</option><option value="Indosat">Indosat</option><option value="Xl">XL</option></select></div>
+            <div class="col-sm-6 form-group"><label>Schedule</label><input type="text" class="form-control" id="task-schedule"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-rt-outline" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-rt"><i class="fa fa-check"></i> Create Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="rt-toast"></div>
+
+<!-- jQuery -->
+<script src="assets/js/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="assets/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="assets/js/fastclick.js"></script>
+<!-- NProgress -->
+<script src="assets/js/nprogress.js"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="assets/js/moment.min.js"></script>
+<script src="assets/js/daterangepicker.js"></script>
+<!-- Custom Theme Scripts (Gentelella) -->
+<script src="assets/js/custom.min.js"></script>
+<!-- Highcharts js -->
+<script src="assets/js/highcharts.js"></script>
+<script src="assets/js/highcharts-more.js"></script>
+<script src="assets/js/no-data-to-display.js"></script>
+<!-- sugar.js -->
+<script src="assets/js/sugar.min.js"></script>
+
+<!-- ============================================================ -->
+<!-- SAMPLE DATA (replaces database tables)                       -->
+<!-- ============================================================ -->
+<script>
+var DEMO_USER = { username: 'admin', password: 'admin123', name: 'Administrator' };
+
+var REGIONS = [
+    { id: 1,  region_code: '01', region_name: 'Sumbagut' },
+    { id: 2,  region_code: '02', region_name: 'Sumbagsel' },
+    { id: 3,  region_code: '03', region_name: 'Jabotabek' },
+    { id: 4,  region_code: '04', region_name: 'Jabar' },
+    { id: 5,  region_code: '05', region_name: 'Jateng & DIY' },
+    { id: 6,  region_code: '06', region_name: 'Jatim' },
+    { id: 7,  region_code: '07', region_name: 'Balinusra' },
+    { id: 8,  region_code: '08', region_name: 'Kalimantan' },
+    { id: 9,  region_code: '09', region_name: 'Sulawesi' },
+    { id: 10, region_code: '10', region_name: 'Sumbagteng' },
+    { id: 11, region_code: '11', region_name: 'Papua & Maluku' }
+];
+
+var BOX_SITES = [
+    { id: 1,  region_id: 3,  seq: 1, site_name: 'Jakarta - Monas',            address: 'Jl. Medan Merdeka, Gambir, Jakarta Pusat',        lat: -6.1754, lng: 106.8272, status: 'Online' },
+    { id: 2,  region_id: 3,  seq: 2, site_name: 'Jakarta - Sudirman CBD',     address: 'Jl. Jend. Sudirman Kav. 52, Jakarta Selatan',     lat: -6.2250, lng: 106.8090, status: 'Online' },
+    { id: 3,  region_id: 3,  seq: 3, site_name: 'Bekasi - Summarecon',        address: 'Jl. Boulevard Ahmad Yani, Bekasi Utara',          lat: -6.2253, lng: 107.0005, status: 'Online' },
+    { id: 4,  region_id: 4,  seq: 1, site_name: 'Bandung - Gedung Sate',      address: 'Jl. Diponegoro No. 22, Bandung',                  lat: -6.9025, lng: 107.6188, status: 'Online' },
+    { id: 5,  region_id: 6,  seq: 1, site_name: 'Surabaya - Tunjungan',       address: 'Jl. Tunjungan, Genteng, Surabaya',                lat: -7.2625, lng: 112.7400, status: 'Offline' },
+    { id: 6,  region_id: 6,  seq: 2, site_name: 'Malang - Alun-Alun',         address: 'Jl. Merdeka Selatan, Klojen, Malang',             lat: -7.9827, lng: 112.6308, status: 'Online' },
+    { id: 7,  region_id: 1,  seq: 1, site_name: 'Medan - Lapangan Merdeka',   address: 'Jl. Balai Kota, Medan Barat, Medan',              lat:  3.5904, lng:  98.6775, status: 'Online' },
+    { id: 8,  region_id: 7,  seq: 1, site_name: 'Denpasar - Renon',           address: 'Jl. Raya Puputan, Renon, Denpasar',               lat: -8.6726, lng: 115.2337, status: 'Data Limited' },
+    { id: 9,  region_id: 2,  seq: 1, site_name: 'Palembang - Ampera',         address: 'Jl. Merdeka, Bukit Kecil, Palembang',             lat: -2.9917, lng: 104.7631, status: 'Online' },
+    { id: 10, region_id: 5,  seq: 1, site_name: 'Semarang - Simpang Lima',    address: 'Jl. Pahlawan, Pleburan, Semarang',                lat: -6.9903, lng: 110.4229, status: 'Online' },
+    { id: 11, region_id: 8,  seq: 1, site_name: 'Balikpapan - Sudirman',      address: 'Jl. Jend. Sudirman, Klandasan, Balikpapan',       lat: -1.2742, lng: 116.8288, status: 'Online' },
+    { id: 12, region_id: 9,  seq: 1, site_name: 'Makassar - Pantai Losari',   address: 'Jl. Penghibur, Ujung Pandang, Makassar',          lat: -5.1434, lng: 119.4079, status: 'Online' },
+    { id: 13, region_id: 10, seq: 1, site_name: 'Pekanbaru - Jl. Sudirman',   address: 'Jl. Jend. Sudirman, Sukajadi, Pekanbaru',         lat:  0.5071, lng: 101.4478, status: 'Data Limited' },
+    { id: 14, region_id: 11, seq: 1, site_name: 'Jayapura - Entrop',          address: 'Jl. Raya Entrop, Jayapura Selatan',               lat: -2.5717, lng: 140.7027, status: 'Offline' }
+];
+
+var OPERATORS = ['Telkomsel', 'Indosat', 'Xl'];
+var OPERATOR_LABEL = { Telkomsel: 'Telkomsel', Indosat: 'Indosat', Xl: 'XL' };
+var OPERATOR_COLORS = { Telkomsel: '#ED1C24', Indosat: '#F5B500', Xl: '#1F6FB2' };
+var TESTER_LABEL = { speedtest: 'SpeedTest', open_signal: 'OpenSignal', itest: 'iTest', equalonecrowd: 'EQualOneCrowd' };
+var TECH_LABEL = { '3g': '3G UMTS', '4g': '4G LTE' };
+var METRIC_LABEL = { Download: 'Download Throughput', Upload: 'Upload Throughput', Ping: 'Latency (Ping)', Web: 'Web Page Load Time', Video: 'Video Start Time' };
+var LOWER_IS_BETTER = { Ping: true, Web: true, Video: true };
+var TARGET = {
+    '3g': { Download: 5,  Upload: 1, Ping: 100, Web: 6, Video: 8 },
+    '4g': { Download: 20, Upload: 5, Ping: 50,  Web: 3, Video: 4 }
+};
+var STATUS_BADGE = { 'Online': 'success', 'Offline': 'danger', 'Data Limited': 'warning' };
+var STATUS_ICON = { 'Online': 'fa-check-circle', 'Offline': 'fa-power-off', 'Data Limited': 'fa-database' };
+
+/* Deterministic pseudo random generator so the same filter always shows the same chart */
+function seededRandom(str) {
+    var h = 1779033703 ^ str.length;
+    for (var i = 0; i < str.length; i++) {
+        h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+        h = (h << 13) | (h >>> 19);
+    }
+    return function () {
+        h = Math.imul(h ^ (h >>> 16), 2246822507);
+        h = Math.imul(h ^ (h >>> 13), 3266489909);
+        h ^= h >>> 16;
+        return (h >>> 0) / 4294967296;
+    };
+}
+
+function regionById(id) { return REGIONS.filter(function (r) { return r.id == id; })[0]; }
+function regionLabel(id) { var r = regionById(id); return r ? 'Regional ' + r.id + ' · ' + r.region_name : '-'; }
+function siteById(id) { return BOX_SITES.filter(function (b) { return b.id == id; })[0]; }
+
+/* Enrich box sites with device / SIM information */
+BOX_SITES.forEach(function (b) {
+    var r = seededRandom('device' + b.id);
+    var reg = regionById(b.region_id);
+    b.box_code = 'CETB-' + reg.region_code + '-' + Sugar.Number(b.seq).pad(4).raw + '-01-01-0517';
+    b.imei = '3573350' + String(10000000 + Math.floor(r() * 89999999));
+    b.firmware = ['RT-FW 2.3.8', 'RT-FW 2.4.0', 'RT-FW 2.4.1'][Math.floor(r() * 3)];
+    b.hardware = 'RemoteBox RB-300 (3 SIM)';
+    b.battery = b.status == 'Offline' ? Math.round(4 + r() * 10) : Math.round(68 + r() * 32);
+    b.temperature = +(34 + r() * 10).toFixed(1);
+    b.quota_total = 30;
+    b.quota_used = b.status == 'Data Limited' ? +(27.4 + r() * 2.2).toFixed(1) : +(4 + r() * 17).toFixed(1);
+    b.heartbeat_min = b.status == 'Offline' ? 1440 + Math.floor(r() * 900) : 1 + Math.floor(r() * 4);
+    b.uptime = b.status == 'Offline' ? +(71 + r() * 12).toFixed(1) : +(97.2 + r() * 2.7).toFixed(1);
+    b.install_date = moment('2017-05-02').add(b.id * 6, 'days').format('DD MMM YYYY');
+    b.sims = OPERATORS.map(function (op) {
+        return {
+            operator: op,
+            msisdn: '08' + (op == 'Telkomsel' ? '12' : op == 'Indosat' ? '15' : '17') + String(10000000 + Math.floor(r() * 89999999)),
+            rsrp: Math.round(-76 - r() * 30),
+            quota_used: +(b.quota_used / 3 * (0.8 + r() * 0.4)).toFixed(1),
+            quota_total: 10
+        };
+    });
+    b.rsrp = b.sims[0].rsrp;
+});
+</script>
+
+<!-- ============================================================ -->
+<!-- MOCK API (replaces PerformanceController@getBoxSite/getData) -->
+<!-- ============================================================ -->
+<script>
+var MockApi = (function () {
+    var PROFILE = {
+        '3g': { download: [3, 12],  upload: [0.8, 4], ping: [55, 125], web: [3, 8],   video: [4, 11] },
+        '4g': { download: [14, 48], upload: [4, 18],  ping: [18, 48],  web: [1.2, 4], video: [1.8, 5.6] }
+    };
+    var OPERATOR_FACTOR = { Telkomsel: 1, Indosat: 0.78, Xl: 0.85 };
+    var TESTER_FACTOR = { speedtest: 1, open_signal: 0.92, itest: 0.96, equalonecrowd: 1 };
+    var pending = 0;
+
+    function mid(range) { return (range[0] + range[1]) / 2; }
+
+    // Busy-hour (19:00 - 22:00) congestion: lower throughput, higher latency
+    function congestion(hour) {
+        var dist = Math.min(Math.abs(hour - 20.5), 24 - Math.abs(hour - 20.5));
+        return Math.max(0, 1 - dist / 5);
+    }
+
+    function point(p, rng, tester, factor, busy) {
+        var noise = function () { return 0.86 + rng() * 0.28; };
+        var speed = factor * (1 - 0.38 * busy);
+        var lag = (1 / factor) * (1 + 0.65 * busy);
+        if (tester === 'equalonecrowd') {
+            return { web: +(mid(p.web) * lag * noise()).toFixed(2), video: +(mid(p.video) * lag * noise()).toFixed(2) };
+        }
+        return {
+            download: +(mid(p.download) * speed * noise()).toFixed(2),
+            upload:   +(mid(p.upload) * speed * noise()).toFixed(2),
+            ping:     +(mid(p.ping) * lag * noise()).toFixed(2)
+        };
+    }
+
+    // Synchronous generator: always returns a full 24 hours / full month of samples
+    function generate(param) {
+        var p = PROFILE[param.technology];
+        var siteRng = seededRandom('site' + param.boxSiteId + param.technology);
+        var factor = (OPERATOR_FACTOR[param.operator] || 1) * TESTER_FACTOR[param.tester] * (0.84 + siteRng() * 0.28);
+        var rng = seededRandom([param.tester, param.technology, param.operator, param.boxSiteId, param.period, param.time].join('|'));
+        var rows = [];
+
+        if (param.period === 'hourly') {
+            for (var h = 0; h < 24; h++) {
+                var row = point(p, rng, param.tester, factor, congestion(h));
+                row.hour = Sugar.Number(h).pad(2).raw;
+                rows.push(row);
+            }
+        } else {
+            var year = parseInt(String(param.time).substr(0, 4), 10);
+            var month = parseInt(String(param.time).substr(4, 2), 10);
+            var days = new Date(year, month, 0).getDate();
+            for (var d = 1; d <= days; d++) {
+                var weekday = new Date(year, month - 1, d).getDay();
+                var busy = (weekday === 0 || weekday === 6 ? 0.35 : 0.15) + 0.2 * rng();
+                var dayRow = point(p, rng, param.tester, factor, busy);
+                dayRow.day = year + '-' + Sugar.Number(month).pad(2).raw + '-' + Sugar.Number(d).pad(2).raw;
+                rows.push(dayRow);
+            }
+        }
+        return rows;
+    }
+
+    function delay(result) {
+        var d = $.Deferred();
+        if (pending++ === 0 && typeof NProgress !== 'undefined') NProgress.start();
+        setTimeout(function () {
+            if (--pending === 0 && typeof NProgress !== 'undefined') NProgress.done();
+            d.resolve(result);
+        }, 150 + Math.random() * 350);
+        return d.promise();
+    }
+
+    return {
+        generate: generate,
+        getBoxSite: function () { return delay(BOX_SITES.slice()); },
+        getData: function (param) { return delay(generate(param)); }
+    };
+})();
+
+/* ---------- shared helpers ---------- */
+function fmt(v, d) { return (v == null || isNaN(v)) ? '-' : Number(v).toFixed(d == null ? 2 : d); }
+function unitFor(m) { return m == 'Ping' ? 'ms' : (m == 'Web' || m == 'Video') ? 'sec' : 'Mbps'; }
+function metricsFor(tester) { return tester == 'equalonecrowd' ? ['Web', 'Video'] : ['Download', 'Upload', 'Ping']; }
+function meets(metric, tech, v) { var t = TARGET[tech][metric]; return LOWER_IS_BETTER[metric] ? v <= t : v >= t; }
+function targetText(metric, tech) { return (LOWER_IS_BETTER[metric] ? '≤ ' : '≥ ') + TARGET[tech][metric] + ' ' + unitFor(metric); }
+function scoreClass(p) { return p >= 90 ? 'good' : p >= 70 ? 'warn' : 'bad'; }
+function scoreColor(p) { return p >= 90 ? '#26B99A' : p >= 70 ? '#F0AD4E' : '#E74C3C'; }
+function quotaColor(p) { return p > 85 ? '#E74C3C' : p > 60 ? '#F0AD4E' : '#26B99A'; }
+
+function seriesStats(rows, metric, tech) {
+    var key = metric.toLowerCase();
+    var vals = rows.map(function (r) { return +r[key]; });
+    if (!vals.length) return { avg: NaN, best: NaN, worst: NaN, pass: 0, n: 0 };
+    var sum = vals.reduce(function (a, b) { return a + b; }, 0);
+    var max = Math.max.apply(null, vals), min = Math.min.apply(null, vals);
+    var pass = vals.filter(function (v) { return meets(metric, tech, v); }).length;
+    return {
+        avg: sum / vals.length,
+        best: LOWER_IS_BETTER[metric] ? min : max,
+        worst: LOWER_IS_BETTER[metric] ? max : min,
+        pass: pass / vals.length * 100,
+        n: vals.length
+    };
+}
+
+function avgOf(list) { return list.length ? list.reduce(function (a, b) { return a + b; }, 0) / list.length : NaN; }
+
+function kpiTile(o) {
+    return '<div class="rt-kpi">' +
+        '<div class="ic tone-' + (o.tone || 'navy') + '"><i class="fa ' + o.icon + '"></i></div>' +
+        '<div class="k">' + o.label + '</div>' +
+        '<div class="v">' + o.value + (o.unit ? '<small>' + o.unit + '</small>' : '') + '</div>' +
+        '<div class="f">' + (o.foot || '&nbsp;') + '</div></div>';
+}
+function badge(text, type, icon) {
+    return '<span class="rt-badge rt-badge-' + type + '">' + (icon ? '<i class="fa ' + icon + '"></i>' : '') + text + '</span>';
+}
+function statusBadge(status) { return badge(status, STATUS_BADGE[status], STATUS_ICON[status]); }
+function techBadge(tech) { return '<span class="rt-badge rt-badge-' + tech + '">' + TECH_LABEL[tech] + '</span>'; }
+function miniBar(pct, color, label) {
+    return '<div class="rt-mini-progress"><div class="rt-cell-sub">' + label + '</div>' +
+        '<div class="rt-bar"><span style="width:' + Math.min(100, pct) + '%;background:' + color + '"></span></div></div>';
+}
+function signalBars(rsrp) {
+    var n = rsrp >= -85 ? 4 : rsrp >= -95 ? 3 : rsrp >= -105 ? 2 : 1;
+    var s = '<span class="rt-signal">';
+    for (var i = 1; i <= 4; i++) s += '<span class="' + (i <= n ? 'on' : '') + '"></span>';
+    return s + '</span>' + rsrp + ' dBm';
+}
+function heartbeatText(min) { return moment().subtract(min, 'minutes').fromNow(); }
+function toast(msg, icon) {
+    var $t = $('<div class="rt-toast-item"><i class="fa ' + (icon || 'fa-check-circle') + '"></i>' + msg + '</div>');
+    $('#rt-toast').append($t);
+    setTimeout(function () { $t.fadeOut(300, function () { $t.remove(); }); }, 2600);
+}
+function updateSyncTime() { $('.sync-time').text(moment().format('DD MMM YYYY, HH:mm') + ' WIB'); }
+function reflowAll() {
+    setTimeout(function () { Highcharts.charts.forEach(function (c) { if (c && $(c.renderTo).is(':visible')) c.reflow(); }); }, 60);
+}
+function destroyChart(id) {
+    var el = document.getElementById(id);
+    var c = el && $(el).highcharts();
+    if (c) c.destroy();
+}
+function hourCategories() {
+    var list = [];
+    for (var i = 0; i < 24; i++) list.push(Sugar.Number(i).pad(2).raw + ':00');
+    return list;
+}
+
+/* Common Highcharts look (same palette as the original: pink fill, red border) */
+function chartBase(o) {
+    return {
+        chart: { type: o.type || 'column', spacing: [12, 8, 8, 4], style: { fontFamily: 'inherit' } },
+        credits: { enabled: false },
+        navigation: { buttonOptions: { enabled: false } },
+        title: { text: '' },
+        subtitle: { text: '' },
+        xAxis: {
+            categories: o.categories, crosshair: true, gridLineWidth: 1, gridLineColor: '#F2F4F6',
+            lineColor: '#DFE3E8', tickLength: 0, plotBands: o.plotBands || [],
+            labels: { style: { color: '#8A99A8', fontSize: '10px' } },
+            title: { text: o.xTitle || null, style: { color: '#A9B4BF', fontSize: '11px', fontWeight: 'normal' } }
+        },
+        yAxis: {
+            min: 0, softMax: o.softMax, gridLineColor: '#EEF1F4',
+            labels: { style: { color: '#8A99A8', fontSize: '10px' } },
+            title: { text: o.unit, style: { color: '#8A99A8', fontSize: '11px', fontWeight: 'normal' } },
+            plotLines: o.plotLines || []
+        },
+        legend: { enabled: !!o.legend, align: 'right', verticalAlign: 'top', itemStyle: { fontSize: '11px', color: '#5A6A7A', fontWeight: '600' } },
+        tooltip: { shared: true, valueDecimals: 2, valueSuffix: o.unit ? ' ' + o.unit : '', borderColor: '#DFE3E8', backgroundColor: 'rgba(255,255,255,.97)' },
+        plotOptions: {
+            column: { borderColor: '#ED1C24', borderWidth: 1, groupPadding: o.legend ? 0.12 : 0.06, pointPadding: 0.04 },
+            spline: { marker: { enabled: false }, lineWidth: 2 },
+            series: { animation: false }
+        },
+        series: o.series
+    };
+}
+</script>
+
+<!-- ============================================================ -->
+<!-- layouts/navbar-filter-js                                     -->
+<!-- ============================================================ -->
+<script>
+    function setFiltersToCurrent() {
+        var currentDate = new Date();
+        var currentYear = currentDate.getFullYear();
+        var currentMonth = currentDate.getMonth() + 1;
+        var currentDateStr = Sugar.Date(currentDate).format('{yyyy}-{MM}-{dd}').raw;
+
+        $('#date_filter').val(currentDateStr);
+        var drp = $('#date_filter').data('daterangepicker');
+        if (drp) { drp.setStartDate(moment(currentDate)); drp.setEndDate(moment(currentDate)); }
+        $('#month_filter').val(Sugar.Number(currentMonth).pad(2).raw);
+        $('#year_filter').val(currentYear);
+    }
+
+    function getFilters() {
+        regional_filter = $('#regional_filter').val();
+        period_filter   = $('#period_filter').val();
+        month_filter    = $('#month_filter').val();
+        year_filter     = $('#year_filter').val();
+        date_filter     = $('#date_filter').val();
+        tester_filter   = $('#tester_filter').val();
+        time_filter     = period_filter == 'hourly' ? date_filter : year_filter + month_filter;
+    }
+</script>
+
+<!-- ============================================================ -->
+<!-- PAGE: PERFORMANCE                                            -->
+<!-- ============================================================ -->
+<script>
+    var boxSites = null;
+    var perf = { inited: false, cache: {}, pendingRegion: null };
+    var technologies = ['3g', '4g'];
+
+    function initPerformancePage() {
+        if (perf.inited) {
+            if (perf.pendingRegion != null) { $('#regional_filter').val(perf.pendingRegion); perf.pendingRegion = null; getFilteredChart(); }
+            reflowAll();
+            return;
+        }
+        perf.inited = true;
+
+        REGIONS.forEach(function (r) {
+            $('#regional_filter').append('<option value="' + r.id + '">Regional ' + r.id + ' - ' + r.region_name + '</option>');
+        });
+        for (var y = 2016; y <= new Date().getFullYear(); y++) {
+            $('#year_filter').append('<option value="' + y + '">' + y + '</option>');
+        }
+
+        $('#date_filter').daterangepicker({ singleDatePicker: true, showDropdowns: true, locale: { format: 'YYYY-MM-DD' } });
+
+        $('#daily-filter').hide();
+        $('#period_filter').change(function () {
+            setFiltersToCurrent();
+            if ($(this).val() == 'hourly') { $('#daily-filter').hide(); $('#hourly-filter').show(); }
+            else { $('#daily-filter').show(); $('#hourly-filter').hide(); }
+        });
+
+        $('#filter_button').click(getFilteredChart);
+        $('#perf-refresh').click(getFilteredChart);
+        $('#reset_button').click(function () {
+            $('#regional_filter').val('nationwide');
+            $('#tester_filter').val('speedtest');
+            $('#period_filter').val('hourly').change();
+            getFilteredChart();
+        });
+
+        // Per-chart controls (delegated)
+        $('#boxSiteContainer').on('change', 'select[data-role]', function () {
+            var key = $(this).data('key');
+            if ($(this).data('role') == 'view') $('#op_' + key).prop('disabled', $(this).val() == 'Benchmark');
+            drawCard(key);
+        });
+
+        if (perf.pendingRegion != null) { $('#regional_filter').val(perf.pendingRegion); perf.pendingRegion = null; }
+        setFiltersToCurrent();
+        MockApi.getBoxSite().done(function (dataResult) {
+            boxSites = dataResult;
+            getFilteredChart();
+        });
+    }
+
+    function filteredBoxSites() {
+        var region = $('#regional_filter').val();
+        if (!boxSites) return [];
+        if (region == 'nationwide') return boxSites;
+        return boxSites.filter(function (b) { return b.region_id == region; });
+    }
+
+    function getFilteredChart() {
+        if (!boxSites) return;
+        getFilters();
+        updateSyncTime();
+        var sites = filteredBoxSites();
+        var timeText = period_filter == 'hourly' ? moment(time_filter, 'YYYY-MM-DD').format('dddd, DD MMMM YYYY')
+                                                  : moment(time_filter, 'YYYYMM').format('MMMM YYYY');
+        $('#perf-subtitle').html(
+            $('#regional_filter option:selected').text() + ' &middot; ' + TESTER_LABEL[tester_filter] + ' &middot; ' +
+            (period_filter == 'hourly' ? 'Hourly' : 'Daily') + ' &middot; ' + timeText + ' &middot; ' + sites.length + ' box site(s)');
+        renderPerfKpis(sites);
+        renderBoxSite(sites);
+    }
+
+    function renderPerfKpis(sites) {
+        var base = { tester: tester_filter, period: period_filter, time: time_filter, operator: 'Telkomsel' };
+        function tile(tech, metric, icon, tone) {
+            var all = [];
+            sites.forEach(function (s) { all = all.concat(MockApi.generate($.extend({}, base, { technology: tech, boxSiteId: s.id }))); });
+            var s = seriesStats(all, metric, tech);
+            return kpiTile({
+                icon: icon, tone: tone, label: tech.toUpperCase() + ' ' + metric,
+                value: fmt(s.avg), unit: unitFor(metric),
+                foot: targetText(metric, tech) + ' &middot; <b class="txt-' + scoreClass(s.pass) + '">' + fmt(s.pass, 0) + '% pass</b>'
+            });
+        }
+        var html = '';
+        if (tester_filter == 'equalonecrowd') {
+            html += tile('4g', 'Web', 'fa-globe', 'red') + tile('4g', 'Video', 'fa-play-circle', 'red') +
+                    tile('3g', 'Web', 'fa-globe', 'blue') + tile('3g', 'Video', 'fa-play-circle', 'blue');
+        } else {
+            html += tile('4g', 'Download', 'fa-download', 'red') + tile('3g', 'Download', 'fa-download', 'blue') +
+                    tile('4g', 'Upload', 'fa-upload', 'green') + tile('4g', 'Ping', 'fa-clock-o', 'amber');
+        }
+        var online = sites.filter(function (s) { return s.status == 'Online'; }).length;
+        var rows = period_filter == 'hourly' ? 24 : new Date(+year_filter, +month_filter, 0).getDate();
+        html += kpiTile({
+            icon: 'fa-cube', tone: 'navy', label: 'Box Sites', value: sites.length, unit: 'sites',
+            foot: '<b class="txt-good">' + online + ' online</b> &middot; <b class="txt-bad">' + (sites.length - online) + ' issue</b>'
+        });
+        html += kpiTile({
+            icon: 'fa-database', tone: 'navy', label: 'Samples', value: Sugar.Number(sites.length * 2 * 3 * rows).format().raw,
+            foot: '3 operators &middot; 3G + 4G'
+        });
+        $('#perf-kpis').html(html);
+    }
+
+    function testOptions(tester) {
+        return metricsFor(tester).map(function (m, i) {
+            return '<option value="' + m + '"' + (i == 0 ? ' selected' : '') + '>' + m + '</option>';
+        }).join('');
+    }
+
+    function chartCard(item, tech) {
+        var key = item.id + '_' + tech;
+        return '<div class="rt-chart-card" id="card_' + key + '">' +
+            '<div class="rt-chart-head">' +
+              '<div class="rt-chart-title">' + techBadge(tech) + ' <span id="title_' + key + '"></span></div>' +
+              '<div class="rt-chart-controls">' +
+                '<select class="form-control graph-control-type" data-role="view" data-key="' + key + '" id="view_' + key + '">' +
+                  '<option value="Trending" selected>Trending</option><option value="Benchmark">Benchmark</option></select>' +
+                '<select class="form-control graph-control-operator" data-role="op" data-key="' + key + '" id="op_' + key + '">' +
+                  '<option value="Telkomsel" selected>Telkomsel</option><option value="Indosat">Indosat</option><option value="Xl">XL</option></select>' +
+                '<select class="form-control graph-control-test" data-role="metric" data-key="' + key + '" id="action_' + key + '_value">' +
+                  testOptions(tester_filter) + '</select>' +
+              '</div>' +
+            '</div>' +
+            '<div class="rt-chart" id="' + key + '_value"><div class="rt-chart-loading"><i class="fa fa-circle-o-notch fa-spin"></i> Loading data...</div></div>' +
+            '<div class="rt-stats" id="stats_' + key + '"></div>' +
+          '</div>';
+    }
+
+    function renderBoxSite(sites) {
+        Highcharts.charts.forEach(function (c) { if (c && $('#boxSiteContainer').has(c.renderTo).length) c.destroy(); });
+        $('#boxSiteContainer').empty();
+        perf.cache = {};
+
+        if (!sites.length) {
+            $('#boxSiteContainer').html('<div class="x_panel"><div class="rt-empty"><i class="fa fa-cube"></i>No box site registered in ' +
+                $('#regional_filter option:selected').text() + '</div></div>');
+            return;
+        }
+
+        sites.forEach(function (item) {
+            var html = '<div class="x_panel rt-site">' +
+                '<div class="x_title">' +
+                  '<h2><i class="fa fa-cube"></i> ' + item.box_code + ' <small>' + item.site_name + '</small></h2>' +
+                  '<ul class="nav navbar-right panel_toolbox">' +
+                    '<li class="rt-site-meta">' + statusBadge(item.status) + ' ' + badge(regionLabel(item.region_id), 'muted', 'fa-map-marker') + '</li>' +
+                    '<li><a class="rt-collapse"><i class="fa fa-chevron-up"></i></a></li>' +
+                  '</ul><div class="clearfix"></div>' +
+                '</div>' +
+                '<div class="x_content"><div class="row">' +
+                  '<div class="col-md-6 col-sm-12">' + chartCard(item, '3g') + '</div>' +
+                  '<div class="col-md-6 col-sm-12">' + chartCard(item, '4g') + '</div>' +
+                '</div></div></div>';
+            $('#boxSiteContainer').append(html);
+            technologies.forEach(function (tech) { getPerformanceData(item, tech); });
+        });
+    }
+
+    // Load all three operators once; view / operator / metric changes only redraw
+    function getPerformanceData(item, tech) {
+        var key = item.id + '_' + tech;
+        var param = { tester: tester_filter, technology: tech, period: period_filter, boxSiteId: item.id, time: time_filter };
+        var requests = OPERATORS.map(function (op) { return MockApi.getData($.extend({}, param, { operator: op })); });
+        $.when.apply($, requests).done(function () {
+            var args = arguments, data = {};
+            OPERATORS.forEach(function (op, i) { data[op] = args[i]; });
+            perf.cache[key] = { tech: tech, data: data, period: param.period, time: param.time };
+            drawCard(key);
+        });
+    }
+
+    function categoriesFrom(rows) {
+        return rows.map(function (r) { return r.hour !== undefined ? r.hour + ':00' : r.day.split('-')[2]; });
+    }
+
+    function drawCard(key) {
+        var c = perf.cache[key];
+        if (!c || !document.getElementById(key + '_value')) return;
+        var tech = c.tech;
+        var view = $('#view_' + key).val();
+        var operator = $('#op_' + key).val();
+        var metric = $('#action_' + key + '_value').val();
+        var mkey = metric.toLowerCase();
+        var unit = unitFor(metric);
+        var target = TARGET[tech][metric];
+        var categories = categoriesFrom(c.data.Telkomsel);
+        var xTitle = c.period == 'hourly' ? 'Hour (WIB) · ' + moment(c.time, 'YYYY-MM-DD').format('DD MMM YYYY')
+                                          : 'Day · ' + moment(c.time, 'YYYYMM').format('MMMM YYYY');
+        var targetLine = {
+            value: target, color: '#26B99A', dashStyle: 'Dash', width: 1.5, zIndex: 5,
+            label: { text: 'Target ' + targetText(metric, tech), align: 'right', x: -4, style: { color: '#1E9C81', fontSize: '10px' } }
+        };
+        var series, plotLines = [targetLine], statsHtml;
+
+        $('#title_' + key).text(METRIC_LABEL[metric]);
+
+        if (view == 'Benchmark') {
+            series = OPERATORS.map(function (op) {
+                return {
+                    name: OPERATOR_LABEL[op], color: OPERATOR_COLORS[op], borderColor: OPERATOR_COLORS[op],
+                    data: c.data[op].map(function (r) { return +r[mkey]; })
+                };
+            });
+            var stats = OPERATORS.map(function (op) { return { op: op, s: seriesStats(c.data[op], metric, tech) }; });
+            var leader = stats.slice().sort(function (a, b) { return LOWER_IS_BETTER[metric] ? a.s.avg - b.s.avg : b.s.avg - a.s.avg; })[0];
+            statsHtml = stats.map(function (x) {
+                return '<div class="rt-stat"><div class="k"><span class="rt-dot" style="background:' + OPERATOR_COLORS[x.op] + '"></span>' +
+                    OPERATOR_LABEL[x.op] + ' avg</div><div class="v">' + fmt(x.s.avg) + ' <small>' + unit + '</small></div></div>';
+            }).join('') +
+            '<div class="rt-stat"><div class="k">Best operator</div><div class="v"><i class="fa fa-trophy txt-warn"></i> ' + OPERATOR_LABEL[leader.op] + '</div></div>';
+        } else {
+            var rows = c.data[operator];
+            var s = seriesStats(rows, metric, tech);
+            series = [{
+                name: OPERATOR_LABEL[operator] + ' ' + metric, color: '#f8a4a7', borderColor: '#ED1C24',
+                data: rows.map(function (r) { return +r[mkey]; })
+            }];
+            plotLines.push({
+                value: s.avg, color: '#2A3F54', dashStyle: 'ShortDot', width: 1, zIndex: 5,
+                label: { text: 'Avg ' + fmt(s.avg), align: 'left', x: 4, style: { color: '#2A3F54', fontSize: '10px' } }
+            });
+            statsHtml =
+                '<div class="rt-stat"><div class="k">Average</div><div class="v">' + fmt(s.avg) + ' <small>' + unit + '</small></div></div>' +
+                '<div class="rt-stat"><div class="k">Best</div><div class="v txt-good">' + fmt(s.best) + ' <small>' + unit + '</small></div></div>' +
+                '<div class="rt-stat"><div class="k">Worst</div><div class="v txt-bad">' + fmt(s.worst) + ' <small>' + unit + '</small></div></div>' +
+                '<div class="rt-stat"><div class="k">Within target</div><div class="v txt-' + scoreClass(s.pass) + '">' + fmt(s.pass, 0) + '%</div>' +
+                    '<div class="rt-bar"><span style="width:' + s.pass + '%;background:' + scoreColor(s.pass) + '"></span></div></div>';
+        }
+
+        destroyChart(key + '_value');
+        $('#' + key + '_value').empty();
+        Highcharts.chart(key + '_value', chartBase({
+            categories: categories, unit: unit, xTitle: xTitle, series: series,
+            legend: view == 'Benchmark', plotLines: plotLines, softMax: target * 1.25
+        }));
+        $('#stats_' + key).html(statsHtml);
+    }
+
+    $(document).on('click', '.rt-collapse', function () {
+        var $panel = $(this).closest('.x_panel');
+        $panel.find('.x_content').first().slideToggle(200, reflowAll);
+        $(this).find('i').toggleClass('fa-chevron-up fa-chevron-down');
+    });
+</script>
+
+<!-- ============================================================ -->
+<!-- NOTIFICATIONS + TASKS DATA                                   -->
+<!-- ============================================================ -->
+<script>
+    var SEVERITY = {
+        danger:  { label: 'Critical', tone: 'red',   badge: 'danger' },
+        warning: { label: 'Warning',  tone: 'amber', badge: 'warning' },
+        info:    { label: 'Info',     tone: 'blue',  badge: 'info' }
+    };
+
+    var NOTIFICATIONS = [
+        { sev: 'danger',  icon: 'fa-power-off',      title: 'Device Off',              site: 5,  min: 1440,  read: false,
+          message: 'Device with identity <strong>' + siteById(5).imei + '</strong> is not sending heartbeat. It could be off or has no internet connection. Please check.' },
+        { sev: 'warning', icon: 'fa-tachometer',     title: 'Throughput Below Target', site: 9,  min: 45,    read: false,
+          message: '4G Indosat download at <strong>Palembang - Ampera</strong> averaged 14.2 Mbps during busy hour (target ≥ 20 Mbps).' },
+        { sev: 'danger',  icon: 'fa-exclamation-triangle', title: 'Task Failed',       site: 14, min: 150,   read: false,
+          message: 'Task <strong>TSK-1004</strong> could not reach box <strong>' + siteById(14).box_code + '</strong> (timeout after 120 s).' },
+        { sev: 'warning', icon: 'fa-fire', title: 'High Temperature', site: 12, min: 360, read: false,
+          message: 'Box at <strong>Makassar - Pantai Losari</strong> reported 47.3 °C enclosure temperature.' },
+        { sev: 'warning', icon: 'fa-database',       title: 'Device Data Limited',     site: 8,  min: 5760,  read: false,
+          message: 'Device with identity <strong>' + siteById(8).imei + '</strong> is reaching data limit (' + siteById(8).quota_used + ' of 30 GB). Please renew.' },
+        { sev: 'danger',  icon: 'fa-power-off',      title: 'Device Off',              site: 14, min: 1700,  read: false,
+          message: 'Device with identity <strong>' + siteById(14).imei + '</strong> is not sending heartbeat since yesterday.' },
+        { sev: 'info',    icon: 'fa-check-circle',   title: 'Task Completed',          site: 4,  min: 120,   read: true,
+          message: 'Task <strong>TSK-1003</strong> finished: 4G Telkomsel download 31.40 Mbps, ping 27 ms.' },
+        { sev: 'warning', icon: 'fa-map-marker',     title: 'Box Out of Range',        site: 13, min: 20160, read: true,
+          message: 'Box with identity <strong>CVR77</strong> is out of range. Please check box location.' },
+        { sev: 'info',    icon: 'fa-refresh',        title: 'Firmware Updated',        site: 2,  min: 2880,  read: true,
+          message: 'Box <strong>' + siteById(2).box_code + '</strong> updated to RT-FW 2.4.1.' },
+        { sev: 'info',    icon: 'fa-plug',           title: 'Box Registered',          site: 6,  min: 10080, read: true,
+          message: 'New box <strong>' + siteById(6).box_code + '</strong> registered at Malang - Alun-Alun.' }
+    ];
+
+    function finishTask(t, rng) {
+        rng = rng || Math.random;
+        var row = MockApi.generate({ tester: t.tester, technology: t.tech, period: 'hourly', operator: t.operator, boxSiteId: t.boxId,
+                                     time: moment(t.schedule).format('YYYY-MM-DD') })[moment(t.schedule).hours()];
+        t.status = 'Done'; t.progress = 100; t.result = row;
+        t.duration = 40 + Math.floor(rng() * 80);
+    }
+
+    var TASKS = (function () {
+        var testers = ['speedtest', 'open_signal', 'itest', 'equalonecrowd'];
+        var rng = seededRandom('tasks-v2');
+        var now = moment();
+        var list = [];
+        for (var i = 0; i < 16; i++) {
+            var box = BOX_SITES[(i * 5) % BOX_SITES.length];
+            var schedule = moment().startOf('day').add(i * 90, 'minutes');
+            var t = {
+                id: 'TSK-' + (1001 + i), boxId: box.id,
+                tester: testers[Math.floor(rng() * testers.length)],
+                tech: rng() > 0.4 ? '4g' : '3g',
+                operator: OPERATORS[Math.floor(rng() * 3)],
+                schedule: schedule, status: 'Pending', progress: 0, duration: null, result: null
+            };
+            if (box.status == 'Offline' && schedule.isBefore(now)) { t.status = 'Failed'; t.reason = 'Box unreachable'; }
+            else if (schedule.isBefore(now.clone().subtract(20, 'minutes'))) { finishTask(t, rng); }
+            else if (schedule.isBefore(now)) { t.status = 'Running'; t.progress = 35 + Math.floor(rng() * 50); }
+            list.push(t);
+        }
+        return list.reverse();
+    })();
+
+    function taskResult(t) {
+        if (t.status == 'Failed') return '<span class="txt-bad"><i class="fa fa-exclamation-circle"></i> ' + (t.reason || 'Measurement error') + '</span>';
+        if (!t.result) return '<span class="rt-cell-sub">-</span>';
+        var r = t.result;
+        if (t.tester == 'equalonecrowd') {
+            return '<span class="rt-cell-title">' + fmt(r.web) + '</span> <small class="rt-cell-sub">s web</small> &middot; ' +
+                   '<span class="rt-cell-title">' + fmt(r.video) + '</span> <small class="rt-cell-sub">s video</small>';
+        }
+        return '<i class="fa fa-arrow-down txt-good"></i> <span class="rt-cell-title">' + fmt(r.download) + '</span> ' +
+               '<i class="fa fa-arrow-up" style="color:#1F6FB2;margin-left:4px"></i> <span class="rt-cell-title">' + fmt(r.upload) + '</span> <small class="rt-cell-sub">Mbps</small>' +
+               '<div class="rt-cell-sub">ping ' + fmt(r.ping, 0) + ' ms</div>';
+    }
+    var TASK_BADGE = { Done: ['success', 'fa-check'], Running: ['info', 'fa-circle-o-notch fa-spin'], Pending: ['muted', 'fa-clock-o'], Failed: ['danger', 'fa-times'] };
+    function taskStatus(t) {
+        var b = TASK_BADGE[t.status];
+        var html = badge(t.status, b[0], b[1]);
+        if (t.status == 'Running') html += '<div class="rt-bar" style="width:90px"><span style="width:' + t.progress + '%;background:#1F6FB2"></span></div>';
+        return html;
+    }
+
+    function unreadCount() { return NOTIFICATIONS.filter(function (n) { return !n.read; }).length; }
+
+    function notifItem(n, i, compact) {
+        var sev = SEVERITY[n.sev];
+        var site = siteById(n.site);
+        return '<li class="' + (n.read ? '' : 'unread') + '" data-index="' + i + '">' +
+            '<div class="ic tone-' + sev.tone + '"><i class="fa ' + n.icon + '"></i></div>' +
+            '<div class="body"><div class="t">' + n.title + '</div>' +
+            '<div class="d">' + n.message + '</div>' +
+            (compact ? '' : '<div style="margin-top:6px">' + badge(sev.label, sev.badge) + ' ' + badge(site.box_code, 'muted', 'fa-cube') + '</div>') +
+            '</div><div class="time">' + (n.min ? heartbeatText(n.min) : 'just now') + '</div></li>';
+    }
+
+    function renderNavbarNotifications() {
+        var count = unreadCount();
+        $('#notif-count').text(count).toggle(count > 0);
+        $('#side-notif-count').text(count || '');
+        var html = '';
+        NOTIFICATIONS.slice(0, 4).forEach(function (n, i) {
+            html += '<li><a href="#notifications" data-index="' + i + '" class="nav-notif">' +
+                '<span><span class="rt-msg-title">' + n.title + '</span><span class="time">' + (n.min ? heartbeatText(n.min) : 'just now') + '</span></span>' +
+                '<span class="message">' + n.message + '</span></a></li>';
+        });
+        html += '<li><div class="text-center"><a href="#notifications"><strong>See All Notifications</strong> <i class="fa fa-angle-right"></i></a></div></li>';
+        $('#menu1').html(html);
+    }
+
+    function addNotification(n) {
+        NOTIFICATIONS.unshift($.extend({ min: 0, read: false }, n));
+        renderNavbarNotifications();
+    }
+</script>
+
+<!-- ============================================================ -->
+<!-- PAGES: DASHBOARD / BOX / TASK / NOTIFICATIONS / PROFILE      -->
+<!-- ============================================================ -->
+<script>
+    function todayParam(extra) {
+        return $.extend({ tester: 'speedtest', period: 'hourly', operator: 'Telkomsel', time: moment().format('YYYY-MM-DD') }, extra);
+    }
+
+    function renderDashboard() {
+        updateSyncTime();
+        var online = BOX_SITES.filter(function (b) { return b.status == 'Online'; }).length;
+        var all4g = [], all3g = [];
+        BOX_SITES.forEach(function (b) {
+            all4g = all4g.concat(MockApi.generate(todayParam({ technology: '4g', boxSiteId: b.id })));
+            all3g = all3g.concat(MockApi.generate(todayParam({ technology: '3g', boxSiteId: b.id })));
+        });
+        var dl4 = seriesStats(all4g, 'Download', '4g'), dl3 = seriesStats(all3g, 'Download', '3g'), ping4 = seriesStats(all4g, 'Ping', '4g');
+        var done = TASKS.filter(function (t) { return t.status == 'Done'; }).length;
+        var finished = TASKS.filter(function (t) { return t.status == 'Done' || t.status == 'Failed'; }).length;
+        var success = finished ? done / finished * 100 : 100;
+
+        $('#dashboard-kpis').html(
+            kpiTile({ icon: 'fa-cube', tone: 'navy', label: 'Box Sites', value: BOX_SITES.length, unit: 'sites',
+                      foot: '<b class="txt-good">' + online + ' online</b> &middot; <b class="txt-bad">' + (BOX_SITES.length - online) + ' issue</b>' }) +
+            kpiTile({ icon: 'fa-download', tone: 'red', label: 'Avg Download 4G', value: fmt(dl4.avg), unit: 'Mbps',
+                      foot: '≥ 20 Mbps &middot; <b class="txt-' + scoreClass(dl4.pass) + '">' + fmt(dl4.pass, 0) + '% pass</b>' }) +
+            kpiTile({ icon: 'fa-download', tone: 'blue', label: 'Avg Download 3G', value: fmt(dl3.avg), unit: 'Mbps',
+                      foot: '≥ 5 Mbps &middot; <b class="txt-' + scoreClass(dl3.pass) + '">' + fmt(dl3.pass, 0) + '% pass</b>' }) +
+            kpiTile({ icon: 'fa-clock-o', tone: 'amber', label: 'Avg Latency 4G', value: fmt(ping4.avg, 1), unit: 'ms',
+                      foot: '≤ 50 ms &middot; <b class="txt-' + scoreClass(ping4.pass) + '">' + fmt(ping4.pass, 0) + '% pass</b>' }) +
+            kpiTile({ icon: 'fa-tasks', tone: 'green', label: 'Tasks Today', value: TASKS.length, unit: 'tasks',
+                      foot: '<b class="txt-' + scoreClass(success) + '">' + fmt(success, 0) + '% success</b> &middot; ' + done + ' done' }) +
+            kpiTile({ icon: 'fa-bell', tone: 'red', label: 'Open Alerts', value: unreadCount(), unit: 'unread',
+                      foot: NOTIFICATIONS.filter(function (n) { return n.sev == 'danger' && !n.read; }).length + ' critical' })
+        );
+
+        // 24h trend (average across sites)
+        var avg4 = [], avg3 = [];
+        for (var h = 0; h < 24; h++) {
+            avg4.push(+avgOf(all4g.filter(function (r) { return +r.hour == h; }).map(function (r) { return r.download; })).toFixed(2));
+            avg3.push(+avgOf(all3g.filter(function (r) { return +r.hour == h; }).map(function (r) { return r.download; })).toFixed(2));
+        }
+        destroyChart('dashboard_trend');
+        Highcharts.chart('dashboard_trend', chartBase({
+            type: 'spline', categories: hourCategories(), unit: 'Mbps', legend: true, xTitle: 'Hour (WIB)',
+            plotBands: [{ from: 18.5, to: 22.5, color: 'rgba(237,28,36,.05)', label: { text: 'Busy hour', style: { color: '#C9141B', fontSize: '10px' } } }],
+            plotLines: [{ value: 20, color: '#26B99A', dashStyle: 'Dash', width: 1.5, zIndex: 5,
+                          label: { text: '4G target 20 Mbps', align: 'right', x: -4, style: { color: '#1E9C81', fontSize: '10px' } } }],
+            series: [{ name: '4G Download', color: '#ED1C24', data: avg4 }, { name: '3G Download', color: '#1F6FB2', data: avg3 }]
+        }));
+
+        // Operator benchmark
+        function opAvg(tech) {
+            return OPERATORS.map(function (op) {
+                var all = [];
+                BOX_SITES.forEach(function (b) { all = all.concat(MockApi.generate(todayParam({ technology: tech, boxSiteId: b.id, operator: op }))); });
+                return +seriesStats(all, 'Download', tech).avg.toFixed(2);
+            });
+        }
+        destroyChart('dashboard_operator');
+        Highcharts.chart('dashboard_operator', chartBase({
+            categories: OPERATORS.map(function (o) { return OPERATOR_LABEL[o]; }), unit: 'Mbps', legend: true,
+            series: [{ name: '4G', color: '#f8a4a7', borderColor: '#ED1C24', data: opAvg('4g') },
+                     { name: '3G', color: '#BBD3EE', borderColor: '#1F6FB2', data: opAvg('3g') }]
+        }));
+
+        // Regional table
+        $('#dashboard-regions').html(REGIONS.map(function (r) {
+            var sites = BOX_SITES.filter(function (b) { return b.region_id == r.id; });
+            var rows = [];
+            sites.forEach(function (b) { rows = rows.concat(MockApi.generate(todayParam({ technology: '4g', boxSiteId: b.id }))); });
+            var dl = seriesStats(rows, 'Download', '4g'), ul = seriesStats(rows, 'Upload', '4g'), pg = seriesStats(rows, 'Ping', '4g');
+            var score = (dl.pass + ul.pass + pg.pass) / 3;
+            var on = sites.filter(function (b) { return b.status == 'Online'; }).length;
+            return '<tr><td><div class="rt-cell-title">Regional ' + r.id + '</div><div class="rt-cell-sub">' + r.region_name + '</div></td>' +
+                '<td>' + sites.length + '</td>' +
+                '<td><span class="' + (on == sites.length ? 'txt-good' : 'txt-bad') + '">' + on + ' / ' + sites.length + '</span></td>' +
+                '<td><b>' + fmt(dl.avg) + '</b> <small class="rt-cell-sub">Mbps</small></td>' +
+                '<td><b>' + fmt(ul.avg) + '</b> <small class="rt-cell-sub">Mbps</small></td>' +
+                '<td><b>' + fmt(pg.avg, 1) + '</b> <small class="rt-cell-sub">ms</small></td>' +
+                '<td>' + miniBar(score, scoreColor(score), '<b class="txt-' + scoreClass(score) + '">' + fmt(score, 0) + '%</b>') + '</td></tr>';
+        }).join(''));
+
+        $('#dashboard-alerts').html(NOTIFICATIONS.slice(0, 5).map(function (n, i) { return notifItem(n, i, true); }).join(''));
+
+        $('#dashboard-tasks').html(TASKS.filter(function (t) { return t.status != 'Pending'; }).slice(0, 6).map(function (t) {
+            var b = siteById(t.boxId);
+            return '<tr><td class="rt-cell-title rt-nowrap">' + t.id + '<div class="rt-cell-sub">' + t.schedule.format('HH:mm') + '</div></td>' +
+                '<td><div class="rt-cell-title">' + b.site_name + '</div><div class="rt-cell-sub">' + TESTER_LABEL[t.tester] + ' · ' + OPERATOR_LABEL[t.operator] + '</div></td>' +
+                '<td>' + techBadge(t.tech) + '</td>' +
+                '<td class="rt-nowrap">' + taskResult(t) + '</td><td class="rt-nowrap">' + taskStatus(t) + '</td></tr>';
+        }).join(''));
+
+        $('#dashboard-health').html(BOX_SITES.slice().sort(function (a, b) { return b.quota_used - a.quota_used; }).slice(0, 6).map(function (b) {
+            var q = b.quota_used / b.quota_total * 100;
+            return '<tr><td><div class="rt-cell-title">' + b.site_name + '</div><div class="rt-cell-sub">Regional ' + b.region_id + '</div></td>' +
+                '<td>' + miniBar(q, quotaColor(q), b.quota_used + ' / ' + b.quota_total + ' GB') + '</td>' +
+                '<td class="rt-nowrap"><i class="fa fa-battery-' + (b.battery > 75 ? 'full' : b.battery > 50 ? 'three-quarters' : b.battery > 25 ? 'half' : 'quarter') + '"></i> ' + b.battery + '%</td>' +
+                '<td class="rt-cell-sub rt-nowrap">' + heartbeatText(b.heartbeat_min) + '</td>' +
+                '<td class="rt-nowrap">' + statusBadge(b.status) + '</td></tr>';
+        }).join(''));
+    }
+
+    /* ---------------- BOX ---------------- */
+    var boxInited = false;
+    function renderBoxPage() {
+        updateSyncTime();
+        if (!boxInited) {
+            boxInited = true;
+            REGIONS.forEach(function (r) { $('#box-region').append('<option value="' + r.id + '">Regional ' + r.id + ' - ' + r.region_name + '</option>'); });
+            $('#box-search, #box-region, #box-status').on('input change', renderBoxTable);
+        }
+        var c = function (s) { return BOX_SITES.filter(function (b) { return b.status == s; }).length; };
+        var avgUptime = avgOf(BOX_SITES.map(function (b) { return b.uptime; }));
+        $('#box-kpis').html(
+            kpiTile({ icon: 'fa-cube', tone: 'navy', label: 'Total Box', value: BOX_SITES.length, unit: 'sites', foot: REGIONS.length + ' regions covered' }) +
+            kpiTile({ icon: 'fa-check-circle', tone: 'green', label: 'Online', value: c('Online'), unit: 'sites', foot: 'heartbeat &lt; 5 minutes' }) +
+            kpiTile({ icon: 'fa-power-off', tone: 'red', label: 'Offline', value: c('Offline'), unit: 'sites', foot: 'no heartbeat &gt; 24 hours' }) +
+            kpiTile({ icon: 'fa-database', tone: 'amber', label: 'Data Limited', value: c('Data Limited'), unit: 'sites', foot: 'quota usage &gt; 90%' }) +
+            kpiTile({ icon: 'fa-line-chart', tone: 'blue', label: 'Avg Uptime 30d', value: fmt(avgUptime, 1), unit: '%', foot: 'SLA target 98%' })
+        );
+        renderBoxTable();
+    }
+
+    function renderBoxTable() {
+        var q = $.trim($('#box-search').val() || '').toLowerCase();
+        var region = $('#box-region').val(), status = $('#box-status').val();
+        var list = BOX_SITES.filter(function (b) {
+            return (!region || b.region_id == region) && (!status || b.status == status) &&
+                (!q || (b.box_code + ' ' + b.site_name + ' ' + b.imei + ' ' + b.address).toLowerCase().indexOf(q) >= 0);
+        });
+        $('#box-count').text('Showing ' + list.length + ' of ' + BOX_SITES.length + ' boxes');
+        if (!list.length) { $('#box-table-body').html('<tr><td colspan="10"><div class="rt-empty"><i class="fa fa-search"></i>No box matches the filter</div></td></tr>'); return; }
+        $('#box-table-body').html(list.map(function (b) {
+            var qp = b.quota_used / b.quota_total * 100;
+            return '<tr>' +
+                '<td class="rt-nowrap"><div class="rt-cell-title">' + b.box_code + '</div><div class="rt-cell-sub">' + b.site_name + '</div></td>' +
+                '<td class="rt-nowrap"><div>Regional ' + b.region_id + '</div><div class="rt-cell-sub">' + regionById(b.region_id).region_name + '</div></td>' +
+                '<td class="rt-nowrap"><div>' + b.imei + '</div><div class="rt-cell-sub">' + b.firmware + '</div></td>' +
+                '<td style="white-space:nowrap">' + signalBars(b.rsrp) + '</td>' +
+                '<td>' + miniBar(qp, quotaColor(qp), b.quota_used + ' / ' + b.quota_total + ' GB') + '</td>' +
+                '<td>' + b.battery + '%</td>' +
+                '<td class="txt-' + (b.uptime >= 98 ? 'good' : b.uptime >= 90 ? 'warn' : 'bad') + '">' + b.uptime + '%</td>' +
+                '<td class="rt-cell-sub" style="white-space:nowrap">' + heartbeatText(b.heartbeat_min) + '</td>' +
+                '<td>' + statusBadge(b.status) + '</td>' +
+                '<td class="rt-actions-cell">' +
+                  '<a href="javascript:;" class="btn btn-rt-outline btn-xs box-detail" data-id="' + b.id + '"><i class="fa fa-eye"></i> Detail</a>' +
+                  '<a href="javascript:;" class="btn btn-rt btn-xs view-performance" data-region="' + b.region_id + '"><i class="fa fa-area-chart"></i> Performance</a>' +
+                '</td></tr>';
+        }).join(''));
+    }
+
+    function openBoxDetail(id) {
+        var b = siteById(id);
+        $('#boxModal').data('box', id);
+        $('#boxModalTitle').html('<i class="fa fa-cube"></i> ' + b.box_code + ' &nbsp;' + statusBadge(b.status));
+        $('#boxModalPerf').data('region', b.region_id);
+        var info = [
+            ['Site name', b.site_name], ['Region', regionLabel(b.region_id)], ['Address', b.address],
+            ['Coordinates', b.lat.toFixed(4) + ', ' + b.lng.toFixed(4)], ['Hardware', b.hardware], ['Firmware', b.firmware],
+            ['Device IMEI', '<code>' + b.imei + '</code>'], ['Installed', b.install_date],
+            ['Battery / Temperature', b.battery + '% &middot; ' + b.temperature + ' °C'], ['Last heartbeat', heartbeatText(b.heartbeat_min)]
+        ];
+        var html = '<div class="rt-info">' + info.map(function (x) { return '<div><div class="k">' + x[0] + '</div><div class="v">' + x[1] + '</div></div>'; }).join('') + '</div>';
+        html += '<div class="rt-section-title">SIM cards</div><div class="table-responsive"><table class="table table-striped jambo_table"><thead><tr class="headings">' +
+            '<th>Operator</th><th>MSISDN</th><th>4G Signal (RSRP)</th><th>Data Quota</th></tr></thead><tbody>' +
+            b.sims.map(function (s) {
+                var qp = s.quota_used / s.quota_total * 100;
+                return '<tr><td><span class="rt-dot" style="background:' + OPERATOR_COLORS[s.operator] + '"></span><b>' + OPERATOR_LABEL[s.operator] + '</b></td>' +
+                    '<td>' + s.msisdn + '</td><td>' + signalBars(s.rsrp) + '</td>' +
+                    '<td>' + miniBar(qp, quotaColor(qp), s.quota_used + ' / ' + s.quota_total + ' GB') + '</td></tr>';
+            }).join('') + '</tbody></table></div>';
+        html += '<div class="rt-section-title" style="margin-top:16px">4G download today &middot; SpeedTest &middot; all operators</div><div id="box_detail_chart" style="height:240px"></div>';
+        $('#boxModalBody').html(html);
+        $('#boxModal').modal('show');
+    }
+    $('#boxModal').on('shown.bs.modal', function () {
+        var b = siteById($('#boxModal').data('box'));
+        var series = OPERATORS.map(function (op) {
+            return { name: OPERATOR_LABEL[op], color: OPERATOR_COLORS[op],
+                     data: MockApi.generate(todayParam({ technology: '4g', boxSiteId: b.id, operator: op })).map(function (r) { return r.download; }) };
+        });
+        destroyChart('box_detail_chart');
+        Highcharts.chart('box_detail_chart', chartBase({
+            type: 'spline', unit: 'Mbps', legend: true, series: series, categories: hourCategories(),
+            plotLines: [{ value: 20, color: '#26B99A', dashStyle: 'Dash', width: 1.5, label: { text: 'Target 20 Mbps', align: 'right', x: -4, style: { color: '#1E9C81', fontSize: '10px' } } }]
+        }));
+    });
+    $(document).on('click', '.box-detail', function () { openBoxDetail($(this).data('id')); });
+    $('#boxModalPerf').on('click', function () { var r = $(this).data('region'); $('#boxModal').modal('hide'); goPerformance(r); });
+
+    function goPerformance(region) {
+        perf.pendingRegion = region;
+        if (location.hash == '#performance') route(); else location.hash = '#performance';
+    }
+    $(document).on('click', '.view-performance', function () { goPerformance($(this).data('region')); });
+
+    /* ---------------- TASK ---------------- */
+    var taskInited = false;
+    function renderTaskPage() {
+        if (!taskInited) {
+            taskInited = true;
+            $('#task-search').on('input', renderTaskTable);
+            $('#task-status-filter').on('click', '.btn', function () {
+                $('#task-status-filter .btn').removeClass('active'); $(this).addClass('active'); renderTaskTable();
+            });
+            $('#task-box').html(BOX_SITES.map(function (b) { return '<option value="' + b.id + '">' + b.box_code + ' — ' + b.site_name + '</option>'; }).join(''));
+            $('#task-schedule').daterangepicker({ singleDatePicker: true, timePicker: true, timePicker24Hour: true, locale: { format: 'YYYY-MM-DD HH:mm' } });
+            $('#taskModal').on('show.bs.modal', function () {
+                var next = moment().add(1, 'hour').startOf('hour');
+                $('#task-schedule').data('daterangepicker').setStartDate(next);
+                $('#task-schedule').data('daterangepicker').setEndDate(next);
+            });
+            $('#task-form').on('submit', function () {
+                var t = {
+                    id: 'TSK-' + (1001 + TASKS.length), boxId: +$('#task-box').val(), tester: $('#task-tester').val(),
+                    tech: $('#task-tech').val(), operator: $('#task-operator').val(),
+                    schedule: moment($('#task-schedule').val(), 'YYYY-MM-DD HH:mm'), status: 'Pending', progress: 0
+                };
+                TASKS.unshift(t);
+                $('#taskModal').modal('hide');
+                renderTaskPage();
+                toast('Task <b>' + t.id + '</b> created for ' + siteById(t.boxId).site_name);
+            });
+        }
+        var c = function (s) { return TASKS.filter(function (t) { return t.status == s; }).length; };
+        var durations = TASKS.filter(function (t) { return t.duration; }).map(function (t) { return t.duration; });
+        $('#task-kpis').html(
+            kpiTile({ icon: 'fa-tasks', tone: 'navy', label: 'Total Tasks', value: TASKS.length, unit: 'tasks', foot: 'scheduled today' }) +
+            kpiTile({ icon: 'fa-check', tone: 'green', label: 'Done', value: c('Done'), unit: 'tasks', foot: 'avg duration ' + fmt(avgOf(durations), 0) + ' s' }) +
+            kpiTile({ icon: 'fa-circle-o-notch', tone: 'blue', label: 'Running', value: c('Running'), unit: 'tasks', foot: 'in progress now' }) +
+            kpiTile({ icon: 'fa-clock-o', tone: 'amber', label: 'Pending', value: c('Pending'), unit: 'tasks', foot: 'waiting for schedule' }) +
+            kpiTile({ icon: 'fa-times', tone: 'red', label: 'Failed', value: c('Failed'), unit: 'tasks', foot: 'box unreachable / error' })
+        );
+        renderTaskTable();
+    }
+
+    function renderTaskTable() {
+        var status = $('#task-status-filter .active').data('status');
+        var q = $.trim($('#task-search').val() || '').toLowerCase();
+        var list = TASKS.filter(function (t) {
+            var b = siteById(t.boxId);
+            return (!status || t.status == status) &&
+                (!q || (t.id + ' ' + b.box_code + ' ' + b.site_name + ' ' + TESTER_LABEL[t.tester] + ' ' + OPERATOR_LABEL[t.operator]).toLowerCase().indexOf(q) >= 0);
+        });
+        $('#task-count').text('Showing ' + list.length + ' of ' + TASKS.length + ' tasks');
+        if (!list.length) { $('#task-table-body').html('<tr><td colspan="10"><div class="rt-empty"><i class="fa fa-inbox"></i>No task matches the filter</div></td></tr>'); return; }
+        $('#task-table-body').html(list.map(function (t) {
+            var b = siteById(t.boxId);
+            var action = t.status == 'Running' ? '<span class="rt-cell-sub">' + t.progress + '%</span>' :
+                '<a href="javascript:;" class="btn btn-rt-outline btn-xs run-task" data-id="' + t.id + '"><i class="fa fa-' +
+                (t.status == 'Pending' ? 'play' : 'repeat') + '"></i> ' + (t.status == 'Pending' ? 'Run now' : 'Re-run') + '</a>';
+            return '<tr>' +
+                '<td class="rt-cell-title">' + t.id + '</td>' +
+                '<td><div class="rt-cell-title">' + b.box_code + '</div><div class="rt-cell-sub">' + b.site_name + '</div></td>' +
+                '<td>' + TESTER_LABEL[t.tester] + '</td>' +
+                '<td>' + techBadge(t.tech) + '</td>' +
+                '<td><span class="rt-dot" style="background:' + OPERATOR_COLORS[t.operator] + '"></span>' + OPERATOR_LABEL[t.operator] + '</td>' +
+                '<td style="white-space:nowrap">' + t.schedule.format('DD MMM, HH:mm') + '</td>' +
+                '<td>' + (t.duration ? t.duration + ' s' : '<span class="rt-cell-sub">-</span>') + '</td>' +
+                '<td>' + taskResult(t) + '</td>' +
+                '<td>' + taskStatus(t) + '</td>' +
+                '<td class="rt-actions-cell">' + action + '</td></tr>';
+        }).join(''));
+    }
+
+    $(document).on('click', '.run-task', function () {
+        var id = $(this).data('id');
+        var t = TASKS.filter(function (x) { return x.id == id; })[0];
+        t.status = 'Running'; t.progress = 0; t.result = null; t.duration = null; t.reason = null;
+        renderTaskPage();
+        var timer = setInterval(function () {
+            t.progress = Math.min(100, t.progress + 8 + Math.floor(Math.random() * 10));
+            if (t.progress >= 100) {
+                clearInterval(timer);
+                var box = siteById(t.boxId);
+                if (box.status == 'Offline') { t.status = 'Failed'; t.reason = 'Box unreachable'; t.progress = 0; }
+                else { t.schedule = moment(); finishTask(t); }
+                addNotification({
+                    sev: t.status == 'Done' ? 'info' : 'danger', icon: t.status == 'Done' ? 'fa-check-circle' : 'fa-exclamation-triangle',
+                    title: t.status == 'Done' ? 'Task Completed' : 'Task Failed', site: t.boxId,
+                    message: 'Task <strong>' + t.id + '</strong> ' + (t.status == 'Done' ? 'finished on ' : 'could not reach ') + '<strong>' + box.site_name + '</strong>.'
+                });
+                toast('Task <b>' + t.id + '</b> ' + (t.status == 'Done' ? 'completed' : 'failed'), t.status == 'Done' ? 'fa-check-circle' : 'fa-times-circle');
+            }
+            if ($('#page-task').is(':visible')) renderTaskPage();
+        }, 300);
+    });
+
+    /* ---------------- NOTIFICATIONS ---------------- */
+    var notifInited = false;
+    function renderNotificationsPage() {
+        if (!notifInited) {
+            notifInited = true;
+            $('#notif-filter').on('click', '.btn', function () {
+                $('#notif-filter .btn').removeClass('active'); $(this).addClass('active'); renderNotifList();
+            });
+            $('#notif-read-all').on('click', function () {
+                NOTIFICATIONS.forEach(function (n) { n.read = true; });
+                renderNavbarNotifications(); renderNotificationsPage(); toast('All notifications marked as read');
+            });
+            $('#notif-list').on('click', 'li[data-index]', function () {
+                NOTIFICATIONS[$(this).data('index')].read = true;
+                renderNavbarNotifications(); renderNotificationsPage();
+            });
+        }
+        var c = function (s) { return NOTIFICATIONS.filter(function (n) { return n.sev == s; }).length; };
+        $('#notif-kpis').html(
+            kpiTile({ icon: 'fa-envelope-o', tone: 'navy', label: 'Unread', value: unreadCount(), unit: 'of ' + NOTIFICATIONS.length, foot: 'last 14 days' }) +
+            kpiTile({ icon: 'fa-exclamation-circle', tone: 'red', label: 'Critical', value: c('danger'), unit: 'alerts', foot: 'device off / task failed' }) +
+            kpiTile({ icon: 'fa-exclamation-triangle', tone: 'amber', label: 'Warning', value: c('warning'), unit: 'alerts', foot: 'quota, temperature, KPI' }) +
+            kpiTile({ icon: 'fa-info-circle', tone: 'blue', label: 'Info', value: c('info'), unit: 'events', foot: 'tasks, firmware, registration' })
+        );
+        renderNotifList();
+    }
+    function renderNotifList() {
+        var f = $('#notif-filter .active').data('filter');
+        var html = '', shown = 0;
+        NOTIFICATIONS.forEach(function (n, i) {
+            if (f == 'unread' && n.read) return;
+            if (f && f != 'unread' && n.sev != f) return;
+            shown++; html += notifItem(n, i, false);
+        });
+        $('#notif-list-count').text(shown + ' notification(s)');
+        $('#notif-list').html(html || '<li><div class="rt-empty" style="width:100%"><i class="fa fa-bell-slash-o"></i>Nothing here</div></li>');
+    }
+    $(document).on('click', '#dashboard-alerts li', function () { location.hash = '#notifications'; });
+
+    /* ---------------- PROFILE ---------------- */
+    function renderProfilePage() {
+        $('#profile-last-login').text(moment(window.__loginAt || new Date()).format('DD MMM YYYY, HH:mm') + ' WIB');
+        $('#profile-stats').html('<div><b>' + TASKS.length + '</b><span>Tasks</span></div><div><b>' + BOX_SITES.length + '</b><span>Boxes</span></div><div><b>' + REGIONS.length + '</b><span>Regions</span></div>');
+        var acts = [
+            { tone: 'green', icon: 'fa-sign-in', t: 'Signed in', d: 'Web Remote Task console', min: 0 },
+            { tone: 'blue', icon: 'fa-plus-circle', t: 'Created task TSK-1016', d: 'SpeedTest 4G · ' + siteById(2).site_name, min: 35 },
+            { tone: 'amber', icon: 'fa-database', t: 'Renewed data quota', d: siteById(13).box_code + ' · Telkomsel SIM +10 GB', min: 260 },
+            { tone: 'red', icon: 'fa-wrench', t: 'Opened maintenance ticket', d: siteById(5).site_name + ' · device off', min: 1500 },
+            { tone: 'navy', icon: 'fa-refresh', t: 'Pushed firmware RT-FW 2.4.1', d: siteById(2).box_code, min: 2880 }
+        ];
+        $('#profile-activity').html(acts.map(function (a) {
+            return '<li><div class="ic tone-' + a.tone + '"><i class="fa ' + a.icon + '"></i></div><div class="body"><div class="t">' + a.t +
+                '</div><div class="d">' + a.d + '</div></div><div class="time">' + (a.min ? heartbeatText(a.min) : 'just now') + '</div></li>';
+        }).join(''));
+    }
+    $('#profile-save').on('click', function () { toast('Preferences saved'); });
+</script>
+
+<!-- ============================================================ -->
+<!-- Auth + simple hash router                                    -->
+<!-- ============================================================ -->
+<script>
+    var SESSION_KEY = 'remote_task_logged_in';
+
+    function isLoggedIn() {
+        try { return sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) { return !!window.__loggedIn; }
+    }
+    function setLoggedIn(v) {
+        try { v ? sessionStorage.setItem(SESSION_KEY, '1') : sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+        window.__loggedIn = v;
+        if (v) window.__loginAt = new Date();
+    }
+
+    function showLogin() {
+        $('#app-view').removeClass('active');
+        $('#login-view').addClass('active');
+        $('body').attr('class', 'login');
+        $('#login-error').hide();
+    }
+
+    function showApp() {
+        $('#login-view').removeClass('active');
+        $('#app-view').addClass('active');
+        if (!$('body').hasClass('nav-md') && !$('body').hasClass('nav-sm')) $('body').attr('class', 'nav-md');
+    }
+
+    var PAGES = {
+        dashboard: renderDashboard,
+        performance: initPerformancePage,
+        box: renderBoxPage,
+        task: renderTaskPage,
+        notifications: renderNotificationsPage,
+        profile: renderProfilePage
+    };
+
+    function route() {
+        var page = (location.hash || '').replace('#', '') || 'dashboard';
+        if (!isLoggedIn()) { showLogin(); return; }
+        if (!PAGES[page]) page = 'dashboard';
+
+        showApp();
+        $('.modal').modal('hide');
+        $('.right_col .page').hide();
+        $('#page-' + page).show();
+
+        $('#sidebar-menu li').removeClass('active active-sm current-page');
+        $('#sidebar-menu li[data-page="' + page + '"]').addClass($('body').hasClass('nav-sm') ? 'active-sm' : 'active');
+
+        PAGES[page]();
+        window.scrollTo(0, 0);
+        $(window).trigger('resize');
+        reflowAll();
+    }
+
+    $(function () {
+        renderNavbarNotifications();
+
+        $('#login-form').on('submit', function (e) {
+            e.preventDefault();
+            var u = $.trim($('#login-username').val());
+            var p = $('#login-password').val();
+            if (u === DEMO_USER.username && p === DEMO_USER.password) {
+                setLoggedIn(true);
+                if (!location.hash || location.hash == '#login') location.hash = '#dashboard';
+                route();
+                toast('Welcome back, ' + DEMO_USER.name);
+            } else {
+                $('#login-error').show();
+            }
+        });
+
+        $(document).on('click', '.logout-link', function () {
+            setLoggedIn(false);
+            location.hash = '#login';
+            showLogin();
+        });
+
+        $(document).on('click', '.nav-notif', function () {
+            var n = NOTIFICATIONS[$(this).data('index')];
+            if (n) n.read = true;
+            renderNavbarNotifications();
+        });
+
+        $('#fullscreen-btn').on('click', function () {
+            if (!document.fullscreenElement) { if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); }
+            else if (document.exitFullscreen) { document.exitFullscreen(); }
+        });
+
+        $('#menu_toggle').on('click', reflowAll);
+
+        // Keep sidebar highlight in sync even when clicking the current menu item
+        $('#sidebar-menu').on('click', 'a', function () {
+            if ($(this).attr('href') === location.hash) setTimeout(route, 0);
+        });
+
+        Highcharts.setOptions({ lang: { thousandsSep: ',', numericSymbolMagnitude: 1000, noData: 'No data to display' } });
+
+        $(window).on('hashchange', route);
+        route();
+    });
+</script>
+
+</body>
+</html>

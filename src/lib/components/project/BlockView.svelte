@@ -148,9 +148,14 @@
 	.content > :global(*) {
 		grid-column: 1 / -1;
 	}
+	/* Text runs the full content width, held off the last grid line */
 	.content > p,
 	.content > .caption {
-		grid-column: 1 / span 6;
+		grid-column: 1 / -1;
+		padding-right: var(--block-inset);
+	}
+	.block {
+		--block-inset: clamp(16px, 4vw, 64px);
 	}
 	p {
 		color: var(--text-secondary);
@@ -407,6 +412,13 @@
 		flex-direction: column;
 		gap: 2px;
 	}
+	/* Items that end on a column line keep a gap before it */
+	.features li,
+	.impact li,
+	.layer li,
+	.stats div {
+		padding-right: 24px;
+	}
 	.layer b {
 		font-size: 15px;
 		font-weight: 500;
@@ -421,10 +433,6 @@
 		h2,
 		.content {
 			grid-column: 1 / -1;
-		}
-		.content > p,
-		.content > .caption {
-			grid-column: 1 / span 5;
 		}
 		.stats div,
 		figure,

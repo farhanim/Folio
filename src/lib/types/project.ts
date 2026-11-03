@@ -78,9 +78,13 @@ export interface Project {
 	slug: string;
 	type: ProjectType;
 	title: string;
+	/** What the product does for people, shown under the title on the project page. */
+	headline?: string;
 	tagline: string;
 	summary: string;
 	client: Client;
+	/** The company I built it at, when it came from my work experience. */
+	via?: Client;
 	role: string;
 	/** Leave out when unknown — shown as a dash. */
 	year?: number;
@@ -102,6 +106,8 @@ export interface Project {
 		poster: string;
 		/** How to get in, if the build has a demo login. */
 		note?: string;
+		/** Device the live demo opens on; phone-first builds start on mobile. */
+		device?: 'desktop' | 'mobile';
 	};
 	/** Highlighted in "Worth a read". */
 	featured?: boolean;

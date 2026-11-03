@@ -3,6 +3,7 @@
 	import type { Project } from '#lib/types/index.ts';
 	import { coverSrcset } from '#lib/utils/cover.ts';
 	import ClientBadge from './ClientBadge.svelte';
+	import { source } from '#lib/utils/credit.ts';
 	import Tag from './Tag.svelte';
 
 	/**
@@ -118,7 +119,7 @@
 			{#if project.special}<Tag kind="special" />{/if}
 		</span>
 	{/if}
-	<span class="client"><ClientBadge client={project.client} /></span>
+	<span class="client"><ClientBadge client={source(project)} /></span>
 </span>
 
 <style>

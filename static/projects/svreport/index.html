@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>SignalViewer Dashboard</title>
+  <link rel="icon" href="assets/img/sv.ico">
+  <!-- All stylesheets below are copied from the original project -->
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/sv.css">
+  <link rel="stylesheet" href="assets/css/highcharts.css">
+  <link rel="stylesheet" href="assets/css/open-iconic/css/open-iconic-bootstrap.min.css">
+
+  <style>
+    /* =====================================================================
+       DESIGN TOKENS
+    ===================================================================== */
+    :root {
+      --navy: #1A237E; --navy-2: #283593; --navy-3: #303F9F; --indigo: #3949AB;
+      --accent: #2bbe42; --yellow: #fff600;
+      --bg: #eef3f8; --card: #fff; --border: #e4eaf2; --border-2: #eef2f7;
+      --text: #1d2939; --muted: #6b7a90; --muted-2: #98a2b3;
+      --up: #12b76a; --down: #f04438;
+      --radius: 12px; --radius-sm: 8px;
+      --shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 6px 18px rgba(16, 24, 40, .06);
+      --gap: 20px;
+    }
+    html, body { height: 100%; }
+    body { background: var(--bg); color: var(--text); font-size: 13px; -webkit-font-smoothing: antialiased; }
+    b, strong, .fw-medium { font-family: 'montserratmedium' !important; font-weight: normal !important; }
+    .text-muted { color: var(--muted) !important; }
+    .small, small { font-size: 11.5px; }
+    .page, .app-page { display: none; }
+    .page.active, .app-page.active { display: block; }
+    .oi { top: 0; }
+
+    /* ---------- layout ---------- */
+    .sv-main { padding: 24px 28px 8px; max-width: 1600px; margin: 0 auto; }
+    .sv-grid { display: grid; gap: var(--gap); }
+    .sv-row { margin-left: calc(var(--gap) / -2); margin-right: calc(var(--gap) / -2); display: flex; flex-wrap: wrap; }
+    .sv-row > [class*="col"] { padding-left: calc(var(--gap) / 2); padding-right: calc(var(--gap) / 2); margin-bottom: var(--gap); }
+
+    /* ---------- top bar ---------- */
+    .sv-topbar { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1030; }
+    .sv-topbar .inner { display: flex; align-items: center; height: 64px; padding: 0 28px; max-width: 1600px; margin: 0 auto; }
+    .sv-brand { display: flex; align-items: center; margin-right: 32px; }
+    .sv-brand img { height: 36px; }
+    .sv-nav { display: flex; height: 100%; }
+    .sv-nav a {
+      display: flex; align-items: center; padding: 0 16px; color: var(--muted); height: 100%;
+      border-bottom: 3px solid transparent; border-top: 3px solid transparent; font-size: 13px;
+    }
+    .sv-nav a .oi { margin-right: 8px; font-size: 12px; }
+    .sv-nav a:hover { color: var(--navy); }
+    .sv-nav a.active { color: var(--navy); border-bottom-color: var(--navy); font-family: 'montserratmedium'; }
+    .sv-topbar .right { margin-left: auto; display: flex; align-items: center; }
+    .sv-sync { display: flex; align-items: center; color: var(--muted); font-size: 12px; margin-right: 20px; }
+    .sv-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--up); display: inline-block; margin-right: 8px; box-shadow: 0 0 0 3px rgba(18, 183, 106, .15); }
+    .sv-user { display: flex; align-items: center; cursor: pointer; padding: 6px 8px; border-radius: var(--radius-sm); color: var(--text); }
+    .sv-user:hover { background: var(--bg); color: var(--text); }
+    .sv-user .name { line-height: 1.2; margin: 0 10px; text-align: left; }
+    .sv-user .name small { display: block; color: var(--muted); text-transform: capitalize; }
+    .sv-avatar {
+      width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+      color: #fff; font-family: 'montserratmedium'; font-size: 12px; flex: none; background: var(--indigo);
+    }
+    .sv-avatar.sm { width: 30px; height: 30px; font-size: 11px; }
+    .dropdown-menu { border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow); font-size: 13px; padding: 6px; }
+    .dropdown-item { border-radius: 6px; padding: 8px 12px; color: var(--text); }
+    .dropdown-item .oi { width: 18px; color: var(--muted); font-size: 11px; }
+    .dropdown-item:active { background: var(--navy); }
+    .dropdown-header { font-size: 11px; color: var(--muted); padding: 6px 12px; }
+
+    /* ---------- page head ---------- */
+    .sv-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+    .sv-head h4 { font-family: 'montserratmedium'; font-size: 20px; margin: 0; color: var(--text); }
+    .sv-head .sub { color: var(--muted); margin-top: 4px; }
+    .sv-crumb { font-size: 11px; color: var(--muted-2); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+
+    /* ---------- filter bar ---------- */
+    .sv-filter { display: flex; align-items: center; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 4px; box-shadow: var(--shadow); }
+    .sv-filter label { font-size: 10.5px; color: var(--muted-2); text-transform: uppercase; letter-spacing: .06em; margin: 0 6px 0 10px; }
+    .sv-filter select, .sv-filter input {
+      border: 0; background: transparent; font-size: 13px; color: var(--text); padding: 6px 8px; height: 34px;
+      font-family: 'montserratmedium'; outline: none; cursor: pointer;
+    }
+    .sv-filter select:disabled { color: var(--muted-2); cursor: not-allowed; }
+    .sv-filter .sep { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
+    .sv-seg { display: inline-flex; background: var(--bg); border-radius: 8px; padding: 3px; }
+    .sv-seg button { border: 0; background: transparent; padding: 5px 14px; border-radius: 6px; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+    .sv-seg button.active { background: #fff; color: var(--navy); box-shadow: 0 1px 3px rgba(16, 24, 40, .12); font-family: 'montserratmedium'; }
+
+    /* ---------- buttons ---------- */
+    .btn { font-size: 13px; border-radius: 8px; padding: 8px 16px; }
+    .btn-sm { font-size: 12px; padding: 5px 12px; border-radius: 7px; }
+    .btn .oi { font-size: 11px; margin-right: 6px; }
+    .btn-sv { background: var(--navy); color: #fff; border: 1px solid var(--navy); }
+    .btn-sv:hover, .btn-sv:focus { background: var(--navy-2); color: #fff; }
+    .btn-go { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
+    .btn-go:hover { background: #24a838; color: #fff; }
+    .btn-ghost { background: #fff; color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--bg); }
+    .btn-danger-soft { background: #fef3f2; color: #d92d20; border: 1px solid #fecdca; }
+    .btn-danger-soft:hover { background: #fee4e2; color: #b42318; }
+    .btn-icon { width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-icon .oi { margin: 0; }
+
+    /* ---------- panel (card) ---------- */
+    .sv-panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); height: 100%; display: flex; flex-direction: column; }
+    .sv-panel-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 16px 20px 12px; gap: 12px; }
+    .sv-panel-title { display: flex; align-items: center; }
+    .sv-panel-title h6 { font-family: 'montserratmedium'; font-size: 14px; margin: 0; color: var(--text); }
+    .sv-panel-title .sub { color: var(--muted); font-size: 11.5px; margin-top: 2px; }
+    .sv-ico {
+      width: 34px; height: 34px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center;
+      margin-right: 12px; flex: none; font-size: 13px; background: #eef0fb; color: var(--indigo);
+    }
+    .sv-ico.brand { font-family: 'montserratmedium'; font-size: 13px; color: #fff; }
+    .sv-panel-body { padding: 4px 20px 20px; flex: 1; }
+    .sv-panel-foot { border-top: 1px solid var(--border-2); padding: 12px 20px; color: var(--muted); font-size: 12px; }
+    .sv-divider { height: 1px; background: var(--border-2); margin: 0 20px; }
+
+    /* ---------- KPI tiles ---------- */
+    .sv-kpi { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 18px 16px; height: 100%; position: relative; overflow: hidden; }
+    .sv-kpi .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .sv-kpi .label { color: var(--muted); font-size: 12px; }
+    .sv-kpi .kpi-value { font-family: 'montserratmedium'; font-size: 26px; line-height: 1.1; color: var(--text); letter-spacing: -.01em; }
+    .sv-kpi .kpi-value small { font-size: 12px; color: var(--muted); font-family: 'montserratregular'; margin-left: 4px; }
+    .sv-kpi .foot { margin-top: 10px; color: var(--muted); font-size: 11.5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .sv-kpi .sv-ico { margin: 0; }
+    .sv-kpi.hero { background: linear-gradient(135deg, var(--navy) 0%, var(--indigo) 100%); border: 0; color: #fff; }
+    .sv-kpi.hero .label, .sv-kpi.hero .foot { color: rgba(255, 255, 255, .75); }
+    .sv-kpi.hero .kpi-value { color: var(--yellow); }
+    .sv-kpi.hero .sv-ico { background: rgba(255, 255, 255, .14); color: #fff; }
+    .sv-kpi.hero:after { content: ""; position: absolute; right: -40px; bottom: -60px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255, 255, 255, .06); }
+    .sv-delta { display: inline-flex; align-items: center; font-family: 'montserratmedium'; font-size: 11px; padding: 2px 7px; border-radius: 20px; }
+    .sv-delta.up { color: #027a48; background: #ecfdf3; }
+    .sv-delta.down { color: #b42318; background: #fef3f2; }
+    .sv-delta.flat { color: var(--muted); background: var(--bg); }
+    .sv-kpi.hero .sv-delta.up { background: rgba(18, 183, 106, .22); color: #b7f5d3; }
+    .sv-kpi.hero .sv-delta.down { background: rgba(240, 68, 56, .22); color: #ffd1cc; }
+    /* ---------- reporting summary widgets (original "Summary of Installed Application" look) ---------- */
+    .sv-sum {
+      position: relative; overflow: hidden; height: 100%; display: flex; flex-direction: column;
+      border-radius: var(--radius); color: #fff; box-shadow: 0 6px 18px rgba(26, 35, 126, .18);
+    }
+    .sv-sum:before {
+      content: ""; position: absolute; right: -50px; top: -70px; width: 180px; height: 180px; border-radius: 50%;
+      background: rgba(255, 255, 255, .06); pointer-events: none;
+    }
+    .sv-sum .sum-top { padding: 16px 18px 14px; position: relative; min-height: 167px; }
+    .sv-sum .sum-head { display: flex; align-items: center; justify-content: space-between; }
+    .sv-sum .sum-title { color: var(--yellow); font-family: 'montserratmedium'; font-size: 13.5px; margin: 0; letter-spacing: .2px; }
+    .sv-sum .sum-period { color: rgba(255, 255, 255, .6); font-size: 11px; margin-top: 2px; }
+    .sv-sum .sum-ico {
+      width: 32px; height: 32px; border-radius: 8px; background: rgba(255, 255, 255, .14);
+      display: inline-flex; align-items: center; justify-content: center; font-size: 12px; color: #fff;
+    }
+    .sv-sum hr { border-color: rgba(255, 255, 255, .18); margin: 12px 0 10px; }
+    .sv-sum .sum-main { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+    .sv-sum .sum-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .sv-sum .sum-lbl { color: rgba(255, 255, 255, .7); font-size: 11.5px; display: block; margin-bottom: 2px; }
+    .sv-sum .sum-big { font-family: 'montserratmedium'; font-size: 30px; line-height: 1; color: #fff; letter-spacing: -.01em; }
+    .sv-sum .sum-big.yellow { color: var(--yellow); }
+    .sv-sum .sum-vs { color: rgba(255, 255, 255, .65); font-size: 11px; padding-bottom: 3px; }
+    .sv-sum .sv-delta.up { background: rgba(18, 183, 106, .25); color: #b7f5d3; }
+    .sv-sum .sv-delta.down { background: rgba(240, 68, 56, .25); color: #ffd1cc; }
+    .sv-sum .sv-delta.flat { background: rgba(255, 255, 255, .14); color: #fff; }
+    .sv-sum .sum-split {
+      margin-top: auto; display: grid; background: rgba(0, 0, 0, .14); border-top: 1px solid rgba(255, 255, 255, .1);
+      padding: 10px 18px 12px; gap: 6px; position: relative; min-height: 76px; align-content: start;
+    }
+    .sv-sum .sum-split .sum-lbl { font-size: 10.5px; display: flex; align-items: center; }
+    .sv-sum .sum-split .sum-lbl i { width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; flex: none; }
+    .sv-sum .sum-split .sum-val { font-family: 'montserratmedium'; font-size: 17px; line-height: 1.2; }
+    .sv-sum .sum-split .sum-pct { font-size: 10px; color: rgba(255, 255, 255, .55); }
+    .sv-meter { height: 4px; border-radius: 4px; background: var(--border-2); overflow: hidden; margin-top: 12px; display: flex; }
+    .sv-meter span { display: block; height: 100%; }
+
+    /* ---------- chips (series legend + totals) ---------- */
+    .sv-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 20px 6px; min-height: 44px; }
+    .sv-chip {
+      display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; padding: 5px 9px;
+      cursor: pointer; user-select: none; background: #fff; transition: opacity .15s, background .15s; line-height: 1.15;
+    }
+    .sv-chip:hover { background: #f8fafc; }
+    .sv-chip i { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; flex: none; }
+    .sv-chip .n { display: block; font-size: 10.5px; color: var(--muted); }
+    .sv-chip .v { display: block; font-family: 'montserratmedium'; font-size: 13px; color: var(--text); }
+    .sv-chip.off { opacity: .4; }
+    .sv-chip.total { cursor: default; background: var(--bg); border-color: transparent; }
+
+    /* ---------- insight strip ---------- */
+    .sv-insights { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--border-2); }
+    .sv-insights > div { padding: 12px 20px; border-right: 1px solid var(--border-2); }
+    .sv-insights > div:last-child { border-right: 0; }
+    .sv-insights .n { font-size: 11px; color: var(--muted); }
+    .sv-insights .v { font-family: 'montserratmedium'; font-size: 15px; }
+    .sv-insights .v small { color: var(--muted); font-family: 'montserratregular'; }
+
+    /* ---------- country list ---------- */
+    .sv-country { list-style: none; margin: 0; padding: 0; }
+    .sv-country li { display: grid; grid-template-columns: 26px 1fr auto; align-items: center; gap: 4px 10px; padding: 9px 0; border-bottom: 1px solid var(--border-2); }
+    .sv-country li:last-child { border-bottom: 0; }
+    .sv-country .rk { width: 22px; height: 22px; border-radius: 6px; background: var(--bg); color: var(--muted); font-size: 10.5px; display: flex; align-items: center; justify-content: center; font-family: 'montserratmedium'; }
+    .sv-country li:nth-child(-n+3) .rk { background: #eef0fb; color: var(--indigo); }
+    .sv-country .nm { font-size: 13px; }
+    .sv-country .ct { text-align: right; font-family: 'montserratmedium'; }
+    .sv-country .ct small { color: var(--muted); font-family: 'montserratregular'; margin-left: 6px; }
+    .sv-country .bar { grid-column: 2 / 4; height: 5px; background: var(--border-2); border-radius: 4px; overflow: hidden; }
+    .sv-country .bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--indigo), #37bbf5); border-radius: 4px; }
+    .sv-country li.unknown .nm { color: var(--muted); font-style: italic; }
+    .sv-country li.unknown .bar span { background: #c3cad6; }
+    .sv-scroll { overflow-y: auto; }
+    .sv-scroll::-webkit-scrollbar { width: 6px; }
+    .sv-scroll::-webkit-scrollbar-thumb { background: #d0d7e2; border-radius: 6px; }
+    .sv-scroll::-webkit-scrollbar-track { background: transparent; box-shadow: none; }
+
+    /* ---------- tables ---------- */
+    .sv-table { width: 100%; margin: 0; border-collapse: separate; border-spacing: 0; }
+    .sv-table th { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-family: 'montserratmedium'; font-weight: normal; padding: 10px 12px; background: #f8fafc; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    .sv-table td { padding: 12px; border-bottom: 1px solid var(--border-2); vertical-align: middle; }
+    .sv-table tr:last-child td { border-bottom: 0; }
+    .sv-table tbody tr { transition: background .12s; }
+    .sv-table tbody tr:hover { background: #f8fafc; }
+    .sv-table tbody tr.selected { background: #eef0fb; }
+    .sv-table tbody tr.clickable { cursor: pointer; }
+    .sv-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .sv-person { display: flex; align-items: center; }
+    .sv-person .t { margin-left: 12px; line-height: 1.3; }
+    .sv-person .t small { color: var(--muted); display: block; }
+
+    /* ---------- badges ---------- */
+    .sv-badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-family: 'montserratmedium'; text-transform: capitalize; white-space: nowrap; }
+    .sv-badge i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; margin-right: 6px; }
+    .sv-badge.admin { background: #eef0fb; color: var(--navy-3); }
+    .sv-badge.user { background: #f2f4f7; color: #475467; }
+    .sv-badge.ok { background: #ecfdf3; color: #027a48; }
+    .sv-badge.warn { background: #fffaeb; color: #b54708; }
+    .sv-badge.info { background: #eff8ff; color: #175cd3; }
+    .sv-badge.you { background: var(--navy); color: #fff; margin-left: 8px; font-size: 10px; padding: 2px 7px; }
+
+    /* ---------- forms ---------- */
+    .sv-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; display: block; }
+    .sv-input, .sv-select {
+      width: 100%; height: 40px; border: 1px solid var(--border); border-radius: 8px; padding: 0 12px; font-size: 13.5px;
+      color: var(--text); background: #fff; transition: border-color .15s, box-shadow .15s; font-family: 'montserratmedium';
+    }
+    .sv-input:focus, .sv-select:focus { outline: none; border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(57, 73, 171, .14); }
+    .sv-input:disabled, .sv-select:disabled { background: #f8fafc; color: var(--muted-2); cursor: not-allowed; }
+    .sv-input-wrap { position: relative; }
+    .sv-input-wrap .unit { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted-2); font-size: 11px; pointer-events: none; }
+    .sv-input-wrap .sv-input { padding-right: 70px; }
+    .sv-section { padding: 18px 20px; border-top: 1px solid var(--border-2); }
+    .sv-section-title { display: flex; align-items: center; margin-bottom: 14px; }
+    .sv-section-title .sv-ico { width: 28px; height: 28px; border-radius: 7px; font-size: 11px; margin-right: 10px; }
+    .sv-section-title h6 { margin: 0; font-family: 'montserratmedium'; font-size: 13.5px; }
+    .sv-section-title .hint { margin-left: auto; color: var(--muted-2); font-size: 11px; }
+    .help-block { color: #d92d20; display: block; margin-top: 4px; font-size: 11.5px; }
+    .flex-fill { flex: 1 1 0; }
+    #edit-actions { display: flex; gap: 8px; }
+    #edit-actions.off { display: none; }
+    .sv-empty { text-align: center; padding: 28px 16px; color: var(--muted); }
+    .sv-empty .oi { font-size: 22px; color: var(--muted-2); display: block; margin-bottom: 10px; }
+
+    /* ---------- toast ---------- */
+    .sv-toast-wrap { position: fixed; right: 24px; bottom: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+    .sv-toast {
+      background: #101828; color: #fff; padding: 12px 16px; border-radius: 10px; box-shadow: 0 10px 30px rgba(16, 24, 40, .25);
+      display: flex; align-items: center; min-width: 260px; font-size: 13px; animation: svIn .2s ease-out;
+    }
+    .sv-toast .oi { margin-right: 10px; color: #6ce9a6; }
+    @keyframes svIn { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    /* ---------- footer ---------- */
+    .sv-footer { max-width: 1600px; margin: 0 auto; padding: 8px 28px 24px; display: flex; justify-content: space-between; color: var(--muted-2); font-size: 11.5px; }
+    body.page-maps .sv-footer { display: none; }
+
+    /* ---------- loading overlay (sv.css .modal-loading) ---------- */
+    .modal-loading { background-size: 64px; background-color: rgba(255, 255, 255, .65); }
+
+    /* ---------- auth pages ---------- */
+    body.svt-login { font-family: 'montserratregular'; }
+    .svt-login-card { padding: 60px 56px; margin-top: 30px; }
+    .svt-login .svt-form { font-size: 14px; height: 44px; font-family: 'montserratregular'; }
+    .svt-login .btn-primary { height: 44px; background: var(--navy); border-color: var(--navy); border-radius: 8px; font-family: 'montserratmedium'; }
+    .svt-login .btn-primary:hover { background: var(--navy-2); }
+    .svt-login .auth-title { font-family: 'montserratmedium'; font-size: 20px; margin: 36px 0 4px; color: var(--text); }
+    .svt-login .auth-sub { color: var(--muted); margin-bottom: 8px; }
+    .svt-login strong { color: #d92d20; font-size: 11.5px; display: block; margin: -8px 0 10px; }
+    .svt-login .demo-note { margin-top: 18px; background: #eef0fb; color: var(--navy-3); border-radius: 8px; padding: 10px 12px; font-size: 12px; display: flex; align-items: flex-start; }
+    .svt-login .demo-note .oi { margin: 2px 8px 0 0; font-size: 11px; }
+    .svt-login .right-side { display: flex; align-items: center; }
+    .svt-big-title { padding-top: 0; font-family: 'montserratmedium'; font-size: 42px; line-height: 1.15; }
+    .auth-lead { color: rgba(255, 255, 255, .85); font-size: 15px; max-width: 460px; margin: 0 3rem; line-height: 1.6; }
+    .auth-feats { display: flex; gap: 14px; margin: 28px 3rem 0; flex-wrap: wrap; }
+    .auth-feats div { background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .2); color: #fff; border-radius: 10px; padding: 12px 16px; min-width: 130px; backdrop-filter: blur(4px); }
+    .auth-feats b { display: block; font-size: 20px; color: var(--yellow); }
+    .auth-feats span { font-size: 11.5px; opacity: .85; }
+
+    .fp-wrap { background: var(--bg); min-height: 100vh; }
+    .fp-card { max-width: 460px; margin: 70px auto; }
+
+    /* ---------- charts ---------- */
+    .sv-chart { width: 100%; }
+    .highcharts-container { height: auto !important; overflow: visible !important; font-family: 'montserratregular', Arial, sans-serif !important; }
+    .highcharts-background { fill: transparent; }
+    .highcharts-grid-line { fill: none; stroke: #eef2f7; }
+    .highcharts-xaxis-grid .highcharts-grid-line { stroke-width: 0; }
+    .highcharts-axis-line { stroke: #e4eaf2; }
+    .highcharts-tick { stroke: none; }
+    .highcharts-axis-labels { fill: #6b7a90; font-size: 11px; }
+    .highcharts-axis-title { fill: #98a2b3; font-size: 11px; }
+    .highcharts-tooltip-box { fill: #fff; fill-opacity: 1; stroke-width: 1px; }
+    .highcharts-tooltip text { fill: #1d2939; }
+    .highcharts-reset-zoom .highcharts-button-box { fill: #fff; stroke: #e4eaf2; }
+    .highcharts-reset-zoom text { fill: #1A237E; }
+    .highcharts-markers { stroke: #fff; stroke-width: 1.5px; }
+    .highcharts-column-series rect.highcharts-point { stroke: none; }
+    .highcharts-graph { fill: none !important; stroke-width: 2.25px; }
+    .highcharts-area { fill-opacity: .08; stroke: none !important; }
+    .highcharts-tooltip span { width: auto !important; white-space: nowrap !important; }
+    .sv-tip { font-size: 12px; min-width: 150px; }
+    .sv-tip .h { font-family: 'montserratmedium'; margin-bottom: 4px; display: block; }
+    .sv-tip .r { display: flex; justify-content: space-between; gap: 16px; }
+    .sv-tip .r i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
+    .sv-tip .r b { font-family: 'montserratmedium'; }
+
+    /* ---------- maps ---------- */
+    #map { position: absolute; left: 0; right: 0; top: 64px; bottom: 0; overflow: hidden; background: #aadaff; cursor: grab; touch-action: none; user-select: none; }
+    #map.dragging { cursor: grabbing; }
+    #map .tm-layer { position: absolute; left: 0; top: 0; }
+    #map .tm-tile { position: absolute; width: 256px; height: 256px; pointer-events: none; }
+    #map .tm-marker { position: absolute; width: 16px; height: 16px; cursor: pointer; transform: translate(-50%, -100%); transition: transform .1s; }
+    #map .tm-marker:hover { transform: translate(-50%, -100%) scale(1.35); z-index: 5; }
+    #map .tm-marker.hide { display: none; }
+    #map .tm-ctrl { position: absolute; right: 20px; bottom: 36px; z-index: 20; background: #fff; border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; border: 1px solid var(--border); }
+    #map .tm-ctrl button { display: block; width: 38px; height: 38px; border: 0; background: #fff; font-size: 18px; color: var(--text); cursor: pointer; }
+    #map .tm-ctrl button:hover { background: var(--bg); }
+    #map .tm-ctrl button + button { border-top: 1px solid var(--border); }
+    #map .tm-attr { position: absolute; right: 0; bottom: 0; z-index: 20; font-size: 10px; background: rgba(255, 255, 255, .75); padding: 1px 6px; color: #444; }
+    #map .tm-info {
+      position: absolute; z-index: 30; background: #fff; padding: 14px 16px; border-radius: 12px; box-shadow: 0 10px 30px rgba(16, 24, 40, .22);
+      transform: translate(-50%, calc(-100% - 26px)); width: 270px; cursor: default; color: var(--text); font-size: 12px;
+    }
+    #map .tm-info:after { content: ""; position: absolute; left: 50%; bottom: -9px; margin-left: -9px; border-left: 9px solid transparent; border-right: 9px solid transparent; border-top: 9px solid #fff; }
+    #map .tm-info .tm-close { position: absolute; right: 10px; top: 8px; border: 0; background: none; font-size: 18px; color: var(--muted-2); cursor: pointer; line-height: 1; }
+    .tm-info .ti-h { display: flex; align-items: center; margin-bottom: 10px; padding-right: 18px; }
+    .tm-info .ti-h img { width: 18px; margin-right: 8px; }
+    .tm-info .ti-h b { font-size: 13px; }
+    .tm-info table { width: 100%; }
+    .tm-info td { padding: 3px 0; vertical-align: top; }
+    .tm-info td:first-child { color: var(--muted); width: 84px; }
+    .tm-info .addr { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-2); color: var(--muted); line-height: 1.45; }
+
+    .sv-map-panel {
+      position: absolute; left: 20px; top: 84px; z-index: 40; width: 300px; max-height: calc(100% - 104px);
+      background: #fff; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(16, 24, 40, .16); border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+    }
+    .sv-map-panel .mp-head { padding: 16px 18px 12px; }
+    .sv-map-panel .mp-head h6 { font-family: 'montserratmedium'; margin: 0; font-size: 14px; }
+    .sv-map-panel .mp-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 18px 14px; }
+    .sv-map-panel .mp-stats > div { background: var(--bg); border-radius: 8px; padding: 10px 12px; }
+    .sv-map-panel .mp-stats .n { font-size: 10.5px; color: var(--muted); }
+    .sv-map-panel .mp-stats .v { font-family: 'montserratmedium'; font-size: 17px; }
+    .sv-legend { position: static; padding: 0; background: none; border-radius: 0; }
+    .sv-map-panel .mp-legend { padding: 12px 18px; border-top: 1px solid var(--border-2); border-bottom: 1px solid var(--border-2); }
+    .sv-map-panel .mp-legend label { display: flex; align-items: center; margin: 4px 0; cursor: pointer; font-size: 12.5px; }
+    .sv-map-panel .mp-legend label input { margin-right: 10px; }
+    .sv-map-panel .mp-legend img { width: 16px; margin-right: 8px; }
+    .sv-map-panel .mp-legend b { margin-left: auto; }
+    .sv-map-panel .mp-cities { overflow-y: auto; padding: 6px 8px 10px; }
+    .sv-map-panel .mp-cities .t { font-size: 10.5px; color: var(--muted-2); text-transform: uppercase; letter-spacing: .06em; padding: 8px 10px 4px; }
+    .sv-map-panel .mp-city { display: flex; align-items: center; padding: 7px 10px; border-radius: 8px; cursor: pointer; }
+    .sv-map-panel .mp-city:hover { background: var(--bg); }
+    .sv-map-panel .mp-city .oi { color: var(--muted-2); margin-right: 10px; font-size: 11px; }
+    .sv-map-panel .mp-city small { color: var(--muted); display: block; }
+    .sv-map-panel .mp-city b { margin-left: auto; }
+
+    @media (max-width: 991px) {
+      .sv-nav { display: none; }
+      .sv-main { padding: 16px; }
+      .sv-insights { grid-template-columns: repeat(2, 1fr); }
+      .sv-map-panel { width: 260px; }
+    }
+    @media (max-width: 575px) {
+      .sv-sync, .sv-user .name { display: none; }
+      .sv-filter { flex-wrap: wrap; }
+      .sv-map-panel { display: none; }
+    }
+  </style>
+  <style id="chart-colors"></style>
+</head>
+
+<body>
+
+<!-- =====================================================================
+     LOGIN
+====================================================================== -->
+<div id="page-login" class="page">
+  <div class="container-fluid">
+    <div class="row fill">
+      <div class="col-md-4 col-sm-12 left-side">
+        <div class="card border-0 svt-login-card">
+          <div><img src="assets/img/logo.png" width="180px" /></div>
+          <div class="auth-title">Welcome back</div>
+          <div class="auth-sub">Sign in to the SignalViewer reporting dashboard.</div>
+          <form class="mt-4" id="login-form">
+            <div class="form-group">
+              <input type="email" class="form-control svt-form" name="email" id="login-email" placeholder="Enter email" required>
+            </div>
+            <strong id="login-email-error"></strong>
+            <div class="form-group">
+              <input type="password" class="form-control svt-form" id="login-password" name="password" placeholder="Password" required>
+            </div>
+            <strong id="login-password-error"></strong>
+            <button type="submit" class="btn btn-primary btn-block mt-4">Login</button>
+          </form>
+          <p class="mt-3 mb-0"><small>Don't have an account? Register <a href="#/signup">here</a> or <a href="#/password/reset">forgot password</a></small></p>
+          <div class="demo-note"><span class="oi oi-info"></span><span>Demo account is prefilled — just click <b>Login</b>.</span></div>
+        </div>
+      </div>
+      <div class="col-md-8 col-xs-12 right-side hidden">
+        <div>
+          <h1 class="text-white mx-5 mb-3 svt-big-title">Signal Viewer<br>Dashboard</h1>
+          <p class="auth-lead">Network quality analytics in one place — app installs, spot &amp; route tests, e-mail and social media reach across every region.</p>
+          <div class="auth-feats" id="auth-feats"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     REGISTER
+====================================================================== -->
+<div id="page-register" class="page">
+  <div class="container-fluid">
+    <div class="row fill">
+      <div class="col-md-4 col-sm-12 left-side">
+        <div class="card border-0 svt-login-card">
+          <div><img src="assets/img/logo.png" width="180px" /></div>
+          <div class="auth-title">Create an account</div>
+          <div class="auth-sub">Use your <b>@immobisp.com</b> e-mail address.</div>
+          <form class="mt-4" id="register-form" novalidate>
+            <div class="form-group"><input type="text" class="form-control svt-form" name="name" placeholder="Username"></div>
+            <strong class="reg-error" data-for="name"></strong>
+            <div class="form-group"><input type="email" class="form-control svt-form" name="email" placeholder="Email (name@immobisp.com)"></div>
+            <strong class="reg-error" data-for="email"></strong>
+            <div class="form-group"><input type="password" class="form-control svt-form" name="password" placeholder="Password (min. 6 characters)"></div>
+            <strong class="reg-error" data-for="password"></strong>
+            <div class="form-group"><input type="password" class="form-control svt-form" name="confirm_password" placeholder="Re-Password"></div>
+            <strong class="reg-error" data-for="confirm_password"></strong>
+            <button type="submit" class="btn btn-primary btn-block mt-4">Registrasi</button>
+          </form>
+          <p class="mt-3"><small>Already have an account? <a href="#/">Login</a></small></p>
+        </div>
+      </div>
+      <div class="col-md-8 col-xs-12 right-side hidden">
+        <div>
+          <h1 class="text-white mx-5 mb-3 svt-big-title">Signal Viewer<br>Dashboard</h1>
+          <p class="auth-lead">Join your team to monitor install growth, test activity and engagement in real time.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     FORGOT PASSWORD
+====================================================================== -->
+<div id="page-forgot" class="page fp-wrap">
+  <div class="fp-card">
+    <div class="sv-panel">
+      <div class="sv-panel-head" style="padding:28px 28px 8px;">
+        <div>
+          <img src="assets/img/logo.png" width="150px">
+          <h6 class="mt-4 mb-1" style="font-family:'montserratmedium';font-size:18px;">Reset Password</h6>
+          <div class="text-muted">Enter your e-mail and we'll send you a reset link.</div>
+        </div>
+      </div>
+      <div class="sv-panel-body" style="padding:12px 28px 28px;">
+        <div class="alert alert-success" id="fp-status" style="display:none;"></div>
+        <form id="forgot-form">
+          <label class="sv-label" for="fp-email">E-Mail Address</label>
+          <input id="fp-email" type="email" class="sv-input" name="email" placeholder="name@immobisp.com" required>
+          <span class="help-block" id="fp-error"></span>
+          <button type="submit" class="btn btn-sv btn-block mt-3"><span class="oi oi-envelope-closed"></span>Send Password Reset Link</button>
+        </form>
+        <div class="text-center mt-3"><a href="#/"><small>&larr; Back to login</small></a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     AUTHENTICATED APP
+====================================================================== -->
+<div id="page-app" class="page">
+  <header class="sv-topbar">
+    <div class="inner">
+      <a class="sv-brand" href="#/chartsv2"><img src="assets/img/signalviewer-logo.png" alt="SignalViewer"></a>
+      <nav class="sv-nav">
+        <a href="#/chartsv2" data-nav="chartsv2"><span class="oi oi-dashboard"></span>Reporting</a>
+        <a href="#/maps" data-nav="maps"><span class="oi oi-map-marker"></span>Maps</a>
+        <a href="#/chartsv2input" data-nav="chartsv2input" class="admin-only"><span class="oi oi-pencil"></span>Input</a>
+        <a href="#/manageUser" data-nav="manageUser" class="admin-only"><span class="oi oi-people"></span>Manage User</a>
+      </nav>
+      <div class="right">
+        <div class="sv-sync"><span class="sv-dot"></span><span id="sync-label">Data synced</span></div>
+        <div class="dropdown">
+          <a class="sv-user" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="return false;">
+            <span class="sv-avatar" id="nav-avatar"></span>
+            <span class="name"><b id="nav-username"></b><small id="nav-role"></small></span>
+            <img src="assets/img/menu.png" width="16">
+          </a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-header" id="nav-email"></div>
+            <a class="dropdown-item admin-only" href="#/chartsv2input"><span class="oi oi-pencil"></span>Input</a>
+            <a class="dropdown-item admin-only" href="#/manageUser"><span class="oi oi-people"></span>Manage User</a>
+            <a class="dropdown-item" href="#/chartsv2"><span class="oi oi-dashboard"></span>Reporting</a>
+            <a class="dropdown-item" href="#/maps"><span class="oi oi-map-marker"></span>Maps</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#/logout"><span class="oi oi-account-logout"></span>Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- =================================================================
+       REPORTING
+  ================================================================== -->
+  <div id="page-chartsv2" class="app-page">
+    <div class="sv-main">
+      <div class="sv-head">
+        <div>
+          <div class="sv-crumb">Dashboard / Reporting</div>
+          <h4>Summary, <span id="datelabel"></span></h4>
+          <div class="sub" id="period-sub"></div>
+        </div>
+        <div class="sv-filter">
+          <div class="sv-seg" id="chooseFilter">
+            <button type="button" data-v="daily">Daily</button>
+            <button type="button" data-v="monthly" class="active">Monthly</button>
+          </div>
+          <div class="sep"></div>
+          <label for="month_filter">Month</label>
+          <select id="month_filter"></select>
+          <div class="sep"></div>
+          <label for="year_filter">Year</label>
+          <select id="year_filter"></select>
+          <button type="button" class="btn btn-go btn-sm ml-2" id="submit"><span class="oi oi-reload"></span>Submit</button>
+        </div>
+      </div>
+
+      <!-- KPI tiles -->
+      <div class="sv-row" id="kpi-row"></div>
+
+      <div class="sv-row">
+        <div class="col-xl-8">
+          <div class="sv-panel">
+            <div class="sv-panel-head">
+              <div class="sv-panel-title">
+                <span class="sv-ico"><span class="oi oi-data-transfer-download"></span></span>
+                <div><h6>Installed Application</h6><div class="sub" data-sub="installs"></div></div>
+              </div>
+            </div>
+            <div class="sv-chips" data-chips="chartsapk"></div>
+            <div class="sv-panel-body pb-2"><div id="chartsapk" class="sv-chart"></div></div>
+            <div class="sv-insights" id="apk-insights"></div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="sv-panel">
+            <div class="sv-panel-head">
+              <div class="sv-panel-title">
+                <span class="sv-ico"><span class="oi oi-globe"></span></span>
+                <div>
+                  <h6>Installed Application by Country
+                    <a href="#" onclick="return false;" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="This table shows countries where users installed and tested Signal Viewers. Users who installed but not tested the application are not included."><span class="oi oi-info" style="font-size:10px;"></span></a>
+                  </h6>
+                  <div class="sub" id="country-sub"></div>
+                </div>
+              </div>
+            </div>
+            <div class="sv-panel-body sv-scroll" style="max-height:398px;"><ul class="sv-country" id="summarycountry"></ul></div>
+            <div class="sv-panel-foot d-flex justify-content-between"><span>Devices tested, all time</span><a href="#/maps">View on map &rarr;</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sv-row">
+        <div class="col-xl-4 col-lg-6"><div class="sv-panel" data-panel="chartsroute"></div></div>
+        <div class="col-xl-4 col-lg-6"><div class="sv-panel" data-panel="chartsspot"></div></div>
+        <div class="col-xl-4 col-lg-12"><div class="sv-panel" data-panel="chartsemail"></div></div>
+      </div>
+      <div class="sv-row">
+        <div class="col-xl-4 col-lg-6"><div class="sv-panel" data-panel="chartsfacebook"></div></div>
+        <div class="col-xl-4 col-lg-6"><div class="sv-panel" data-panel="chartsinstagram"></div></div>
+        <div class="col-xl-4 col-lg-12"><div class="sv-panel" data-panel="chartstwitter"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================
+       INPUT DAILY REPORT
+  ================================================================== -->
+  <div id="page-chartsv2input" class="app-page">
+    <div class="sv-main">
+      <div class="sv-head">
+        <div>
+          <div class="sv-crumb">Data / Input</div>
+          <h4>Input Daily Report</h4>
+          <div class="sub">Record social media and e-mail figures for a specific date.</div>
+        </div>
+        <div class="d-flex align-items-center">
+          <button type="button" id="btn_update_data" class="btn btn-ghost"><span class="oi oi-reload"></span>Update Data</button>
+        </div>
+      </div>
+
+      <div class="sv-row" id="input-kpis"></div>
+
+      <div class="sv-row">
+        <div class="col-xl-7">
+          <form id="form" class="sv-panel">
+            <div class="sv-panel-head">
+              <div class="sv-panel-title">
+                <span class="sv-ico"><span class="oi oi-calendar"></span></span>
+                <div><h6 id="input-date-title">Report date</h6><div class="sub" id="input-status-sub"></div></div>
+              </div>
+              <div class="d-flex align-items-center">
+                <span class="sv-badge mr-3" id="input-status"></span>
+                <input type="date" class="sv-input" id="datePicker" name="datePicker" style="width:170px;height:36px;">
+              </div>
+            </div>
+
+            <div class="sv-section">
+              <div class="sv-section-title"><span class="sv-ico brand" style="background:#1877f2;">f</span><h6>Facebook</h6><span class="hint">Daily page activity</span></div>
+              <div class="form-row">
+                <div class="col-sm-6 mb-2"><label class="sv-label" for="pageLikeFacebook">Page Like</label><div class="sv-input-wrap"><input type="number" min="0" class="sv-input" id="pageLikeFacebook" placeholder="0"><span class="unit">likes</span></div></div>
+                <div class="col-sm-6 mb-2"><label class="sv-label" for="commentFacebook">Comment</label><div class="sv-input-wrap"><input type="number" min="0" class="sv-input" id="commentFacebook" placeholder="0"><span class="unit">comments</span></div></div>
+              </div>
+            </div>
+            <div class="sv-section">
+              <div class="sv-section-title"><span class="sv-ico brand" style="background:#1d9bf0;">t</span><h6>Twitter</h6><span class="hint">Daily account activity</span></div>
+              <div class="form-row">
+                <div class="col-sm-4 mb-2"><label class="sv-label" for="followerTwitter">Follower</label><div class="sv-input-wrap"><input type="number" min="0" class="sv-input" id="followerTwitter" placeholder="0"><span class="unit">new</span></div></div>
+                <div class="col-sm-4 mb-2"><label class="sv-label" for="retweetTwitter">Retweet</label><div class="sv-input-wrap"><input type="number" min="0" class="sv-input" id="retweetTwitter" placeholder="0"><span class="unit">RTs</span></div></div>
+                <div class="col-sm-4 mb-2"><label class="sv-label" for="mentionTwitter">Mention</label><div class="sv-input-wrap"><input type="number" min="0" class="sv-input" id="mentionTwitter" placeholder="0"><span class="unit">mentions</span></div></div>
+              </div>
+            </div>
+            <div class="sv-section">
+              <div class="sv-section-title"><span class="sv-ico brand" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);">ig</span><h6>Instagram</h6><span class="hint">Daily account activity</span></div>
+              <div class="form-row">
+                <div class="col-sm-6 mb-2"><label class="sv-label" for="followerInstagram">Follower</label><div class="sv-input-wrap"><input type="number" min="0" class="sv-input" id="followerInstagram" placeholder="0"><span class="unit">new</span></div></div>
+                <div class="col-sm-6 mb-2"><label class="sv-label" for="commentInstagram">Comment</label><div class="sv-input-wrap"><input type="number" min="0" class="sv-input" id="commentInstagram" placeholder="0"><span class="unit">comments</span></div></div>
+              </div>
+            </div>
+            <div class="sv-section">
+              <div class="sv-section-title"><span class="sv-ico" style="background:#fdecef;color:#d2233c;"><span class="oi oi-envelope-closed"></span></span><h6>Email</h6><span class="hint">Support inbox</span></div>
+              <div class="form-row">
+                <div class="col-sm-6 mb-2"><label class="sv-label" for="inboxEmail">Inbox</label><div class="sv-input-wrap"><input type="number" min="0" class="sv-input" id="inboxEmail" placeholder="0"><span class="unit">e-mails</span></div></div>
+              </div>
+            </div>
+            <div class="sv-panel-foot d-flex align-items-center justify-content-between">
+              <span id="input-foot-note"></span>
+              <div>
+                <button type="button" class="btn btn-ghost" id="btn_reset"><span class="oi oi-action-undo"></span>Reset</button>
+                <button type="submit" id="btn_save" class="btn btn-sv"><span class="oi oi-check"></span>Save</button>
+                <button type="submit" id="btn_update" class="btn btn-sv"><span class="oi oi-check"></span>Update</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-xl-5">
+          <div class="sv-panel">
+            <div class="sv-panel-head">
+              <div class="sv-panel-title">
+                <span class="sv-ico"><span class="oi oi-list-rich"></span></span>
+                <div><h6>Recent Entries</h6><div class="sub">Last 14 days — click a row to load it</div></div>
+              </div>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="sv-table">
+                <thead><tr><th>Date</th><th class="num">FB Like</th><th class="num">TW Follow</th><th class="num">IG Follow</th><th class="num">Inbox</th><th></th></tr></thead>
+                <tbody id="recent-rows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================
+       MANAGE USER
+  ================================================================== -->
+  <div id="page-manageUser" class="app-page">
+    <div class="sv-main">
+      <div class="sv-head">
+        <div>
+          <div class="sv-crumb">Administration / Users</div>
+          <h4>Manage User</h4>
+          <div class="sub">Control who can access the dashboard and what they can do.</div>
+        </div>
+        <a href="#/manageUser/new" class="btn btn-sv"><span class="oi oi-plus"></span>Add User</a>
+      </div>
+
+      <div class="sv-row" id="user-kpis"></div>
+
+      <div class="sv-row">
+        <div class="col-xl-8">
+          <div class="sv-panel">
+            <div class="sv-panel-head align-items-center">
+              <div class="sv-panel-title">
+                <span class="sv-ico"><span class="oi oi-people"></span></span>
+                <div><h6>All Users</h6><div class="sub" id="user-count-sub"></div></div>
+              </div>
+              <form id="search-form" class="d-flex" style="max-width:320px;width:100%;">
+                <div class="sv-input-wrap flex-grow-1 mr-2">
+                  <input type="text" id="search" name="search" class="sv-input" style="height:36px;padding-right:12px;" placeholder="Search for names...">
+                </div>
+                <button type="submit" class="btn btn-sv btn-sm"><span class="oi oi-magnifying-glass"></span>Search</button>
+              </form>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="sv-table">
+                <thead><tr><th style="width:48px;">No.</th><th>Name</th><th>Role</th><th>Status</th><th>Last Login</th><th class="text-right">Action</th></tr></thead>
+                <tbody id="user-rows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <form id="edit-user-form" class="sv-panel" novalidate>
+            <div class="sv-panel-head">
+              <div class="sv-panel-title">
+                <span class="sv-ico" id="edit-ico"><span class="oi oi-person"></span></span>
+                <div><h6 id="edit-title">User Details</h6><div class="sub" id="edit-sub">Select a user from the table to edit.</div></div>
+              </div>
+            </div>
+            <div class="sv-panel-body">
+              <div class="form-group">
+                <label class="sv-label" for="name">Name</label>
+                <input type="text" name="name" id="name" class="sv-input" placeholder="Name">
+                <span class="help-block" data-err="name"></span>
+              </div>
+              <div class="form-group">
+                <label class="sv-label" for="edit-email">E-mail</label>
+                <input type="text" name="email" id="edit-email" class="sv-input" placeholder="E-mail">
+                <span class="help-block" data-err="email"></span>
+              </div>
+              <div class="form-row">
+                <div class="col-6 form-group">
+                  <label class="sv-label" for="role">Role</label>
+                  <select name="role" id="role" class="sv-select"><option value="user">User</option><option value="admin">Admin</option></select>
+                </div>
+                <div class="col-6 form-group">
+                  <label class="sv-label" for="status">Status</label>
+                  <select name="status" id="status" class="sv-select"><option value="activated">Activated</option><option value="pending">Pending</option></select>
+                </div>
+              </div>
+              <div class="text-muted small mb-3" id="edit-meta"></div>
+              <div id="edit-actions">
+                <a href="#/manageUser" class="btn btn-ghost flex-fill">Cancel</a>
+                <button type="submit" id="edit-user-submit" class="btn btn-sv flex-fill"><span class="oi oi-check"></span>Update</button>
+              </div>
+            </div>
+            <div class="sv-panel-foot">
+              <div class="fw-medium mb-2" style="color:var(--text);">Role permissions</div>
+              <div class="d-flex mb-1"><span class="sv-badge admin mr-2" style="min-width:56px;">Admin</span><span>Reporting, Maps, Input data, Manage users</span></div>
+              <div class="d-flex"><span class="sv-badge user mr-2" style="min-width:56px;">User</span><span>Reporting and Maps (read only)</span></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================
+       MAPS
+  ================================================================== -->
+  <div id="page-maps" class="app-page">
+    <div id="map"></div>
+    <div class="sv-map-panel">
+      <div class="mp-head">
+        <h6>Install Distribution</h6>
+        <div class="text-muted small">Last test location of each device</div>
+      </div>
+      <div class="mp-stats" id="map-stats"></div>
+      <div class="mp-legend sv-legend">
+        <label><input type="checkbox" checked data-layer="old"><img src="assets/img/blue.png"> Overall Install <b id="lg-overall"></b></label>
+        <label><input type="checkbox" checked data-layer="new"><img src="assets/img/darkgreen.png"> Installed This Month <b id="lg-month"></b></label>
+      </div>
+      <div class="mp-cities">
+        <div class="t">Top locations</div>
+        <div id="map-cities"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="sv-footer">
+    <span>&copy; 2017&ndash;<span id="footer-year"></span> Immobi Solusi Prima</span>
+    <span>SignalViewer Dashboard &middot; Demo data</span>
+  </footer>
+</div>
+
+<!-- delete confirmation -->
+<div class="modal fade" id="modaldelete" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:400px;">
+    <div class="modal-content" style="border-radius:14px;border:0;">
+      <div class="modal-body p-4 text-center">
+        <span class="sv-ico" style="background:#fef3f2;color:#d92d20;width:48px;height:48px;border-radius:50%;margin:0 0 14px;font-size:16px;"><span class="oi oi-trash"></span></span>
+        <h6 style="font-family:'montserratmedium';font-size:16px;">Delete user?</h6>
+        <p class="text-muted mb-4" id="delete-text"></p>
+        <div class="d-flex" style="gap:10px;">
+          <button type="button" class="btn btn-ghost flex-fill" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger flex-fill" id="delete-confirm" style="border-radius:8px;">Yes, delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sv-toast-wrap" id="toasts"></div>
+<div class="modal-loading"></div>
+
+<!-- Libraries copied from the original project -->
+<script src="assets/js/jquery-3.0.0.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/sugar.min.js"></script>
+<script src="assets/js/sweetalert.min.js"></script>
+<script src="assets/js/highcharts.js"></script>
+
+<script>
+/* =========================================================================
+   STORAGE
+========================================================================= */
+var STORE = (function () {
+  var mem = {};
+  var ok = (function () { try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); return true; } catch (e) { return false; } })();
+  return {
+    get: function (k, def) { var v = ok ? localStorage.getItem(k) : mem[k]; if (v == null) return def; try { return JSON.parse(v); } catch (e) { return def; } },
+    set: function (k, v) { var s = JSON.stringify(v); if (ok) localStorage.setItem(k, s); else mem[k] = s; },
+    del: function (k) { if (ok) localStorage.removeItem(k); else delete mem[k]; }
+  };
+})();
+
+/* =========================================================================
+   HELPERS
+========================================================================= */
+var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var MON = MONTHS.map(function (m) { return m.substr(0, 3); });
+function pad(n) { n = parseInt(n, 10); return (n < 10 ? '0' : '') + n; }
+function fmt(n) { return (n == null || isNaN(n)) ? '–' : Math.round(n).toLocaleString('en-US'); }
+function short(n) { return n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e4 ? (n / 1e3).toFixed(1) + 'k' : fmt(n); }
+function esc(s) { return $('<div>').text(s == null ? '' : s).html(); }
+function todayDate() { var t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
+function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function todayStr() { return ymd(todayDate()); }
+function parseYmd(s) { var a = s.split('-'); return new Date(+a[0], +a[1] - 1, +a[2]); }
+function niceDate(s) { var d = typeof s === 'string' ? parseYmd(s) : s; return pad(d.getDate()) + ' ' + MON[d.getMonth()] + ' ' + d.getFullYear(); }
+function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
+function initials(n) { return (n || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join(''); }
+var AVATAR_COLORS = ['#3949AB', '#239dd2', '#5ac865', '#e61858', '#8900fe', '#d27123', '#0f9f8f', '#283593'];
+function avatar(u, cls) { return '<span class="sv-avatar ' + (cls || '') + '" style="background:' + AVATAR_COLORS[u.id % AVATAR_COLORS.length] + '">' + esc(initials(u.name)) + '</span>'; }
+function delta(cur, prev) {
+  if (!prev) return '<span class="sv-delta flat">new</span>';
+  var p = (cur - prev) / prev * 100, c = Math.abs(p) < 0.05 ? 'flat' : (p > 0 ? 'up' : 'down');
+  return '<span class="sv-delta ' + c + '">' + (c === 'up' ? '▲ ' : c === 'down' ? '▼ ' : '') + Math.abs(p).toFixed(1) + '%</span>';
+}
+function toast(msg) {
+  var t = $('<div class="sv-toast"><span class="oi oi-circle-check"></span><span></span></div>');
+  t.find('span:last').text(msg);
+  $('#toasts').append(t);
+  setTimeout(function () { t.fadeOut(250, function () { t.remove(); }); }, 2600);
+}
+function timeAgo(iso) {
+  var s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + ' min ago';
+  if (s < 86400) return Math.floor(s / 3600) + ' h ago';
+  if (s < 86400 * 30) { var dd = Math.floor(s / 86400); return dd + (dd === 1 ? ' day ago' : ' days ago'); }
+  return niceDate(new Date(iso));
+}
+
+/* =========================================================================
+   SAMPLE DATA ("database")
+========================================================================= */
+var DEMO_LOGIN = { email: 'admin@immobisp.com', password: 'admin123' };
+var DATA_START = new Date(2017, 0, 1);
+function dataEnd() { var t = new Date(); return new Date(t.getFullYear(), t.getMonth() + 1, 0); } // sample data until end of current month
+
+function daysAgoIso(d, h) { var t = new Date(); t.setDate(t.getDate() - d); t.setHours(h || 9, 12, 0, 0); return t.toISOString(); }
+var DEFAULT_USERS = [
+  { id: 1, name: 'Admin SV', email: 'admin@immobisp.com', password: 'admin123', role: 'admin', status: 'activated', created: '2017-03-02', lastLogin: daysAgoIso(0, 8) },
+  { id: 2, name: 'Budi Santoso', email: 'budi@immobisp.com', password: 'SVReport123', role: 'user', status: 'activated', created: '2017-04-11', lastLogin: daysAgoIso(1, 14) },
+  { id: 3, name: 'Siti Rahma', email: 'siti@immobisp.com', password: 'SVReport123', role: 'user', status: 'activated', created: '2017-06-20', lastLogin: daysAgoIso(2, 10) },
+  { id: 4, name: 'Andi Wijaya', email: 'andi@immobisp.com', password: 'SVReport123', role: 'admin', status: 'activated', created: '2017-08-08', lastLogin: daysAgoIso(0, 7) },
+  { id: 5, name: 'Dewi Lestari', email: 'dewi@immobisp.com', password: 'SVReport123', role: 'user', status: 'activated', created: '2018-01-15', lastLogin: daysAgoIso(5, 16) },
+  { id: 6, name: 'Rizky Pratama', email: 'rizky@immobisp.com', password: 'SVReport123', role: 'user', status: 'activated', created: '2018-05-03', lastLogin: daysAgoIso(9, 11) },
+  { id: 7, name: 'Putri Maharani', email: 'putri@immobisp.com', password: 'SVReport123', role: 'user', status: 'activated', created: '2019-02-19', lastLogin: daysAgoIso(3, 13) },
+  { id: 8, name: 'Agus Hidayat', email: 'agus@immobisp.com', password: 'SVReport123', role: 'admin', status: 'activated', created: '2019-09-27', lastLogin: daysAgoIso(1, 9) },
+  { id: 9, name: 'Nadia Kusuma', email: 'nadia@immobisp.com', password: 'SVReport123', role: 'user', status: 'activated', created: '2021-07-12', lastLogin: daysAgoIso(16, 15) },
+  { id: 10, name: 'Fajar Nugroho', email: 'fajar@immobisp.com', password: 'SVReport123', role: 'user', status: 'pending', created: '2024-10-01', lastLogin: null },
+  { id: 11, name: 'Yuliana Sari', email: 'yuliana@immobisp.com', password: 'SVReport123', role: 'user', status: 'activated', created: '2023-03-08', lastLogin: daysAgoIso(26, 10) },
+  { id: 12, name: 'Hendra Gunawan', email: 'hendra@immobisp.com', password: 'SVReport123', role: 'user', status: 'pending', created: '2025-01-21', lastLogin: null }
+];
+
+var DB = {
+  users: function () {
+    var u = STORE.get('svr2_users', null);
+    if (!u) { u = JSON.parse(JSON.stringify(DEFAULT_USERS)); STORE.set('svr2_users', u); }
+    return u;
+  },
+  saveUsers: function (u) { STORE.set('svr2_users', u); },
+  findUser: function (id) { return Sugar.Array.find(DB.users(), function (x) { return x.id == id; }) || null; },
+  authUser: function () { var id = STORE.get('svr2_auth', null); return id ? DB.findUser(id) : null; },
+  overrides: function () { return STORE.get('svr2_summary', {}); },
+  saveSummary: function (date, rec) { var o = DB.overrides(); o[date] = rec; STORE.set('svr2_summary', o); }
+};
+
+function rnd(y, m, d, salt) { var x = Math.sin((y * 10000 + m * 100 + d) * 0.0137 + salt * 7.31) * 43758.5453; return x - Math.floor(x); }
+function inRange(y, m, d) { var dt = new Date(y, m - 1, d); return dt >= DATA_START && dt <= dataEnd(); }
+function growth(y, m, d) {
+  var w = new Date(y, m - 1, d).getDay(), idx = (y - 2017) * 12 + m;
+  var season = 1 + 0.12 * Math.sin(idx / 12 * 2 * Math.PI);               // yearly seasonality
+  return (1 + idx / 26) * season * ((w === 0 || w === 6) ? 0.72 : 1);
+}
+var _day = {};
+function dayStats(y, m, d) {
+  if (!inRange(y, m, d)) return null;
+  var k = y + '-' + m + '-' + d; if (_day[k]) return _day[k];
+  var g = growth(y, m, d), r = function (s) { return rnd(y, m, d, s); };
+  return (_day[k] = {
+    install: Math.round((4 + 10 * r(1)) * g), speed: Math.round((10 + 18 * r(2)) * g), web: Math.round((6 + 12 * r(3)) * g),
+    video: Math.round((5 + 10 * r(4)) * g), basic: Math.round((3 + 8 * r(5)) * g), upload: Math.round((2 + 6 * r(6)) * g),
+    download: Math.round((3 + 7 * r(7)) * g), videoroute: Math.round((1 + 5 * r(8)) * g), register: Math.round((1 + 5 * r(9)) * g)
+  });
+}
+var SUMMARY_FIELDS = ['followerTwitter', 'retweetTwitter', 'mentionTwitter', 'likeFacebook', 'commentFacebook', 'followerInstagram', 'commentInstagram', 'inboxEmail'];
+function summaryRecord(y, m, d) {
+  var key = y + '-' + pad(m) + '-' + pad(d), ov = DB.overrides();
+  if (ov[key]) return ov[key];
+  if (!inRange(y, m, d)) return null;
+  var g = Math.sqrt(growth(y, m, d)), r = function (s) { return rnd(y, m, d, s); };
+  return {
+    id: y * 10000 + m * 100 + d, date: key, sample: true,
+    followerTwitter: Math.round((3 + 12 * r(11)) * g), retweetTwitter: Math.round((1 + 8 * r(12)) * g), mentionTwitter: Math.round((1 + 6 * r(13)) * g),
+    likeFacebook: Math.round((5 + 20 * r(14)) * g), commentFacebook: Math.round((1 + 9 * r(15)) * g),
+    followerInstagram: Math.round((4 + 16 * r(16)) * g), commentInstagram: Math.round((1 + 10 * r(17)) * g), inboxEmail: Math.round((2 + 10 * r(18)) * g)
+  };
+}
+function monthDays(y, m) { var a = []; for (var d = 1; d <= daysInMonth(y, m); d++) if (inRange(y, m, d)) a.push([y, m, d]); return a; }
+function buckets(type, y, m) {
+  var out = [];
+  if (type === 'daily') monthDays(y, m).forEach(function (x) { out.push({ label: pad(x[2]), full: niceDate(new Date(x[0], x[1] - 1, x[2])), days: [x] }); });
+  else for (var mm = 1; mm <= 12; mm++) { var ds = monthDays(y, mm); if (ds.length) out.push({ label: MON[mm - 1], full: MONTHS[mm - 1] + ' ' + y, days: ds }); }
+  return out;
+}
+function sumStat(days, f) { var t = 0; days.forEach(function (x) { var s = dayStats(x[0], x[1], x[2]); if (s) t += s[f]; }); return t; }
+function sumSummary(days, f) { var t = 0; days.forEach(function (x) { var s = summaryRecord(x[0], x[1], x[2]); if (s) t += parseInt(s[f], 10) || 0; }); return t; }
+var _cum = null;
+function cumulativeUntil(y, m, d) {
+  if (!_cum) {
+    _cum = {}; var t = 0, dt = new Date(DATA_START), end = dataEnd();
+    while (dt <= end) { var s = dayStats(dt.getFullYear(), dt.getMonth() + 1, dt.getDate()); t += s ? s.install : 0; _cum[ymd(dt)] = t; dt.setDate(dt.getDate() + 1); }
+  }
+  return _cum[y + '-' + pad(m) + '-' + pad(d)] || 0;
+}
+
+var COUNTRIES = [
+  { country: 'Indonesia', code: 'ID', count: 1873 }, { country: 'Malaysia', code: 'MY', count: 214 }, { country: 'Unknown Country', code: '--', count: 97 },
+  { country: 'Singapore', code: 'SG', count: 158 }, { country: 'Philippines', code: 'PH', count: 121 }, { country: 'Thailand', code: 'TH', count: 88 },
+  { country: 'Vietnam', code: 'VN', count: 64 }, { country: 'India', code: 'IN', count: 51 }, { country: 'Australia', code: 'AU', count: 33 },
+  { country: 'Japan', code: 'JP', count: 27 }, { country: 'United States', code: 'US', count: 22 }, { country: 'Germany', code: 'DE', count: 14 },
+  { country: 'Netherlands', code: 'NL', count: 9 }, { country: 'United Kingdom', code: 'GB', count: 7 }
+];
+var CITIES = [
+  ['Jakarta', 'DKI Jakarta', -6.2088, 106.8456, 22], ['Bandung', 'Jawa Barat', -6.9175, 107.6191, 10], ['Surabaya', 'Jawa Timur', -7.2575, 112.7521, 10],
+  ['Semarang', 'Jawa Tengah', -6.9667, 110.4167, 6], ['Yogyakarta', 'DI Yogyakarta', -7.7956, 110.3695, 6], ['Medan', 'Sumatera Utara', 3.5952, 98.6722, 7],
+  ['Palembang', 'Sumatera Selatan', -2.9761, 104.7754, 4], ['Pekanbaru', 'Riau', 0.5071, 101.4478, 3], ['Padang', 'Sumatera Barat', -0.9471, 100.4172, 3],
+  ['Bandar Lampung', 'Lampung', -5.3971, 105.2668, 3], ['Denpasar', 'Bali', -8.6705, 115.2126, 6], ['Mataram', 'Nusa Tenggara Barat', -8.5833, 116.1167, 2],
+  ['Makassar', 'Sulawesi Selatan', -5.1477, 119.4327, 6], ['Manado', 'Sulawesi Utara', 1.4748, 124.8421, 3], ['Palu', 'Sulawesi Tengah', -0.8917, 119.8707, 2],
+  ['Balikpapan', 'Kalimantan Timur', -1.2379, 116.8529, 4], ['Pontianak', 'Kalimantan Barat', -0.0263, 109.3425, 3], ['Banjarmasin', 'Kalimantan Selatan', -3.3186, 114.5944, 3],
+  ['Jayapura', 'Papua', -2.5916, 140.669, 2], ['Ambon', 'Maluku', -3.6954, 128.1814, 2], ['Kupang', 'Nusa Tenggara Timur', -10.1772, 123.607, 2],
+  ['Kuala Lumpur', 'Malaysia', 3.139, 101.6869, 5], ['Singapore', 'Singapore', 1.3521, 103.8198, 5], ['Manila', 'Philippines', 14.5995, 120.9842, 3],
+  ['Bangkok', 'Thailand', 13.7563, 100.5018, 3], ['Ho Chi Minh City', 'Vietnam', 10.8231, 106.6297, 2]
+];
+var STREETS = ['Jl. Sudirman', 'Jl. Gatot Subroto', 'Jl. Diponegoro', 'Jl. Ahmad Yani', 'Jl. Merdeka', 'Jl. Pahlawan', 'Jl. Gajah Mada', 'Jl. Imam Bonjol'];
+var DEVICES = ['Samsung SM-G950F', 'Xiaomi Redmi Note 4', 'ASUS ZenFone Max Pro', 'OPPO F5', 'vivo 1716', 'Samsung SM-J730G', 'Xiaomi Mi A1', 'Lenovo K8 Note'];
+var OPERATORS = ['Telkomsel', 'Indosat Ooredoo', 'XL Axiata', 'Tri (3)', 'Smartfren'];
+var _points = null;
+function mapPoints() {
+  if (_points) return _points;
+  var pts = [], n = 0, now = todayDate(), span = now - new Date(2017, 7, 1);
+  CITIES.forEach(function (c, ci) {
+    for (var i = 0; i < c[4]; i++) {
+      n++;
+      var r = function (s) { return rnd(2017, ci + 1, i + 1, s); };
+      var t = new Date(new Date(2017, 7, 1).getTime() + span * r(1));
+      if (r(2) < 0.28) t = new Date(now.getFullYear(), now.getMonth(), 1 + Math.floor(r(3) * now.getDate()), 8 + Math.floor(r(8) * 12));
+      var foreign = c[1].indexOf(' ') < 0 && ['Bali', 'Lampung', 'Riau', 'Papua', 'Maluku'].indexOf(c[1]) < 0;
+      pts.push({
+        deviceid: 'SV-' + (100000 + n * 7919), device: DEVICES[n % DEVICES.length], operator: foreign ? 'Roaming' : OPERATORS[n % OPERATORS.length],
+        time: t.toISOString(), total: Math.round(5 + 80 * r(4)), city: c[0], region: c[1], country: foreign ? c[1] : 'Indonesia',
+        latitude: c[2] + (r(5) - 0.5) * 0.35, longitude: c[3] + (r(6) - 0.5) * 0.35,
+        address: STREETS[n % STREETS.length] + ' No.' + (1 + Math.floor(r(7) * 120)) + ', ' + c[0] + (foreign ? ', ' + c[1] : ', ' + c[1] + ', Indonesia')
+      });
+    }
+  });
+  return (_points = pts);
+}
+
+/* =========================================================================
+   FAKE API (replaces the Laravel controllers)
+========================================================================= */
+var API = {
+  period: function (p) { return buckets(p.type, p.year, p.month); },
+  userDownload: function (p) {
+    var b = API.period(p);
+    return {
+      buckets: b, categories: b.map(function (x) { return x.label; }),
+      dataSeries: b.map(function (x) { return sumStat(x.days, 'install'); }),
+      dataSeriesCumulative: b.map(function (x) { var l = x.days[x.days.length - 1]; return cumulativeUntil(l[0], l[1], l[2]); })
+    };
+  },
+  series: function (p, defs, fn) {
+    var b = API.period(p);
+    return { buckets: b, categories: b.map(function (x) { return x.label; }), series: defs.map(function (f) { return b.map(function (x) { return fn(x.days, f); }); }) };
+  },
+  totals: function (y, m) {
+    var cur = monthDays(y, m), pd = new Date(y, m - 2, 1), prev = monthDays(pd.getFullYear(), pd.getMonth() + 1), year = [];
+    for (var i = 1; i <= 12; i++) year = year.concat(monthDays(y, i));
+    function pack(days) {
+      var o = {}; ['install', 'speed', 'web', 'video', 'basic', 'upload', 'download', 'videoroute', 'register'].forEach(function (f) { o[f] = sumStat(days, f); });
+      o.inbox = sumSummary(days, 'inboxEmail'); o.days = days.length; return o;
+    }
+    var l = cur[cur.length - 1];
+    return { cur: pack(cur), prev: pack(prev), year: pack(year), cumulative: l ? cumulativeUntil(l[0], l[1], l[2]) : 0 };
+  },
+  getDataCountry: function () { return COUNTRIES.slice(); },
+  getdatamaps: function () { return mapPoints(); },
+  getDataSummary: function (p) { var d = parseYmd(p.datePicker), r = summaryRecord(d.getFullYear(), d.getMonth() + 1, d.getDate()); return r ? [r] : []; }
+};
+function fakeAjax(fn, data, o) {
+  if (o.beforeSend) o.beforeSend();
+  setTimeout(function () {
+    try { o.success(typeof fn === 'function' ? fn(data) : API[fn](data || {})); } catch (e) { console.error(e); }
+    if (o.complete) o.complete();
+  }, 220);
+}
+
+/* =========================================================================
+   ROUTER
+========================================================================= */
+var PAGE_INIT = {};
+function go(hash) { if (location.hash === hash) router(); else location.hash = hash; }
+function parseHash() {
+  var h = location.hash.replace(/^#\/?/, ''), q = {}, parts = h.split('?');
+  if (parts[1]) parts[1].split('&').forEach(function (kv) { var p = kv.split('='); q[decodeURIComponent(p[0])] = decodeURIComponent((p[1] || '').replace(/\+/g, ' ')); });
+  return { path: parts[0].split('/').filter(Boolean), query: q };
+}
+function showAuthPage(id) {
+  $('.page').removeClass('active'); $('#' + id).addClass('active');
+  $('body').removeClass('page-maps').toggleClass('svt-login', id !== 'page-forgot');
+  if (PAGE_INIT[id]) PAGE_INIT[id]();
+}
+function showAppPage(name, args) {
+  var user = DB.authUser();
+  if (!user) { go('#/'); return; }
+  $('body').removeClass('svt-login').toggleClass('page-maps', name === 'maps');
+  $('.page').removeClass('active'); $('#page-app').addClass('active');
+  $('#nav-username').text(user.name); $('#nav-role').text(user.role); $('#nav-email').text(user.email);
+  $('#nav-avatar').text(initials(user.name)).css('background', AVATAR_COLORS[user.id % AVATAR_COLORS.length]);
+  $('.admin-only').toggle(user.role === 'admin');
+  $('.sv-nav a').removeClass('active').filter('[data-nav="' + name + '"]').addClass('active');
+  $('.app-page').removeClass('active'); $('#page-' + name).addClass('active');
+  document.title = { chartsv2: 'Reporting', maps: 'Maps', chartsv2input: 'Input Daily Report', manageUser: 'Manage User' }[name] + ' · SignalViewer';
+  window.scrollTo(0, 0);
+  if (PAGE_INIT[name]) PAGE_INIT[name](args || {});
+}
+function router() {
+  var r = parseHash(), p = r.path;
+  $('[data-toggle="popover"]').popover('hide');
+  $('#modaldelete').modal('hide');
+  switch (p[0] || '') {
+    case '': case 'signin': case 'login': showAuthPage('page-login'); break;
+    case 'signup': showAuthPage('page-register'); break;
+    case 'password': showAuthPage('page-forgot'); break;
+    case 'logout': STORE.del('svr2_auth'); go('#/'); break;
+    case 'home': case 'chartsv2': showAppPage('chartsv2'); break;
+    case 'chartsv2input': showAppPage('chartsv2input', { date: p[1] }); break;
+    case 'manageUser': showAppPage('manageUser', { id: p[1], search: r.query.search }); break;
+    case 'deletemanageuser':
+      if (DB.authUser()) {
+        var victim = DB.findUser(p[1]);
+        DB.saveUsers(DB.users().filter(function (u) { return u.id != p[1]; }));
+        if (victim) setTimeout(function () { toast(victim.name + ' has been deleted'); }, 50);
+      }
+      go('#/manageUser'); break;
+    case 'maps': showAppPage('maps'); break;
+    default: go('#/');
+  }
+}
+
+/* =========================================================================
+   AUTH PAGES
+========================================================================= */
+PAGE_INIT['page-login'] = function () {
+  document.title = 'Login · SignalViewer';
+  $('#login-email').val(DEMO_LOGIN.email); $('#login-password').val(DEMO_LOGIN.password);
+  $('#login-email-error, #login-password-error').text('');
+  var t = API.totals(new Date().getFullYear(), new Date().getMonth() + 1);
+  $('#auth-feats').html(
+    '<div><b>' + short(t.cumulative) + '</b><span>App installs</span></div>' +
+    '<div><b>' + (COUNTRIES.length - 1) + '</b><span>Countries reached</span></div>' +
+    '<div><b>' + short(t.year.speed + t.year.web + t.year.video + t.year.basic + t.year.upload + t.year.download + t.year.videoroute) + '</b><span>Tests this year</span></div>');
+};
+$('#login-form').on('submit', function (e) {
+  e.preventDefault();
+  var email = $.trim($('#login-email').val()), pass = $('#login-password').val();
+  $('#login-email-error, #login-password-error').text('');
+  var user = Sugar.Array.find(DB.users(), function (u) { return u.email.toLowerCase() === email.toLowerCase(); });
+  if (!user) { $('#login-email-error').text('The selected email is invalid.'); return; }
+  if (user.status !== 'activated') { $('#login-email-error').text('Please verify your email before logging in.'); return; }
+  if (user.password !== pass) { $('#login-password-error').text('These credentials do not match our records.'); return; }
+  var users = DB.users(); users.forEach(function (u) { if (u.id === user.id) u.lastLogin = new Date().toISOString(); }); DB.saveUsers(users);
+  STORE.set('svr2_auth', user.id);
+  go('#/chartsv2');
+});
+
+PAGE_INIT['page-register'] = function () { document.title = 'Register · SignalViewer'; $('#register-form')[0].reset(); $('.reg-error').text(''); };
+$('#register-form').on('submit', function (e) {
+  e.preventDefault();
+  var f = this, v = { name: $.trim(f.name.value), email: $.trim(f.email.value), password: f.password.value, confirm_password: f.confirm_password.value }, err = {};
+  if (!v.name) err.name = 'The name field is required.'; else if (v.name.length > 50) err.name = 'The name may not be greater than 50 characters.';
+  if (!v.email) err.email = 'The email field is required.';
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) err.email = 'The email must be a valid email address.';
+  else if (!/(.*)@immobisp\.com$/i.test(v.email)) err.email = 'The email format is invalid (use @immobisp.com).';
+  else if (Sugar.Array.find(DB.users(), function (u) { return u.email.toLowerCase() === v.email.toLowerCase(); })) err.email = 'The email has already been taken.';
+  if (!v.password) err.password = 'The password field is required.'; else if (v.password.length < 6) err.password = 'The password must be at least 6 characters.';
+  if (!v.confirm_password) err.confirm_password = 'The confirm password field is required.'; else if (v.confirm_password !== v.password) err.confirm_password = 'The confirm password and password must match.';
+  $('.reg-error').each(function () { $(this).text(err[$(this).data('for')] || ''); });
+  if (Object.keys(err).length) return;
+  var users = DB.users(), id = users.reduce(function (m, u) { return Math.max(m, u.id); }, 0) + 1;
+  // Demo: no e-mail is sent, so the account is activated immediately.
+  users.push({ id: id, name: v.name, email: v.email, password: v.password, role: 'user', status: 'activated', created: todayStr(), lastLogin: null });
+  DB.saveUsers(users);
+  go('#/');
+  swal('Attention', 'Please verify your email before logging in. (Demo: your account is already activated.)', 'warning');
+});
+
+PAGE_INIT['page-forgot'] = function () { document.title = 'Reset Password · SignalViewer'; $('#forgot-form')[0].reset(); $('#fp-status').hide(); $('#fp-error').text(''); };
+$('#forgot-form').on('submit', function (e) {
+  e.preventDefault();
+  var email = $.trim($('#fp-email').val()); $('#fp-error').text(''); $('#fp-status').hide();
+  if (!Sugar.Array.find(DB.users(), function (u) { return u.email.toLowerCase() === email.toLowerCase(); })) { $('#fp-error').text("We can't find a user with that e-mail address."); return; }
+  $('#fp-status').text('We have e-mailed your password reset link to ' + email + '.').show();
+});
+
+/* =========================================================================
+   REPORTING
+========================================================================= */
+Highcharts.setOptions({ lang: { resetZoom: 'Reset', thousandsSep: ',' } });
+
+// one place for every chart's series: [name, color, field]
+var CHART_DEF = {
+  chartsapk: { series: [['Installs', '#37bbf5'], ['Cumulative', '#8900fe']] },
+  chartsroute: { title: 'Route Test', icon: 'oi-location', type: 'line', unit: 'tests', desc: 'Drive tests on a route', src: 'stat',
+    series: [['Basic Test', '#8900fe', 'basic'], ['Download Test', '#5fdaff', 'download'], ['Upload Test', '#5ac865', 'upload'], ['Video Test', '#e61858', 'videoroute']] },
+  chartsspot: { title: 'Spot Test', icon: 'oi-signal', type: 'line', unit: 'tests', desc: 'Single-location tests', src: 'stat',
+    series: [['Speed Test', '#60daff', 'speed'], ['Video Test', '#5ac865', 'video'], ['Web Test', '#e61858', 'web']] },
+  chartsemail: { title: 'E-Mail', icon: 'oi-envelope-closed', type: 'spline', unit: 'e-mails', desc: 'Registrations & inbox', src: 'mixed',
+    series: [['Inbox', '#d2233c', 'inboxEmail'], ['Register', '#239dd2', 'register']] },
+  chartsfacebook: { title: 'Facebook', brand: ['f', '#1877f2'], type: 'spline', unit: 'interactions', desc: 'Page engagement', src: 'summary',
+    series: [['Like', '#239dd2', 'likeFacebook'], ['Comment', '#d2233c', 'commentFacebook']] },
+  chartsinstagram: { title: 'Instagram', brand: ['ig', 'linear-gradient(45deg,#f58529,#dd2a7b,#8134af)'], type: 'spline', unit: 'interactions', desc: 'Growth & engagement', src: 'summary',
+    series: [['Followers', '#239dd2', 'followerInstagram'], ['Comment', '#d2233c', 'commentInstagram']] },
+  chartstwitter: { title: 'Twitter', brand: ['t', '#1d9bf0'], type: 'spline', unit: 'interactions', desc: 'Growth & reach', src: 'summary',
+    series: [['Followers', '#239dd2', 'followerTwitter'], ['Mention', '#d2233c', 'mentionTwitter'], ['Retweet', '#d27123', 'retweetTwitter']] }
+};
+(function buildChartCss() {
+  var css = '';
+  Object.keys(CHART_DEF).forEach(function (id) {
+    CHART_DEF[id].series.forEach(function (s, i) { css += '#' + id + ' .highcharts-color-' + i + '{fill:' + s[1] + ';stroke:' + s[1] + ';}'; });
+  });
+  $('#chart-colors').text(css);
+})();
+(function buildPanels() {
+  $('[data-panel]').each(function () {
+    var id = $(this).data('panel'), d = CHART_DEF[id];
+    var ico = d.brand ? '<span class="sv-ico brand" style="background:' + d.brand[1] + '">' + d.brand[0] + '</span>' : '<span class="sv-ico"><span class="oi ' + d.icon + '"></span></span>';
+    $(this).html(
+      '<div class="sv-panel-head"><div class="sv-panel-title">' + ico + '<div><h6>' + d.title + '</h6><div class="sub" data-sub="' + id + '">' + d.desc + '</div></div></div>' +
+      '<span class="sv-badge info" data-avg="' + id + '"></span></div>' +
+      '<div class="sv-chips" data-chips="' + id + '"></div>' +
+      '<div class="sv-panel-body pt-1 pb-3"><div id="' + id + '" class="sv-chart"></div></div>');
+  });
+})();
+
+var state = { type: 'monthly', month: null, year: null }, CHARTS = {};
+
+function chips(id, items, totalLabel) {
+  var html = items.map(function (it, i) {
+    return '<span class="sv-chip" data-chart="' + id + '" data-idx="' + i + '"><i style="background:' + it.color + '"></i><span><span class="n">' + it.name + '</span><span class="v">' + it.value + '</span></span></span>';
+  }).join('');
+  if (totalLabel) html += '<span class="sv-chip total"><span><span class="n">' + totalLabel[0] + '</span><span class="v">' + totalLabel[1] + '</span></span></span>';
+  $('[data-chips="' + id + '"]').html(html);
+}
+$(document).on('click', '.sv-chip[data-idx]', function () {
+  var c = CHARTS[$(this).data('chart')], s = c && c.series[$(this).data('idx')];
+  if (!s) return;
+  s.setVisible(!s.visible); $(this).toggleClass('off', !s.visible);
+});
+
+function tooltipFor(buckets, unit) {
+  return {
+    shared: true, useHTML: true, padding: 10, borderRadius: 8,
+    formatter: function () {
+      var b = buckets[this.points[0].point.index], s = '<div class="sv-tip"><span class="h">' + (b ? b.full : this.x) + '</span>';
+      $.each(this.points, function () {
+        s += '<div class="r"><span><i style="background:' + this.series.userOptions.svColor + '"></i>' + this.series.name + '</span><b>' + fmt(this.y) + '</b></div>';
+      });
+      return s + '</div>';
+    }
+  };
+}
+function baseChart(id, type, cats, extra) {
+  return $.extend(true, {
+    chart: { height: 270, type: type, zoomType: 'x', spacing: [10, 4, 6, 0], resetZoomButton: { position: { x: -6, y: 0 }, relativeTo: 'chart' } },
+    navigation: { buttonOptions: { enabled: false } },
+    title: { text: null }, subtitle: { text: null }, credits: { enabled: false }, legend: { enabled: false },
+    xAxis: { categories: cats, tickmarkPlacement: 'on', labels: { autoRotation: false, step: cats.length > 16 ? 3 : 1 } },
+    yAxis: { min: 0, tickAmount: 5, title: { text: null }, labels: { formatter: function () { return short(this.value); } } },
+    plotOptions: { series: { marker: { symbol: 'circle', radius: cats.length > 16 ? 2.5 : 3.5 }, animation: { duration: 500 } } }
+  }, extra || {});
+}
+
+function renderKpis(t) {
+  var c = t.cur, p = t.prev, mlabel = MON[state.month - 1] + ' ' + state.year;
+  var spot = c.speed + c.web + c.video, spotP = p.speed + p.web + p.video;
+  var route = c.basic + c.upload + c.download + c.videoroute, routeP = p.basic + p.upload + p.download + p.videoroute;
+  var mail = c.register + c.inbox, mailP = p.register + p.inbox;
+  var known = COUNTRIES.filter(function (x) { return x.country !== 'Unknown Country'; });
+  var prevName = MON[(state.month + 10) % 12];
+
+  // breakdown row: [label, value, dot color]
+  function split(items) {
+    var sum = items.reduce(function (a, x) { return a + (x[3] === false ? 0 : x[1]); }, 0) || 1;
+    return '<div class="sum-split" style="grid-template-columns:repeat(' + items.length + ',1fr)">' + items.map(function (x) {
+      return '<div><span class="sum-lbl">' + (x[2] ? '<i style="background:' + x[2] + '"></i>' : '') + x[0] + '</span>' +
+        '<div class="sum-val">' + (typeof x[1] === 'number' ? fmt(x[1]) : x[1]) + '</div>' +
+        (x[3] === false ? '' : '<div class="sum-pct">' + Math.round(x[1] / sum * 100) + '% of total</div>') + '</div>';
+    }).join('') + '</div>';
+  }
+  function card(bg, title, icon, main, splitHtml) {
+    return '<div class="col-xl-3 col-md-6"><div class="sv-sum" style="background:' + bg + '">' +
+      '<div class="sum-top"><div class="sum-head"><div><h6 class="sum-title">' + title + '</h6><div class="sum-period">' + mlabel + '</div></div>' +
+      '<span class="sum-ico"><span class="oi ' + icon + '"></span></span></div><hr>' + main + '</div>' + splitHtml + '</div></div>';
+  }
+  function mainValue(v, cur, prev) {
+    return '<div class="sum-main"><span class="sum-big">' + fmt(v) + '</span>' + delta(cur, prev) + '<span class="sum-vs">vs ' + prevName + '</span></div>';
+  }
+
+  $('#kpi-row').html(
+    card('linear-gradient(135deg,#1A237E,#283593)', 'Sum of Installed App', 'oi-data-transfer-download',
+      '<div class="sum-cols"><div><span class="sum-lbl">This Month</span><span class="sum-big yellow">' + fmt(c.install) + '</span></div>' +
+      '<div><span class="sum-lbl">Total</span><span class="sum-big yellow">' + short(t.cumulative) + '</span></div></div>',
+      split([['vs ' + prevName, delta(c.install, p.install), null, false], ['Avg / day', fmt(c.install / (c.days || 1)), null, false],
+             [state.year + ' total', short(t.year.install), null, false], ['Countries', known.length, null, false]])) +
+    card('linear-gradient(135deg,#283593,#303F9F)', 'Spot Test', 'oi-signal', mainValue(spot, spot, spotP),
+      split([['Speed', c.speed, '#60daff'], ['Web', c.web, '#e61858'], ['Video', c.video, '#5ac865']])) +
+    card('linear-gradient(135deg,#303F9F,#3949AB)', 'Route Test', 'oi-location', mainValue(route, route, routeP),
+      split([['Basic', c.basic, '#8900fe'], ['Upload', c.upload, '#5ac865'], ['Download', c.download, '#5fdaff'], ['Video', c.videoroute, '#e61858']])) +
+    card('linear-gradient(135deg,#3949AB,#4a5bc4)', 'E-Mail', 'oi-envelope-closed', mainValue(mail, mail, mailP),
+      split([['Register', c.register, '#239dd2'], ['Inbox', c.inbox, '#ff6b81']]))
+  );
+}
+
+function renderApk(d) {
+  var total = d.dataSeries.reduce(function (a, b) { return a + b; }, 0), max = Math.max.apply(null, d.dataSeries.concat([0]));
+  var peakIdx = d.dataSeries.indexOf(max), cum = d.dataSeriesCumulative[d.dataSeriesCumulative.length - 1] || 0;
+  var unit = state.type === 'daily' ? 'day' : 'month';
+  chips('chartsapk', [{ name: 'Installs (' + (state.type === 'daily' ? 'daily' : 'monthly') + ')', value: fmt(total), color: '#37bbf5' }, { name: 'Cumulative', value: fmt(cum), color: '#8900fe' }]);
+  $('[data-sub="installs"]').text((state.type === 'daily' ? 'Daily installs · ' + MONTHS[state.month - 1] + ' ' + state.year : 'Monthly installs · ' + state.year) + ' with cumulative total');
+  $('#apk-insights').html(
+    '<div><div class="n">Period total</div><div class="v">' + fmt(total) + '</div></div>' +
+    '<div><div class="n">Average / ' + unit + '</div><div class="v">' + fmt(d.dataSeries.length ? total / d.dataSeries.length : 0) + '</div></div>' +
+    '<div><div class="n">Peak ' + unit + '</div><div class="v">' + fmt(max) + ' <small>' + (d.buckets[peakIdx] ? d.buckets[peakIdx].full : '–') + '</small></div></div>' +
+    '<div><div class="n">Cumulative installs</div><div class="v">' + fmt(cum) + '</div></div>');
+  CHARTS.chartsapk = Highcharts.chart('chartsapk', baseChart('chartsapk', 'column', d.categories, {
+    chart: { height: 300 },
+    yAxis: [{ min: 0, allowDecimals: false, title: { text: state.type === 'daily' ? 'Daily' : 'Monthly' }, labels: { formatter: function () { return short(this.value); } } },
+            { min: 0, title: { text: 'Cumulative' }, opposite: true, gridLineWidth: 0, labels: { formatter: function () { return short(this.value); } } }],
+    tooltip: tooltipFor(d.buckets),
+    plotOptions: { column: { borderRadius: 3, pointPadding: 0.08, groupPadding: 0.12 } },
+    series: [
+      { type: 'column', name: 'Installs', data: d.dataSeries, svColor: '#37bbf5' },
+      { type: 'spline', yAxis: 1, name: 'Cumulative', data: d.dataSeriesCumulative, svColor: '#8900fe', marker: { enabled: false } }
+    ]
+  }));
+}
+
+function renderSeriesPanel(id, d) {
+  var def = CHART_DEF[id], grand = 0;
+  var items = def.series.map(function (s, i) { var t = d.series[i].reduce(function (a, b) { return a + b; }, 0); grand += t; return { name: s[0], color: s[1], value: fmt(t) }; });
+  chips(id, items);
+  var per = state.type === 'daily' ? 'day' : 'mo';
+  $('[data-avg="' + id + '"]').html('Total <b class="ml-1">' + fmt(grand) + '</b><span class="mx-1">·</span>' + fmt(d.categories.length ? grand / d.categories.length : 0) + '/' + per);
+  $('[data-sub="' + id + '"]').text(def.desc + ' · ' + (state.type === 'daily' ? MON[state.month - 1] + ' ' + state.year : state.year));
+  CHARTS[id] = Highcharts.chart(id, baseChart(id, def.type, d.categories, {
+    tooltip: tooltipFor(d.buckets),
+    series: def.series.map(function (s, i) { return { name: s[0], data: d.series[i], svColor: s[1] }; })
+  }));
+}
+
+function renderCountries(list) {
+  var known = list.filter(function (n) { return n.country !== 'Unknown Country'; }).sort(function (a, b) { return b.count - a.count; });
+  var unknown = Sugar.Array.find(list, function (n) { return n.country === 'Unknown Country'; });
+  var all = list.reduce(function (a, x) { return a + x.count; }, 0), max = known[0].count;
+  var rows = known.concat(unknown ? [unknown] : []).map(function (v, i) {
+    var u = v.country === 'Unknown Country';
+    return '<li class="' + (u ? 'unknown' : '') + '"><span class="rk">' + (u ? '?' : i + 1) + '</span><span class="nm">' + esc(v.country) + '</span>' +
+      '<span class="ct">' + fmt(v.count) + '<small>' + (v.count / all * 100).toFixed(1) + '%</small></span>' +
+      '<span class="bar"><span style="width:' + Math.max(2, v.count / max * 100) + '%"></span></span></li>';
+  });
+  $('#summarycountry').html(rows.join(''));
+  $('#country-sub').text(known.length + ' countries · ' + fmt(all) + ' devices');
+}
+
+function loadReporting() {
+  var y = state.year, m = state.month, p = { type: state.type, year: y, month: m };
+  $('#datelabel').text(state.type === 'daily' ? MONTHS[m - 1] + ' ' + y : y);
+  $('#period-sub').text(state.type === 'daily'
+    ? 'Daily breakdown for ' + MONTHS[m - 1] + ' ' + y + ' · KPI cards compare ' + MON[m - 1] + ' with the previous month'
+    : 'Monthly breakdown for ' + y + ' · KPI cards show ' + MONTHS[m - 1] + ' ' + y + ' vs previous month');
+  $('#sync-label').text('Data synced ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }));
+  renderKpis(API.totals(y, m));
+  fakeAjax('userDownload', p, { success: renderApk });
+  Object.keys(CHART_DEF).forEach(function (id) {
+    var def = CHART_DEF[id];
+    if (id === 'chartsapk') return;
+    var o = { success: function (d) { renderSeriesPanel(id, d); } };
+    if (id === 'chartsemail') { o.beforeSend = function () { $('body').addClass('loading'); }; o.complete = function () { $('body').removeClass('loading'); }; }
+    fakeAjax(function () {
+      return API.series(p, def.series, function (days, s) { return (def.src === 'stat' || (def.src === 'mixed' && s[2] === 'register')) ? sumStat(days, s[2]) : sumSummary(days, s[2]); });
+    }, null, o);
+  });
+}
+
+PAGE_INIT.chartsv2 = function () {
+  var now = new Date(), opts = '';
+  for (var y = now.getFullYear(); y >= 2017; y--) opts += '<option value="' + y + '">' + y + '</option>';
+  $('#year_filter').html(opts);
+  $('#month_filter').html(MONTHS.map(function (n, i) { return '<option value="' + (i + 1) + '">' + n + '</option>'; }).join(''));
+  state = { type: 'monthly', month: now.getMonth() + 1, year: now.getFullYear() };
+  $('#month_filter').val(state.month); $('#year_filter').val(state.year);
+  $('#chooseFilter button').removeClass('active').filter('[data-v="monthly"]').addClass('active');
+  renderCountries(API.getDataCountry());
+  loadReporting();
+};
+$('#chooseFilter').on('click', 'button', function () { $('#chooseFilter button').removeClass('active'); $(this).addClass('active'); });
+$('#submit').click(function () {
+  state.type = $('#chooseFilter button.active').data('v');
+  state.month = parseInt($('#month_filter').val(), 10); state.year = parseInt($('#year_filter').val(), 10);
+  loadReporting();
+});
+$('[data-toggle="popover"]').popover();
+
+/* =========================================================================
+   INPUT DAILY REPORT
+========================================================================= */
+var INPUT_FIELDS = [['followerTwitter', 'followerTwitter'], ['retweetTwitter', 'retweetTwitter'], ['mentionTwitter', 'mentionTwitter'], ['pageLikeFacebook', 'likeFacebook'],
+  ['commentFacebook', 'commentFacebook'], ['followerInstagram', 'followerInstagram'], ['commentInstagram', 'commentInstagram'], ['inboxEmail', 'inboxEmail']];
+var inputMode = 'insert', inputOriginal = null;
+
+function setInputMode(rec) {
+  var date = $('#datePicker').val();
+  inputOriginal = rec;
+  inputMode = rec ? 'update' : 'insert';
+  INPUT_FIELDS.forEach(function (f) { $('#' + f[0]).val(rec ? rec[f[1]] : ''); });
+  $('#btn_update').toggle(!!rec); $('#btn_save').toggle(!rec);
+  $('#input-date-title').text(date ? niceDate(date) : 'Report date');
+  var ov = DB.overrides()[date];
+  $('#input-status').attr('class', 'sv-badge mr-3 ' + (rec ? (ov ? 'ok' : 'info') : 'warn'))
+    .html('<i></i>' + (rec ? (ov ? 'Saved by you' : 'Existing record') : 'New entry'));
+  $('#input-status-sub').text(rec ? 'A report exists for this date — edit the values and click Update.' : 'No report for this date yet — fill in the values and click Save.');
+  $('#input-foot-note').text(rec ? 'Record ID #' + rec.id : 'All fields are optional; empty values count as 0.');
+  $('#recent-rows tr').removeClass('selected').filter('[data-date="' + date + '"]').addClass('selected');
+}
+function getDataFromDate() {
+  fakeAjax('getDataSummary', { datePicker: $('#datePicker').val() }, {
+    beforeSend: function () { $('body').addClass('loading'); },
+    complete: function () { $('body').removeClass('loading'); },
+    success: function (r) { setInputMode(r.length ? r[0] : null); }
+  });
+}
+function renderInputSide() {
+  var t = todayDate(), rows = '', week = { fb: 0, tw: 0, ig: 0, inbox: 0, n: 0 }, prevWeek = { fb: 0, tw: 0, ig: 0, inbox: 0 }, ov = DB.overrides();
+  for (var i = 0; i < 14; i++) {
+    var d = new Date(t); d.setDate(t.getDate() - i);
+    var r = summaryRecord(d.getFullYear(), d.getMonth() + 1, d.getDate()), k = ymd(d);
+    if (r) {
+      var bucket = i < 7 ? week : prevWeek;
+      bucket.fb += +r.likeFacebook || 0; bucket.tw += +r.followerTwitter || 0; bucket.ig += +r.followerInstagram || 0; bucket.inbox += +r.inboxEmail || 0;
+    }
+    rows += '<tr class="clickable" data-date="' + k + '"><td><b>' + pad(d.getDate()) + ' ' + MON[d.getMonth()] + '</b><small class="text-muted d-block">' + d.toLocaleDateString('en-US', { weekday: 'long' }) + '</small></td>' +
+      (r ? '<td class="num">' + fmt(r.likeFacebook) + '</td><td class="num">' + fmt(r.followerTwitter) + '</td><td class="num">' + fmt(r.followerInstagram) + '</td><td class="num">' + fmt(r.inboxEmail) + '</td>'
+         : '<td colspan="4" class="text-center text-muted">No data</td>') +
+      '<td class="text-right"><span class="sv-badge ' + (r ? (ov[k] ? 'ok' : 'info') : 'warn') + '">' + (r ? (ov[k] ? 'edited' : 'sample') : 'empty') + '</span></td></tr>';
+  }
+  $('#recent-rows').html(rows);
+  var tiles = [
+    ['Facebook likes', week.fb, prevWeek.fb, 'f', '#1877f2'], ['Twitter followers', week.tw, prevWeek.tw, 't', '#1d9bf0'],
+    ['Instagram followers', week.ig, prevWeek.ig, 'ig', 'linear-gradient(45deg,#f58529,#dd2a7b,#8134af)'], ['Inbox e-mails', week.inbox, prevWeek.inbox, null, '#d2233c']
+  ];
+  $('#input-kpis').html(tiles.map(function (k) {
+    var ico = k[3] ? '<span class="sv-ico brand" style="background:' + k[4] + '">' + k[3] + '</span>' : '<span class="sv-ico" style="background:#fdecef;color:#d2233c;"><span class="oi oi-envelope-closed"></span></span>';
+    return '<div class="col-xl-3 col-sm-6"><div class="sv-kpi"><div class="top"><span class="label">' + k[0] + ' · last 7 days</span>' + ico + '</div><div class="kpi-value">' + fmt(k[1]) + '</div><div class="foot">' + delta(k[1], k[2]) + '<span>vs previous 7 days</span></div></div></div>';
+  }).join(''));
+}
+PAGE_INIT.chartsv2input = function (args) {
+  $('#datePicker').val(args && args.date ? args.date : todayStr());
+  renderInputSide();
+  getDataFromDate();
+};
+$('#datePicker').change(getDataFromDate);
+$('#recent-rows').on('click', 'tr[data-date]', function () { $('#datePicker').val($(this).data('date')); getDataFromDate(); });
+$('#btn_reset').on('click', function () { setInputMode(inputOriginal); });
+$('#form').on('submit', function (e) {
+  e.preventDefault();
+  var date = $('#datePicker').val(); if (!date) return;
+  var rec = { id: inputOriginal ? inputOriginal.id : Date.now() % 1e7, date: date };
+  INPUT_FIELDS.forEach(function (f) { var v = $('#' + f[0]).val(); rec[f[1]] = v === '' ? 0 : Math.max(0, parseInt(v, 10)); });
+  var wasUpdate = inputMode === 'update';
+  DB.saveSummary(date, rec);
+  $('body').addClass('loading');
+  setTimeout(function () {
+    $('body').removeClass('loading');
+    renderInputSide(); setInputMode(rec);
+    toast('Report for ' + niceDate(date) + (wasUpdate ? ' updated' : ' saved'));
+  }, 400);
+});
+$('#btn_update_data').on('click', function () {
+  $('body').addClass('loading');
+  setTimeout(function () { $('body').removeClass('loading'); PAGE_INIT.chartsv2input({ date: $('#datePicker').val() }); toast('Test data refreshed from devices'); }, 800);
+});
+
+/* =========================================================================
+   MANAGE USER
+========================================================================= */
+var editingId = null;
+PAGE_INIT.manageUser = function (args) {
+  var me = DB.authUser(), users = DB.users(), cari = args.search || '';
+  var isNew = args.id === 'new', edit = (!isNew && args.id) ? DB.findUser(args.id) : null;
+  var list = cari === '' ? users : users.filter(function (u) { return u.name.toLowerCase().indexOf(cari.toLowerCase()) >= 0; });
+
+  var admins = users.filter(function (u) { return u.role === 'admin'; }).length, pending = users.filter(function (u) { return u.status !== 'activated'; }).length;
+  var active7 = users.filter(function (u) { return u.lastLogin && (Date.now() - new Date(u.lastLogin)) < 7 * 864e5; }).length;
+  var tiles = [['Total Users', users.length, 'oi-people', 'All registered accounts'], ['Administrators', admins, 'oi-shield', 'Full access'],
+               ['Active (7 days)', active7, 'oi-pulse', Math.round(active7 / (users.length || 1) * 100) + '% of all users'], ['Pending Verification', pending, 'oi-clock', 'Awaiting e-mail verification']];
+  $('#user-kpis').html(tiles.map(function (k) {
+    return '<div class="col-xl-3 col-sm-6"><div class="sv-kpi"><div class="top"><span class="label">' + k[0] + '</span><span class="sv-ico"><span class="oi ' + k[2] + '"></span></span></div><div class="kpi-value">' + k[1] + '</div><div class="foot"><span>' + k[3] + '</span></div></div></div>';
+  }).join(''));
+
+  $('#user-count-sub').html(cari ? list.length + ' result(s) for "<b>' + esc(cari) + '</b>" · <a href="#/manageUser">clear</a>' : users.length + ' accounts');
+  $('#user-rows').html(list.length ? list.map(function (u, i) {
+    var self = (u.name == me.name && u.email == me.email);
+    return '<tr class="' + (edit && edit.id === u.id ? 'selected' : '') + '"><td class="text-muted">' + (i + 1) + '</td>' +
+      '<td><div class="sv-person">' + avatar(u, 'sm') + '<div class="t"><b>' + esc(u.name) + '</b>' + (self ? '<span class="sv-badge you">You</span>' : '') + '<small>' + esc(u.email) + '</small></div></div></td>' +
+      '<td><span class="sv-badge ' + (u.role === 'admin' ? 'admin' : 'user') + '">' + esc(u.role) + '</span></td>' +
+      '<td><span class="sv-badge ' + (u.status === 'activated' ? 'ok' : 'warn') + '"><i></i>' + (u.status === 'activated' ? 'Active' : 'Pending') + '</span></td>' +
+      '<td class="text-muted">' + (u.lastLogin ? timeAgo(u.lastLogin) : 'Never') + '</td>' +
+      '<td class="text-right" style="white-space:nowrap;"><a href="#/manageUser/' + u.id + '" class="btn btn-ghost btn-sm sv-btn-edit-x" title="Edit"><span class="oi oi-pencil"></span>Edit</a> ' +
+      (self ? '<span class="btn btn-sm" style="visibility:hidden;"><span class="oi oi-trash"></span>Delete</span>' : '<button type="button" class="btn btn-danger-soft btn-sm" data-delete="' + u.id + '"><span class="oi oi-trash"></span>Delete</button>') + '</td></tr>';
+  }).join('') : '<tr><td colspan="6"><div class="sv-empty"><span class="oi oi-magnifying-glass"></span>No users match "' + esc(cari) + '".</div></td></tr>');
+  $('#search').val(cari);
+  $('[data-err]').text('');
+
+  editingId = edit ? edit.id : (isNew ? 'new' : null);
+  var disabled = !edit && !isNew;
+  $('#name').val(edit ? edit.name : '').prop('disabled', disabled);
+  $('#edit-email').val(edit ? edit.email : '').prop('disabled', disabled);
+  $('#role').val(edit ? edit.role : 'user').prop('disabled', disabled);
+  $('#status').val(edit ? edit.status : 'activated').prop('disabled', disabled);
+  $('#edit-actions').toggleClass('off', disabled);
+  $('#edit-user-submit').html('<span class="oi oi-check"></span>' + (isNew ? 'Create User' : 'Update'));
+  $('#edit-ico').html(edit ? avatar(edit) : '<span class="oi ' + (isNew ? 'oi-plus' : 'oi-person') + '"></span>').css('background', edit ? 'transparent' : '');
+  $('#edit-title').text(isNew ? 'Add New User' : edit ? 'Edit ' + edit.name : 'User Details');
+  $('#edit-sub').text(isNew ? 'Default password: SVReport123' : edit ? 'Update profile, role or status.' : 'Select a user from the table to edit.');
+  $('#edit-meta').html(edit ? 'Member since ' + niceDate(edit.created) + ' · Last login ' + (edit.lastLogin ? timeAgo(edit.lastLogin) : 'never') : '');
+  if (edit || isNew) setTimeout(function () { $('#name').focus(); }, 50);
+};
+$('#search-form').on('submit', function (e) {
+  e.preventDefault();
+  var s = $.trim($('#search').val());
+  go(s ? '#/manageUser?search=' + encodeURIComponent(s) : '#/manageUser');
+});
+$('#user-rows').on('click', '[data-delete]', function () {
+  var u = DB.findUser($(this).data('delete'));
+  $('#delete-text').html('<b>' + esc(u.name) + '</b> (' + esc(u.email) + ') will lose access to the dashboard.');
+  $('#delete-confirm').data('id', u.id);
+  $('#modaldelete').modal('show');
+});
+$('#delete-confirm').on('click', function () {
+  var id = $(this).data('id');
+  $('#modaldelete').one('hidden.bs.modal', function () { go('#/deletemanageuser/' + id); }).modal('hide');
+});
+$('#edit-user-form').on('submit', function (e) {
+  e.preventDefault();
+  if (!editingId) return;
+  var v = { name: $.trim($('#name').val()), email: $.trim($('#edit-email').val()), role: $('#role').val(), status: $('#status').val() }, err = {};
+  var users = DB.users();
+  if (v.name.length < 2) err.name = 'The name must be at least 2 characters.';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) err.email = 'The email must be a valid email address.';
+  else if (users.some(function (u) { return u.email.toLowerCase() === v.email.toLowerCase() && u.id != editingId; })) err.email = 'The email has already been taken.';
+  $('[data-err]').each(function () { $(this).text(err[$(this).data('err')] || ''); });
+  if (Object.keys(err).length) return;
+  if (editingId === 'new') {
+    users.push($.extend({ id: users.reduce(function (m, u) { return Math.max(m, u.id); }, 0) + 1, password: 'SVReport123', created: todayStr(), lastLogin: null }, v));
+    DB.saveUsers(users); go('#/manageUser'); toast('User created successfully');
+  } else {
+    users.forEach(function (u) { if (u.id == editingId) $.extend(u, v); });
+    DB.saveUsers(users); go('#/manageUser'); toast(v.name + ' has been updated');
+  }
+});
+
+/* =========================================================================
+   MAPS — lightweight tile map (no API key, no library)
+========================================================================= */
+var TileMap = function (el, opt) {
+  var self = this, TS = 256;
+  self.zoom = opt.zoom; self.markers = [];
+  el.innerHTML = '<div class="tm-layer tm-tiles"></div><div class="tm-layer tm-markers"></div>' +
+    '<div class="tm-ctrl"><button type="button" data-z="1" title="Zoom in">+</button><button type="button" data-z="-1" title="Zoom out">&minus;</button><button type="button" data-home title="Reset view"><span class="oi oi-home" style="font-size:12px;"></span></button></div>' +
+    '<div class="tm-attr">Tiles &copy; Esri</div>';
+  var tilesEl = el.querySelector('.tm-tiles'), markEl = el.querySelector('.tm-markers'), tiles = {};
+  function project(lat, lng, z) { var s = TS * Math.pow(2, z), sin = Math.sin(lat * Math.PI / 180); return { x: (lng + 180) / 360 * s, y: (0.5 - Math.log((1 + sin) / (1 - sin)) / (4 * Math.PI)) * s }; }
+  self.setView = function (lat, lng, z) { self.zoom = z; self.center = project(lat, lng, z); self.render(); };
+  self.center = project(opt.center[0], opt.center[1], self.zoom);
+  self.render = function () {
+    var w = el.clientWidth, h = el.clientHeight, n = Math.pow(2, self.zoom), ox = self.center.x - w / 2, oy = self.center.y - h / 2, keep = {};
+    for (var tx = Math.floor(ox / TS); tx <= Math.floor((ox + w) / TS); tx++) for (var ty = Math.max(0, Math.floor(oy / TS)); ty <= Math.min(n - 1, Math.floor((oy + h) / TS)); ty++) {
+      var k = self.zoom + '/' + tx + '/' + ty, img = tiles[k];
+      if (!img) {
+        img = document.createElement('img'); img.className = 'tm-tile'; img.alt = '';
+        img.onerror = function () { this.style.visibility = 'hidden'; };
+        img.src = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/' + self.zoom + '/' + ty + '/' + (((tx % n) + n) % n);
+        tiles[k] = img; tilesEl.appendChild(img);
+      }
+      img.style.left = (tx * TS - ox) + 'px'; img.style.top = (ty * TS - oy) + 'px'; keep[k] = 1;
+    }
+    Object.keys(tiles).forEach(function (k) { if (!keep[k]) { tilesEl.removeChild(tiles[k]); delete tiles[k]; } });
+    self.markers.forEach(function (m) { var p = project(m.lat, m.lng, self.zoom); m.el.style.left = (p.x - ox) + 'px'; m.el.style.top = (p.y - oy) + 'px'; });
+    if (self.info) { var p = project(self.info.lat, self.info.lng, self.zoom); self.info.el.style.left = (p.x - ox) + 'px'; self.info.el.style.top = (p.y - oy) + 'px'; }
+  };
+  self.setZoom = function (z, ax, ay) {
+    z = Math.max(2, Math.min(18, z)); if (z === self.zoom) return;
+    var w = el.clientWidth, h = el.clientHeight; ax = ax === undefined ? w / 2 : ax; ay = ay === undefined ? h / 2 : ay;
+    var f = Math.pow(2, z - self.zoom), wx = self.center.x - w / 2 + ax, wy = self.center.y - h / 2 + ay;
+    self.center = { x: wx * f - ax + w / 2, y: wy * f - ay + h / 2 }; self.zoom = z; self.render();
+  };
+  self.addMarker = function (lat, lng, icon, data, onClick) {
+    var m = { lat: lat, lng: lng, data: data, el: document.createElement('img') };
+    m.el.src = icon; m.el.className = 'tm-marker';
+    m.el.addEventListener('click', function (e) { e.stopPropagation(); onClick(m); });
+    markEl.appendChild(m.el); self.markers.push(m); return m;
+  };
+  self.openInfo = function (lat, lng, html) {
+    self.closeInfo();
+    var d = document.createElement('div'); d.className = 'tm-info';
+    d.innerHTML = '<button type="button" class="tm-close">&times;</button>' + html;
+    d.querySelector('.tm-close').onclick = self.closeInfo;
+    markEl.appendChild(d); self.info = { lat: lat, lng: lng, el: d }; self.render();
+  };
+  self.closeInfo = function () { if (self.info) { markEl.removeChild(self.info.el); self.info = null; } };
+  [].forEach.call(el.querySelectorAll('.tm-ctrl button'), function (b) {
+    b.onclick = function () { if (b.hasAttribute('data-home')) { self.closeInfo(); self.setView(opt.center[0], opt.center[1], opt.zoom); } else self.setZoom(self.zoom + parseInt(b.getAttribute('data-z'), 10)); };
+  });
+  var drag = null;
+  el.addEventListener('pointerdown', function (e) {
+    if (e.target.closest('.tm-ctrl, .tm-info, .tm-marker')) return;
+    drag = { x: e.clientX, y: e.clientY, cx: self.center.x, cy: self.center.y }; el.classList.add('dragging');
+  });
+  window.addEventListener('pointermove', function (e) { if (!drag) return; self.center = { x: drag.cx - (e.clientX - drag.x), y: drag.cy - (e.clientY - drag.y) }; self.render(); });
+  window.addEventListener('pointerup', function () { drag = null; el.classList.remove('dragging'); });
+  var lock = 0;
+  el.addEventListener('wheel', function (e) {
+    e.preventDefault(); if (Date.now() - lock < 250) return; lock = Date.now();
+    var r = el.getBoundingClientRect(); self.setZoom(self.zoom + (e.deltaY < 0 ? 1 : -1), e.clientX - r.left, e.clientY - r.top);
+  }, { passive: false });
+  el.addEventListener('dblclick', function (e) {
+    if (e.target.closest('.tm-ctrl, .tm-info, .tm-marker')) return;
+    var r = el.getBoundingClientRect(); self.setZoom(self.zoom + 1, e.clientX - r.left, e.clientY - r.top);
+  });
+  window.addEventListener('resize', function () { if (el.offsetParent) self.render(); });
+};
+
+var svMap = null;
+PAGE_INIT.maps = function () {
+  if (svMap) { svMap.render(); return; }
+  svMap = new TileMap(document.getElementById('map'), { zoom: 5, center: [-0.290368, 113.898933] });
+  fakeAjax('getdatamaps', null, {
+    success: function (items) {
+      var now = new Date(), cm = now.getMonth(), cy = now.getFullYear(), fresh = 0, tests = 0, cities = {}, countries = {};
+      items.forEach(function (loc) {
+        var t = new Date(loc.time), isNew = t.getMonth() === cm && t.getFullYear() === cy;
+        if (isNew) fresh++;
+        tests += loc.total; countries[loc.country] = 1;
+        var c = cities[loc.city] || (cities[loc.city] = { name: loc.city, region: loc.region, n: 0, lat: 0, lng: 0 });
+        c.n++; c.lat += loc.latitude; c.lng += loc.longitude;
+        svMap.addMarker(loc.latitude, loc.longitude, isNew ? 'assets/img/darkgreen.png' : 'assets/img/blue.png', { layer: isNew ? 'new' : 'old' }, function () {
+          svMap.openInfo(loc.latitude, loc.longitude,
+            '<div class="ti-h"><img src="' + (isNew ? 'assets/img/darkgreen.png' : 'assets/img/blue.png') + '"><div><b>' + esc(loc.deviceid) + '</b><div class="text-muted small">' + (isNew ? 'Installed this month' : 'Overall install') + '</div></div></div>' +
+            '<table><tr><td>Device</td><td>' + esc(loc.device) + '</td></tr><tr><td>Operator</td><td>' + esc(loc.operator) + '</td></tr>' +
+            '<tr><td>Total tests</td><td><b>' + fmt(loc.total) + '</b></td></tr><tr><td>Last test</td><td>' + niceDate(t) + ', ' + pad(t.getHours()) + ':' + pad(t.getMinutes()) + '</td></tr></table>' +
+            '<div class="addr"><span class="oi oi-map-marker mr-1"></span>' + esc(loc.address) + '</div>');
+        });
+      });
+      $('#lg-overall').text(fmt(items.length - fresh)); $('#lg-month').text(fmt(fresh));
+      $('#map-stats').html('<div><div class="n">Devices</div><div class="v">' + fmt(items.length) + '</div></div><div><div class="n">New this month</div><div class="v">' + fmt(fresh) + '</div></div>' +
+        '<div><div class="n">Cities</div><div class="v">' + Object.keys(cities).length + '</div></div><div><div class="n">Avg tests / device</div><div class="v">' + fmt(tests / items.length) + '</div></div>');
+      var top = Object.keys(cities).map(function (k) { return cities[k]; }).sort(function (a, b) { return b.n - a.n; }).slice(0, 8);
+      $('#map-cities').html(top.map(function (c) {
+        return '<div class="mp-city" data-lat="' + (c.lat / c.n) + '" data-lng="' + (c.lng / c.n) + '"><span class="oi oi-map-marker"></span><div>' + esc(c.name) + '<small>' + esc(c.region) + '</small></div><b>' + c.n + '</b></div>';
+      }).join(''));
+      svMap.render();
+    }
+  });
+};
+$('#map-cities').on('click', '.mp-city', function () { svMap.closeInfo(); svMap.setView(+$(this).data('lat'), +$(this).data('lng'), 10); });
+$('.mp-legend input').on('change', function () {
+  var layer = $(this).data('layer'), on = this.checked;
+  svMap.markers.forEach(function (m) { if (m.data.layer === layer) m.el.classList.toggle('hide', !on); });
+});
+
+/* =========================================================================
+   BOOT
+========================================================================= */
+$('#footer-year').text(new Date().getFullYear());
+$(window).on('hashchange', router);
+$(function () { router(); });
+</script>
+</body>
+</html>

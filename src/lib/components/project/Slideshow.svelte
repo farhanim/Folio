@@ -4,6 +4,7 @@
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import type { Block, Project } from '#lib/types/index.ts';
 	import { portal } from '#lib/utils/portal.ts';
+	import { credit, source } from '#lib/utils/credit.ts';
 	import ClientBadge from './ClientBadge.svelte';
 
 	/**
@@ -221,8 +222,11 @@
 								<p class="summary">{project.summary}</p>
 								<dl class="facts">
 									<div>
-										<dt class="label">Client</dt>
-										<dd><ClientBadge client={project.client} size="sm" /> {project.client.name}</dd>
+										<dt class="label">{credit(project).label}</dt>
+										<dd>
+											<ClientBadge client={source(project)} size="sm" />
+											{credit(project).value}
+										</dd>
 									</div>
 									{#each coverFacts as f (f.label)}
 										<div>
