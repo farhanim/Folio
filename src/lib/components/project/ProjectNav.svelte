@@ -211,12 +211,15 @@
 		.kind {
 			font-size: 9px;
 		}
-		/* One line only; longer titles end in an ellipsis */
+		/* Half-width cards: two lines, then an ellipsis, so the title stays readable */
 		.title {
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+			line-clamp: 2;
 			max-width: 100%;
 			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
+			white-space: normal;
 			font-size: 15px;
 			line-height: 1.2;
 			letter-spacing: -0.02em;

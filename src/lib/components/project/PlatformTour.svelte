@@ -201,7 +201,11 @@
 					<span class="url">{item.name}</span>
 				</div>
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
-				<div class="clips" onpointerenter={() => (hovering = true)} onpointerleave={() => (hovering = false)}>
+				<div
+					class="clips"
+					onpointerenter={() => (hovering = true)}
+					onpointerleave={() => (hovering = false)}
+				>
 					{#each items as it, i (it.id)}
 						<video
 							bind:this={videos[i]}
@@ -225,7 +229,9 @@
 							<p class="caption" class:open={captionOpen || hovering} aria-live="polite">
 								<span class="step">{pad(chapter + 1)}/{pad(chapters.length)}</span>
 								<span class="label-text"><span>{chapters[chapter].label}</span></span>
-								<span class="line" aria-hidden="true"><i style:transform="scaleX({stepProgress})"></i></span>
+								<span class="line" aria-hidden="true"
+									><i style:transform="scaleX({stepProgress})"></i></span
+								>
 							</p>
 						{/key}
 					{/if}
@@ -236,7 +242,8 @@
 						aria-label={playing ? 'Pause walkthrough' : 'Play walkthrough'}
 					>
 						{#if playing}
-							<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3h3v10H4zM9 3h3v10H9z" /></svg>
+							<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3h3v10H4zM9 3h3v10H9z" /></svg
+							>
 						{:else}
 							<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" /></svg>
 						{/if}
@@ -259,7 +266,10 @@
 					{#if it.chapters?.length}
 						<ol class="chapters">
 							{#each it.chapters as c, k (c.at)}
-								<li class:done={i === active && k < chapter} class:now={i === active && k === chapter}>
+								<li
+									class:done={i === active && k < chapter}
+									class:now={i === active && k === chapter}
+								>
 									<button type="button" onclick={() => seek(c.at)}>
 										<span class="mark" aria-hidden="true"></span>{c.label}
 									</button>
@@ -644,19 +654,63 @@
 		}
 	}
 	@media (max-width: 600px) {
+		.tabs {
+			gap: 4px;
+		}
+		.indicator {
+			width: calc((100% - 4px * (var(--n) - 1)) / var(--n));
+			transform: translateX(calc(var(--i) * (100% + 4px)));
+		}
 		[role='tab'] {
-			padding: 10px 10px 0;
+			grid-template-columns: minmax(0, 1fr);
+			padding: 10px 8px 0;
 		}
 		.no {
 			display: none;
 		}
+		/* Tab names stay on one line, e.g. "Back Office" */
+		.name {
+			overflow: hidden;
+			font-size: 14px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
 		.meter {
-			margin: 8px -10px 0;
+			margin: 8px -8px 0;
+		}
+		.chrome {
+			height: 28px;
+		}
+		.url {
+			font-size: 11px;
 		}
 		.caption {
-			left: 10px;
-			bottom: 10px;
-			font-size: 13px;
+			left: 8px;
+			bottom: 8px;
+			max-width: calc(100% - 60px);
+			padding: 6px;
+			border-radius: 10px;
+			font-size: 12.5px;
+		}
+		.caption.open .label-text span {
+			padding: 0 6px 0 8px;
+			text-overflow: ellipsis;
+		}
+		.step {
+			padding: 3px 6px;
+			font-size: 11px;
+		}
+		.toggle {
+			right: 8px;
+			bottom: 8px;
+			width: 34px;
+			height: 34px;
+		}
+		h3 {
+			font-size: calc(20px * var(--text-scale, 1));
+		}
+		p {
+			font-size: calc(14px * var(--text-scale, 1));
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {

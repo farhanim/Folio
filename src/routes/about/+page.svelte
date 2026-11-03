@@ -279,10 +279,9 @@
 					{#each profile.facts as f (f.label)}
 						<div data-tone={f.tone ?? 'amber'}>
 							<span class="f-icon">
-								{#if f.live}<span class="live" aria-hidden="true"><Icon name="globe" size={15} /></span>{:else}<Icon
-										name={f.icon as IconName}
-										size={15}
-									/>{/if}
+								{#if f.live}<span class="live" aria-hidden="true"
+										><Icon name="globe" size={15} /></span
+									>{:else}<Icon name={f.icon as IconName} size={15} />{/if}
 							</span>
 							<dt class="label">{f.label}</dt>
 							<dd>{f.value}</dd>
@@ -2288,9 +2287,23 @@
 			height: auto;
 			min-height: 112px;
 			padding: 10px 6px;
+			overflow: hidden;
 		}
+		/* Half-width tiles: draw the illustration smaller so it fits instead of clipping */
+		.b-tile:not([data-art='systems'], [data-art='journey']) .art > :global(*) {
+			zoom: 0.78;
+		}
+		.b-tile h3 {
+			margin-top: 12px;
+			font-size: 14px;
+			line-height: 1.3;
+		}
+		.b-tile p {
+			font-size: 12.5px;
+		}
+		/* Four a row: at five, the tiles are too narrow for icons and names like "Webflow" */
 		.tools {
-			grid-template-columns: repeat(5, minmax(0, 1fr));
+			grid-template-columns: repeat(4, minmax(0, 1fr));
 			gap: 8px;
 		}
 		.tools li {
@@ -2565,18 +2578,52 @@
 		.copy {
 			grid-column: 1 / -1;
 		}
+		/* Bio: same size as the home intro on phones */
+		.copy p {
+			font-size: calc(13.5px * var(--text-scale));
+			line-height: 1.55;
+		}
 		h1 {
 			font-size: 30px;
 		}
 		.facts {
 			margin-top: 20px;
+			gap: 8px;
+		}
+		/* Smaller icon and value so "Bogor, Indonesia" fits a half-width card */
+		.facts div {
+			column-gap: 8px;
+			padding: 10px;
+		}
+		.f-icon {
+			width: 30px;
+			height: 30px;
+			border-radius: 9px;
+		}
+		.facts dd {
+			font-size: 13.5px;
 		}
 		.actions {
 			margin-top: 20px;
+			gap: 8px;
 		}
+		/* Both buttons on one row, each label on one line */
 		.actions a {
-			flex: 1 1 0;
+			flex: 1 1 auto;
 			height: 44px;
+			gap: 8px;
+			font-size: 13px;
+			white-space: nowrap;
+		}
+		.primary {
+			padding: 0 14px 0 5px;
+		}
+		.p-icon {
+			width: 34px;
+			height: 34px;
+		}
+		.secondary {
+			padding: 0 16px;
 		}
 
 		/* Experience: logo + role with the toggle; the period sits under the company */

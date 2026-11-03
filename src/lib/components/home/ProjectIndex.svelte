@@ -578,9 +578,13 @@
 		padding: 0;
 		list-style: none;
 	}
+	.grid li {
+		min-width: 0;
+	}
 	.card {
 		display: flex;
 		flex-direction: column;
+		min-width: 0;
 		color: var(--text);
 		text-decoration: none;
 	}
@@ -936,11 +940,19 @@
 			font-size: 12px;
 			white-space: nowrap;
 		}
+		/* minmax(0, …): a plain 1fr lets the one-line tagline stretch the card past the screen */
 		.grid {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
+			row-gap: 24px;
 		}
 		.rail {
 			grid-auto-columns: 70%;
+		}
+		.card-title {
+			font-size: 14.5px;
+		}
+		.card-sub {
+			font-size: 12.5px;
 		}
 		.views {
 			margin-left: auto;

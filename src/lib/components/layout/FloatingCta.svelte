@@ -242,4 +242,19 @@
 			font-size: 11.5px;
 		}
 	}
+	/*
+	 * Phones: just the sticker, smaller, so it doesn't sit over the reading column.
+	 * Its ring already says "Hiring · Download resume", so the pill only repeats it.
+	 */
+	@media (max-width: 600px) {
+		.cta {
+			bottom: calc(max(18px, env(safe-area-inset-bottom)) + 56px);
+		}
+		.pill {
+			display: none;
+		}
+		.sticker {
+			width: 56px;
+		}
+	}
 </style>

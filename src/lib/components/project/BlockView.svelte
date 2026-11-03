@@ -22,11 +22,7 @@
 	}
 </script>
 
-<section
-	class="block kind-{block.kind}"
-	id={block.id}
-	use:reveal
->
+<section class="block kind-{block.kind}" id={block.id} use:reveal>
 	<h2 class="label">{block.title}</h2>
 
 	<div class="content">
@@ -454,6 +450,29 @@
 		}
 		.stats div {
 			grid-column: span 2;
+		}
+		/* Reading sizes for a phone: the lead stays a step above body, not a headline */
+		p {
+			font-size: calc(15px * var(--text-scale));
+			line-height: 1.6;
+		}
+		.lead {
+			font-size: calc(18px * var(--text-scale));
+			line-height: 1.45;
+		}
+		.features li {
+			grid-template-columns: 26px 1fr;
+			row-gap: 4px;
+			padding: 16px 0;
+		}
+		.features b {
+			font-size: 16px;
+		}
+		.features span:last-child {
+			font-size: 13.5px;
+		}
+		.impact li {
+			font-size: 14px;
 		}
 	}
 </style>

@@ -33,6 +33,13 @@
 	let showTip = $state(false);
 	const current = $derived(picks[index]);
 
+	// Phones show the tip's title cut to a few words, so the chip stays short.
+	const TIP_WORDS = 3;
+	function shortTitle(title: string) {
+		const words = title.replace(/[,.:;]+/g, '').split(/\s+/);
+		return words.length > TIP_WORDS ? `${words.slice(0, TIP_WORDS).join(' ')}…` : title;
+	}
+
 	let tipTimer: ReturnType<typeof setTimeout>;
 	function flashTip() {
 		showTip = true;
@@ -87,7 +94,8 @@
 				{#if showTip && current}
 					<span class="tip" transition:fade={{ duration: 200 }}>
 						<Tag kind={current.featured ? 'featured' : 'new'} />
-						<span class="tip-title">{current.title}</span>
+						<span class="tip-title full">{current.title}</span>
+						<span class="tip-title short" aria-hidden="true">{shortTitle(current.title)}</span>
 					</span>
 				{/if}
 			</span>
@@ -301,6 +309,9 @@
 	.tip-title {
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+	.tip-title.short {
+		display: none;
 	}
 
 	.intro {
@@ -519,9 +530,20 @@
 		.headline {
 			margin-top: 24px;
 		}
+		/* Width capped so the chip, centred on the thumbnail, stays on screen */
 		.tip {
+			gap: 6px;
+			max-width: 236px;
 			padding: 4px 10px 4px 4px;
 			font-size: 12px;
+		}
+		/* Phones: the word-limited title only */
+		.tip-title.full {
+			display: none;
+		}
+		.tip-title.short {
+			display: block;
+			min-width: 0;
 		}
 		/* One smaller size for the intro and the Currently / Previously notes on phones */
 		.intro,
@@ -530,9 +552,19 @@
 			font-size: calc(13.5px * var(--text-scale));
 			line-height: 1.55;
 		}
+		/* The notes are supporting detail: a step smaller and tighter than the intro */
 		.aside {
-			margin-top: 28px;
+			margin-top: 22px;
 			grid-template-columns: 1fr 1fr;
+			column-gap: 16px;
+			font-size: calc(12.5px * var(--text-scale));
+			line-height: 1.45;
+		}
+		.aside .label {
+			font-size: 10px;
+		}
+		.note p {
+			margin-top: 2px;
 		}
 		.scroll-cue {
 			display: none;

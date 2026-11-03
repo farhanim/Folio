@@ -230,10 +230,22 @@
 		grid-column: 1 / span 8;
 		animation: enter 0.9s var(--ease-out) both;
 	}
+	/* One line: the parent links keep their size, the current page truncates */
 	.crumbs {
 		display: flex;
 		gap: 8px;
+		min-width: 0;
 		text-transform: none;
+		white-space: nowrap;
+	}
+	.crumbs > * {
+		flex: none;
+	}
+	.crumbs [aria-current] {
+		flex: 0 1 auto;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 	.crumbs a {
 		color: var(--text-secondary);
@@ -358,6 +370,46 @@
 		}
 		.intro {
 			grid-column: 1 / -1;
+		}
+	}
+	@media (max-width: 600px) {
+		.project {
+			padding-top: 24px;
+		}
+		.tags {
+			margin-top: 20px;
+		}
+		h1 {
+			margin-top: 12px;
+			font-size: clamp(30px, 8.6vw, 36px);
+			line-height: 1;
+		}
+		.tagline {
+			margin-top: 12px;
+			font-size: 17px;
+			line-height: 1.4;
+		}
+		.summary {
+			margin-top: 14px;
+			font-size: calc(14px * var(--text-scale));
+		}
+		.actions {
+			margin-top: 20px;
+		}
+		.primary,
+		.secondary {
+			height: 42px;
+		}
+		.meta {
+			margin: 24px 0 16px;
+		}
+		.meta div {
+			padding: 10px 0;
+		}
+		.meta dd {
+			margin-top: 4px;
+			font-size: 13px;
+			line-height: 1.45;
 		}
 	}
 </style>
